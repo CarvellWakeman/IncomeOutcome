@@ -332,8 +332,10 @@ public class ActivityMain extends AppCompatActivity
 
         switch (item.getItemId())
         {
-            case R.id.toolbar_action_settings:
-                ProfileManager.Print("Settings");
+            case R.id.toolbar_action_settings: //Start settings activity
+                Intent intent = new Intent(ActivityMain.this, ActivitySettings.class);
+                //intent.putExtra("profile", pr.GetID());
+                startActivity(intent);
                 return true;
 
             case R.id.toolbar_action_manageprofiles:
