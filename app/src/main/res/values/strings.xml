@@ -1,0 +1,130 @@
+<resources>
+    <string name="app_name">Income Outcome</string>
+    <string name="app_name_nospace">IncomeOutcome</string>
+
+    <!-- Activity Titles -->
+    <string name="title_activity_tab">Tab</string>
+    <string name="title_activity_new_tab">Create new Tab</string>
+    <string name="title_activity_new_transaction">Add a Transaction</string>
+    <string name="title_activity_transaction">TransactionActivity</string>
+    <!-- Other Titles -->
+    <string name="title_settings">Settings</string>
+    <string name="title_manageprofiles">Manage Profiles</string>
+    <string name="title_manageotherpeople">Manage People</string>
+    <string name="title_managecategories">Manage Categories</string>
+    <string name="title_exportdatabase">Export Database</string>
+    <string name="title_importdatabase">Import Database</string>
+    <string name="title_addnewprofile">New Profile</string>
+    <string name="title_addnewperson">New Person</string>
+    <string name="title_newcategory">New Category</string>
+    <string name="title_editprofile">Edit Profile</string>
+    <string name="title_selectprofile">Select Profile</string>
+    <string name="title_deleteand">Delete Profile and</string>
+    <string name="title_editpeople">Edit People</string>
+    <string name="title_editcategory">Edit Category</string>
+
+    <!-- Sub titles -->
+    <string name="subtitle_transferto">transfer its transactions to</string>
+    <string name="subtitle_or">OR</string>
+
+
+    <!-- Spinner selection -->
+    <string name="select_category">Select a Category...</string>
+    <string name="add_otherperson">Add New...</string>
+
+    <!-- User actions -->
+    <string name="action_ok">OK</string>
+    <string name="action_add">ADD</string>
+    <string name="action_delete">DELETE</string>
+    <string name="action_deleteall">DELETE ALL</string>
+    <string name="action_deletetransactions">DELETE TRANSACTIONS</string>
+    <string name="action_back">BACK</string>
+    <string name="action_edititem">EDIT</string>
+    <string name="action_cancel">CANCEL</string>
+    <string name="action_save">SAVE</string>
+    <string name="action_new">NEW</string>
+    <string name="action_import">IMPORT</string>
+    <string name="action_export">EXPORT</string>
+    <string name="action_transfer">TRANSFER</string>
+
+
+    <!-- Confirmation -->
+    <string name="confirm_yes">YES</string>
+    <string name="confirm_no">NO</string>
+    <string name="confirm_areyousure">Are you sure?</string>
+    <string name="confirm_areyousure_deletesingle">Are you sure you want to delete this?</string>
+    <string name="confirm_areyousure_deletetransactions">Are you sure you want to delete these transactions?</string>
+    <string name="confirm_areyousure_deleteall">Are you sure? All current data will be erased.</string>
+    <string name="confirm_areyousure_nolongerexists">This Person is no longer in the database. This change cannot be undone. Proceed?</string>
+    <string name="confirm_areyousure_nolongerexists2">This Category is no longer in the database. This change cannot be undone. Proceed?</string>
+    <string name="confirm_areyousure_transferdelete">Take action for transactions in this profile</string>
+
+    <!-- Time -->
+    <string name="time_start">START DATE</string>
+    <string name="time_end">END DATE</string>
+    <string name="time_start_format">START %1$s</string>
+    <string name="time_end_format">END %1$s</string>
+
+    <!-- Information Missing -->
+    <string name="info_nodescription"><i>No Description</i></string>
+    <string name="info_nocompany"><i>No Company</i></string>
+    <string name="info_nocategory"><i>No Category</i></string>
+    <string name="info_noname"><i>No Source Name</i></string>
+    <string name="info_domwarning">* Some months are limited to 28/29/30 days. The last day of the month will be chosen in these cases.</string>
+
+    <!-- Formatting -->
+    <string name="format_ipaid">%1$s owes %2$s (%3$s%%)</string>
+    <string name="format_theypaid">I owe %1$s (%2$s%%)</string>
+    <string name="format_me">You</string>
+    <string name="balance_even">Balance is even between You and </string>
+    <string name="balance_uneven">owe</string>
+    <string name="balance_uneven_plural">owes</string>
+    <string name="format_dbversion">(ver. %1$s)</string>
+
+    <!-- Repeat Info -->
+    <string name="repeat_days">day(s)</string>
+    <string name="repeat_weeks">week(s) on</string>
+    <string name="repeat_months">month(s) on day</string>
+    <string name="repeat_years">year(s) on</string>
+
+
+    <!-- Repeat arrays -->
+    <string-array name="repeat_array">
+        <item>Never</item>
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Monthly</item>
+        <item>Yearly</item>
+    </string-array>
+
+    <string-array name="repeat_until">
+        <item>Forever</item>
+        <item>Until a date</item>
+        <item>A number of times</item>
+    </string-array>
+
+    <string-array name="days_of_week">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
+
+    <string-array name="RepeatingTransaction">
+    <item>Edit (All transactions in series)</item>
+    <item>Edit (Only this transaction)</item>
+    <item>Delete (All transactions in series)</item>
+    <item>Delete (Only this transaction)</item>
+    </string-array>
+
+    <string-array name="SingleTransaction">
+        <item>Edit</item>
+        <item>Copy</item>
+        <item>Delete</item>
+    </string-array>
+
+
+</resources>

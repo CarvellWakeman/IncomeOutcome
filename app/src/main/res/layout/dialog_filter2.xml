@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingBottom="8dp"
+    android:paddingTop="20dp">
+
+
+    <Spinner
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner_filter_categories"
+        android:spinnerMode="dropdown"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/FlatButtonTheme"
+        android:text="CONTINUE"
+        android:id="@+id/filter_button_continue"
+        android:layout_marginLeft="8dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="8dp"
+        android:layout_below="@+id/spinner_filter_categories"
+        android:enabled="false" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/borderlessButtonStyle"
+        android:textColor="#2195f2"
+        android:text="CANCEL"
+        android:id="@+id/filter_button_cancel"
+        android:layout_alignBottom="@+id/filter_button_continue"
+        android:layout_toStartOf="@+id/filter_button_continue" />
+
+</RelativeLayout>

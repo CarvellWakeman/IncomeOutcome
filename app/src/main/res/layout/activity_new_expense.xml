@@ -1,0 +1,333 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+
+    <include android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:fillViewport="false"
+        android:theme="@style/Base.Theme.AppCompat.Light">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:focusableInTouchMode="true">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/card_newExpense_cost"
+                android:elevation="25dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/TIL_newExpense_cost"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:theme="@style/Base.Theme.AppCompat.Light">
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:imeOptions="actionDone"
+                            android:hint="Cost"
+                            android:maxLines="1"
+                            android:inputType="number" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Add a person to split this expense"
+                        android:id="@+id/textView_newExpense_splitNotice"
+                        android:textStyle="italic"
+                        android:visibility="gone"
+                        android:layout_weight="1" />
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/TIL_newExpense_cost"
+                        android:layout_alignParentStart="true"
+                        android:weightSum="8"
+                        android:id="@+id/linearLayout"
+                        android:theme="@style/Base.Theme.AppCompat.Light">
+
+                        <CheckBox
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:text="Split Cost"
+                            android:id="@+id/checkBox_newExpense_splitEnabled"
+                            android:buttonTint="@color/gray"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:layout_weight="3"
+                            android:layout_gravity="bottom"
+                            android:visibility="visible" />
+                        <!-- carvellwakeman.incomeoutcome.NoDefaultSpinner -->
+                        <Spinner
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/spinner_newExpense_otherpeople"
+                            android:layout_weight="5"
+                            android:visibility="gone"
+                            android:theme="@style/MaterialTheme"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/card_newExpense_split"
+                android:layout_below="@+id/card_newExpense_cost"
+                android:elevation="25dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:weightSum="10">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="Percentage Split"
+                            android:id="@+id/textView_newExpense_split"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="10" />
+
+                        <Switch
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/switch_paidBy"
+                            android:checked="true"
+                            android:text="I paid "
+                            android:visibility="visible"
+                            android:gravity="center_vertical|right"
+                            android:textOff="They paid"
+                            android:textOn="I paid"
+                            android:layout_weight="9" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/TIL_newExpense_PersonACost"
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_row="0"
+                            android:layout_columnSpan="3"
+                            android:layout_weight="1">
+
+                            <EditText
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:ems="10"
+                                android:maxLines="1"
+                                android:minLines="1"
+                                android:digits=".0123456789"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentEnd="true"
+                                android:hint="Your Cost" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/TIL_newExpense_PersonBCost"
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_row="0"
+                            android:layout_columnSpan="3"
+                            android:layout_weight="1">
+
+                            <EditText
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:ems="10"
+                                android:maxLines="1"
+                                android:minLines="1"
+                                android:digits=".0123456789"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentEnd="true"
+                                android:hint="Their Cost" />
+
+                        </android.support.design.widget.TextInputLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent">
+
+                        <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/seekBar_newExpense"
+                            app:dsb_progressColor="@color/colorAccent"
+                            app:dsb_indicatorColor="@color/colorAccent"
+                            app:dsb_rippleColor="@color/colorAccent"
+                            app:dsb_value="50"
+                            app:dsb_min="0"
+                            app:dsb_max="100"
+                            app:dsb_indicatorFormatter="%s%%"
+                            android:layout_weight="1" />
+
+                    </TableRow>
+
+                </TableLayout>
+
+
+
+
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/card_newExpense_category"
+                android:layout_below="@+id/button_newExpense_date"
+                android:elevation="25dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Category and Place of Purchase"
+                        android:id="@+id/textView_newExpense_category"
+                        android:layout_marginLeft="5dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true" />
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="9"
+                        android:layout_below="@+id/textView_newExpense_category">
+
+                        <carvellwakeman.incomeoutcome.NoDefaultSpinner
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/spinner_newExpense_categories"
+                            android:layout_below="@+id/textView_newExpense_category"
+                            android:spinnerMode="dropdown"
+                            android:layout_weight="3"
+                            android:theme="@style/MaterialTheme"
+                            android:backgroundTint="#000000" />
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/TIL_newExpense_placepurchase"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="6">
+
+                            <EditText
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textCapSentences|textMultiLine"
+                                android:layout_below="@+id/editText_newExpense_name"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignEnd="@+id/editText_newExpense_name"
+                                android:maxLines="1"
+                                android:hint="Company"
+                                android:minLines="1"
+                                android:maxLength="15" />
+                        </android.support.design.widget.TextInputLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/card_newExpense_description"
+                android:layout_below="@+id/card_newExpense_split"
+                android:elevation="25dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/TIL_newExpense_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:layout_below="@+id/editText_newExpense_name"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignEnd="@+id/editText_newExpense_name"
+                        android:maxLines="4"
+                        android:hint="Description"
+                        android:minLines="1" />
+                </android.support.design.widget.TextInputLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/frameLayout_timePeriod"></FrameLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

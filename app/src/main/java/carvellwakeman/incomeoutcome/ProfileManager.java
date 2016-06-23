@@ -1,0 +1,794 @@
+package carvellwakeman.incomeoutcome;
+
+
+import android.Manifest;
+import android.app.*;
+import android.app.DialogFragment;
+import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.os.Build;
+import android.os.SystemClock;
+import android.support.v4.app.*;
+import android.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.io.*;
+import java.text.DecimalFormat;
+import java.util.*;
+
+public class ProfileManager
+{
+    //Categories
+    private static ArrayList<Category> _categories;
+    //private static ArrayList<String> _categories;
+    //private static HashMap<String, Integer> _categoryColors;
+
+    //Locale
+    public static Locale locale;
+
+    //Profiles
+    private static int _currentProfileID;
+    private static ArrayList<Profile> _profiles;
+
+    //Other people
+    private static ArrayList<String> _otherPeople;
+
+    //Prefs
+    //private static String tabsFilename;
+    //private static String tabsErrorFilename;
+
+    //Formats
+    public static DecimalFormat decimalFormat;
+    public static DecimalFormat currencyFormat;
+    //public static DateFormat simpleDateFormat;
+    public static String simpleDateFormat;
+    public static String simpleDateFormatNoYear;
+    public static String simpleDateFormatNoDay;
+    public static String simpleDateFormatSaving;
+
+
+    //Context
+    private static ActivityMain MainActivityInstance;
+    private static Context MainActivityContext;
+
+    //File I/O
+    private static DatabaseHelper databaseHelper;
+
+    //private static boolean LoadError = false;
+
+
+    //Sort and filter methods
+    enum SORT_METHODS
+    {
+        DEFAULT,
+        DATE_UP,
+        COST_UP,
+        PAIDBY_UP,
+        DATE_DOWN,
+        COST_DOWN,
+        PAIDBY_DOWN,
+        CATEGORY,
+        COMPANY
+    }
+
+    enum FILTER_METHODS
+    {
+        NONE,
+        DATE,
+        COST,
+        PAIDBY,
+        CATEGORY,
+        COMPANY
+    }
+
+    //Constructor
+    public static void initialize(ActivityMain ac)
+    {
+        MainActivityInstance = ac;
+        MainActivityContext = ac.getBaseContext();
+
+        locale = Locale.US;
+
+        _currentProfileID = -1;
+
+        _profiles = new ArrayList<>();
+        //_categories = new LinkedHashMap<String, List<String>>();
+        _categories = new ArrayList<>();
+        //_categoryColors = new HashMap<>();
+        _otherPeople = new ArrayList<>();
+
+
+        decimalFormat = new DecimalFormat("#.###");
+        currencyFormat = new DecimalFormat("¤#.###");
+        //simpleDateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
+        simpleDateFormat = "MMMM dd, yyyy"; //May 12, 2016
+        //simpleDateFormatNoYear = new SimpleDateFormat("MMMM dd", Locale.US);
+        simpleDateFormatNoYear = "MMMM dd"; //May 12
+        simpleDateFormatNoDay = "MMMM, yyyy"; //May, 2016
+        simpleDateFormatSaving = "MM-dd-yyyy"; //05-12-2016
+
+
+        //Initialize database helper
+        databaseHelper = new DatabaseHelper(MainActivityContext);
+
+        //Default initial category
+        //AddCategory(MainActivityContext.getString(R.string.select_category), 0, true);
+
+
+        //Load from database
+        databaseHelper.loadSettings();
+        databaseHelper.loadExpenses();
+        databaseHelper.loadIncome();
+    }
+
+
+    public static void LoadDefaultSettings(){
+        //Try create database
+        ClearAllObjects();
+        databaseHelper.DeleteDB();
+        databaseHelper.TryCreateDatabase();
+
+        //[DEBUG] Testing structures
+        LocalDate c1 = LocalDate.now().withDayOfMonth(1);
+
+        LocalDate c2 = LocalDate.now().withDayOfMonth(LocalDate.now().dayOfMonth().getMaximumValue());
+
+        Profile p1 = new Profile("Monthly Budget");
+        p1.SetStartTime(c1, true);
+        p1.SetEndTime(c2, true);
+
+        Profile p2 = new Profile("Empty Profile");
+
+        AddProfile(p1);
+        AddProfile(p2);
+        SelectProfile(p1);
+
+
+
+        //Default other people
+        AddOtherPerson("Sabrina");
+        AddOtherPerson("Zach Homen");
+        AddOtherPerson("Mom");
+
+        //Default initial category
+        //AddCategory(MainActivityContext.getString(R.string.select_category), 0, true);
+
+        //Default _categories
+        AddCategory("Groceries", Color.argb(255, 0, 0, 255));
+        AddCategory("Fast Food", Color.argb(255, 0, 20, 200));
+        AddCategory("Restaurant", Color.argb(255, 50, 50, 150));
+        AddCategory("Snacks", Color.argb(255, 50, 80, 150));
+
+        AddCategory("Rent", Color.argb(255, 200, 0, 0));
+        AddCategory("Mortgage", Color.argb(255, 180, 30, 0));
+        AddCategory("ATM Withdrawal", Color.argb(255, 150, 50, 0));
+
+        AddCategory("Electricity", Color.argb(255, 250, 255, 30));
+        AddCategory("Sewer", Color.argb(255, 165, 165, 60));
+        AddCategory("Water", Color.argb(255, 36, 174, 212));
+        AddCategory("Garbage", Color.argb(255, 62, 105, 54));
+        AddCategory("Internet", Color.argb(255, 50, 50, 150));
+        AddCategory("Entertainment", Color.argb(255, 180, 255, 120));
+
+        AddCategory("Gasoline", Color.argb(255, 150, 0, 150));
+        AddCategory("Travel", Color.argb(255, 230, 50, 255));
+        AddCategory("Vehicle", Color.argb(255, 85, 0, 80));
+
+        AddCategory("Office Supplies", Color.argb(255, 255, 180, 80));
+        AddCategory("Home Supplies", Color.argb(255, 255, 100, 40));
+        AddCategory("Kitchen Supplies", Color.argb(255, 255, 50, 20));
+        AddCategory("Home Improvement", Color.argb(255, 50, 0, 255));
+        AddCategory("Home Repair", Color.argb(255, 115, 80, 255));
+        AddCategory("Pet", Color.argb(255, 200, 255, 200));
+
+        AddCategory("Hobbies", Color.argb(255, 30, 200, 80));
+        AddCategory("Second-Hand", Color.argb(255, 15, 140, 50));
+        AddCategory("Clothing/Jewelry", Color.argb(255, 20, 200, 5));
+
+        AddCategory("Gifts", Color.argb(255, 0, 255, 255));
+
+        AddCategory("Medical", Color.argb(255, 130, 0, 40));
+        AddCategory("Prescription", Color.argb(255, 180, 45, 50));
+        AddCategory("Health & Beauty", Color.argb(255, 200, 20, 180));
+        AddCategory("Personal", Color.argb(255, 216, 66, 216));
+
+        AddCategory("Other", Color.argb(255, 140, 140, 140));
+
+
+        //Success
+        Print("Default settings loaded");
+    }
+
+
+    //Universal print
+    public static void Print(String msg){ Toast.makeText(MainActivityContext, msg, Toast.LENGTH_SHORT).show(); }
+    public static void PrintLong(String msg){ Toast.makeText(MainActivityContext, msg, Toast.LENGTH_LONG).show(); }
+    static int ret = 0;
+    public static int AlertDialog(String title, String positive, String negative){
+        AlertDialog.Builder b = new AlertDialog.Builder(MainActivityInstance);
+        b.setTitle(title);
+        b.setPositiveButton(positive, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) { ret = 1; } });
+        b.setNegativeButton(negative, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) { ret = 0; } });
+        b.create().show();
+
+        return ret;
+    }
+
+    //Dialog fragment manager
+    public static void OpenDialogFragment(Activity caller, DialogFragment fragment, boolean openAsDialogFragment){
+        if (openAsDialogFragment) { // The device is using a large layout, so show the fragment as a dialog
+            fragment.show(caller.getFragmentManager(), "dialog");
+            //FragmentTransaction ft = fragmentManager.beginTransaction();
+            //ft.add(fragment, null);
+            //ft.commitAllowingStateLoss();
+        } else { // The device is smaller, so show the fragment fullscreen
+            FragmentTransaction transaction = caller.getFragmentManager().beginTransaction();
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            transaction.add(android.R.id.content, fragment).addToBackStack(null).commit();
+        }
+    }
+
+    //ActivityMain profile list update
+    public static void UpdateProfileList(Boolean select){
+        //MainActivityInstance.UpdateProfileList(select);
+    }
+
+
+    //Profile Management
+
+    //Add profile
+    public static void AddProfile(Profile profile, Boolean dontsave) {
+        if (profile != null) {
+            _profiles.add(profile);
+            MainActivityInstance.UpdateProfileList(true);
+        }
+    }
+    public static void AddProfile(Profile profile) { if (profile != null) { AddProfile(profile, true); InsertSettingDatabase(profile, true); } }
+
+    public static void UpdateProfile(Profile profile) {
+        InsertSettingDatabase(profile, true);
+        MainActivityInstance.UpdateProfileList(false); //INFINITE LOOP
+    }
+
+    //Delete profile
+    public static void DeleteProfile(Profile profile)
+    {
+        if (profile == GetCurrentProfile()){
+            SelectProfile(GetProfileByIndex(GetProfileCount()-1));
+        }
+
+        if (profile != null) {
+            profile.RemoveAll();
+            _profiles.remove(profile);
+            RemoveProfileSettingDatabase(profile);
+            Print("DeleteProfile");
+        }
+
+        MainActivityInstance.UpdateProfileList(true);
+    }
+    public static void DeleteProfileByID(String id)
+    {
+        if (id != null && !id.equals("")) {
+            for (int i = 0; i < _profiles.size(); i++) {
+                if (_profiles.get(i).toString().equals(id)) {
+                    DeleteProfile(_profiles.get(i));
+                    break;
+                }
+            }
+        }
+    }
+
+
+    //Get Profile at index
+    public static Profile GetProfileByIndex(int index)
+    {
+        if (GetProfileCount() >= index+1 && index >= 0) {
+            return _profiles.get(index);
+        }
+        return null;
+    }
+
+    //Get Profile with ID
+    public static Profile GetProfileByID(int id)
+    {
+        if (_profiles != null) {
+            for (int i = 0; i < _profiles.size(); i++) {
+                if (_profiles.get(i).GetID() == id) {
+                    return GetProfileByIndex(i);
+                }
+            }
+        }
+        return null;
+    }
+
+    //Get Profile with name
+    public static Profile GetProfileByName(String name){
+        if (_profiles != null) {
+            for (int i = 0; i < _profiles.size(); i++) {
+                if (_profiles.get(i).GetName().equals(name)) {
+                    return GetProfileByIndex(i);
+                }
+            }
+        }
+        return null;
+    }
+
+    //Get Profile Index
+    public static int GetProfileIndex(Profile profile) {
+        if (profile != null) { return _profiles.indexOf(profile); }
+        else { return 0; }
+    }
+
+    //Select Profile
+    public static boolean SelectProfile(Profile profile){
+        if (profile != null) {
+            Profile old = GetCurrentProfile();
+            //Update new profile to be active
+            _currentProfileID = profile.GetID();
+            InsertSettingDatabase(profile, true);
+            //MainActivityInstance.UpdateProfileList(true);
+
+            //Update old profile to be unselected
+            if (_profiles.size() > 0 && old != null) {
+                InsertSettingDatabase(old, true);
+            }
+            return _currentProfileID >= 0;
+        }
+        return false;
+    }
+    public static boolean SelectProfile(String name){
+        for (int i = 0; i < _profiles.size(); i++) {
+            if (_profiles.get(i).GetName().equals(name)) {
+                SelectProfile(_profiles.get(i));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Get Current Profile
+    public static Profile GetCurrentProfile(){
+        if (GetProfileCount() > 0 && GetProfileCount() > 0 && _currentProfileID >= 0){
+            return GetProfileByID(_currentProfileID);
+        }
+
+        return null;
+    }
+
+    //Get count
+    public static int GetProfileCount()
+    {
+        return _profiles.size();
+    }
+
+    //Get profiles array
+    public static ArrayList<Profile> GetProfiles(){
+        return _profiles;
+    }
+
+    //Get String array of profile names
+    public static ArrayList<String> GetProfileNames(){
+        ArrayList<String> ar = new ArrayList<>();
+
+        for (int i = 0; i < _profiles.size(); i++){
+            ar.add(_profiles.get(i).GetName());
+        }
+
+        return ar;
+    }
+
+    public static Boolean HasProfile(String profile){
+        for (int i = 0; i < _profiles.size(); i++){
+            if (_profiles.get(i).GetName().equals(profile)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Clear profiles
+    public static void ClearProfiles(){
+        for (Profile pr : _profiles){
+            pr.ClearAllObjects();
+        }
+        _profiles.clear();
+        _currentProfileID = -1;
+    }
+
+
+
+
+    //Other People
+    //Add other person
+    public static void AddOtherPerson(String name, Boolean dontsave) {
+        if (!name.equals("")) {
+            _otherPeople.add(name);
+        }
+    }
+    public static void AddOtherPerson(String name){
+        AddOtherPerson(name, true);
+        InsertSettingDatabase(name, true);
+    }
+
+    //Remove other person
+    public static void RemoveOtherPerson(String name){
+        for (int i = 0; i < _otherPeople.size(); i++){
+            if (_otherPeople.get(i).equals(name)){
+                _otherPeople.remove(i);
+                RemovePersonSettingDatabase(name);
+            }
+        }
+    }
+
+    //Get other person by index
+    public static String GetOtherPersonByIndex(int idx){
+        return _otherPeople.get(idx);
+    }
+
+    //Get other person by name
+    public static boolean HasOtherPerson(String name){
+        for (int i = 0; i < _otherPeople.size(); i++){
+            if (_otherPeople.get(i).equals(name)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Get array of OtherPeople objects
+    public static ArrayList<String> GetOtherPeople(){
+        return _otherPeople;
+    }
+
+    //Get count of other people
+    public static int GetOtherPeopleCount(){
+        return _otherPeople.size();
+    }
+
+    //Clear other people
+    public static void ClearOtherPeople(){
+        _otherPeople.clear();
+    }
+
+    //Update other person
+    public static void UpdateOtherPerson(String old, String name){
+        for (Profile pr : _profiles){
+            pr.UpdateOtherPerson(old, name);
+        }
+    }
+
+
+
+    //Categories
+    //Add category
+    public static void AddCategory(Category category, Boolean dontsave) {
+        if (category != null) {
+            _categories.add(category);
+        }
+    }
+    public static void AddCategory(Category category){
+        AddCategory(category, true);
+        InsertSettingDatabase(category, true);
+    }
+    public static void AddCategory(String name, int color){
+        AddCategory(new Category(name, color));
+    }
+
+    //Remove category
+    public static void RemoveCategory(Category category) {
+        _categories.remove(category);
+        RemoveCategorySettingDatabase(category.GetTitle());
+    }
+    public static void RemoveCategory(String title){
+        for (int i = 0; i < _categories.size(); i++){
+            if (_categories.get(i).GetTitle().equals(title)){
+                RemoveCategory(_categories.get(i));
+            }
+        }
+    }
+
+    //Get category by index
+    public static Boolean HasCategory(String category){
+        for (int i = 0; i < _categories.size(); i++){
+            if (_categories.get(i).GetTitle().equals(category)){
+                return true;
+            }
+        }
+        return false;
+    }
+    public static Category GetCategory(String category)
+    {
+        for (int i = 0; i < _categories.size(); i++){
+            if (_categories.get(i).GetTitle().equals(category)){
+                return _categories.get(i);
+            }
+        }
+        return null;
+    }
+    public static Category GetCategoryByIndex(int idx){
+        return _categories.get(idx);
+    }
+
+    public static int GetCategoryIndex(String title) { return _categories.indexOf(GetCategory(title)); }
+
+    public static int GetCategoriesCount() { return _categories.size(); }
+
+
+    //Get ArrayList<String> of _categories
+    //public static ArrayList<Category> GetCategories(){
+    //    return _categories;
+    //}
+    public static ArrayList<String> GetCategoryTitles(){
+        ArrayList<String> arr = new ArrayList<>();
+        arr.add(0,MainActivityContext.getString(R.string.select_category));
+
+        for (Category cat : _categories){
+            arr.add(cat.GetTitle());
+        }
+
+
+        return arr;
+    }
+
+    //Clear _categories
+    public static void ClearCategories(){
+        _categories.clear();
+    }
+
+    //Update category
+    public static void UpdateCategory(String old, Category category){
+        for (Profile pr : _profiles){
+            pr.UpdateCategory(old, category.GetTitle());
+        }
+        ProfileManager.InsertSettingDatabase(category, true);
+    }
+
+    //Clear All
+    public static void ClearAllObjects(){
+        ClearProfiles();
+        ClearOtherPeople();
+        ClearCategories();
+    }
+
+
+
+
+    //Date conversion for loading
+    public static LocalDate ConvertDateFromString(String str){
+        if (str.length() != 0) {
+            try {
+                DateTimeFormatter dtf = DateTimeFormat.forPattern(simpleDateFormatSaving);
+                return dtf.parseLocalDate(str);
+            }
+            catch (IllegalArgumentException ex) {
+                ProfileManager.Print("Could not parse localdate (" + str + ")");
+                ex.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    //Hide Soft Keyboard
+    public static void hideSoftKeyboard(Activity act, View v)
+    {
+        InputMethodManager imm = (InputMethodManager)act.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+    //Color parsing
+    public static int ColorFromString(String str){
+        //Hash the string
+        str = String.format("%X", str.hashCode());
+        //Minimum string length = 6
+        while (str.length() < 6) { str = '0' + str; }
+
+        //Convert Hex string into int
+        int coli = (int)Long.parseLong(str, 16);
+        int r = (coli >> 16) & 0xFF;
+        int g = (coli >> 8) & 0xFF;
+        int b = (coli >> 0) & 0xFF;
+
+        return Color.argb(255,r,g,b);
+    }
+
+
+    //Permissions
+    public static boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (MainActivityContext.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                Log.v("PERMISSIONS","External Write Storage permission is granted");
+                return true;
+            } else {
+                Log.v("PERMISSIONS", "External Write Storage permission is not granted");
+                //Request permission
+                ActivityCompat.requestPermissions(MainActivityInstance, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v("PERMISSIONS","Permission is granted");
+            return true;
+        }
+
+
+    }
+
+
+    //External Database Management
+    public static void InsertSettingDatabase(Category category, Boolean tryupdate){
+        if ( category == null || databaseHelper.insertSetting(category, tryupdate) == -1){
+            ProfileManager.Print("Error inserting category into database");
+        }
+    }
+    public static void InsertSettingDatabase(String name, Boolean tryupdate){
+        if (name.equals("") || databaseHelper.insertSetting(name, tryupdate) == -1) {
+            ProfileManager.Print("Error inserting person into database");
+        }
+    }
+    public static void InsertSettingDatabase(Profile profile, Boolean tryupdate){
+        if (profile == null || databaseHelper.insertSetting(profile, tryupdate) == -1) {
+            ProfileManager.Print("Error inserting profile into database");
+        }
+    }
+
+    public static void InsertExpenseDatabase(Profile pr, Expense ex, Boolean tryupdate){
+        if ( databaseHelper.insert(pr, ex, tryupdate) != -1){
+            ProfileManager.Print("Expense " + (tryupdate ? "updated" : "inserted into database") );
+        } else { ProfileManager.Print("Error inserting expense into database"); }
+    }
+    public static void InsertIncomeDatabase(Profile pr, Income in, Boolean tryupdate){
+        if ( databaseHelper.insert(pr, in, tryupdate) != -1){
+            ProfileManager.Print("Income " + (tryupdate ? "updated" : "inserted into database") );
+        } else { ProfileManager.Print("Error inserting income into database"); }
+    }
+
+
+    public static void RemoveProfileSettingDatabase(Profile pr){
+        if ( databaseHelper.removeProfileSetting(pr) ){
+            ProfileManager.Print("Profile removed from database");
+        } else { ProfileManager.Print("Error removing profile from database"); }
+    }
+    public static void RemoveCategorySettingDatabase(String category){
+        if ( databaseHelper.removeCategorySetting(category) ){
+            ProfileManager.Print("Category removed from database");
+        } else { ProfileManager.Print("Error removing category from database"); }
+    }
+    public static void RemovePersonSettingDatabase(String person){
+        if ( databaseHelper.removePersonSetting(person) ){
+            ProfileManager.Print("Person removed from database");
+        } else { ProfileManager.Print("Error removing person from database"); }
+    }
+
+    public static void RemoveExpenseDatabase(Expense ex){
+        if ( databaseHelper.remove(ex) ){
+            ProfileManager.Print("Expense removed from database");
+        } else { ProfileManager.Print("Error removing expense from database"); }
+    }
+    public static void RemoveIncomeDatabase(Income in){
+        if ( databaseHelper.remove(in) ){
+            ProfileManager.Print("Income removed from database");
+        } else { ProfileManager.Print("Error removing income from database"); }
+    }
+    public static void DeleteDatabase(){
+        databaseHelper.DeleteDB();
+    }
+
+    public static void ExportDatabase(String str){ databaseHelper.exportDatabase(str); }
+    public static void ImportDatabase(File file) { ImportDatabase(file, true); }
+    public static void ImportDatabase(File file, boolean backup){
+        if (isStoragePermissionGranted()) {
+            //Clear all old data
+            ClearAllObjects();
+
+            //Import new database
+            databaseHelper.importDatabase(file, backup);
+        }
+    }
+    public static void ImportDatabaseBackup() { ImportDatabase(databaseHelper.EXPORT_BACKUP, false);  }
+    public static ArrayList<File> GetImportDatabaseFiles() { return databaseHelper.getImportableDatabases(); }
+    public static ArrayList<String> GetImportDatabaseFilesString() { return databaseHelper.getImportableDatabasesString(); }
+
+    public static String GetExportDirectory() { return databaseHelper.GetExportDirectory(); }
+    public static int GetNewestDatabaseVersion() { return databaseHelper.GetNewestVersion(); }
+
+
+
+    //Notifications
+    public static void ShowNotification(){
+        //build your notification here.
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(MainActivityInstance)
+                        .setSmallIcon(R.drawable.ic_account_multiple_white_24dp)
+                        .setContentTitle("My notification")
+                        .setContentText("Hello World!"); //notification will be removed when once you enter application.
+
+        // Sets an ID for the notification
+        int mNotificationId = 001;
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr = (NotificationManager) MainActivityInstance.getSystemService(Context.NOTIFICATION_SERVICE);
+        // Builds the notification and issues it.
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+    }
+
+
+    public static void scheduleNotification(Notification notification, int delay) {
+        Print("Notification Scheduled");
+
+        Intent notificationIntent = new Intent(MainActivityInstance, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivityContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager) MainActivityContext.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+    public static Notification getNotification(String content) {
+        Notification.Builder builder = new Notification.Builder(MainActivityContext);
+        builder.setContentTitle("Scheduled Notification");
+        builder.setContentText(content);
+        builder.setSmallIcon(R.drawable.ic_account_multiple_white_24dp);
+        return builder.build();
+    }
+
+
+    /*
+    public static void Sort(SORT_METHODS method)
+    {
+        switch (method) {
+            case DATE_UP:
+                Collections.sort(_tabs, new Comparator<Profile>() {
+                    @Override
+                    public int compare(Profile  tab1, Profile  tab2)
+                    {
+                        return  (int)Math.signum( (tab2.GetDateStart().getTimeInMillis()) - (tab1.GetDateStart().getTimeInMillis()) );
+                    }
+                });
+                break;
+            case DATE_DOWN:
+                Collections.sort(_tabs, new Comparator<Profile>() {
+                    @Override
+                    public int compare(Profile  tab1, Profile  tab2)
+                    {
+                        return  (int)Math.signum( (tab1.GetDateStart().getTimeInMillis()) - (tab2.GetDateStart().getTimeInMillis()) );
+                    }
+                });
+                break;
+            case COST_UP:
+                Collections.sort(_tabs, new Comparator<Profile>() {
+                    @Override
+                    public int compare(Profile  tab1, Profile  tab2)
+                    {
+                        return  (int)Math.signum( (tab2.GetTransactionsTotalCost()) - (tab1.GetTransactionsTotalCost()) );
+                    }
+                });
+                break;
+            case COST_DOWN:
+                Collections.sort(_tabs, new Comparator<Profile>() {
+                    @Override
+                    public int compare(Profile  tab1, Profile  tab2)
+                    {
+                        return  (int)Math.signum( (tab1.GetTransactionsTotalCost()) - (tab2.GetTransactionsTotalCost()) );
+                    }
+                });
+                break;
+        }
+    }
+    */
+}
