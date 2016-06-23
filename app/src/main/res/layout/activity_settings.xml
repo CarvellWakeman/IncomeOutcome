@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     android:clickable="true">
 
-    <include android:id="@+id/toolbar"
+    <include android:id="@+id/toolbar_settings"
         layout="@layout/toolbar" />
 
 

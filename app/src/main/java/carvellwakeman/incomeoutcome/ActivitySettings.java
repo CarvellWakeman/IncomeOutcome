@@ -18,27 +18,33 @@ public class ActivitySettings extends AppCompatActivity
         setContentView(R.layout.activity_settings);
 
 
-        
+
         //Find Views
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_settings);
 
 
 
         //Toolbar setup
-        if (toolbar != null) {
-            toolbar.setTitle(R.string.title_settings);
-            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onBackPressed();
-                }
-            });
-            //toolbar.inflateMenu(R.menu.toolbar_menu_sortfilter);
-            setSupportActionBar(toolbar);
-        }
+        setSupportActionBar(toolbar);
+
+        toolbar.setTitle(R.string.title_settings);
+        //toolbar.inflateMenu(R.menu.toolbar_menu_sortfilter);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
 
+    }
+
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
     }
 
 
@@ -47,8 +53,6 @@ public class ActivitySettings extends AppCompatActivity
         if (data != null) {
             switch (requestCode) {
                 case 1:
-                    if (resultCode == RESULT_OK) {
-                    }
                     break;
             }
         }
