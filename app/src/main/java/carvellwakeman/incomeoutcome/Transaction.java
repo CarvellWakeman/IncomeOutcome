@@ -1,7 +1,6 @@
 package carvellwakeman.incomeoutcome;
 
 
-
 public class Transaction implements java.io.Serializable
 {
     private int _uniqueID;
