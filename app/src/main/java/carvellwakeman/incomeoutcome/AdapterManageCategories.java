@@ -13,11 +13,11 @@ import android.widget.TextView;
 
 public class AdapterManageCategories extends RecyclerView.Adapter<AdapterManageCategories.PersonViewHolder>
 {
-    DialogFragmentManageCategories parent;
+    ActivityManageCategories parent;
 
 
     //Constructor
-    public AdapterManageCategories(DialogFragmentManageCategories _parent)
+    public AdapterManageCategories(ActivityManageCategories _parent)
     {
         parent = _parent;
     }
@@ -79,7 +79,7 @@ public class AdapterManageCategories extends RecyclerView.Adapter<AdapterManageC
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new AlertDialog.Builder(parent.getActivity()).setTitle(R.string.confirm_areyousure_deletesingle)
+                    new AlertDialog.Builder(parent).setTitle(R.string.confirm_areyousure_deletesingle)
                             .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

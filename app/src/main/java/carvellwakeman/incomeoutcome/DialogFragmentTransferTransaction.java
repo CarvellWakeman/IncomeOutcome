@@ -16,6 +16,7 @@ import android.widget.*;
 
 public class DialogFragmentTransferTransaction extends DialogFragment
 {
+    ActivityManageProfiles _parent;
     Profile current;
 
     AdapterTransferTransaction adapter;
@@ -29,8 +30,9 @@ public class DialogFragmentTransferTransaction extends DialogFragment
     NpaLinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
 
-    static DialogFragmentTransferTransaction newInstance(Profile current) {
+    static DialogFragmentTransferTransaction newInstance(ActivityManageProfiles parent, Profile current) {
         DialogFragmentTransferTransaction fg = new DialogFragmentTransferTransaction();
+        fg._parent = parent;
         Bundle args = new Bundle();
         args.putSerializable("profile", current);
         fg.setArguments(args);
@@ -75,6 +77,7 @@ public class DialogFragmentTransferTransaction extends DialogFragment
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 ProfileManager.DeleteProfile(current);
+                                _parent.finish();
                                 dismiss();
                             }})
                         .setNegativeButton(R.string.action_cancel, null)
@@ -103,6 +106,12 @@ public class DialogFragmentTransferTransaction extends DialogFragment
         current.TransferAllTransactions(pr);
         ProfileManager.DeleteProfile(current);
         dismiss();
+
+        //Update adapter from ActivityManageProfiles
+        if (_parent != null) {
+            _parent.finish();
+        }
+
     }
 
 

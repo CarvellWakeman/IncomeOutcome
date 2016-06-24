@@ -10,10 +10,10 @@ import android.widget.*;
 
 public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManageProfiles.ProfileViewHolder>
 {
-    DialogFragmentManageProfiles parent;
+    ActivityManageProfiles parent;
 
     //Constructor
-    public AdapterManageProfiles(DialogFragmentManageProfiles _parent)
+    public AdapterManageProfiles(ActivityManageProfiles _parent)
     {
         parent = _parent;
     }
@@ -73,11 +73,11 @@ public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManagePro
                     final Profile pr = ProfileManager.GetProfileByIndex(getAdapterPosition());
                     if (pr != null) {
                         if (pr.GetIncomeSourcesSize() + pr.GetExpenseSourcesSize() > 0) {
-                            ProfileManager.OpenDialogFragment(parent.getActivity(), DialogFragmentTransferTransaction.newInstance(pr), true); //TODO: Handle mIsLargeDisplay
-                            parent.dismiss();
+                            ProfileManager.OpenDialogFragment(parent, DialogFragmentTransferTransaction.newInstance(parent, pr), true); //TODO: Handle mIsLargeDisplay
+                            //parent.dismiss();
                         }
                         else {
-                            new AlertDialog.Builder(parent.getActivity()).setTitle(R.string.confirm_areyousure_deletesingle)
+                            new AlertDialog.Builder(parent).setTitle(R.string.confirm_areyousure_deletesingle)
                                     .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {

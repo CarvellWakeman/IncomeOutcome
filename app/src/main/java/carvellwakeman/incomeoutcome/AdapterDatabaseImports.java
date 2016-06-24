@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabaseImports.FileViewHolder>
 {
-    DialogFragmentDatabaseImport parent;
+    ActivityDatabaseImport parent;
 
     View selectedView;
     int selectedViewPosition;
@@ -25,7 +25,7 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
     ArrayList<File> database_import_files;
 
     //Constructor
-    public AdapterDatabaseImports(DialogFragmentDatabaseImport _parent)
+    public AdapterDatabaseImports(ActivityDatabaseImport _parent)
     {
         selectedViewPosition = -1;
 
@@ -99,7 +99,7 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new AlertDialog.Builder(parent.getActivity()).setTitle(R.string.confirm_areyousure_deletesingle)
+                    new AlertDialog.Builder(parent).setTitle(R.string.confirm_areyousure_deletesingle)
                             .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -123,12 +123,12 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
             final int version = SQLiteDatabase.openDatabase(file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
             final int currentVersion = ProfileManager.GetNewestDatabaseVersion();
             if (version <= currentVersion) { //Version check
-                new AlertDialog.Builder(parent.getActivity()).setTitle(R.string.confirm_areyousure_deleteall)
+                new AlertDialog.Builder(parent).setTitle(R.string.confirm_areyousure_deleteall)
                         .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 parent.ImportDatabase(file);
-                                parent.dismiss();
+                                parent.finish();
                             }})
                         .setNegativeButton(R.string.confirm_no, null)
                         .create().show();

@@ -122,22 +122,26 @@ public class ProfileManager
         //Initialize database helper
         databaseHelper = new DatabaseHelper(MainActivityContext);
 
-        //Default initial category
-        //AddCategory(MainActivityContext.getString(R.string.select_category), 0, true);
-
-
         //Load from database
         databaseHelper.loadSettings();
         databaseHelper.loadExpenses();
         databaseHelper.loadIncome();
+
+        //Default settings if database if empty
+        if (!databaseHelper.isDatabaseEmpty()){
+            LoadDefaultSettings();
+         }
     }
 
 
     public static void LoadDefaultSettings(){
         //Try create database
         ClearAllObjects();
-        databaseHelper.DeleteDB();
-        databaseHelper.TryCreateDatabase();
+        if (databaseHelper != null){
+            databaseHelper.DeleteDB();
+            databaseHelper.TryCreateDatabase();
+        }
+
 
         //[DEBUG] Testing structures
         LocalDate c1 = LocalDate.now().withDayOfMonth(1);
@@ -205,6 +209,7 @@ public class ProfileManager
 
         AddCategory("Other", Color.argb(255, 140, 140, 140));
 
+        MainActivityInstance.UpdateProfileList(true);
 
         //Success
         Print("Default settings loaded");
@@ -268,9 +273,8 @@ public class ProfileManager
     //Delete profile
     public static void DeleteProfile(Profile profile)
     {
-        if (profile == GetCurrentProfile()){
-            SelectProfile(GetProfileByIndex(GetProfileCount()-1));
-        }
+        boolean reselect = false;
+        reselect = (profile == GetCurrentProfile());
 
         if (profile != null) {
             profile.RemoveAll();
@@ -278,6 +282,7 @@ public class ProfileManager
             RemoveProfileSettingDatabase(profile);
             Print("DeleteProfile");
         }
+        if (reselect) { SelectProfile(GetProfileByIndex(0)); }
 
         MainActivityInstance.UpdateProfileList(true);
     }
@@ -341,7 +346,7 @@ public class ProfileManager
             //Update new profile to be active
             _currentProfileID = profile.GetID();
             InsertSettingDatabase(profile, true);
-            //MainActivityInstance.UpdateProfileList(true);
+            MainActivityInstance.UpdateProfileList(true);
 
             //Update old profile to be unselected
             if (_profiles.size() > 0 && old != null) {
@@ -699,6 +704,7 @@ public class ProfileManager
             databaseHelper.importDatabase(file, backup);
         }
     }
+    public static Boolean DoesBackupExist() { return databaseHelper.EXPORT_BACKUP.exists(); }
     public static void ImportDatabaseBackup() { ImportDatabase(databaseHelper.EXPORT_BACKUP, false);  }
     public static ArrayList<File> GetImportDatabaseFiles() { return databaseHelper.getImportableDatabases(); }
     public static ArrayList<String> GetImportDatabaseFilesString() { return databaseHelper.getImportableDatabasesString(); }

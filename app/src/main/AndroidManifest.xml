@@ -26,6 +26,17 @@
             android:launchMode="singleTop"/>
         <activity android:name=".ActivitySettings" android:label="@string/title_settings"
             android:launchMode="singleTop"/>
+        <activity android:name=".ActivityManageProfiles" android:label="@string/app_name"
+            android:launchMode="singleTop"/>
+        <activity android:name=".ActivityManagePeople" android:label="@string/app_name"
+            android:launchMode="singleTop"/>
+        <activity android:name=".ActivityManageCategories" android:label="@string/app_name"
+            android:launchMode="singleTop"/>
+        <activity android:name=".ActivityDatabaseImport" android:label="@string/app_name"
+            android:launchMode="singleTop"/>
+        <activity android:name=".ActivityDatabaseExport" android:label="@string/app_name"
+            android:launchMode="singleTop"/>
+
 
         <activity android:name=".AndroidDatabaseManager" android:theme="@style/Theme.AppCompat.Light"/>
 

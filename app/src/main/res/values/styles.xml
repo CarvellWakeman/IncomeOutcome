@@ -38,7 +38,7 @@
     <!-- Button Themes -->
     <style name="RaisedButtonTheme" parent="android:style/Widget.Material.Button">
         <item name="android:background">@drawable/raised_button_background</item>
-        <item name="android:textColor">#2195f2</item>
+        <item name="android:textColor">@drawable/selector_button_enabled</item>
     </style>
 
     <!-- ?android:attr/borderlessButtonStyle -->

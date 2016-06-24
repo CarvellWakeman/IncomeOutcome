@@ -18,7 +18,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
-        android:src="@drawable/plus"
+        android:src="@drawable/ic_plus_white_24dp"
         android:scaleType="center" />
 
     <android.support.design.widget.FloatingActionButton
@@ -210,35 +210,5 @@
         android:id="@+id/button_db"
         android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/button2" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Clear All Data"
-        android:id="@+id/button3"
-        android:layout_alignBaseline="@+id/textView_newExpense"
-        android:layout_alignBottom="@+id/textView_newExpense"
-        android:layout_alignStart="@+id/button2"
-        android:onClick="deleteDB" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Default settings"
-        android:id="@+id/button4"
-        android:onClick="MainDefaultSettings"
-        android:layout_above="@+id/textView_newIncome"
-        android:layout_alignStart="@+id/button2" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Import Backup"
-        android:id="@+id/button5"
-        android:layout_alignTop="@+id/button4"
-        android:layout_alignParentEnd="true"
-        android:onClick="MainImportBackup" />
 
 </RelativeLayout>

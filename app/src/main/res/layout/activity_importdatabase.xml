@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:id="@+id/linearLayout2">
+
+        <include android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@drawable/toolbar_dropshadow" />
+    </LinearLayout>
+
+
+    <!--
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="24dp"
+        android:layout_marginLeft="24dp"
+        android:id="@+id/linearLayout_dialogin_files"
+        android:layout_below="@+id/textView"
+        android:layout_marginBottom="24dp"
+        android:layout_above="@+id/button_dialogin_positive">
+
+    </LinearLayout>
+    -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/info_backupnotice"
+        android:id="@+id/textView_dialogin_backupnotice"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:visibility="gone"
+        android:layout_below="@+id/linearLayout2" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/info_nobackup"
+        android:id="@+id/button_dialogin_backup"
+        android:layout_marginLeft="24dp"
+        android:layout_below="@+id/textView_dialogin_backupnotice"
+        style="@style/RaisedButtonTheme"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="20dp"
+        android:enabled="false" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/dialog_recyclerView_files"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/button_dialogin_backup" />
+
+
+    <!--Add new -->
+
+</RelativeLayout>

@@ -249,13 +249,11 @@ public class ActivityMain extends AppCompatActivity
 
 
     //Temp
-    public void deleteDB(View v){
-        ProfileManager.DeleteDatabase();
-
-        ProfileManager.ClearAllObjects();
-
-        UpdateProfileList(true);
-    }
+    //public void deleteDB(View v){
+    //    ProfileManager.DeleteDatabase();
+    //    ProfileManager.ClearAllObjects();
+    //    UpdateProfileList(true);
+    //}
 
     //Context menu
     public void showContextMenu(final View itemView)
@@ -337,7 +335,7 @@ public class ActivityMain extends AppCompatActivity
                 //intent.putExtra("profile", pr.GetID());
                 startActivity(intent);
                 return true;
-
+            /*
             case R.id.toolbar_action_manageprofiles:
                 ProfileManager.OpenDialogFragment(this, new DialogFragmentManageProfiles(), mIsLargeLayout);
                 return true;
@@ -356,7 +354,7 @@ public class ActivityMain extends AppCompatActivity
             case R.id.toolbar_action_importdatabase:
                 ProfileManager.OpenDialogFragment(this, new DialogFragmentDatabaseImport(), mIsLargeLayout);
                 return true;
-
+            */
             default:
                 return false;
         }
@@ -457,7 +455,7 @@ public class ActivityMain extends AppCompatActivity
         }
     }
 
-    public void UpdateProfileList(boolean select){
+    public void UpdateProfileList(boolean selectCurrentProfile){
         if (spinner_profiles != null) {
             //Profile selected = ProfileManager.GetProfileByIndex(spinner_profiles.getSelectedItemPosition());
 
@@ -468,7 +466,7 @@ public class ActivityMain extends AppCompatActivity
             profile_adapter.notifyDataSetChanged();
 
             //Select current profile
-            if (select) { spinner_profiles.setSelection(ProfileManager.GetProfileIndex(ProfileManager.GetCurrentProfile())); }
+            if (selectCurrentProfile) { spinner_profiles.setSelection(ProfileManager.GetProfileIndex(ProfileManager.GetCurrentProfile())); }
         }
     }
 
@@ -559,9 +557,9 @@ public class ActivityMain extends AppCompatActivity
 
 
     //Buttons
-    public void MainDefaultSettings(View v){
-        ProfileManager.LoadDefaultSettings();
-    }
+    //public void MainDefaultSettings(View v){
+    //    ProfileManager.LoadDefaultSettings();
+    //}
     public void MainIncomeClick(View v)
     {
         /*
@@ -590,7 +588,7 @@ public class ActivityMain extends AppCompatActivity
             startActivity(intent);
         }
         else {
-            ProfileManager.Print("ERROR: Proile not found, could not start IncomeActivity");
+            ProfileManager.Print("ERROR: Profile not found, could not start IncomeActivity");
         }
     }
     public void MainExpenseClick(View v)
@@ -603,7 +601,7 @@ public class ActivityMain extends AppCompatActivity
             startActivity(intent);
         }
         else {
-            ProfileManager.Print("ERROR: Proile not found, could not start ExpenseActivity");
+            ProfileManager.Print("ERROR: Profile not found, could not start ExpenseActivity");
         }
     }
 
@@ -617,7 +615,7 @@ public class ActivityMain extends AppCompatActivity
             CloseFABMenu();
         }
         else {
-            ProfileManager.Print("ERROR: Proile not found, could not start NewExpenseActivity");
+            ProfileManager.Print("ERROR: Profile not found, could not start NewExpenseActivity");
         }
     }
 
@@ -630,10 +628,11 @@ public class ActivityMain extends AppCompatActivity
             CloseFABMenu();
         }
         else {
-            ProfileManager.Print("ERROR: Proile not found, could not start NewIncomeActivity");
+            ProfileManager.Print("ERROR: Profile not found, could not start NewIncomeActivity");
         }
     }
 
+    /*
     public void MainImportBackup(View v){
         new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deleteall)
             .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
@@ -644,5 +643,6 @@ public class ActivityMain extends AppCompatActivity
             .setNegativeButton(R.string.confirm_no, null)
             .create().show();
     }
+    */
 
 }

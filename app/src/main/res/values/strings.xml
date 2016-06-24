@@ -7,7 +7,8 @@
     <string name="title_activity_new_tab">Create new Tab</string>
     <string name="title_activity_new_transaction">Add a Transaction</string>
     <string name="title_activity_transaction">TransactionActivity</string>
-    <!-- Other Titles -->
+
+    <!-- Titles -->
     <string name="title_settings">Settings</string>
     <string name="title_manageprofiles">Manage Profiles</string>
     <string name="title_manageotherpeople">Manage People</string>
@@ -16,21 +17,33 @@
     <string name="title_importdatabase">Import Database</string>
     <string name="title_addnewprofile">New Profile</string>
     <string name="title_addnewperson">New Person</string>
-    <string name="title_newcategory">New Category</string>
+    <string name="title_addnewcategory">New Category</string>
     <string name="title_editprofile">Edit Profile</string>
     <string name="title_selectprofile">Select Profile</string>
     <string name="title_deleteand">Delete Profile and</string>
     <string name="title_editpeople">Edit People</string>
     <string name="title_editcategory">Edit Category</string>
-
     <!-- Sub titles -->
     <string name="subtitle_transferto">transfer its transactions to</string>
     <string name="subtitle_or">OR</string>
 
 
+    <!-- Setting titles -->
+    <string name="title_settings_profilespeoplecategories">Profiles, People &amp; Categories</string>
+    <string name="title_settings_database">Data</string>
+    <string name="title_settings_import">Import Data</string>
+    <string name="title_settings_export">Export Data</string>
+    <string name="title_settings_deletealldata">Delete ALL Data</string>
+    <string name="title_settings_importbackup">Import Secret Backup</string>
+    <!-- Setting subtitles -->
+    <string name="subtitle_settings_deletealldata">Erase all data and restore default settings.</string>
+    <string name="subtitle_settings_import">Erase all current data and import new data</string>
+
+
+
     <!-- Spinner selection -->
-    <string name="select_category">Select a Category...</string>
-    <string name="add_otherperson">Add New...</string>
+    <string name="select_category">Select a Category&#8320;</string>
+    <string name="add_otherperson">Add New&#8320;</string>
 
     <!-- User actions -->
     <string name="action_ok">OK</string>
@@ -66,6 +79,9 @@
     <string name="time_end_format">END %1$s</string>
 
     <!-- Information Missing -->
+    <string name="info_nobackup">No Backup Found</string>
+    <string name="info_restorebackup">Restore Backup</string>
+    <string name="info_backupnotice">Restore backup created last time data was imported</string>
     <string name="info_nodescription"><i>No Description</i></string>
     <string name="info_nocompany"><i>No Company</i></string>
     <string name="info_nocategory"><i>No Category</i></string>

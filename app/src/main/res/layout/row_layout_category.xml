@@ -5,14 +5,14 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="3dp"
+        android:layout_width="20dp"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
         android:id="@+id/linearLayout_dialogcat_colorbar"
         android:layout_alignBottom="@+id/linearLayout_dialog"
         android:layout_alignTop="@+id/linearLayout_dialog"
         android:layout_marginBottom="1dp"
-        android:layout_marginTop="1dp"></LinearLayout>
+        android:layout_marginTop="1dp" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -22,7 +22,10 @@
         android:layout_toStartOf="@+id/frameLayout"
         style="@style/SelectableItemForeground"
         android:id="@+id/linearLayout_dialog"
-        android:padding="8dp">
+        android:paddingLeft="24dp"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -37,7 +40,7 @@
 
     <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
+        android:layout_width="42dp"
         android:layout_height="wrap_content"
         style="@style/SelectableItemForeground"
         android:clickable="true"
@@ -45,7 +48,8 @@
         android:layout_alignParentEnd="true"
         android:id="@+id/frameLayout"
         android:layout_alignBottom="@+id/linearLayout_dialog"
-        android:layout_alignTop="@+id/linearLayout_dialog">
+        android:layout_alignTop="@+id/linearLayout_dialog"
+        android:layout_marginRight="24dp">
 
         <ImageView
             android:id="@+id/imageView_dialog"

@@ -6,10 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.CursorIndexOutOfBoundsException;
-import android.database.MatrixCursor;
-import android.database.SQLException;
+import android.database.*;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
@@ -260,6 +257,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public String GetExportDirectory(){ return EXPORT_DIRECTORY.getAbsolutePath(); }
     public int GetNewestVersion() { return DATABASE_VERSION; }
 
+    public boolean isDatabaseEmpty(){
+
+        if (!isTableEmpty(TABLE_SETTINGS_PROFILES) ||
+                !isTableEmpty(TABLE_SETTINGS_OTHERPEOPLE) ||
+                !isTableEmpty(TABLE_SETTINGS_CATEGORIES) ||
+                !isTableEmpty(TABLE_EXPENSES) ||
+                !isTableEmpty(TABLE_INCOME) ||
+                isTableEmpty(TABLE_TIMEPERIODS))
+        {return true; }
+
+        return false;
+    }
+
     public boolean isTableExists(String tableName, boolean openDb) {
         if(openDb) {
             if(database == null || !database.isOpen()) {
@@ -283,6 +293,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
             }
         }
         return false;
+    }
+    public boolean isTableEmpty(String tableName){
+        database = getReadableDatabase();
+        long cnt = DatabaseUtils.queryNumEntries(database, tableName);
+
+        return cnt==0;
     }
 
     public void TryCreateDatabase(){ TryCreateDatabase(getWritableDatabase()); }
@@ -336,7 +352,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 ex.printStackTrace();
             }
 
-            database = getWritableDatabase();
+            //database = getWritableDatabase();
             //ProfileManager.Print("Database created");
         }
         catch(SQLException ex){

@@ -76,11 +76,11 @@ public class Profile implements java.io.Serializable
     }
 
     public void RemoveAll(){
-        for (Expense ex : ExpenseSources){
-            RemoveExpense(ex);
+        for (int i = 0; i < ExpenseSources.size(); i++){
+            RemoveExpense(ExpenseSources.get(i));
         }
-        for (Income in : IncomeSources){
-            RemoveIncome(in);
+        for (int i = 0; i < IncomeSources.size(); i++){
+            RemoveIncome(IncomeSources.get(i));
         }
     }
 
@@ -207,8 +207,8 @@ public class Profile implements java.io.Serializable
         RemoveExpense(expense, true);
     }
     public void TransferAllExpenses(Profile moveTo){
-        for (Expense ex : ExpenseSources){
-            TransferExpense(ex, moveTo);
+        for (int i = 0; i < ExpenseSources.size(); i++){
+            TransferExpense(ExpenseSources.get(i), moveTo);
         }
 
         CalculateTimeFrame();

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    style="@style/SelectableItemForeground"
+    android:clickable="true"
+    android:paddingLeft="15dp"
+    android:paddingTop="20dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="20dp">
+
+    <ImageView
+        android:id="@+id/row_layout_setting_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:tint="@color/turquoise"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/ic_account_white_24dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/row_layout_setting_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Setting Title"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/row_layout_setting_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Setting Subtitle"
+            android:textColor="@color/gray"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

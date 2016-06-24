@@ -12,11 +12,11 @@ import android.widget.TextView;
 
 public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeople.PersonViewHolder>
 {
-    DialogFragmentManagePeople parent;
+    ActivityManagePeople parent;
 
 
     //Constructor
-    public AdapterManagePeople(DialogFragmentManagePeople _parent)
+    public AdapterManagePeople(ActivityManagePeople _parent)
     {
         parent = _parent;
     }
@@ -73,7 +73,7 @@ public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeopl
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new AlertDialog.Builder(parent.getActivity()).setTitle(R.string.confirm_areyousure_deletesingle)
+                    new AlertDialog.Builder(parent).setTitle(R.string.confirm_areyousure_deletesingle)
                             .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

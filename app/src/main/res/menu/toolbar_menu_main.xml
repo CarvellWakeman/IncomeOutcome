@@ -8,36 +8,33 @@
     <!-- Settings -->
     <item android:id="@+id/toolbar_action_settings"
     android:title="@string/title_settings"
-    app:showAsAction="never" />
+        android:icon="@drawable/ic_settings_white_24dp"
+    app:showAsAction="ifRoom" />
 
-    <!-- Manage profiles -->
+    <!--
     <item android:id="@+id/toolbar_action_manageprofiles"
         android:icon="@drawable/ic_account_multiple_white_24dp"
         android:title="@string/title_manageprofiles"
         app:showAsAction="never" />
 
-    <!-- Manage people -->
     <item android:id="@+id/toolbar_action_managepeople"
         android:icon="@drawable/ic_person_add_white_24dp"
         android:title="@string/title_manageotherpeople"
         app:showAsAction="never" />
 
-    <!-- Manage categories -->
     <item android:id="@+id/toolbar_action_managecategories"
-        android:icon="@drawable/ic_toc_white_24dp"
+        android:icon="@drawable/ic_view_list_white_24dp"
         android:title="@string/title_managecategories"
         app:showAsAction="never" />
 
-    <!-- Import Database -->
     <item android:id="@+id/toolbar_action_importdatabase"
         android:title="@string/title_importdatabase"
         app:showAsAction="never" />
 
-    <!-- Export Database -->
     <item android:id="@+id/toolbar_action_exportdatabase"
         android:title="@string/title_exportdatabase"
         app:showAsAction="never" />
-
+    -->
 
 
 </menu>
