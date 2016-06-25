@@ -346,7 +346,7 @@ public class ProfileManager
             //Update new profile to be active
             _currentProfileID = profile.GetID();
             InsertSettingDatabase(profile, true);
-            MainActivityInstance.UpdateProfileList(true);
+            //MainActivityInstance.UpdateProfileList(true);
 
             //Update old profile to be unselected
             if (_profiles.size() > 0 && old != null) {
@@ -368,7 +368,7 @@ public class ProfileManager
 
     //Get Current Profile
     public static Profile GetCurrentProfile(){
-        if (GetProfileCount() > 0 && GetProfileCount() > 0 && _currentProfileID >= 0){
+        if (GetProfileCount() > 0 && _currentProfileID != -1){
             return GetProfileByID(_currentProfileID);
         }
 
@@ -606,7 +606,7 @@ public class ProfileManager
         int coli = (int)Long.parseLong(str, 16);
         int r = (coli >> 16) & 0xFF;
         int g = (coli >> 8) & 0xFF;
-        int b = (coli >> 0) & 0xFF;
+        int b = (coli) & 0xFF;
 
         return Color.argb(255,r,g,b);
     }

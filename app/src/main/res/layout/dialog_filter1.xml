@@ -24,17 +24,13 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="By Company"
-            android:id="@+id/filter_radioButton2"
-            android:layout_below="@+id/filter_radioGroup"
-            android:layout_alignStart="@+id/filter_radioGroup" />
+            android:id="@+id/filter_radioButton2" />
 
         <RadioButton
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="By Who Paid"
-            android:id="@+id/filter_radioButton3"
-            android:layout_below="@+id/filter_radioButton2"
-            android:layout_alignStart="@+id/filter_radioButton2" />
+            android:id="@+id/filter_radioButton3" />
 
     </RadioGroup>
 

@@ -53,7 +53,7 @@ public class ActivitySettings extends AppCompatActivity
 
 
         //Setting Categories
-        SettingCard profilesPeopleCategories = new SettingCard(inflater, getString(R.string.title_settings_profilespeoplecategories));
+        SettingCard profilesPeopleCategories = new SettingCard( inflater, getString(R.string.title_settings_profilespeoplecategories));
         //Manage profiles
             profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_account_white_24dp, getString(R.string.title_manageprofiles), null,
                     new View.OnClickListener() { @Override public void onClick(View v) {

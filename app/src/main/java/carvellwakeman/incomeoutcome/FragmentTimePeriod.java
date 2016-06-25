@@ -530,7 +530,7 @@ public class FragmentTimePeriod extends Fragment {
                         //Day Of Month warning label
                         textView_dayOfMonthWarning.setVisibility( (n >= 29 ? View.VISIBLE : View.GONE) );
                     }
-                    catch (NumberFormatException ex){}
+                    catch (NumberFormatException ex){ ex.printStackTrace(); }
                 }
                 else {
                     noInfiniteLoopPlease = true;
@@ -603,12 +603,12 @@ public class FragmentTimePeriod extends Fragment {
 
     public Boolean AllDaysOff() {  return (!GetValMon() && !GetValTues() && !GetValWed() && !GetValThur() && !GetValFri() && !GetValSat() && !GetValSun()); }
     public Boolean GetValMon(){ return (checkBox_mon!=null && checkBox_mon.isChecked()); }
-    public Boolean GetValTues(){ if (checkBox_tues!=null) { return checkBox_tues.isChecked(); } else { return false; } }
-    public Boolean GetValWed(){ if (checkBox_wed!=null) { return checkBox_wed.isChecked(); } else { return false; } }
-    public Boolean GetValThur(){ if (checkBox_thur!=null) { return checkBox_thur.isChecked(); } else { return false; } }
-    public Boolean GetValFri(){ if (checkBox_fri!=null) { return checkBox_fri.isChecked(); } else { return false; } }
-    public Boolean GetValSat(){ if (checkBox_sat!=null) { return checkBox_sat.isChecked(); } else { return false; } }
-    public Boolean GetValSun(){ if (checkBox_sun!=null) { return checkBox_sun.isChecked(); } else { return false; } }
+    public Boolean GetValTues(){ return checkBox_tues!=null && checkBox_tues.isChecked(); }
+    public Boolean GetValWed(){ return checkBox_wed!=null && checkBox_wed.isChecked();}
+    public Boolean GetValThur(){ return checkBox_thur!=null && checkBox_thur.isChecked();}
+    public Boolean GetValFri(){ return checkBox_fri!=null && checkBox_fri.isChecked();}
+    public Boolean GetValSat(){ return checkBox_sat!=null && checkBox_sat.isChecked();}
+    public Boolean GetValSun(){ return checkBox_sun!=null && checkBox_sun.isChecked();}
 
     //public int GetMonthOfYear(){
     //    if (numberPicker_month != null){

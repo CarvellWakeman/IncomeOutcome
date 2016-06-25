@@ -58,7 +58,7 @@ public class ActivityNewExpense extends AppCompatActivity
 
     CheckBox checkBox_split;
 
-    Switch switch_paidBy;
+    android.support.v7.widget.SwitchCompat switch_paidBy;
 
     EditText editText_placeOfPurchase;
     EditText editText_description;
@@ -144,7 +144,7 @@ public class ActivityNewExpense extends AppCompatActivity
             }
         });
 
-        switch_paidBy = (Switch) findViewById(R.id.switch_paidBy);
+        switch_paidBy = (android.support.v7.widget.SwitchCompat) findViewById(R.id.switch_paidBy);
         switch_paidBy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,8 +170,7 @@ public class ActivityNewExpense extends AppCompatActivity
         categoryAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_title,  ProfileManager.GetCategoryTitles()){
             @Override
             public boolean isEnabled(int position){
-                if(position == 0) { return false; } //Hint
-                else { return true; }
+                return position != 0;
             }
 
         };

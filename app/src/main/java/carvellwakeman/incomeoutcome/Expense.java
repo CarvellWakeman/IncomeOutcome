@@ -62,7 +62,10 @@ public class Expense extends Transaction
 
 
     //Mutators
-    public void SetSplitValue(String person, Double val) { splitWith = person; splitValue = val; }
+    public void SetSplitValue(String person, Double val) {
+        if (person==null){ splitWith = ""; } else { splitWith = person; }
+        splitValue = val;
+    }
     public void SetIPaid(Boolean paid) { IPaid = paid; }
     public void SetPaidBack(LocalDate date) { paidBack = date; }
 

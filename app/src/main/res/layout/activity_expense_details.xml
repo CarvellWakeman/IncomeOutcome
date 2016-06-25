@@ -13,15 +13,13 @@
         android:id="@+id/recyclerView_expense_totals"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
         android:layout_marginBottom="2dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView_ExpenseSources"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="5dp"
-        android:layout_below="@+id/recyclerView_expense_totals" />
+        android:layout_marginBottom="5dp" />
 
 
 </LinearLayout>

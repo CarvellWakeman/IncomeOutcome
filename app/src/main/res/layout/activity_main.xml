@@ -13,6 +13,7 @@
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/FAB_main_new"
         android:layout_width="wrap_content"
+        app:borderWidth="0dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
@@ -29,7 +30,7 @@
         android:layout_above="@+id/FAB_main_new"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="@dimen/fab_margin"
-        android:src="@drawable/database_minus"
+        android:src="@drawable/ic_database_minus_white_24dp"
         android:scaleType="center"
         android:tint="#757575"
         android:onClick="MainNewExpenseClick"

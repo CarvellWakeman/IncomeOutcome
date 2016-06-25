@@ -21,7 +21,6 @@
         android:id="@+id/income_row_cardView"
         card_view:cardCornerRadius="4dp"
         android:layout_marginBottom="1dp"
-        android:layout_weight="8.66"
         android:layout_toRightOf="@+id/income_row_indent">
 
 

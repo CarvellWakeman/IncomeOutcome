@@ -19,6 +19,7 @@
 
         <!--Change datepickerdialog theme-->
         <item name="android:datePickerDialogTheme">@style/DatePickerDialogTheme</item>
+        <item name="android:alertDialogStyle">@style/AlertDialogCustom</item>
 
         <!--Widgets-->
         <item name="android:spinnerStyle">@style/SpinnerTheme</item>
@@ -26,6 +27,10 @@
 
     </style>
 
+
+    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 
     <!--Date Picker Dialog Theme, change accent color to the app's accent color-->
     <style name="DatePickerDialogTheme" parent="android:Theme.Material.Dialog">
@@ -37,12 +42,15 @@
 
     <!-- Button Themes -->
     <style name="RaisedButtonTheme" parent="android:style/Widget.Material.Button">
+        <!--<item name="android:background">@drawable/selectable_item_background</item>-->
         <item name="android:background">@drawable/raised_button_background</item>
         <item name="android:textColor">@drawable/selector_button_enabled</item>
     </style>
 
     <!-- ?android:attr/borderlessButtonStyle -->
     <style name="FlatButtonTheme" parent="@style/Widget.AppCompat.Button.Borderless">
+        <!--<item name="android:background">@drawable/selectable_item_background</item>-->
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
         <item name="android:textColor">@drawable/selector_button_enabled</item>
     </style>
 
@@ -56,10 +64,10 @@
 
     <!-- Ripple selection foreground -->
     <style name="SelectableItemForeground">
-        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <!--<item name="android:foreground">?attr/selectableItemBackground</item>-->
     </style>
     <style name="SelectableItemBackground">
-        <item name="android:background">?attr/selectableItemBackground</item>
+        <!--<item name="android:background">?attr/selectableItemBackground</item>-->
     </style>
 
 

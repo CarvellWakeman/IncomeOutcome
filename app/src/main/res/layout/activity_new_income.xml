@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:orientation="vertical">
 
 
     <include android:id="@+id/toolbar"
@@ -25,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/card_newIncome_amount"
-                android:elevation="25dp"
+                card_view:elevation="25dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp">
@@ -59,8 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/card_newIncome_category"
-                android:layout_below="@+id/button_newIncome_date"
-                android:elevation="25dp"
+                card_view:elevation="25dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp">
@@ -89,8 +89,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/card_newIncome_description"
-                android:layout_below="@+id/card_newIncome_split"
-                android:elevation="25dp"
+                card_view:elevation="25dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp">

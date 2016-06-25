@@ -259,15 +259,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     public boolean isDatabaseEmpty(){
 
-        if (!isTableEmpty(TABLE_SETTINGS_PROFILES) ||
+        return (!isTableEmpty(TABLE_SETTINGS_PROFILES) ||
                 !isTableEmpty(TABLE_SETTINGS_OTHERPEOPLE) ||
                 !isTableEmpty(TABLE_SETTINGS_CATEGORIES) ||
                 !isTableEmpty(TABLE_EXPENSES) ||
                 !isTableEmpty(TABLE_INCOME) ||
-                isTableEmpty(TABLE_TIMEPERIODS))
-        {return true; }
-
-        return false;
+                isTableEmpty(TABLE_TIMEPERIODS));
     }
 
     public boolean isTableExists(String tableName, boolean openDb) {
@@ -577,9 +574,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
 
         try{
-            String maxQuery = Query ;
             //execute the query results will be save in Cursor c
-            Cursor c = sqlDB.rawQuery(maxQuery, null);
+            Cursor c = sqlDB.rawQuery(Query, null);
 
 
             //add value to cursor2

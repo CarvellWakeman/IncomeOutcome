@@ -396,7 +396,7 @@ public class ActivityMain extends AppCompatActivity
 
 
     //Date picker dialog listener [DEBUG] Temporary for testing
-    DatePickerDialog.OnDateSetListener datePicker = new DatePickerDialog.OnDateSetListener() {
+    final DatePickerDialog.OnDateSetListener datePicker = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
         {
@@ -412,7 +412,7 @@ public class ActivityMain extends AppCompatActivity
             }
         }
     };
-    DatePickerDialog.OnDateSetListener datePicker2 = new DatePickerDialog.OnDateSetListener() {
+    final DatePickerDialog.OnDateSetListener datePicker2 = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
         {

@@ -42,8 +42,8 @@
 
 
     <!-- Spinner selection -->
-    <string name="select_category">Select a Category&#8320;</string>
-    <string name="add_otherperson">Add New&#8320;</string>
+    <string name="select_category">Select a Category&#8230;</string>
+    <string name="add_otherperson">Add New&#8230;</string>
 
     <!-- User actions -->
     <string name="action_ok">OK</string>

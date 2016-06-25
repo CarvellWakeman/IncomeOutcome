@@ -55,7 +55,7 @@
         android:layout_marginRight="24dp"
         android:layout_marginLeft="24dp"
         android:id="@+id/linearLayout_dialog_newcategory"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/TIL_dialog_categoryname"
@@ -78,9 +78,7 @@
             android:layout_height="100dp"
             android:id="@+id/imageView_dialogcat"
             android:layout_gravity="right"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/square"
-            android:layout_below="@+id/linearLayout2" />
+            android:src="@drawable/square" />
 
         <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
             android:layout_width="match_parent"

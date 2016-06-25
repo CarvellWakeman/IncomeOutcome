@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".FragmentTimePeriod">
 
@@ -11,10 +12,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/button_newExpense_date"
         style="@style/RaisedButtonTheme"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
         android:text="Set Expense Date"
-        android:layout_below="@+id/card_newExpense_description"
 
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
@@ -26,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/card_newExpense_timePeriod"
-        android:elevation="25dp"
+        card_view:elevation="25dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
@@ -52,8 +50,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/spinner_repeatFrequency"
-                android:layout_weight="4"
-                android:layout_column="1"
                 android:layout_toEndOf="@+id/checkBox_repeat"
                 android:visibility="gone"
                 android:theme="@style/MaterialTheme" />
@@ -72,17 +68,16 @@
                 <EditText
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
                     android:ems="10"
                     android:id="@+id/editText_repeatFrequency"
                     android:layout_gravity="center_horizontal|top"
                     android:layout_alignParentTop="true"
                     android:theme="@style/Base.Theme.AppCompat.Light"
                     android:layout_toEndOf="@+id/textView_every"
-                    android:numeric="integer"
                     android:text="1"
                     android:gravity="center_horizontal"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:inputType="number" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -188,7 +183,6 @@
                     android:layout_alignParentTop="true"
                     android:theme="@style/Base.Theme.AppCompat.Light"
                     android:layout_toEndOf="@+id/textView_repeatType"
-                    android:numeric="integer"
                     android:text="1"
                     android:gravity="center_horizontal"
                     android:visibility="gone" />
@@ -284,8 +278,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/card_newExpense_blacklist"
-        android:layout_below="@+id/card_newExpense_timePeriod"
-        android:elevation="25dp"
+        card_view:elevation="25dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:theme="@style/Base.Theme.AppCompat.Light"
@@ -310,7 +303,6 @@
                 android:id="@+id/recyclerView_blacklistDates"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/textView_blacklist"
                 android:layout_marginBottom="5dp" />
 
         </LinearLayout>

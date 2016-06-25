@@ -34,9 +34,8 @@ public class AdapterDetailsIncome extends RecyclerView.Adapter<AdapterDetailsInc
     public IncomeViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout_income, parent, false);
-        final IncomeViewHolder vh = new IncomeViewHolder(itemView);
 
-        return vh;
+        return new IncomeViewHolder(itemView);
     }
 
     //Bind view holder to the recyclerView
