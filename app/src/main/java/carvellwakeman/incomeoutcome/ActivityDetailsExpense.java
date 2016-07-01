@@ -2,12 +2,12 @@ package carvellwakeman.incomeoutcome;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import org.joda.time.LocalDate;
 
@@ -17,6 +17,7 @@ public class ActivityDetailsExpense extends AppCompatActivity
     AdapterDetailsExpense expenseAdapter;
     AdapterExpenseTotals totalsAdapter;
 
+    LinearLayout linearlayoutParent;
     NpaLinearLayoutManager linearLayoutManager;
     NpaLinearLayoutManager linearLayoutManager2;
 
@@ -29,6 +30,10 @@ public class ActivityDetailsExpense extends AppCompatActivity
     int _profileID;
     Profile _profile;
 
+    private GestureDetector gestureDetector;
+    View.OnTouchListener gestureListener;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +42,6 @@ public class ActivityDetailsExpense extends AppCompatActivity
 
         //Get the intent that opened this tab(activity)
         Intent intent = getIntent();
-
 
         //Set our activity's data
         _profileID = intent.getIntExtra("profile", -1);
@@ -49,10 +53,24 @@ public class ActivityDetailsExpense extends AppCompatActivity
         }
         else {
             //Find Views
+            linearlayoutParent = (LinearLayout) findViewById(R.id.linearLayout_expenses);
+
             toolbar = (Toolbar) findViewById(R.id.toolbar);
 
             totalsView = (RecyclerView) findViewById(R.id.recyclerView_expense_totals);
             elementsView = (RecyclerView) findViewById(R.id.recyclerView_ExpenseSources);
+
+
+            //Swiping gesture setup
+            gestureDetector = new GestureDetector(this, new FlingGestureDetector());
+            gestureListener = new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    return gestureDetector.onTouchEvent(event);
+                }
+            };
+
+            totalsView.setOnTouchListener(gestureListener);
+            elementsView.setOnTouchListener(gestureListener);
 
 
             //Configure toolbar
@@ -167,22 +185,31 @@ public class ActivityDetailsExpense extends AppCompatActivity
                         if (pr != null) {
                             if (newExp != null) {
                                 pr.AddExpense(newExp);
-                            }
 
-                            //Blacklist old date
-                            Expense originalEx = pr.GetExpense( (int)data.getSerializableExtra("originalExpense") );
-                            LocalDate _cloneDate = (LocalDate) data.getSerializableExtra("cloneDate");
+                                Expense originalEx = pr.GetExpense((int) data.getSerializableExtra("originalExpense"));
 
-                            if (originalEx != null) {
-                                TimePeriod tp = originalEx.GetTimePeriod();
-                                if (tp != null) {
-                                    if (_cloneDate != null) {
-                                        ProfileManager.Print("Blacklist Clone Date: " + _cloneDate.toString(ProfileManager.simpleDateFormat));
-                                        tp.AddBlacklistDate(_cloneDate, true);
-                                        //Update original transaction and its timeperiod
-                                        pr.UpdateExpense(originalEx);
-                                    }
+                                //Add child
+                                if (originalEx != null) {
+                                    originalEx.AddChild(newExp, true);
+                                    newExp.SetParentID(originalEx.GetID());
                                 }
+
+
+                                //Blacklist old date
+                                //LocalDate _cloneDate = (LocalDate) data.getSerializableExtra("cloneDate");
+
+                                //if (originalEx != null) {
+                                //    TimePeriod tp = originalEx.GetTimePeriod();
+                                //    if (tp != null) {
+                                //        if (_cloneDate != null) {
+                                //            ProfileManager.Print("Blacklist Clone Date: " + _cloneDate.toString(ProfileManager.simpleDateFormat));
+                                //            tp.AddBlacklistDate(_cloneDate, true);
+                                //            //Update original transaction and its timeperiod
+                                //            pr.UpdateExpense(originalEx);
+                                //        }
+                                //    }
+                                //}
+
                             }
 
                         }
@@ -241,19 +268,6 @@ public class ActivityDetailsExpense extends AppCompatActivity
         }
     }
     */
-
-    public void editExpense(Expense expense, int profileID){
-        Intent intent = new Intent(ActivityDetailsExpense.this, ActivityNewExpense.class);
-        if (profileID != -1) {
-            intent.putExtra("profile", profileID);
-            intent.putExtra("expense", expense.GetID());
-            intent.putExtra("edit", 1);
-            startActivityForResult(intent, 1);
-        }
-        else{
-            Toast.makeText(this, "Could not edit expense - profile not found.", Toast.LENGTH_LONG).show();
-        }
-    }
     public void copyExpense(Expense expense, int profileID){
         Intent intent = new Intent(ActivityDetailsExpense.this, ActivityNewExpense.class);
         if (profileID != -1) {
@@ -264,6 +278,18 @@ public class ActivityDetailsExpense extends AppCompatActivity
         }
         else{
             Toast.makeText(this, "Could not copy expense - profile not found.", Toast.LENGTH_LONG).show();
+        }
+    }
+    public void editExpense(Expense expense, int profileID){
+        Intent intent = new Intent(ActivityDetailsExpense.this, ActivityNewExpense.class);
+        if (profileID != -1) {
+            intent.putExtra("profile", profileID);
+            intent.putExtra("expense", expense.GetID());
+            intent.putExtra("edit", 1);
+            startActivityForResult(intent, 1);
+        }
+        else{
+            Toast.makeText(this, "Could not edit expense - profile not found.", Toast.LENGTH_LONG).show();
         }
     }
     public void cloneExpense(Expense expense, int profileID, LocalDate date){
@@ -282,12 +308,12 @@ public class ActivityDetailsExpense extends AppCompatActivity
 
 
     // Delete an expense
-    public void deleteExpense(Expense expense, Boolean deleteParent){
+    public void deleteExpense(Expense expense, boolean deleteParent, boolean deleteChildren){
 
         // If this is a child expense, blacklist the date in the parent expense, else, delete as normal
         if (deleteParent) {
             //Remove expense from profile and update expense list
-            _profile.RemoveExpense(expense);
+            _profile.RemoveExpense(expense, deleteChildren);
             expenseAdapter.notifyDataSetChanged();
 
             //Update cost totals

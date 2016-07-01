@@ -64,6 +64,7 @@
     <!-- Confirmation -->
     <string name="confirm_yes">YES</string>
     <string name="confirm_no">NO</string>
+    <string name="confirm_paidback">Was this transaction paid back?</string>
     <string name="confirm_areyousure">Are you sure?</string>
     <string name="confirm_areyousure_deletesingle">Are you sure you want to delete this?</string>
     <string name="confirm_areyousure_deletetransactions">Are you sure you want to delete these transactions?</string>
@@ -78,7 +79,8 @@
     <string name="time_start_format">START %1$s</string>
     <string name="time_end_format">END %1$s</string>
 
-    <!-- Information Missing -->
+    <!-- Information -->
+    <string name="info_paidback">Paid Back %1$s</string>
     <string name="info_nobackup">No Backup Found</string>
     <string name="info_restorebackup">Restore Backup</string>
     <string name="info_backupnotice">Restore backup created last time data was imported</string>

@@ -205,7 +205,15 @@ public class ActivityNewIncome extends AppCompatActivity
                 if (in != null) {
 
                     //Set activity title appropriately
-                    if (_editCopyOrClone == 2){ toolbar.setTitle("Copy Income"); } else { toolbar.setTitle("Edit Income"); }
+                    //Set activity title appropriately
+                    if (_editCopyOrClone == 1){
+                        TimePeriod tp = in.GetTimePeriod();
+                        if (in.IsChild() || tp!=null && tp.GetRepeatFrequency() == Repeat.NEVER) {
+                            toolbar.setTitle("Edit Income");
+                        } else { toolbar.setTitle("Edit Income Series"); }
+                    }
+                    else if (_editCopyOrClone == 2) { toolbar.setTitle("Copy Income"); }
+                    else if (_editCopyOrClone == 3){ toolbar.setTitle("Edit Income"); };
 
                     //Copy category
                     //if (ProfileManager.categories.contains(in.GetCategory())) {
@@ -317,7 +325,7 @@ public class ActivityNewIncome extends AppCompatActivity
                 //Return original transaction if cloned, and clone date
                 if (_editCopyOrClone == 3) {
                     intent.putExtra("originalIncome", _incomeID);
-                    intent.putExtra("cloneDate", _cloneDate);
+                    //intent.putExtra("cloneDate", _cloneDate);
                 }
 
                 //Clear timeperiod blacklistdates queue

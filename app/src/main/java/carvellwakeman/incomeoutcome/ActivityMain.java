@@ -466,7 +466,14 @@ public class ActivityMain extends AppCompatActivity
             profile_adapter.notifyDataSetChanged();
 
             //Select current profile
-            if (selectCurrentProfile) { spinner_profiles.setSelection(ProfileManager.GetProfileIndex(ProfileManager.GetCurrentProfile())); }
+            //if (selectCurrentProfile) { spinner_profiles.setSelection(ProfileManager.GetProfileIndex(ProfileManager.GetCurrentProfile())); }
+        }
+    }
+    public void SetSelection(int index){
+        if (spinner_profiles != null){
+            profile_adapter.notifyDataSetChanged();
+
+            spinner_profiles.setSelection(index);
         }
     }
 
@@ -475,10 +482,11 @@ public class ActivityMain extends AppCompatActivity
     public void NextMonth(View v){
         Profile pr = ProfileManager.GetCurrentProfile();
         if (pr != null){
-            LocalDate e = pr.GetEndTime().plusMonths(1);
+            LocalDate e;
+            if (pr.GetEndTime() == null) { e = new LocalDate(); } else { e = pr.GetEndTime().plusMonths(1); }
             e = e.withDayOfMonth(e.dayOfMonth().getMaximumValue());
 
-            pr.SetStartTime(pr.GetStartTime().plusMonths(1));
+            pr.SetStartTime(e.withDayOfMonth(e.dayOfMonth().getMinimumValue()));
             pr.SetEndTime(e);
             UpdateStartEndDate();
         }
@@ -487,11 +495,20 @@ public class ActivityMain extends AppCompatActivity
     public void PrevMonth(View v){
         Profile pr = ProfileManager.GetCurrentProfile();
         if (pr != null) {
-            LocalDate e = pr.GetEndTime().minusMonths(1);
+            LocalDate e;
+            if (pr.GetEndTime() == null) { e = new LocalDate(); } else { e = pr.GetEndTime().minusMonths(1); }
             e = e.withDayOfMonth(e.dayOfMonth().getMaximumValue());
 
-            pr.SetStartTime(pr.GetStartTime().minusMonths(1));
+            pr.SetStartTime(e.withDayOfMonth(e.dayOfMonth().getMinimumValue()));
             pr.SetEndTime(e);
+            UpdateStartEndDate();
+        }
+    }
+    public void ShowAll(View v){
+        Profile pr = ProfileManager.GetCurrentProfile();
+        if (pr != null) {
+            pr.SetStartTime(null);
+            pr.SetEndTime(null);
             UpdateStartEndDate();
         }
     }
@@ -595,6 +612,7 @@ public class ActivityMain extends AppCompatActivity
     {
         Profile pr = ProfileManager.GetCurrentProfile();
         if (pr != null) {
+            pr.CalculateTimeFrame();
             //Start expense (details) activity and send it the profile we clicked on
             Intent intent = new Intent(ActivityMain.this, ActivityDetailsExpense.class);
             intent.putExtra("profile", pr.GetID());
@@ -609,6 +627,7 @@ public class ActivityMain extends AppCompatActivity
     public void MainNewExpenseClick(View v){
         Profile pr = ProfileManager.GetCurrentProfile();
         if (pr != null) {
+            pr.CalculateTimeFrame();
             Intent intent = new Intent(ActivityMain.this, ActivityNewExpense.class);
             intent.putExtra("profile", pr.GetID());
             startActivityForResult(intent, 0);

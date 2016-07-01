@@ -2,6 +2,7 @@ package carvellwakeman.incomeoutcome;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -28,7 +29,6 @@ public class AdapterDetailsExpense extends RecyclerView.Adapter<AdapterDetailsEx
 
         this.activity = activity;
     }
-
 
     //When creating a view holder
     @Override
@@ -94,12 +94,12 @@ public class AdapterDetailsExpense extends RecyclerView.Adapter<AdapterDetailsEx
                 }
 
                 //Split
-                if (expense.GetSplitWith().equals("")) {
+                if (expense.GetSplitWith() == null) {
                     holder.split.setVisibility(View.GONE);
                 }
                 else {
                     holder.split.setVisibility(View.VISIBLE);
-
+                    //Who owes who
                     if (expense.GetIPaid()){
                         holder.split.setText(activity.getString(R.string.format_ipaid, expense.GetSplitWith(), expense.GetSplitValueFormatted(), ProfileManager.decimalFormat.format(Math.round(expense.GetOtherSplitPercentage() * 100.00f))));
                         //holder.split.setText(expense.GetSplitWith().GetName() + R.string.format_owes + expense.GetSplitValueFormatted() + R.string.format_leftparen + ProfileManager.decimalFormat.format(Math.round(expense.GetOtherSplit() * 100.00f)) + R.string.format_rightparen_percent);
@@ -108,6 +108,20 @@ public class AdapterDetailsExpense extends RecyclerView.Adapter<AdapterDetailsEx
                         //holder.split.setText(R.string.format_iowe + expense.GetSplitValueFormatted() + R.string.format_leftparen + ProfileManager.decimalFormat.format(Math.round(expense.GetOtherSplit() * 100.00f)) + R.string.format_rightparen_percent);
                         holder.split.setText(activity.getString(R.string.format_theypaid, expense.GetMySplitValueFormatted(), ProfileManager.decimalFormat.format(Math.round(expense.GetOtherSplitPercentage() * 100.00f))));
                     }
+
+                    //Paid back
+                    if (expense.IsPaidBack()){
+                        holder.split.setPaintFlags(holder.split.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+                        holder.paidBack.setVisibility(View.VISIBLE);
+                        holder.paidBack.setText(expense.GetPaidBackFormatted());
+                    }
+                    else{
+                        holder.split.setPaintFlags(0);
+
+                        holder.paidBack.setVisibility(View.GONE);
+                    }
+
                     //holder.split.setText("Split " + ProfileManager.decimalFormat.format(Math.round(expense.GetMySplit() * 100.00f)) + "% / " + ProfileManager.decimalFormat.format(Math.round(expense.GetOtherSplit() * 100.00f)) + "%");
                 }
 
@@ -116,7 +130,7 @@ public class AdapterDetailsExpense extends RecyclerView.Adapter<AdapterDetailsEx
 
 
                 //PaidBy
-                if (!expense.GetSplitWith().equals("")) {
+                if (expense.GetSplitWith() != null) {
                     holder.paidBy.setText((expense.GetIPaid() ? activity.getString(R.string.format_me) : expense.GetSplitWith()));
                 } else {
                     holder.paidBy.setText(R.string.format_me);
@@ -185,6 +199,7 @@ public class AdapterDetailsExpense extends RecyclerView.Adapter<AdapterDetailsEx
         TextView description;
 
         TextView split;
+        TextView paidBack;
 
         TextView date;
         TextView repeat;
@@ -214,6 +229,7 @@ public class AdapterDetailsExpense extends RecyclerView.Adapter<AdapterDetailsEx
             repeat = (TextView) itemView.findViewById(R.id.expense_row_repeat);
 
             split = (TextView) itemView.findViewById(R.id.expense_row_split);
+            paidBack = (TextView) itemView.findViewById(R.id.expense_row_paidback);
             paidBy = (TextView) itemView.findViewById(R.id.expense_row_paidby_who);
             cost = (TextView) itemView.findViewById(R.id.expense_row_cost);
 
@@ -235,14 +251,25 @@ public class AdapterDetailsExpense extends RecyclerView.Adapter<AdapterDetailsEx
                                 activity.editExpense(exp, _profileID);
                                 break;
                             case 1: //Edit (instance)
-                                //ProfileManager.Print("instanceID:" + ex.GetID());
-                                activity.cloneExpense(exp, _profileID, ex.GetTimePeriod().GetDate());
+                                //If the expense is not a ghost expense (only exists in the _timeframe array), then edit it normally, else clone it and blacklist the old date
+                                if (_profile.GetExpense(ex.GetID()) != null) { //Child
+                                    activity.editExpense(ex, _profileID);
+                                }
+                                else { //Ghost
+                                    activity.cloneExpense(exp, _profileID, ex.GetTimePeriod().GetDate());
+                                }
+
                                 break;
                             case 2: //Delete (parent)
-                                activity.deleteExpense(exp, true);
+                                activity.deleteExpense(exp, true, true);
                                 break;
                             case 3: //Delete (instance)
-                                activity.deleteExpense(ex, false);
+                                if (_profile.GetExpense(ex.GetID()) != null) { //Child
+                                    activity.deleteExpense(ex, true, false);
+                                }
+                                else { //Ghost
+                                    activity.deleteExpense(ex, false, false);
+                                }
                                 break;
                             default:
                                 dialog.cancel();
@@ -265,7 +292,7 @@ public class AdapterDetailsExpense extends RecyclerView.Adapter<AdapterDetailsEx
                                 activity.copyExpense(ex, _profileID);
                                 break;
                             case 2: //Delete (this)
-                                activity.deleteExpense(ex, true);
+                                activity.deleteExpense(ex, true, true);
                                 break;
                             default:
                                 dialog.cancel();

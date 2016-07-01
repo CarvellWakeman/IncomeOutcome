@@ -3,6 +3,8 @@ package carvellwakeman.incomeoutcome;
 import org.joda.time.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 enum Repeat{
@@ -213,71 +215,90 @@ public class TimePeriod implements java.io.Serializable
     //Add events in a timeframe and return array
     private ArrayList<LocalDate> timeFrame_add_events(Period event_period, LocalDate initialEvent, LocalDate event_start, LocalDate event_end){
         ArrayList<LocalDate> event_occurrences = new ArrayList<>();
+        int event_occurrences_count = 0;
         LocalDate currentEvent = initialEvent;
         //ProfileManager.Print("event_start:" + event_start.toString(ProfileManager.simpleDateFormat));
         //ProfileManager.Print("event_end:" + event_end.toString(ProfileManager.simpleDateFormat));
         //ProfileManager.Print("initialEvent:" + initialEvent.toString(ProfileManager.simpleDateFormat));
 
-        //Loop until the event passes event_end
-        while (currentEvent.compareTo(event_end) <= 0) {
+        //Null check for event period
+        if (event_start != null && event_end != null) {
 
-            //Restrict number of occurrences to repeatUntilTimes
-            if ((repeatUntil == RepeatUntil.TIMES && event_occurrences.size() < repeatUntilTimes) || repeatUntil != RepeatUntil.TIMES) {
-                //Special case for weekly repeats
-                if (repeatFrequency == Repeat.WEEKLY) {
-                    //Mon-Sun loop
-                    for (int i = 1; i < 8; i++) {
-                        //Mon-Sun (i) was selected to repeat on
-                        if (repeatDayOfWeek[i - 1]) {
-                            LocalDate dow = calcNextDayOfWeek(currentEvent, i);
-                            //Mon-Sun (i) of current week is after timeFrame_start and before timeFrame_end
-                            if (dow.compareTo(event_start) >= 0 && dow.compareTo(event_end) <= 0) {
+            //Loop until the event passes event_end
+            while (currentEvent.compareTo(event_end) <= 0) {
 
-                                // Blacklist dates check
+                //Restrict number of occurrences to repeatUntilTimes
+                if ((repeatUntil == RepeatUntil.TIMES && event_occurrences_count < repeatUntilTimes) || repeatUntil != RepeatUntil.TIMES) {
+                    //Special case for weekly repeats
+                    if (repeatFrequency == Repeat.WEEKLY) {
+                        //Mon-Sun loop
+                        for (int i = 1; i < 8; i++) {
+                            //Mon-Sun (i) was selected to repeat on
+                            if (repeatDayOfWeek[i - 1]) {
+                                LocalDate dow = calcNextDayOfWeek(currentEvent, i);
+                                //Mon-Sun (i) of current week is after timeFrame_start and before timeFrame_end
+                                if (dow.compareTo(event_start) >= 0 && dow.compareTo(event_end) <= 0) {
+
+                                    if (blacklistDates.size() == 0) {
+                                        event_occurrences.add(dow);
+                                    }
+                                    else {
+                                        // Blacklist dates check
+                                        for (int ii = 0; ii < blacklistDates.size(); ii++) {
+                                            if (dow.compareTo(blacklistDates.get(ii).date) == 0) {
+                                                break;
+                                            }
+
+                                            if (ii == blacklistDates.size() - 1) {
+                                                event_occurrences.add(dow);
+                                            }
+                                        }
+                                    }
+                                }
+                                event_occurrences_count++;
+                            }
+                        }
+                    }
+                    else {
+                        // currentEvent is within the start and end dates
+                        if (currentEvent.compareTo(event_start) >= 0 && currentEvent.compareTo(event_end) <= 0) {
+
+                            // Blacklist dates check
+                            if (blacklistDates.size() == 0) {
+                                event_occurrences.add(currentEvent);
+                                //ProfileManager.Print("currentEvent2:" + currentEvent.toString(ProfileManager.simpleDateFormat));
+                            }
+                            else {
                                 for (int ii = 0; ii < blacklistDates.size(); ii++) {
-                                    if ( dow.compareTo(blacklistDates.get(ii).date) == 0){
+                                    if (currentEvent.compareTo(blacklistDates.get(ii).date) == 0) {
                                         break;
                                     }
 
-                                    if (ii == blacklistDates.size()-1){
-                                        event_occurrences.add(dow);
+                                    if (ii == blacklistDates.size() - 1) {
+                                        event_occurrences.add(currentEvent);
+                                        //ProfileManager.Print("currentEvent1:" + currentEvent.toString(ProfileManager.simpleDateFormat));
                                     }
                                 }
-
-                                if (blacklistDates.size() == 0){
-                                    event_occurrences.add(dow);
-                                }
                             }
                         }
+                        event_occurrences_count++;
                     }
                 }
-                else {
-                    // currentEvent is within the start and end dates
-                    if (currentEvent.compareTo(event_start) >= 0 && currentEvent.compareTo(event_end) <= 0) {
 
-                        // Blacklist dates check
-                        for (int ii = 0; ii < blacklistDates.size(); ii++) {
-                            if ( currentEvent.compareTo(blacklistDates.get(ii).date) == 0){
-                                break;
-                            }
+                //Increment event by time_period
+                currentEvent = currentEvent.plus(event_period);
 
-                            if (ii == blacklistDates.size()-1){
-                                event_occurrences.add(currentEvent);
-                                //ProfileManager.Print("currentEvent:" + currentEvent.toString(ProfileManager.simpleDateFormat));
-                            }
-                        }
-                        if (blacklistDates.size() == 0){
-                            event_occurrences.add(currentEvent);
-                            //ProfileManager.Print("currentEvent:" + currentEvent.toString(ProfileManager.simpleDateFormat));
-                        }
-                    }
-                }
             }
-
-            //Increment event by time_period
-            currentEvent = currentEvent.plus(event_period);
-
         }
+        else { //No start or end, just add the parent event
+            event_occurrences.add(initialEvent);
+        }
+
+        //Sort event_occurrences by date before returning, this is a bugfix for the repeatWeekly code returning a Monday when MWF are repeating and the event starts on a day > Monday.
+        Collections.sort(event_occurrences, new Comparator<LocalDate>() {
+            @Override
+            public int compare(LocalDate date1, LocalDate date2) { return  date1.compareTo(date2); }
+        });
 
         return event_occurrences;
     }
@@ -294,6 +315,10 @@ public class TimePeriod implements java.io.Serializable
         LocalDate event_end = timeFrame_end;
         LocalDate initialEvent = event_start;
 
+        //Null starttime (set to first occurrence of event)
+        if (event_start == null){
+            initialEvent = date;
+        }
 
         //Set event_start differently for case NEVER (Short-Circuit return), WEEKLY, MONTHLY, and YEARLY
         switch(repeatFrequency){

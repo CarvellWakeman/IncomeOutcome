@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".FragmentTimePeriod">
+    tools:context=".FragmentTimePeriod"
+    android:id="@+id/linearLayout_timePeriod_parent">
 
 
     <Button

@@ -261,21 +261,13 @@ public class ActivityDetailsIncome extends AppCompatActivity
                         if (pr != null) {
                             if (newInc != null) {
                                 pr.AddIncome(newInc);
-                            }
 
-                            //Blacklist old date
-                            Income originalIn = pr.GetIncome( (int)data.getSerializableExtra("originalIncome") );
-                            LocalDate _cloneDate = (LocalDate) data.getSerializableExtra("cloneDate");
+                                Income originalIn = pr.GetIncome((int) data.getSerializableExtra("originalIncome"));
 
-                            if (originalIn != null) {
-                                TimePeriod tp = originalIn.GetTimePeriod();
-                                if (tp != null) {
-                                    if (_cloneDate != null) {
-                                        ProfileManager.Print("Blacklist Clone Date: " + _cloneDate.toString(ProfileManager.simpleDateFormat));
-                                        tp.AddBlacklistDate(_cloneDate, true);
-                                        //Update original transaction and its timeperiod
-                                        pr.UpdateIncome(originalIn);
-                                    }
+                                //Add child
+                                if (originalIn != null) {
+                                    originalIn.AddChild(newInc, true);
+                                    newInc.SetParentID(originalIn.GetID());
                                 }
                             }
                         }
@@ -346,11 +338,11 @@ public class ActivityDetailsIncome extends AppCompatActivity
 
 
     // Delete an income
-    public void deleteIncome(Income income, Boolean deleteParent){
+    public void deleteIncome(Income income, boolean deleteParent, boolean deleteChildren){
         // If this is a child income, blacklist the date in the parent income, else, delete as normal
         if (deleteParent) {
             //Remove income from profile and update expense list
-            _profile.RemoveIncome(income);
+            _profile.RemoveIncome(income, deleteChildren);
             incomeAdapter.notifyDataSetChanged();
 
             //Update cost totals

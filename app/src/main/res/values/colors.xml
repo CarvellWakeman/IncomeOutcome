@@ -16,6 +16,7 @@
 
     <item name="red" type="color">#FF0000</item>
     <item name="green" type="color">#00FF00</item>
+    <item name="darkgreen" type="color">#388E3C</item>
     <item name="blue" type="color">#0000FF</item>
     <item name="white" type="color">#FFFFFF</item>
     <item name="black" type="color">#212121</item>

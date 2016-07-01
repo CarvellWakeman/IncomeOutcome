@@ -209,7 +209,8 @@ public class ProfileManager
 
         AddCategory("Other", Color.argb(255, 140, 140, 140));
 
-        MainActivityInstance.UpdateProfileList(true);
+        MainActivityInstance.UpdateProfileList(false);
+        MainActivityInstance.SetSelection(GetProfileIndex(GetCurrentProfile()));
 
         //Success
         Print("Default settings loaded");
@@ -260,7 +261,7 @@ public class ProfileManager
     public static void AddProfile(Profile profile, Boolean dontsave) {
         if (profile != null) {
             _profiles.add(profile);
-            MainActivityInstance.UpdateProfileList(true);
+            MainActivityInstance.UpdateProfileList(false);
         }
     }
     public static void AddProfile(Profile profile) { if (profile != null) { AddProfile(profile, true); InsertSettingDatabase(profile, true); } }
@@ -284,7 +285,8 @@ public class ProfileManager
         }
         if (reselect) { SelectProfile(GetProfileByIndex(0)); }
 
-        MainActivityInstance.UpdateProfileList(true);
+        MainActivityInstance.UpdateProfileList(false);
+        MainActivityInstance.SetSelection(GetProfileIndex(GetCurrentProfile()));
     }
     public static void DeleteProfileByID(String id)
     {
@@ -346,7 +348,8 @@ public class ProfileManager
             //Update new profile to be active
             _currentProfileID = profile.GetID();
             InsertSettingDatabase(profile, true);
-            //MainActivityInstance.UpdateProfileList(true);
+            MainActivityInstance.SetSelection(GetProfileIndex(profile));
+            MainActivityInstance.UpdateStartEndDate();
 
             //Update old profile to be unselected
             if (_profiles.size() > 0 && old != null) {

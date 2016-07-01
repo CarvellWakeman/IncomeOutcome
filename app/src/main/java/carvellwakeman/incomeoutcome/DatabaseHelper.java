@@ -36,7 +36,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     ContentValues contentValues_tp;
 
     //DATABASE_VERSION
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     //File information
     private static final String FILE_NAME = "data.db";
     private File EXPORT_DIRECTORY;
@@ -44,6 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private String BACKUP_FILENAME;
     public File EXPORT_BACKUP;
     //Other
+    private static final String ITEM_DELIMITER = "|";
     private static final String STATEMENT_DELIMITER = "\n";
     //Tables
     public static final String TABLE_SETTINGS_CATEGORIES = "SETTINGS_CATEGORIES_DATA";
@@ -70,6 +71,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String COLUMN_description = "DESCRIPTION";
     private static final String COLUMN_value = "VALUE";
     private static final String COLUMN_staticValue = "STATICVALUE";
+    private static final String COLUMN_children = "CHILDREN";
     private static final String COLUMN_when = "TIMEPERIOD";
     //private static final String FOREIGNKEY_when = "FOREIGN KEY(" + COLUMN_when + ") REFERENCES " + TABLE_TIMEPERIODS + "(" + COLUMN_ID +") ON DELETE CASCADE";
     //TimePeriods
@@ -129,6 +131,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             COLUMN_splitWith + TEXT_TYPE + "," +
             COLUMN_splitValue + DOUBLE_TYPE  + "," +
             COLUMN_paidBack + TEXT_TYPE + "," +
+            COLUMN_children + TEXT_TYPE + "," +
             COLUMN_when + INT_TYPE
             + ");";
 
@@ -141,6 +144,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             COLUMN_description + TEXT_TYPE  + "," +
             COLUMN_value + DOUBLE_TYPE  + "," +
             COLUMN_staticValue + BOOLEAN_TYPE  + "," +
+            COLUMN_children + TEXT_TYPE + "," +
             COLUMN_when + INT_TYPE
             + ");";
 
@@ -173,6 +177,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
             " ADD COLUMN " + COLUMN_splitWith2 + TEXT_TYPE + STATEMENT_DELIMITER +
             "UPDATE " + TABLE_SETTINGS_OTHERPEOPLE + " SET " + COLUMN_splitWith2 + " = " +COLUMN_splitWith;
 
+    private static final String UPGRADE_3_4 = "ALTER TABLE " + TABLE_EXPENSES +
+            " ADD COLUMN " + COLUMN_children + TEXT_TYPE + STATEMENT_DELIMITER +
+
+            "ALTER TABLE " + TABLE_INCOME +
+            " ADD COLUMN " + COLUMN_children + TEXT_TYPE;
 
 
     public DatabaseHelper(Context context) {
@@ -186,6 +195,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
         BACKUP_FILENAME = "data_backup.db";
         EXPORT_BACKUP = new File(EXPORT_DIRECTORY_BACKUP, BACKUP_FILENAME);
 
+        //Triggle onUpgrade if necessary
+        database = getReadableDatabase();
+
         TryCreateDatabase();
     }
 
@@ -196,6 +208,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.e("DATABASE", "onUpgrade");
         ProfileManager.Print("OnUpgrade (" + oldVersion + "->" + newVersion + ")");
         try {
             ContentValues cv = new ContentValues();
@@ -215,6 +228,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
                     ProfileManager.Print("Upgrade from Ver.2 to Ver.3");
                 case 3: //To version 4
+                    SQLExecuteMultiple(db, UPGRADE_3_4);
+                    ProfileManager.Print("Upgrade from Ver.3 to Ver.4");
+                case 4: //To version 5
             }
             //OLD
             //if (newVersion > oldVersion){
@@ -665,7 +681,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
                     Profile pr = ProfileManager.GetCurrentProfile();
                     if (pr != null) {
-                        contentValues_tr.put(COLUMN_profileSelected, (pr.GetName().equals(profile.GetName()) ? 1 : 0));
+                        contentValues_tr.put(COLUMN_profileSelected, pr.GetID() == profile.GetID() ? 1 : 0);
                     }
                     if (profile.GetStartTime() != null) {
                         contentValues_tr.put(COLUMN_startdate, profile.GetStartTime().toString(ProfileManager.simpleDateFormatSaving));
@@ -713,9 +729,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
             if (!tryupdate) { contentValues_tr.put(COLUMN_when, tp_id); }
 
             contentValues_tr.put(COLUMN_IPaid, expense.GetIPaid());
-            contentValues_tr.put(COLUMN_splitWith, (!expense.GetSplitWith().equals("") ? expense.GetSplitWith() : ""));
+            contentValues_tr.put(COLUMN_splitWith, (expense.GetSplitWith()!=null ? expense.GetSplitWith() : ""));
             contentValues_tr.put(COLUMN_splitValue, expense.GetSplitValue());
             contentValues_tr.put(COLUMN_paidBack, (expense.GetPaidBack() != null ? expense.GetPaidBack().toString(ProfileManager.simpleDateFormatSaving) : "") );
+            String childrenString = "";
+            for (int c : expense.GetChildren()){ childrenString+=c + ITEM_DELIMITER; }
+            childrenString = childrenString.substring(childrenString.length(), childrenString.length()-1); //Remove last delimiter
+            contentValues_tr.put(COLUMN_children, childrenString);
 
             //Insert/update row and return result
             long result = 0;
@@ -748,6 +768,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
             contentValues_tr.put(COLUMN_value, income.GetValue());
             contentValues_tr.put(COLUMN_staticValue, income.GetStatic());
             if (!tryupdate) { contentValues_tr.put(COLUMN_when, tp_id); }
+            String childrenString = "";
+            for (int c : income.GetChildren()){ childrenString+=c + ITEM_DELIMITER; }
+            childrenString = childrenString.substring(childrenString.length(), childrenString.length()-1); //Remove last delimiter
+            contentValues_tr.put(COLUMN_children, childrenString);
 
             //Insert/update row and return result
             long result = 0;
@@ -945,6 +969,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 ex.SetPaidBack(ProfileManager.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_paidBack))));
                 //COLUMN_when + INT_TYPE //+ "," +
                 ex.SetTimePeriod(queryTimeperiod(c.getInt(c.getColumnIndex(COLUMN_when))));
+                //COLUMN_children
+                String children_base = c.getString(c.getColumnIndex(COLUMN_children));
+                if (children_base!=null && !children_base.equals("")) {
+                    for (String s : children_base.split(ITEM_DELIMITER)) { ex.AddChild(Integer.valueOf(s)); }
+                }
 
                 //ProfileManager.Print("Expense Loaded");
                 //Add loaded transaction to profile
@@ -992,7 +1021,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 in.SetStatic(c.getInt(c.getColumnIndex(COLUMN_staticValue)) == 1);
                 //COLUMN_when + INT_TYPE //+ "," +
                 in.SetTimePeriod(queryTimeperiod(c.getInt(c.getColumnIndex(COLUMN_when))));
-
+                //COLUMN_children
+                String children_base = c.getString(c.getColumnIndex(COLUMN_children));
+                if (children_base!=null && !children_base.equals("")) {
+                    for (String s : children_base.split(ITEM_DELIMITER)) { in.AddChild(Integer.valueOf(s)); }
+                }
 
                 //Add loaded transaction to profile
                 pr.AddIncome(in, true);

@@ -1,5 +1,6 @@
 package carvellwakeman.incomeoutcome;
 
+import android.app.DatePickerDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
@@ -28,6 +29,7 @@ public class ActivityNewExpense extends AppCompatActivity
     int _editCopyOrClone; //edit (1), copy(2), clone(3)
 
     LocalDate _cloneDate;
+    LocalDate _paidBack;
 
     //String _blacklist_parentID;
     //LocalDate _blacklistDate;
@@ -69,7 +71,13 @@ public class ActivityNewExpense extends AppCompatActivity
     TextView textView_percentageSplit;
     TextView textView_splitNotice;
 
+    CardView cardView_paidBack;
+    CardView cardView_cost;
     CardView cardView_splitPercentage;
+    CardView cardView_category;
+    CardView cardView_description;
+
+    CheckBox checkBox_paidBack;
 
     FrameLayout frameLayout_timePeriod;
 
@@ -103,11 +111,46 @@ public class ActivityNewExpense extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         cardView_splitPercentage = (CardView) findViewById(R.id.card_newExpense_split);
+        cardView_paidBack = (CardView) findViewById(R.id.card_newExpense_paidBack);
+        cardView_cost = (CardView) findViewById(R.id.card_newExpense_cost);
+        cardView_category = (CardView) findViewById(R.id.card_newExpense_category);
+        cardView_description = (CardView) findViewById(R.id.card_newExpense_description);
 
         frameLayout_timePeriod = (FrameLayout) findViewById(R.id.frameLayout_timePeriod);
 
         spinner_categories = (NoDefaultSpinner) findViewById(R.id.spinner_newExpense_categories);
         spinner_otherPeople = (Spinner) findViewById(R.id.spinner_newExpense_otherpeople);
+
+        checkBox_paidBack = (CheckBox) findViewById(R.id.checkBox_newExpense_paidback);
+        checkBox_paidBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkBox_paidBack.isChecked()) {
+                    final Profile pr = ProfileManager.GetCurrentProfile();
+                    LocalDate c = null;
+
+                    if (pr != null) {
+                        final Expense ex = pr.GetExpense(_expenseID);
+                        if (ex != null) { c = ex.GetPaidBack(); }
+                    }
+                    if (c == null) { c = new LocalDate(); }
+
+                    DatePickerDialog d = new DatePickerDialog(ActivityNewExpense.this, datePicker, c.getYear(), c.getMonthOfYear() - 1, c.getDayOfMonth());
+                    d.setButton(DialogInterface.BUTTON_NEGATIVE, getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == DialogInterface.BUTTON_NEGATIVE) {
+                                checkBox_paidBack.setChecked(false);
+                            }
+                        }
+                    });
+                    d.show();
+                }
+                else{
+                    _paidBack = null;
+                    UpdatePaidBack();
+                }
+            }
+        });
 
         checkBox_split = (CheckBox) findViewById(R.id.checkBox_newExpense_splitEnabled);
         checkBox_split.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +160,7 @@ public class ActivityNewExpense extends AppCompatActivity
                 if (pr != null) {
                     Expense ex = pr.GetExpense(_expenseID);
                     if (ex != null) {
-                        if (!ProfileManager.HasOtherPerson(ex.GetSplitWith()) && !OtherPersonDoesNotExistBypass) {
+                        if (ex.GetSplitWith() != null && !ProfileManager.HasOtherPerson(ex.GetSplitWith()) && !OtherPersonDoesNotExistBypass) {
                             new AlertDialog.Builder(ActivityNewExpense.this).setTitle(R.string.confirm_areyousure_nolongerexists)
                                     .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                                         @Override
@@ -402,6 +445,18 @@ public class ActivityNewExpense extends AppCompatActivity
     }
 
 
+    final DatePickerDialog.OnDateSetListener datePicker = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
+        {
+            //Set local variable date
+            _paidBack = new LocalDate(year, monthOfYear + 1, dayOfMonth);
+
+            UpdatePaidBack();
+        }
+    };
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu_save, menu);
@@ -467,8 +522,23 @@ public class ActivityNewExpense extends AppCompatActivity
                 //If we were sent an expense instead of creating a new one
                 if (ex != null) {
 
+                    //Set paidback checkbox visibility
+                    if ( ex.GetSplitWith() != null ) {
+                        cardView_paidBack.setVisibility(View.VISIBLE);
+                        checkBox_paidBack.setChecked(ex.IsPaidBack());
+                        _paidBack = ex.GetPaidBack();
+                        UpdatePaidBack();
+                    }
+
                     //Set activity title appropriately
-                    if (_editCopyOrClone == 2){ toolbar.setTitle("Copy Expense"); } else { toolbar.setTitle("Edit Expense"); }
+                    if (_editCopyOrClone == 1){
+                        TimePeriod tp = ex.GetTimePeriod();
+                        if (ex.IsChild() || tp!=null && tp.GetRepeatFrequency() == Repeat.NEVER) {
+                            toolbar.setTitle("Edit Expense");
+                        } else { toolbar.setTitle("Edit Expense Series"); }
+                    }
+                    else if (_editCopyOrClone == 2) { toolbar.setTitle("Copy Expense"); }
+                    else if (_editCopyOrClone == 3){ toolbar.setTitle("Edit Expense"); }
 
                     //Copy category
                     if (ProfileManager.HasCategory(ex.GetCategory())) {
@@ -483,14 +553,16 @@ public class ActivityNewExpense extends AppCompatActivity
                     if (_cloneDate == null) {
                         fragment_timePeriod.SetTimePeriod(ex.GetTimePeriod());
                     }
-                    else { fragment_timePeriod.SetTimePeriod(new TimePeriod(_cloneDate)); }
+                    else {
+                        fragment_timePeriod.SetTimePeriod(new TimePeriod(_cloneDate));
+                    }
 
 
                     //Copy editText_cost
                     editText_cost.setText(String.valueOf(ex.GetValue()));
 
                     //Only copy if this expense was split
-                    if (!ex.GetSplitWith().equals("")) {
+                    if (ex.GetSplitWith() != null) {
                         //Copy sub costs
                         editText_personA_cost.setText(String.valueOf(ex.GetValue() - ex.GetSplitValue()));
                         editText_personB_cost.setText(String.valueOf(ex.GetSplitValue()));
@@ -567,6 +639,41 @@ public class ActivityNewExpense extends AppCompatActivity
             editText_personB_cost.setText(ProfileManager.decimalFormat.format(((float) discreteSeekBar_split.getProgress() / 100.00f) * tCost));
 
             UpdateCost();
+        }
+    }
+
+    public void UpdatePaidBack(){
+        //Update paidback checkbox
+        if (_paidBack!=null){
+            checkBox_paidBack.setText(String.format(getString(R.string.info_paidback),_paidBack.toString(ProfileManager.simpleDateFormat)));
+
+            SetChildrenEnabled(cardView_splitPercentage, false);
+            SetChildrenEnabled(cardView_cost, false);
+            SetChildrenEnabled(cardView_category, false);
+            SetChildrenEnabled(cardView_description, false);
+            //SetChildrenEnabled(fragment_timePeriod.linearLayout_parent, false);
+            fragment_timePeriod.SetChildrenEnabled(false);
+        } else {
+            checkBox_paidBack.setText(getString(R.string.confirm_paidback));
+
+            SetChildrenEnabled(cardView_splitPercentage, true);
+            SetChildrenEnabled(cardView_cost, true);
+            SetChildrenEnabled(cardView_category, true);
+            SetChildrenEnabled(cardView_description, true);
+            //SetChildrenEnabled(fragment_timePeriod.linearLayout_parent, true);
+            fragment_timePeriod.SetChildrenEnabled(true);
+        }
+    }
+
+    public void SetChildrenEnabled(View v, boolean enabled){
+        try {
+            for (int i = 0; i < ((ViewGroup) v).getChildCount(); i++) {
+                View child = ((ViewGroup) v).getChildAt(i);
+                child.setEnabled(enabled);
+                SetChildrenEnabled(child, enabled);
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
         }
     }
 
@@ -671,7 +778,11 @@ public class ActivityNewExpense extends AppCompatActivity
                         newExp.SetIPaid(true);
                     }
 
-
+                    //Set paidback
+                    if (checkBox_paidBack.isChecked()){
+                        newExp.SetPaidBack(_paidBack);
+                    }
+                    else { newExp.SetPaidBack(null); }
 
 
                     //Return new (or edited) transaction and profile in intent
@@ -681,7 +792,7 @@ public class ActivityNewExpense extends AppCompatActivity
                     //Return original transaction if cloned, and clone date
                     if (_editCopyOrClone == 3) {
                         intent.putExtra("originalExpense", _expenseID);
-                        intent.putExtra("cloneDate", _cloneDate);
+                        //intent.putExtra("cloneDate", _cloneDate);
                     }
 
                     //Clear timeperiod blacklistdates queue

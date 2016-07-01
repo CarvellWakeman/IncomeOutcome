@@ -116,6 +116,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
         button_new.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //ProfileManager.Print("New Button Click");
                 ToggleMenus(false);
             }
         });
@@ -246,6 +247,17 @@ public class ActivityManageProfiles extends AppCompatActivity {
         }else {
             button_enddate.setText(R.string.time_end);
         }
+
+        //Save button state
+        if (editingprofile != null){
+            if (editingprofile.GetStartTime() != null && start_date != null) {
+                if (editingprofile.GetStartTime().compareTo(start_date) != 0) { SetSaveButtonEnabled(true); }
+            }
+            if (editingprofile.GetEndTime() != null && end_date != null) {
+                if (editingprofile.GetEndTime().compareTo(end_date) != 0) { SetSaveButtonEnabled(true); }
+            }
+        }
+
     }
 
 

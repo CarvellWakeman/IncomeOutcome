@@ -186,6 +186,18 @@
         android:layout_below="@+id/button_timeframe_endDate"
         android:layout_marginTop="5dp" />
 
+    <Button
+        style="@style/RaisedButtonTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button3"
+        android:text="Show All"
+        android:theme="@style/Base.Theme.AppCompat.Light"
+        android:onClick="ShowAll"
+        android:layout_below="@+id/button_timeframe_endDate"
+        android:layout_marginTop="5dp"
+        android:layout_centerHorizontal="true" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

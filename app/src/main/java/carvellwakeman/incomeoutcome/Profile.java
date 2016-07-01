@@ -77,10 +77,10 @@ public class Profile implements java.io.Serializable
 
     public void RemoveAll(){
         for (int i = 0; i < ExpenseSources.size(); i++){
-            RemoveExpense(ExpenseSources.get(i));
+            RemoveExpenseDontSave(ExpenseSources.get(i), true);
         }
         for (int i = 0; i < IncomeSources.size(); i++){
-            RemoveIncome(IncomeSources.get(i));
+            RemoveIncomeDontSave(IncomeSources.get(i), true);
         }
     }
 
@@ -88,8 +88,8 @@ public class Profile implements java.io.Serializable
     public int GetID() { return _uniqueID; }
     public String GetName() { return name; }
 
-    public LocalDate GetStartTime(){ if (_startTime == null) { return new LocalDate(); } else { return _startTime; } }
-    public LocalDate GetEndTime(){ if (_endTime == null) { return new LocalDate(); } else { return _endTime; }}
+    public LocalDate GetStartTime(){  return _startTime; }
+    public LocalDate GetEndTime(){ return _endTime; }
 
     public int GetIncomeSourcesSize() { return IncomeSources.size(); }
     public int GetExpenseSourcesSize() { return ExpenseSources.size(); }
@@ -130,12 +130,20 @@ public class Profile implements java.io.Serializable
 
 
     //Income management
-    public void AddIncome(Income income, Boolean dontsave) { IncomeSources.add(income); }
+    public void AddIncome(Income income, boolean dontsave) { IncomeSources.add(income); }
     public void AddIncome(Income income) { AddIncome(income, true); CalculateTimeFrame(); ProfileManager.InsertIncomeDatabase(this, income, false);}
-    public void RemoveIncome(Income income, Boolean dontsave) { IncomeSources.remove(income);  }
-    public void RemoveIncome(Income income) { RemoveIncome(income, true); CalculateTimeFrame(); ProfileManager.RemoveIncomeDatabase(income); }
-    public void RemoveIncome(int id, Boolean dontsave) { RemoveIncome(GetIncome(id), dontsave); }
-    public void RemoveIncome(int id) { RemoveIncome(GetIncome(id)); }
+    public void RemoveIncomeDontSave(Income income, boolean deleteChildren) {
+        if (income != null) {
+            if (deleteChildren) {
+                for (int id : income.GetChildren()) {
+                    RemoveIncome(GetIncome(id), deleteChildren);
+                }
+            }
+            IncomeSources.remove(income);
+        }
+    }
+    public void RemoveIncome(Income income, boolean deleteChildren) { RemoveIncomeDontSave(income, deleteChildren); CalculateTimeFrame(); ProfileManager.RemoveIncomeDatabase(income); }
+    public void RemoveIncome(int id, boolean deleteChildren) { RemoveIncome(GetIncome(id), deleteChildren); }
 
     public void UpdateIncome(Income income) { UpdateIncome(income, this); }
     public void UpdateIncome(Income income, Profile profile) { ProfileManager.InsertIncomeDatabase(profile, income, true); }
@@ -176,7 +184,7 @@ public class Profile implements java.io.Serializable
     public Income GetParentIncomeFromTimeFrameIncome(Income in){
         if (in != null) {
             Income TF = GetIncomeInTimeFrame(in.GetID());
-            if (TF != null && !TF.IsParent()) {
+            if (TF != null && TF.IsChild()) {
                 return GetIncome(TF.GetParentID());
             }
             else {
@@ -191,12 +199,20 @@ public class Profile implements java.io.Serializable
 
 
     //Expense management
-    public void AddExpense(Expense expense, Boolean dontsave) { ExpenseSources.add(expense); }
+    public void AddExpense(Expense expense, boolean dontsave) { ExpenseSources.add(expense); }
     public void AddExpense(Expense expense) { AddExpense(expense, true); CalculateTimeFrame(); ProfileManager.InsertExpenseDatabase(this, expense, false);}
-    public void RemoveExpense(Expense expense, Boolean dontsave) { ExpenseSources.remove(expense);  }
-    public void RemoveExpense(Expense expense) { RemoveExpense(expense, true); CalculateTimeFrame(); ProfileManager.RemoveExpenseDatabase(expense); }
-    public void RemoveExpense(int id, Boolean dontsave) { RemoveExpense(GetExpense(id), dontsave); }
-    public void RemoveExpense(int id) { RemoveExpense(GetExpense(id)); }
+    public void RemoveExpenseDontSave(Expense expense, boolean deleteChildren) {
+        if (expense != null) {
+            if (deleteChildren) {
+                for (int id : expense.GetChildren()) {
+                    RemoveExpense(GetExpense(id), deleteChildren);
+                }
+            }
+            ExpenseSources.remove(expense);
+        }
+    }
+    public void RemoveExpense(Expense expense, boolean deleteChildren) { RemoveExpenseDontSave(expense, deleteChildren); CalculateTimeFrame(); ProfileManager.RemoveExpenseDatabase(expense); }
+    public void RemoveExpense(int id, boolean deleteChildren) { RemoveExpense(GetExpense(id), deleteChildren); }
 
     public void UpdateExpense(Expense expense) { UpdateExpense(expense, this); }
     public void UpdateExpense(Expense expense, Profile profile) { ProfileManager.InsertExpenseDatabase(profile, expense, true); }
@@ -264,7 +280,7 @@ public class Profile implements java.io.Serializable
     public Expense GetParentExpenseFromTimeFrameExpense(Expense ex){
         if (ex != null) {
             Expense TF = GetExpenseInTimeFrame(ex.GetID());
-            if (TF != null && !TF.IsParent()) {
+            if (TF != null && TF.IsChild()) {
                 return GetExpense(TF.GetParentID());
             }
             else {
@@ -274,7 +290,7 @@ public class Profile implements java.io.Serializable
         return null;
     }
 
-
+    /*
     public Double GetExpenseOwedBy(String name){
         Double total = 0.0;
 
@@ -297,6 +313,7 @@ public class Profile implements java.io.Serializable
 
         return total;
     }
+*/
 
 
     //Get Expense total cost
@@ -320,6 +337,7 @@ public class Profile implements java.io.Serializable
 
         return _ExpenseTotals;
     }
+
     public HashMap<String, Expense> GetTotalCostPerPersonInTimeFrame(){
         _ExpenseTotals.keySet().clear();
         _ExpenseTotals.values().clear();
@@ -330,7 +348,7 @@ public class Profile implements java.io.Serializable
         for (int i = 0; i < _ExpenseSources_timeFrame.size(); i++){
             Expense ex = _ExpenseSources_timeFrame.get(i);
 
-            if (!ex.GetSplitWith().equals("")) {
+            if (ex.GetSplitWith()!=null) {
                 temp = _ExpenseTotals.get(ex.GetSplitWith());
                 if (temp == null) {
                     _ExpenseTotals.put(ex.GetSplitWith(), new Expense());
@@ -421,44 +439,54 @@ public class Profile implements java.io.Serializable
 
         //TODO NULL CHECKS!
         //Add income sources within the time period to the timeframe array
-        for (int i = 0; i < IncomeSources.size(); i++){
-            tp = IncomeSources.get(i).GetTimePeriod();
-            occ = tp.GetOccurrencesWithin(_startTime, _endTime);
+        if (_startTime!= null && _endTime != null) {
+            for (int i = 0; i < IncomeSources.size(); i++) {
+                tp = IncomeSources.get(i).GetTimePeriod();
+                occ = tp.GetOccurrencesWithin(_startTime, _endTime);
 
-            for (int ii = 0; ii < occ.size(); ii++) {
-                //Add income to temp array
-                if ( IncomeSources.get(i).GetTimePeriod().GetDate().equals(occ.get(ii)) ) {
-                    _IncomeSources_timeFrame.add( IncomeSources.get(i) );
-                } else {
-                    _IncomeSources_timeFrame.add(new Income(IncomeSources.get(i), new TimePeriod(occ.get(ii))));
-                }
-            }
-        }
-
-
-        //Add expenses within the time period to the timeframe array
-        for (int i = 0; i < ExpenseSources.size(); i++){
-
-            tp = ExpenseSources.get(i).GetTimePeriod();
-            occ = tp.GetOccurrencesWithin(_startTime, _endTime);
-
-            for (int ii = 0; ii < occ.size(); ii++) {
-                //Add expense to temp array
-                if ( ExpenseSources.get(i).GetTimePeriod().GetDate() != null) {
-                    if (ExpenseSources.get(i).GetTimePeriod().GetDate().equals(occ.get(ii))) {
-                        _ExpenseSources_timeFrame.add(ExpenseSources.get(i));
-                        //if (ExpenseSources.get(i).IsParent()) {} else{ ProfileManager.Print("Special case");}
+                for (int ii = 0; ii < occ.size(); ii++) {
+                    //Add income to temp array
+                    if (IncomeSources.get(i).GetTimePeriod().GetDate().equals(occ.get(ii))) {
+                        _IncomeSources_timeFrame.add(IncomeSources.get(i));
                     }
                     else {
-                        _ExpenseSources_timeFrame.add(new Expense(ExpenseSources.get(i), new TimePeriod(occ.get(ii))));
+                        _IncomeSources_timeFrame.add(new Income(IncomeSources.get(i), new TimePeriod(occ.get(ii))));
                     }
                 }
             }
 
-            //Add expense if there are no repetitions of it
-            //if (occ.size() == 1){
+
+            //Add expenses within the time period to the timeframe array
+            for (int i = 0; i < ExpenseSources.size(); i++) {
+
+                tp = ExpenseSources.get(i).GetTimePeriod();
+                occ = tp.GetOccurrencesWithin(_startTime, _endTime);
+
+                for (int ii = 0; ii < occ.size(); ii++) {
+                    //Add expense to temp array
+                    if (ExpenseSources.get(i).GetTimePeriod().GetDate() != null) {
+                        if (ExpenseSources.get(i).GetTimePeriod().GetDate().equals(occ.get(ii))) {
+                            _ExpenseSources_timeFrame.add(ExpenseSources.get(i));
+                            //if (ExpenseSources.get(i).IsParent()) {} else{ ProfileManager.Print("Special case");}
+                        }
+                        else {
+                            Expense temp = new Expense(ExpenseSources.get(i), new TimePeriod(occ.get(ii)));
+                            temp.SetParentID(ExpenseSources.get(i).GetID());
+                            _ExpenseSources_timeFrame.add(temp);
+                        }
+                    }
+                }
+
+                //Add expense if there are no repetitions of it
+                //if (occ.size() == 1){
                 //_ExpenseSources_timeFrame.add( ExpenseSources.get(i) );
-            //}
+                //}
+            }
+
+        }
+        else{ //Add all transactions if start and end time are null
+            _IncomeSources_timeFrame.addAll(IncomeSources);
+            _ExpenseSources_timeFrame.addAll(ExpenseSources);
         }
     }
 }

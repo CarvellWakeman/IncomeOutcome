@@ -46,24 +46,26 @@ public class Expense extends Transaction
     public String GetSplitWith() { return splitWith; }
 
     public Double GetSplitValue() { return splitValue; }
-    public Double GetMySplitValue() { return GetValue() - splitValue; }
+    public Double GetMySplitValue() { return GetValue() - GetSplitValue(); }
 
-    public Double GetMyDebt() { if (!GetIPaid()) { return GetValue() - GetSplitValue(); } else { return 0.0d; } }
-    public Double GetSplitDebt() { if (GetIPaid()) { return GetSplitValue(); } else { return 0.0d; } }
+    public Double GetMyDebt() { if (!GetIPaid() && !IsPaidBack()) { return GetValue() - GetSplitValue(); } else { return 0.0d; } }
+    public Double GetSplitDebt() { if (GetIPaid() && !IsPaidBack()) { return GetSplitValue(); } else { return 0.0d; } }
 
-    public Double GetMySplitPercentage() { if (GetValue() > 0) { return 1 - (splitValue / GetValue()); } else { return 0.0; } }
-    public Double GetOtherSplitPercentage() { if (GetValue() > 0) { return (splitValue / GetValue()); } else { return 0.0; }   }
+    public Double GetMySplitPercentage() { if (GetValue() > 0) { return 1 - (GetSplitValue() / GetValue()); } else { return 0.0; } }
+    public Double GetOtherSplitPercentage() { if (GetValue() > 0) { return (GetSplitValue() / GetValue()); } else { return 0.0; }   }
 
     public String GetSplitValueFormatted() { return ProfileManager.currencyFormat.format(GetSplitValue()); }
     public String GetMySplitValueFormatted() { return ProfileManager.currencyFormat.format(GetMySplitValue()); }
 
     public LocalDate GetPaidBack() { return paidBack; }
+    public boolean IsPaidBack() { return !(paidBack == null); }
+    public String GetPaidBackFormatted() { return "Paid Back " + GetPaidBack().toString(ProfileManager.simpleDateFormat); }
     public Boolean GetIPaid() { return IPaid; }
 
 
     //Mutators
-    public void SetSplitValue(String person, Double val) {
-        if (person==null){ splitWith = ""; } else { splitWith = person; }
+    public void SetSplitValue(String name, Double val) {
+        if (name!=null && name.equals("")){ splitWith = null; } else { splitWith = name; }
         splitValue = val;
     }
     public void SetIPaid(Boolean paid) { IPaid = paid; }

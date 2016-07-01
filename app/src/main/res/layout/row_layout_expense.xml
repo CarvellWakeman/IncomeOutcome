@@ -70,7 +70,20 @@
                     android:layout_alignParentLeft="false"
                     android:textColor="#000000"
                     android:layout_alignParentEnd="true"
-                    android:visibility="invisible" />
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Paid Back"
+                    android:id="@+id/expense_row_paidback"
+                    android:layout_below="@+id/expense_row_split"
+                    android:layout_alignParentStart="false"
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentEnd="true"
+                    android:visibility="gone"
+                    android:textColor="@color/darkgreen" />
 
                 <TextView
                     android:layout_width="wrap_content"

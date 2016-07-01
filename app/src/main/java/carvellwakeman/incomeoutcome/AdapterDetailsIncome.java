@@ -107,7 +107,12 @@ public class AdapterDetailsIncome extends RecyclerView.Adapter<AdapterDetailsInc
                         holder.indent.setVisibility(View.VISIBLE);
                     }
                 }
-
+                else {
+                    holder.moreInfoOff();
+                    holder.repeat.setText("");
+                    holder.repeat.setVisibility(View.GONE);
+                    holder.indent.setVisibility(View.GONE);
+                }
 
             }
         }
@@ -186,13 +191,25 @@ public class AdapterDetailsIncome extends RecyclerView.Adapter<AdapterDetailsInc
                                 activity.editIncome(inp, _profileID);
                                 break;
                             case 1: //Edit (instance)
-                                activity.cloneIncome(inp, _profileID, in.GetTimePeriod().GetDate());
+                                if (_profile.GetIncome(in.GetID()) != null) { //Child
+                                    activity.editIncome(in, _profileID);
+                                }
+                                else { //Ghost
+                                    activity.cloneIncome(inp, _profileID, in.GetTimePeriod().GetDate());
+                                }
+                                //activity.cloneIncome(inp, _profileID, in.GetTimePeriod().GetDate());
                                 break;
                             case 2: //Delete (parent)
-                                activity.deleteIncome(inp, true);
+                                activity.deleteIncome(inp, true, true);
                                 break;
                             case 3: //Delete (instance)
-                                activity.deleteIncome(in, false);
+                                if (_profile.GetIncome(in.GetID()) != null) { //Child
+                                    activity.deleteIncome(in, true, false);
+                                }
+                                else { //Ghost
+                                    activity.deleteIncome(in, false, false);
+                                }
+                                //activity.deleteIncome(in, false);
                                 break;
                             default:
                                 dialog.cancel();
@@ -215,7 +232,7 @@ public class AdapterDetailsIncome extends RecyclerView.Adapter<AdapterDetailsInc
                                 activity.copyIncome(in, _profileID);
                                 break;
                             case 2: //Delete (this)
-                                activity.deleteIncome(in, true);
+                                activity.deleteIncome(in, true, true);
                                 break;
                             default:
                                 dialog.cancel();

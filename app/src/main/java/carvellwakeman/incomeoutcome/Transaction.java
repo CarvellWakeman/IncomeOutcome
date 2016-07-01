@@ -1,6 +1,8 @@
 package carvellwakeman.incomeoutcome;
 
 
+import java.util.ArrayList;
+
 public class Transaction implements java.io.Serializable
 {
     private int _uniqueID;
@@ -14,6 +16,8 @@ public class Transaction implements java.io.Serializable
     private Boolean staticValue;
 
     private TimePeriod when;
+
+    private ArrayList<Integer> children;
 
     public Transaction()
     {
@@ -29,6 +33,8 @@ public class Transaction implements java.io.Serializable
         staticValue = true;
 
         when = new TimePeriod();
+
+        children = new ArrayList<>();
     }
     public Transaction(Transaction copy){
         this();
@@ -43,6 +49,8 @@ public class Transaction implements java.io.Serializable
         staticValue = copy.GetStatic();
 
         when = copy.GetTimePeriod();
+
+        children.addAll(copy.GetChildrenCopy());
     }
     public Transaction(Transaction copy, TimePeriod tp){
         this(copy);
@@ -50,27 +58,30 @@ public class Transaction implements java.io.Serializable
         when = tp;
     }
 
-
     //Accessors
     public int GetID() { return _uniqueID; }
+
     public String GetSourceName() { return _sourcename; }
     public String GetCategory() { return _category; }
     public String GetDescription() { return _description; }
 
     public Double GetValue() { return value; }
-
-
     public Boolean GetStatic() { return staticValue; }
-    public TimePeriod GetTimePeriod() { return when; }
-
-    public int GetParentID() { return _parentID; }
-
     public String GetValueFormatted() { return (staticValue ? "" : "~") + ProfileManager.currencyFormat.format(GetValue()); }
 
-    // Formatted accessors
-    public Boolean IsParent(){
-        return GetParentID() == 0;
+    public int GetParentID() { return _parentID; }
+    public Boolean IsChild(){ return GetParentID() != 0; }
+    public ArrayList<Integer> GetChildren() { return children; }
+    public ArrayList<Integer> GetChildrenCopy() {
+        ArrayList<Integer> newList = new ArrayList<>();
+        for (Integer i : children){
+            newList.add(i);
+        }
+        return newList;
     }
+
+    public TimePeriod GetTimePeriod() { return when; }
+
 
 
     //Mutators
@@ -84,8 +95,24 @@ public class Transaction implements java.io.Serializable
     public void SetTimePeriod(TimePeriod tp) { when = tp; }
 
 
+    //Children management
+    public void AddChild(Transaction child, boolean edited){
+        children.add(child.GetID());
+        //Blacklist child's date
+        TimePeriod tp = child.GetTimePeriod();
+        if (tp != null) { when.AddBlacklistDate(tp.GetDate(), edited); }
+    }
+    public void AddChild(int id){ children.add(id); }
+    public void RemoveChild(int CID){ children.remove(CID); }
+    public boolean HasChild(int CID){ return children.contains(CID); }
+
+
+    //Clear all
     public void ClearAllObjects(){
         when = null;
+
+        children.clear();
+        children = null;
     }
 
 }

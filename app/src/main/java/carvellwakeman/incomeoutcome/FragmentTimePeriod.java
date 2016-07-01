@@ -28,6 +28,10 @@ public class FragmentTimePeriod extends Fragment {
 
     boolean noInfiniteLoopPlease = true;
 
+    //Children enabled
+    boolean queueChildrenEnabled = false;
+    boolean childrenEnabledState = true;
+
 
     //Adapters
     ArrayAdapter<CharSequence> repeatAdapter;
@@ -37,6 +41,8 @@ public class FragmentTimePeriod extends Fragment {
 
 
     //Fragments (Replaced with reusable views for compatibility)
+    LinearLayout linearLayout_parent;
+
     RelativeLayout relativeLayout_fragments;
 
     CardView card_blacklist_dates;
@@ -334,6 +340,8 @@ public class FragmentTimePeriod extends Fragment {
         dateUntil = new LocalDate();
         dateOfYear = new LocalDate();
 
+        //Parent view
+        linearLayout_parent = (LinearLayout) myFragmentView.findViewById(R.id.linearLayout_timePeriod_parent);
 
         //Blacklist dates list
         card_blacklist_dates = (CardView) myFragmentView.findViewById(R.id.card_newExpense_blacklist);
@@ -553,7 +561,35 @@ public class FragmentTimePeriod extends Fragment {
 
         //Set Time period (After fragment created)
         SetTimePeriod(timePeriod);
+
+        if (queueChildrenEnabled) {
+            SetChildrenEnabled(linearLayout_parent, childrenEnabledState);
+        }
     }
+
+    public void SetChildrenEnabled(View v, boolean enabled){
+        try {
+            for (int i = 0; i < ((ViewGroup) v).getChildCount(); i++) {
+                View child = ((ViewGroup) v).getChildAt(i);
+                child.setEnabled(enabled);
+                SetChildrenEnabled(child, enabled);
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+    public void SetChildrenEnabled(boolean enabled){
+        if (getView() == null) {
+            queueChildrenEnabled = true;
+            childrenEnabledState = enabled;
+        }
+        else {
+            SetChildrenEnabled(linearLayout_parent, enabled);
+        }
+
+    }
+
 
 
     //Date picker dialog listener
