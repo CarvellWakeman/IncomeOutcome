@@ -12,12 +12,11 @@ import android.widget.Toast;
 import org.joda.time.LocalDate;
 
 
-public class ActivityDetailsExpense extends AppCompatActivity
+public class ActivityDetailsExpense extends AppCompatActivity implements GestureDetector.OnGestureListener
 {
     AdapterDetailsExpense expenseAdapter;
     AdapterExpenseTotals totalsAdapter;
 
-    LinearLayout linearlayoutParent;
     NpaLinearLayoutManager linearLayoutManager;
     NpaLinearLayoutManager linearLayoutManager2;
 
@@ -53,8 +52,6 @@ public class ActivityDetailsExpense extends AppCompatActivity
         }
         else {
             //Find Views
-            linearlayoutParent = (LinearLayout) findViewById(R.id.linearLayout_expenses);
-
             toolbar = (Toolbar) findViewById(R.id.toolbar);
 
             totalsView = (RecyclerView) findViewById(R.id.recyclerView_expense_totals);
@@ -62,15 +59,15 @@ public class ActivityDetailsExpense extends AppCompatActivity
 
 
             //Swiping gesture setup
-            gestureDetector = new GestureDetector(this, new FlingGestureDetector());
+            gestureDetector = new GestureDetector(this, this);
             gestureListener = new View.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
                     return gestureDetector.onTouchEvent(event);
                 }
             };
 
-            totalsView.setOnTouchListener(gestureListener);
-            elementsView.setOnTouchListener(gestureListener);
+            toolbar.setOnTouchListener(gestureListener);
+
 
 
             //Configure toolbar
@@ -90,15 +87,16 @@ public class ActivityDetailsExpense extends AppCompatActivity
 
 
             //Set totals adapter
-            totalsAdapter = new AdapterExpenseTotals(this, _profileID);
-            totalsView.setAdapter(totalsAdapter);
+            if (_profile.GetStartTime() != null && _profile.GetEndTime() != null) { //Only set up totals if there is a valid timeframe
+                totalsAdapter = new AdapterExpenseTotals(this, _profileID);
+                totalsView.setAdapter(totalsAdapter);
 
-            //LinearLayoutManager for RecyclerView
-            linearLayoutManager2 = new NpaLinearLayoutManager(this);
-            linearLayoutManager2.setOrientation(NpaLinearLayoutManager.VERTICAL);
-            linearLayoutManager2.scrollToPosition(0);
-            totalsView.setLayoutManager(linearLayoutManager2);
-
+                //LinearLayoutManager for RecyclerView
+                linearLayoutManager2 = new NpaLinearLayoutManager(this);
+                linearLayoutManager2.setOrientation(NpaLinearLayoutManager.VERTICAL);
+                linearLayoutManager2.scrollToPosition(0);
+                totalsView.setLayoutManager(linearLayoutManager2);
+            }
 
             //Set recyclerView adapter
             expenseAdapter = new AdapterDetailsExpense(this, _profileID);
@@ -150,6 +148,45 @@ public class ActivityDetailsExpense extends AppCompatActivity
         setResult(RESULT_OK, intent);
 
         super.onBackPressed();
+    }
+
+    //Gestures
+    @Override
+    public boolean onTouchEvent(MotionEvent me) { return gestureDetector.onTouchEvent(me); }
+    @Override
+    public boolean onDown(MotionEvent e) {return true;}
+    @Override
+    public void onLongPress(MotionEvent e) {}
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {return true;}
+    @Override
+    public void onShowPress(MotionEvent e) {}
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) { return true; }
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
+    {
+        final int SWIPE_MIN_DISTANCE = 120;
+        final int SWIPE_MAX_OFF_PATH = 250;
+        final int SWIPE_THRESHOLD_VELOCITY = 200;
+
+        if (e1 != null && e2 != null) {
+            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) { return false; }
+            Profile pr = ProfileManager.GetCurrentProfile();
+            if (pr != null) {
+                //Right to Left
+                if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    pr.TimePeriodPlus(1);
+                }
+                else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    pr.TimePeriodMinus(1);
+                }
+
+                this.recreate();
+                pr.CalculateTimeFrame();
+            }
+        }
+        return true;
     }
 
 
@@ -307,18 +344,18 @@ public class ActivityDetailsExpense extends AppCompatActivity
     }
 
 
-    // Delete an expense
+    //Delete an expense
     public void deleteExpense(Expense expense, boolean deleteParent, boolean deleteChildren){
 
         // If this is a child expense, blacklist the date in the parent expense, else, delete as normal
         if (deleteParent) {
             //Remove expense from profile and update expense list
             _profile.RemoveExpense(expense, deleteChildren);
-            expenseAdapter.notifyDataSetChanged();
+            if (expenseAdapter != null) { expenseAdapter.notifyDataSetChanged(); }
 
             //Update cost totals
             _profile.GetTotalCostPerPersonInTimeFrame();
-            totalsAdapter.notifyDataSetChanged();
+            if (totalsAdapter != null) { totalsAdapter.notifyDataSetChanged(); }
         }
         else {
             blacklistExpense(expense);
@@ -336,11 +373,11 @@ public class ActivityDetailsExpense extends AppCompatActivity
 
         //Update expense list
         _profile.CalculateTimeFrame();
-        expenseAdapter.notifyDataSetChanged();
+        if (expenseAdapter != null) { expenseAdapter.notifyDataSetChanged(); }
 
         //Update cost totals
         _profile.GetTotalCostPerPersonInTimeFrame();
-        totalsAdapter.notifyDataSetChanged();
+        if (totalsAdapter != null) { totalsAdapter.notifyDataSetChanged(); }
     }
 
 }

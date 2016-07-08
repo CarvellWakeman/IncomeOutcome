@@ -1,27 +1,25 @@
 package carvellwakeman.incomeoutcome;
 
 
-import android.app.Dialog;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.*;
-import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import org.joda.time.LocalDate;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class ActivityDatabaseExport extends AppCompatActivity {
+
+    boolean SaveButtonState;
+    boolean OverrideState;
 
     TextView textView_directory;
 
@@ -31,6 +29,8 @@ public class ActivityDatabaseExport extends AppCompatActivity {
     TextInputLayout TIL;
     EditText editText_filename;
 
+    SwitchCompat switch_override;
+
     ArrayList<String> existingDatabases;
 
     /** The system calls this to get the DialogFragment's layout, regardless
@@ -38,16 +38,21 @@ public class ActivityDatabaseExport extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_exportdatabase);
+        setContentView(R.layout.activity_database_export);
         //public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //View view = inflater.inflate(R.layout.dialog_exportdatabase, container, false);
         //view.setBackgroundColor(Color.WHITE);
+
+        SaveButtonState = false;
+        OverrideState = false;
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         existingDatabases = ProfileManager.GetImportDatabaseFilesString();
 
         textView_directory = (TextView) findViewById(R.id.textView_dialogex_directory);
+
+        switch_override = (SwitchCompat) findViewById(R.id.switch_override_export);
 
 
         TIL = (TextInputLayout) findViewById(R.id.TIL_dialog_filename);
@@ -78,29 +83,42 @@ public class ActivityDatabaseExport extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String str = editText_filename.getText().toString();
 
-                if (!str.equals("")) {
-                    if (existingDatabases != null) {
-                        if (!existingDatabases.contains(str)) {
-                            SetSaveButtonEnabled(true);
-                            TIL.setError("");
-                        }
-                        else {
-                            SetSaveButtonEnabled(false);
-                            TIL.setError("File name already exists");
-                        }
-                    }
-                }
-                else{ SetSaveButtonEnabled(false); TIL.setError("You need to enter a file name"); }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+                String str = editText_filename.getText().toString();
+
+                if (!str.equals("")) {
+                    if (existingDatabases != null && !existingDatabases.contains(str) || existingDatabases == null) {
+                        SetSaveButtonEnabled(true);
+                        SetOverrideState(false);
+                        TIL.setError("");
+                    } else {
+                        SetSaveButtonEnabled(false);
+                        SetOverrideState(true);
+                        TIL.setError("File name already exists");
+                    }
+
+                }
+                else{
+                    SetSaveButtonEnabled(false);
+                    SetOverrideState(false);
+                    TIL.setError("You need to enter a file name");
+                }
+            }
         });
 
         editText_filename.setText("data_export_" + (new LocalDate()).toString(ProfileManager.simpleDateFormatSaving));
 
+
+        switch_override.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SetSaveButtonEnabled(isChecked && OverrideState);
+            }
+        });
 
         // Inflate the layout to use as dialog or embedded fragment
         //return view;
@@ -127,10 +145,10 @@ public class ActivityDatabaseExport extends AppCompatActivity {
 
                 String str = editText_filename.getText().toString();
                 if (!str.equals("")) {
-                    if (!existingDatabases.contains(str)) {
+                    //if (!existingDatabases.contains(str)) {
                         ProfileManager.ExportDatabase(str);
                         finish();
-                    }
+                    //}
                 }
                 return true;
             default:
@@ -140,10 +158,20 @@ public class ActivityDatabaseExport extends AppCompatActivity {
 
     //Update positive button text
     public void SetSaveButtonEnabled(Boolean enabled){
+        SaveButtonState = !SaveButtonState;
+
         if (button_export != null) {
             button_export.setEnabled(enabled);
             if (button_export.getIcon() != null) button_export.getIcon().setAlpha((enabled ? 255 : 130));
         }
+    }
+
+    public void SetOverrideState(boolean enabled){
+        OverrideState = enabled;
+
+        switch_override.setEnabled(enabled);
+        switch_override.setClickable(enabled);
+        switch_override.setChecked(false);
     }
 
     /* The system calls this only when creating the layout in a dialog.

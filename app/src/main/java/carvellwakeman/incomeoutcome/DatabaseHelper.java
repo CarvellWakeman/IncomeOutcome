@@ -208,7 +208,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.e("DATABASE", "onUpgrade");
         ProfileManager.Print("OnUpgrade (" + oldVersion + "->" + newVersion + ")");
         try {
             ContentValues cv = new ContentValues();
@@ -488,7 +487,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public ArrayList<String> getImportableDatabasesString(){
         try {
             File data = new File(Environment.getExternalStorageDirectory() + "/" + activityContext.getString(R.string.app_name_nospace) + "/");
-
             ArrayList<String> DatabaseFiles = new ArrayList<>();
 
             if (ProfileManager.isStoragePermissionGranted()){
@@ -734,7 +732,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             contentValues_tr.put(COLUMN_paidBack, (expense.GetPaidBack() != null ? expense.GetPaidBack().toString(ProfileManager.simpleDateFormatSaving) : "") );
             String childrenString = "";
             for (int c : expense.GetChildren()){ childrenString+=c + ITEM_DELIMITER; }
-            childrenString = childrenString.substring(childrenString.length(), childrenString.length()-1); //Remove last delimiter
+            if (childrenString.length() > 0) { childrenString = childrenString.substring(childrenString.length(), childrenString.length()-1); }//Remove last delimiter
             contentValues_tr.put(COLUMN_children, childrenString);
 
             //Insert/update row and return result
@@ -770,7 +768,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             if (!tryupdate) { contentValues_tr.put(COLUMN_when, tp_id); }
             String childrenString = "";
             for (int c : income.GetChildren()){ childrenString+=c + ITEM_DELIMITER; }
-            childrenString = childrenString.substring(childrenString.length(), childrenString.length()-1); //Remove last delimiter
+            if (childrenString.length() > 0) { childrenString = childrenString.substring(childrenString.length(), childrenString.length()-1); }//Remove last delimiter
             contentValues_tr.put(COLUMN_children, childrenString);
 
             //Insert/update row and return result

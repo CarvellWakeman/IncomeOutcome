@@ -127,6 +127,24 @@ public class Profile implements java.io.Serializable
         SetEndTime(end, true);
         ProfileManager.InsertSettingDatabase(this, true);
     }
+    public void TimePeriodPlus(int n){ //TODO: Profile includes a time interval variable that is set up with the profile setup (Monthly/n-weekly/annually)
+        LocalDate e;
+        if (GetEndTime() == null) { e = new LocalDate(); }
+        else { e = GetEndTime().plusMonths(1); }
+        e = e.withDayOfMonth(e.dayOfMonth().getMaximumValue());
+
+        SetStartTime(e.withDayOfMonth(e.dayOfMonth().getMinimumValue()));
+        SetEndTime(e);
+    }
+    public void TimePeriodMinus(int n){
+        LocalDate e;
+        if (GetEndTime() == null) { e = new LocalDate(); }
+        else { e = GetEndTime().minusMonths(1); }
+        e = e.withDayOfMonth(e.dayOfMonth().getMaximumValue());
+
+        SetStartTime(e.withDayOfMonth(e.dayOfMonth().getMinimumValue()));
+        SetEndTime(e);
+    }
 
 
     //Income management

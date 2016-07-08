@@ -44,9 +44,11 @@ public class AdapterDetailsIncome extends RecyclerView.Adapter<AdapterDetailsInc
     {
         if (_profile != null) {
             Income income = _profile.GetIncomeAtIndexInTimeFrame(position);
-            Income parent = _profile.GetParentIncomeFromTimeFrameIncome(income);
 
             if (income != null) {
+                //Parent expense
+                Income parent = (income.GetParentID()==0 ? income : _profile.GetIncome(income.GetParentID()));
+
                 //Time Period
                 TimePeriod tp = income.GetTimePeriod();
                 TimePeriod parent_tp = parent.GetTimePeriod();
@@ -94,7 +96,8 @@ public class AdapterDetailsIncome extends RecyclerView.Adapter<AdapterDetailsInc
 
                 //Repeat text && Repeat Income Indenting
                 if (parent_tp.DoesRepeat() && parent_tp.GetFirstOccurrence() != null && tp.GetDate() != null){
-                    if (parent_tp.GetFirstOccurrence().compareTo(tp.GetDate()) == 0){
+                    //if (parent_tp.GetFirstOccurrence().compareTo(tp.GetDate()) == 0){
+                    if (parent_tp.GetFirstOccurrence().compareTo(tp.GetDate()) == 0 || parent.GetID() == income.GetID()) {
                         //Repeat Text
                         holder.repeat.setText(parent_tp.GetRepeatString(parent_tp.GetRepeatFrequency(), parent_tp.GetRepeatUntil()));
 

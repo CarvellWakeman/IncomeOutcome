@@ -300,6 +300,7 @@ public class TimePeriod implements java.io.Serializable
             public int compare(LocalDate date1, LocalDate date2) { return  date1.compareTo(date2); }
         });
 
+
         return event_occurrences;
     }
 

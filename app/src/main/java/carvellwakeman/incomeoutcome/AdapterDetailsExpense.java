@@ -45,9 +45,13 @@ public class AdapterDetailsExpense extends RecyclerView.Adapter<AdapterDetailsEx
     {
         if (_profile != null) {
             Expense expense = _profile.GetExpenseAtIndexInTimeFrame(position);
-            Expense parent = _profile.GetParentExpenseFromTimeFrameExpense(expense);
+            //Expense parent = _profile.GetParentExpenseFromTimeFrameExpense(expense);
+
 
             if (expense != null) {
+                //Parent expense
+                Expense parent = (expense.GetParentID()==0 ? expense : _profile.GetExpense(expense.GetParentID()));
+
                 //Time Period
                 TimePeriod tp = expense.GetTimePeriod();
 
@@ -147,7 +151,7 @@ public class AdapterDetailsExpense extends RecyclerView.Adapter<AdapterDetailsEx
 
                     //Repeat text && Repeat Expense Indenting
                     if (parent_tp.DoesRepeat() && parent_tp.GetFirstOccurrence() != null && tp.GetDate() != null) {
-                        if (parent_tp.GetFirstOccurrence().compareTo(tp.GetDate()) == 0) {
+                        if (parent_tp.GetFirstOccurrence().compareTo(tp.GetDate()) == 0 || parent.GetID() == expense.GetID()) {
                             //Repeat Text
                             holder.repeat.setText(parent_tp.GetRepeatString(parent_tp.GetRepeatFrequency(), parent_tp.GetRepeatUntil()));
 

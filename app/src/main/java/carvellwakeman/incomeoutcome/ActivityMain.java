@@ -390,6 +390,9 @@ public class ActivityMain extends AppCompatActivity
                         }
                     }
                     break;
+                case 3: //Refresh info
+                    UpdateStartEndDate();
+                    break;
             }
         }
     }
@@ -482,12 +485,7 @@ public class ActivityMain extends AppCompatActivity
     public void NextMonth(View v){
         Profile pr = ProfileManager.GetCurrentProfile();
         if (pr != null){
-            LocalDate e;
-            if (pr.GetEndTime() == null) { e = new LocalDate(); } else { e = pr.GetEndTime().plusMonths(1); }
-            e = e.withDayOfMonth(e.dayOfMonth().getMaximumValue());
-
-            pr.SetStartTime(e.withDayOfMonth(e.dayOfMonth().getMinimumValue()));
-            pr.SetEndTime(e);
+            pr.TimePeriodPlus(1);
             UpdateStartEndDate();
         }
 
@@ -495,12 +493,7 @@ public class ActivityMain extends AppCompatActivity
     public void PrevMonth(View v){
         Profile pr = ProfileManager.GetCurrentProfile();
         if (pr != null) {
-            LocalDate e;
-            if (pr.GetEndTime() == null) { e = new LocalDate(); } else { e = pr.GetEndTime().minusMonths(1); }
-            e = e.withDayOfMonth(e.dayOfMonth().getMaximumValue());
-
-            pr.SetStartTime(e.withDayOfMonth(e.dayOfMonth().getMinimumValue()));
-            pr.SetEndTime(e);
+            pr.TimePeriodMinus(1);
             UpdateStartEndDate();
         }
     }
@@ -510,6 +503,7 @@ public class ActivityMain extends AppCompatActivity
             pr.SetStartTime(null);
             pr.SetEndTime(null);
             UpdateStartEndDate();
+            pr.CalculateTimeFrame();
         }
     }
 
@@ -602,7 +596,7 @@ public class ActivityMain extends AppCompatActivity
             //Start income (details) activity and send it the profile we clicked on
             Intent intent = new Intent(ActivityMain.this, ActivityDetailsIncome.class);
             intent.putExtra("profile", pr.GetID());
-            startActivity(intent);
+            startActivityForResult(intent, 3);
         }
         else {
             ProfileManager.Print("ERROR: Profile not found, could not start IncomeActivity");
@@ -616,7 +610,7 @@ public class ActivityMain extends AppCompatActivity
             //Start expense (details) activity and send it the profile we clicked on
             Intent intent = new Intent(ActivityMain.this, ActivityDetailsExpense.class);
             intent.putExtra("profile", pr.GetID());
-            startActivity(intent);
+            startActivityForResult(intent, 3);
         }
         else {
             ProfileManager.Print("ERROR: Profile not found, could not start ExpenseActivity");

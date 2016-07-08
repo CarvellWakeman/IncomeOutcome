@@ -33,7 +33,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_importdatabase);
+        setContentView(R.layout.activity_database_import);
         //public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //View view = inflater.inflate(R.layout.dialog_importdatabase, container, false);
         //view.setBackgroundColor(Color.WHITE);

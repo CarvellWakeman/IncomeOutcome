@@ -6,14 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.*;
 import org.joda.time.LocalDate;
 
 
-public class ActivityDetailsIncome extends AppCompatActivity
+public class ActivityDetailsIncome extends AppCompatActivity implements GestureDetector.OnGestureListener
 {
     AdapterDetailsIncome incomeAdapter;
     AdapterIncomeTotals totalsAdapter;
@@ -29,6 +27,9 @@ public class ActivityDetailsIncome extends AppCompatActivity
 
     int _profileID;
     Profile _profile;
+
+    private GestureDetector gestureDetector;
+    View.OnTouchListener gestureListener;
 
 
     @Override
@@ -56,6 +57,16 @@ public class ActivityDetailsIncome extends AppCompatActivity
             elementsView = (RecyclerView) findViewById(R.id.recyclerView_IncomeSources);
 
 
+            //Swiping gesture setup
+            gestureDetector = new GestureDetector(this, this);
+            gestureListener = new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    return gestureDetector.onTouchEvent(event);
+                }
+            };
+
+            toolbar.setOnTouchListener(gestureListener);
+
             //Configure toolbar
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -72,14 +83,16 @@ public class ActivityDetailsIncome extends AppCompatActivity
             toolbar.setSubtitle(_profile.GetDateFormatted());
 
             //Set totals adapter
-            totalsAdapter = new AdapterIncomeTotals(this, _profileID);
-            totalsView.setAdapter(totalsAdapter);
+            if (_profile.GetStartTime() != null && _profile.GetEndTime() != null) { //Only set up totals if there is a valid timeframe
+                totalsAdapter = new AdapterIncomeTotals(this, _profileID);
+                totalsView.setAdapter(totalsAdapter);
 
-            //LinearLayoutManager for RecyclerView
-            linearLayoutManager2 = new NpaLinearLayoutManager(this);
-            linearLayoutManager2.setOrientation(NpaLinearLayoutManager.VERTICAL);
-            linearLayoutManager2.scrollToPosition(0);
-            totalsView.setLayoutManager(linearLayoutManager2);
+                //LinearLayoutManager for RecyclerView
+                linearLayoutManager2 = new NpaLinearLayoutManager(this);
+                linearLayoutManager2.setOrientation(NpaLinearLayoutManager.VERTICAL);
+                linearLayoutManager2.scrollToPosition(0);
+                totalsView.setLayoutManager(linearLayoutManager2);
+            }
 
             //Set recyclerView adapter
             incomeAdapter = new AdapterDetailsIncome(this, _profileID);
@@ -224,6 +237,46 @@ public class ActivityDetailsIncome extends AppCompatActivity
         setResult(RESULT_OK, intent);
 
         super.onBackPressed();
+    }
+
+
+    //Gestures
+    @Override
+    public boolean onTouchEvent(MotionEvent me) { return gestureDetector.onTouchEvent(me); }
+    @Override
+    public boolean onDown(MotionEvent e) {return true;}
+    @Override
+    public void onLongPress(MotionEvent e) {}
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {return true;}
+    @Override
+    public void onShowPress(MotionEvent e) {}
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) { return true; }
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
+    {
+        final int SWIPE_MIN_DISTANCE = 120;
+        final int SWIPE_MAX_OFF_PATH = 250;
+        final int SWIPE_THRESHOLD_VELOCITY = 200;
+
+        if (e1 != null && e2 != null) {
+            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) { return false; }
+            Profile pr = ProfileManager.GetCurrentProfile();
+            if (pr != null) {
+                //Right to Left
+                if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    pr.TimePeriodPlus(1);
+                }
+                else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    pr.TimePeriodMinus(1);
+                }
+
+                this.recreate();
+                pr.CalculateTimeFrame();
+            }
+        }
+        return true;
     }
 
 

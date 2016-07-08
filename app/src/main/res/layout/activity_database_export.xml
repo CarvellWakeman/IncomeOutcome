@@ -57,6 +57,16 @@
 
         </android.support.design.widget.TextInputLayout>
 
+        <android.support.v7.widget.SwitchCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/switch_override_export"
+            android:checked="false"
+            android:text="Override"
+            android:visibility="visible"
+            android:gravity="center_vertical|right"
+            android:clickable="false" />
+
     </LinearLayout>
 
 
