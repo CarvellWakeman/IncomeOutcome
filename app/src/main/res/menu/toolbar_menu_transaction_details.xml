@@ -9,12 +9,6 @@
     android:orderInCategory="100" />
     -->
 
-    <item android:id="@+id/toolbar_filter"
-        android:icon="@drawable/ic_filter_list_white_24dp"
-        android:title="Filter"
-        app:showAsAction="never"
-        android:orderInCategory="2" />
-
 
     <item android:id="@+id/toolbar_sort"
         android:icon="@drawable/ic_sort_white_24dp"
@@ -40,6 +34,18 @@
                 android:title="Sort by who paid" />
         </menu>
     </item>
+
+    <item android:id="@+id/toolbar_filter"
+        android:icon="@drawable/ic_filter_list_white_24dp"
+        android:title="Filter"
+        app:showAsAction="never"
+        android:orderInCategory="2" />
+
+    <item android:id="@+id/toolbar_paidback"
+        android:icon="@drawable/ic_check_white_24dp"
+        android:title="Paid Back"
+        app:showAsAction="never"
+        android:orderInCategory="3" />
 
 
 </menu>

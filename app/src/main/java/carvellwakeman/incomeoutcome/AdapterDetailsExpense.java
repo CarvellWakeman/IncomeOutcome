@@ -49,6 +49,7 @@ public class AdapterDetailsExpense extends RecyclerView.Adapter<AdapterDetailsEx
 
 
             if (expense != null) {
+
                 //Parent expense
                 Expense parent = (expense.GetParentID()==0 ? expense : _profile.GetExpense(expense.GetParentID()));
 
@@ -148,10 +149,20 @@ public class AdapterDetailsExpense extends RecyclerView.Adapter<AdapterDetailsEx
                     //Time Period
                     TimePeriod parent_tp = parent.GetTimePeriod();
 
-
+                    //ProfileManager.Print("ParentID:" + parent.GetID());
+                    //ProfileManager.Print("ExpenseID:" + expense.GetID());
+                    //ProfileManager.Print("ExpenseParentID:" + expense.GetParentID());
                     //Repeat text && Repeat Expense Indenting
                     if (parent_tp.DoesRepeat() && parent_tp.GetFirstOccurrence() != null && tp.GetDate() != null) {
+                        //ProfileManager.Print("Arg1:" + (parent_tp.GetFirstOccurrence().compareTo(tp.GetDate()) == 0));
+                        //ProfileManager.Print("Arg2:" + (parent.GetID() == expense.GetID()));
+
+                        //ProfileManager.Print("Parent First Occurrence:" + parent_tp.GetDate().toString(ProfileManager.simpleDateFormat));
+                        //ProfileManager.Print("Expense Occurrence:" + tp.GetDate().toString(ProfileManager.simpleDateFormat));
+
+
                         if (parent_tp.GetFirstOccurrence().compareTo(tp.GetDate()) == 0 || parent.GetID() == expense.GetID()) {
+                            //ProfileManager.Print("HideIndent");
                             //Repeat Text
                             holder.repeat.setText(parent_tp.GetRepeatString(parent_tp.GetRepeatFrequency(), parent_tp.GetRepeatUntil()));
 
@@ -160,6 +171,7 @@ public class AdapterDetailsExpense extends RecyclerView.Adapter<AdapterDetailsEx
                             holder.moreInfoOn();
                         }
                         else {
+                            //ProfileManager.Print("ShowIndent");
                             holder.moreInfoOff();
                             holder.indent.setVisibility(View.VISIBLE);
                         }
@@ -246,64 +258,65 @@ public class AdapterDetailsExpense extends RecyclerView.Adapter<AdapterDetailsEx
         public boolean onLongClick(View v) {
             final Expense ex = _profile.GetExpenseAtIndexInTimeFrame(getAdapterPosition());
             final Expense exp = _profile.GetParentExpenseFromTimeFrameExpense(ex);
-            if (ex.GetTimePeriod().DoesRepeat() || exp.GetTimePeriod().DoesRepeat()) {
-                String items[] = activity.getResources().getStringArray(R.array.RepeatingTransaction);
-                new AlertDialog.Builder(activity).setItems(items, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        switch (item) {
-                            case 0: //Edit (parent)
-                                activity.editExpense(exp, _profileID);
-                                break;
-                            case 1: //Edit (instance)
-                                //If the expense is not a ghost expense (only exists in the _timeframe array), then edit it normally, else clone it and blacklist the old date
-                                if (_profile.GetExpense(ex.GetID()) != null) { //Child
+            if (ex != null && exp != null && ex.GetTimePeriod() != null && exp.GetTimePeriod() != null) {
+                if (ex.GetTimePeriod().DoesRepeat() || exp.GetTimePeriod().DoesRepeat()) {
+                    String items[] = activity.getResources().getStringArray(R.array.RepeatingTransaction);
+                    new AlertDialog.Builder(activity).setItems(items, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+                            switch (item) {
+                                case 0: //Edit (parent)
+                                    activity.editExpense(exp, _profileID);
+                                    break;
+                                case 1: //Edit (instance)
+                                    //If the expense is not a ghost expense (only exists in the _timeframe array), then edit it normally, else clone it and blacklist the old date
+                                    if (_profile.GetExpense(ex.GetID()) != null) { //Child
+                                        activity.editExpense(ex, _profileID);
+                                    }
+                                    else { //Ghost
+                                        activity.cloneExpense(exp, _profileID, ex.GetTimePeriod().GetDate());
+                                    }
+
+                                    break;
+                                case 2: //Delete (parent)
+                                    activity.deleteExpense(exp, true, true);
+                                    break;
+                                case 3: //Delete (instance)
+                                    if (_profile.GetExpense(ex.GetID()) != null) { //Child
+                                        activity.deleteExpense(ex, true, false);
+                                    }
+                                    else { //Ghost
+                                        activity.deleteExpense(ex, false, false);
+                                    }
+                                    break;
+                                default:
+                                    dialog.cancel();
+                                    break;
+                            }
+                        }
+                    }).create().show();
+                }
+                else {
+                    String items[] = activity.getResources().getStringArray(R.array.SingleTransaction);
+
+                    new AlertDialog.Builder(activity).setItems(items, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+                            switch (item) {
+                                case 0: //Edit (this)
                                     activity.editExpense(ex, _profileID);
-                                }
-                                else { //Ghost
-                                    activity.cloneExpense(exp, _profileID, ex.GetTimePeriod().GetDate());
-                                }
-
-                                break;
-                            case 2: //Delete (parent)
-                                activity.deleteExpense(exp, true, true);
-                                break;
-                            case 3: //Delete (instance)
-                                if (_profile.GetExpense(ex.GetID()) != null) { //Child
-                                    activity.deleteExpense(ex, true, false);
-                                }
-                                else { //Ghost
-                                    activity.deleteExpense(ex, false, false);
-                                }
-                                break;
-                            default:
-                                dialog.cancel();
-                                break;
+                                    break;
+                                case 1: //Duplicate (this)
+                                    activity.duplicateExpense(ex, _profileID);
+                                    break;
+                                case 2: //Delete (this)
+                                    activity.deleteExpense(ex, true, true);
+                                    break;
+                                default:
+                                    dialog.cancel();
+                                    break;
+                            }
                         }
-                    }
-                }).create().show();
-            }
-            else
-            {
-                String items[] = activity.getResources().getStringArray(R.array.SingleTransaction);
-
-                new AlertDialog.Builder(activity).setItems(items, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        switch (item) {
-                            case 0: //Edit (this)
-                                activity.editExpense(ex, _profileID);
-                                break;
-                            case 1: //Copy (this)
-                                activity.copyExpense(ex, _profileID);
-                                break;
-                            case 2: //Delete (this)
-                                activity.deleteExpense(ex, true, true);
-                                break;
-                            default:
-                                dialog.cancel();
-                                break;
-                        }
-                    }
-                }).create().show();
+                    }).create().show();
+                }
             }
 
 

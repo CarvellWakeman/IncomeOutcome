@@ -83,6 +83,8 @@ public class TimePeriod implements java.io.Serializable
         // Blacklist dates
         blacklistDates = new ArrayList<>();
         _blacklistDatesQueue = new ArrayList<>();
+
+        CalculateFirstOccurrence();
     }
     public TimePeriod(TimePeriod copy)
     {
@@ -212,7 +214,7 @@ public class TimePeriod implements java.io.Serializable
     }
 
 
-    //Add events in a timeframe and return array
+    //Repeating events calculations
     private ArrayList<LocalDate> timeFrame_add_events(Period event_period, LocalDate initialEvent, LocalDate event_start, LocalDate event_end){
         ArrayList<LocalDate> event_occurrences = new ArrayList<>();
         int event_occurrences_count = 0;
@@ -304,28 +306,26 @@ public class TimePeriod implements java.io.Serializable
         return event_occurrences;
     }
 
-
-    //Accessors
     public ArrayList<LocalDate> GetOccurrencesWithin(LocalDate timeFrame_start, LocalDate timeFrame_end)
     {
         //Occurrences arrayList, will hold dates of all occurrences of this TimePeriod between timeFrame_start and timeFrame_end
         ArrayList<LocalDate> occurrences = new ArrayList<>();
 
         //Event time section dates
-        LocalDate event_start = date; //dateMax(date, timeFrame_start);
+        LocalDate event_start = timeFrame_start; //dateMax(date, timeFrame_start);
         LocalDate event_end = timeFrame_end;
-        LocalDate initialEvent = event_start;
+        LocalDate initialEvent = (event_start!=null ? event_start : date);
+        //Null start_time (set to first occurrence of event)        ^^^^
+        //Null end_time impossible, because there could be infinite occurrences
 
-        //Null starttime (set to first occurrence of event)
-        if (event_start == null){
-            initialEvent = date;
-        }
 
-        //Set event_start differently for case NEVER (Short-Circuit return), WEEKLY, MONTHLY, and YEARLY
+        //Set event_start & initialEvent depending on repeatFrequence: NEVER (Short-Circuit return), WEEKLY, MONTHLY, and YEARLY
         switch(repeatFrequency){
             case NEVER:
-                if (date != null && timeFrame_start != null && timeFrame_end != null) {
-                    if (date.compareTo(timeFrame_start) >= 0 && date.compareTo(timeFrame_end) <= 0) {
+                if (date != null) {
+                    if (timeFrame_start == null && timeFrame_end != null && date.compareTo(timeFrame_end) <= 0 ||
+                            timeFrame_start != null && timeFrame_end == null && date.compareTo(timeFrame_start) >= 0 ||
+                            timeFrame_start != null && timeFrame_end != null && date.compareTo(timeFrame_start) >= 0 && date.compareTo(timeFrame_end) <= 0){
                         occurrences.add(date);
                     }
                 }
@@ -351,7 +351,6 @@ public class TimePeriod implements java.io.Serializable
         int WEEKS  = repeatEveryN * (repeatFrequency==Repeat.WEEKLY  ? 1 : 0);
         int DAYS   = repeatEveryN * (repeatFrequency==Repeat.DAILY   ? 1 : 0);
 
-
         // REPEAT_FREQUENCY * REPEAT_EVERY_N
         Period event_period = new Period(YEARS, MONTHS, WEEKS, DAYS, 0, 0, 0, 0);
 
@@ -362,20 +361,19 @@ public class TimePeriod implements java.io.Serializable
         //Set event_start to either timeframe_start or event_start, whichever comes last
         event_start = dateMax(timeFrame_start, event_start);
 
-        //ProfileManager.Print("start - " + event_start.toString());
-        //ProfileManager.Print("end - " + event_end.toString());
-
         //Add events to occurrences
         occurrences.addAll(timeFrame_add_events(event_period, initialEvent, event_start, event_end));
 
-
-        //Set first occurrence
-        if ( occurrences.size() > 0 ) {
-            _firstOccurenceDate = occurrences.get(0);
-        }
-
         //Return list of occurrences
         return occurrences;
+    }
+
+    public void CalculateFirstOccurrence(){
+        ArrayList<LocalDate> occurrences = GetOccurrencesWithin(date, null);
+        if (occurrences.size() > 0) {
+            _firstOccurenceDate = occurrences.get(0);
+            //ProfileManager.Print("FirstOccurrence:" + _firstOccurenceDate.toString(ProfileManager.simpleDateFormat));
+        }
     }
 
 
@@ -421,16 +419,16 @@ public class TimePeriod implements java.io.Serializable
         repeatDayOfWeek[5] = str.length() >= 6 && str.charAt(5) == '1';
         repeatDayOfWeek[6] = str.length() >= 7 && str.charAt(6) == '1';
     }
-    public void SetDate(LocalDate newDate) { date = newDate; }
+    public void SetDate(LocalDate newDate) { date = newDate; CalculateFirstOccurrence();}
     //public void SetFirstOccurrence(LocalDate newDate) { _firstOccurenceDate = newDate; }
-    public void SetRepeatFrequency(Repeat freq) { repeatFrequency = freq; }
-    public void SetRepeatUntil(RepeatUntil until) { repeatUntil = until; }
-    public void SetRepeatANumberOfTimes(int times) { repeatUntilTimes = times; }
-    public void SetRepeatUntilDate(LocalDate repUntDate) { repeatUntilDate = repUntDate; }
-    public void SetRepeatEveryN(int n) { repeatEveryN = n; }
-    public void SetDayOfWeek(int day, Boolean val) { if (day >= 0 && day <= 6) { repeatDayOfWeek[day] = val; } }
-    public void SetRepeatDayOfMonth(int val) { repeatDayOfMonth = val; }
-    public void SetDateOfYear(LocalDate newDate) { dateOfYear = newDate; }
+    public void SetRepeatFrequency(Repeat freq) { repeatFrequency = freq; CalculateFirstOccurrence();}
+    public void SetRepeatUntil(RepeatUntil until) { repeatUntil = until; CalculateFirstOccurrence();}
+    public void SetRepeatANumberOfTimes(int times) { repeatUntilTimes = times; CalculateFirstOccurrence();}
+    public void SetRepeatUntilDate(LocalDate repUntDate) { repeatUntilDate = repUntDate; CalculateFirstOccurrence();}
+    public void SetRepeatEveryN(int n) { repeatEveryN = n; CalculateFirstOccurrence();}
+    public void SetDayOfWeek(int day, Boolean val) { if (day >= 0 && day <= 6) { repeatDayOfWeek[day] = val; } CalculateFirstOccurrence();}
+    public void SetRepeatDayOfMonth(int val) { repeatDayOfMonth = val; CalculateFirstOccurrence();}
+    public void SetDateOfYear(LocalDate newDate) { dateOfYear = newDate; CalculateFirstOccurrence();}
 
 
     //Formatting

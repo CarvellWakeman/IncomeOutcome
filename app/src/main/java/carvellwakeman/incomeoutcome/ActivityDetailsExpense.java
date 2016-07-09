@@ -1,13 +1,14 @@
 package carvellwakeman.incomeoutcome;
 
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
-import android.widget.LinearLayout;
+import android.widget.DatePicker;
 import android.widget.Toast;
 import org.joda.time.LocalDate;
 
@@ -78,7 +79,7 @@ public class ActivityDetailsExpense extends AppCompatActivity implements Gesture
                     onBackPressed();
                 }
             });
-            toolbar.inflateMenu(R.menu.toolbar_menu_sortfilter);
+            toolbar.inflateMenu(R.menu.toolbar_menu_transaction_details);
             setSupportActionBar(toolbar);
 
             //Set title
@@ -109,15 +110,30 @@ public class ActivityDetailsExpense extends AppCompatActivity implements Gesture
             elementsView.setLayoutManager(linearLayoutManager);
 
             //Populate recyclerview
-            Populate();
+            //Populate();
         }
     }
+
+
+    final DatePickerDialog.OnDateSetListener datePicker = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
+        {
+            //Set local variable date
+            _profile.UpdatePaidBackInTimeFrame(new LocalDate(year, monthOfYear + 1, dayOfMonth), false);
+
+            _profile.CalculateTimeFrame();
+            expenseAdapter.notifyDataSetChanged();
+            totalsAdapter.notifyDataSetChanged();
+            //UpdateAdapters();
+        }
+    };
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        getMenuInflater().inflate(R.menu.toolbar_menu_sortfilter, menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu_transaction_details, menu);
 
         return true;
     }
@@ -132,6 +148,26 @@ public class ActivityDetailsExpense extends AppCompatActivity implements Gesture
                 Intent intent = new Intent();
                 setResult(RESULT_OK, intent);
                 finish();
+                return true;
+
+            case R.id.toolbar_sort_category:
+                return true;
+            case R.id.toolbar_sort_company:
+                return true;
+            case R.id.toolbar_sort_cost:
+                return true;
+            case R.id.toolbar_sort_date:
+                return true;
+            case R.id.toolbar_sort_paidby:
+                return true;
+
+            case R.id.toolbar_filter:
+                return true;
+
+            case R.id.toolbar_paidback:
+                LocalDate c = new LocalDate();
+                DatePickerDialog d = new DatePickerDialog(ActivityDetailsExpense.this, datePicker, c.getYear(), c.getMonthOfYear() - 1, c.getDayOfMonth());
+                d.show();
                 return true;
             default:
                 return false;
@@ -193,7 +229,7 @@ public class ActivityDetailsExpense extends AppCompatActivity implements Gesture
     //Get return results from activities
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data != null) {
-
+            /*
             //Find returned expense
             Profile pr = ProfileManager.GetProfileByID(data.getIntExtra("profile", -1));
             Expense newExp = (Expense) data.getSerializableExtra("newExpense");
@@ -253,16 +289,29 @@ public class ActivityDetailsExpense extends AppCompatActivity implements Gesture
                     }
                     break;
             }
+            */
 
-
-            //Update timeframe for profile
-            _profile.CalculateTimeFrame();
-            expenseAdapter.notifyDataSetChanged();
-            _profile.GetTotalCostPerPersonInTimeFrame();
-            totalsAdapter.notifyDataSetChanged();
         }
+
+        //Update timeframe for profile
+        _profile.CalculateTimeFrame();
+        _profile.GetTotalCostPerPersonInTimeFrame();
+        expenseAdapter.notifyDataSetChanged();
+        totalsAdapter.notifyDataSetChanged();
+        //expenseAdapter.notifyItemRangeRemoved(0, _profile.GetExpenseSourcesInTimeFrameSize());
+        //UpdateAdapters();
     }
 
+    public void UpdateAdapters(){
+        elementsView.setAdapter(null);
+        totalsView.setAdapter(null);
+
+        expenseAdapter = new AdapterDetailsExpense(this, _profileID);
+        elementsView.setAdapter(expenseAdapter);
+
+        totalsAdapter = new AdapterExpenseTotals(this, _profileID);
+        totalsView.setAdapter(totalsAdapter);
+    }
 
     //Populate listview
     public void Populate()
@@ -305,12 +354,12 @@ public class ActivityDetailsExpense extends AppCompatActivity implements Gesture
         }
     }
     */
-    public void copyExpense(Expense expense, int profileID){
+    public void duplicateExpense(Expense expense, int profileID){
         Intent intent = new Intent(ActivityDetailsExpense.this, ActivityNewExpense.class);
         if (profileID != -1) {
             intent.putExtra("profile", profileID);
             intent.putExtra("expense", expense.GetID());
-            intent.putExtra("edit", 2);
+            intent.putExtra("editstate", ActivityNewExpense.EDIT_STATE.Duplicate.ordinal());
             startActivityForResult(intent, 0);
         }
         else{
@@ -322,7 +371,7 @@ public class ActivityDetailsExpense extends AppCompatActivity implements Gesture
         if (profileID != -1) {
             intent.putExtra("profile", profileID);
             intent.putExtra("expense", expense.GetID());
-            intent.putExtra("edit", 1);
+            intent.putExtra("editstate", ActivityNewExpense.EDIT_STATE.EditUpdate.ordinal());
             startActivityForResult(intent, 1);
         }
         else{
@@ -334,7 +383,7 @@ public class ActivityDetailsExpense extends AppCompatActivity implements Gesture
         if (profileID != -1) {
             intent.putExtra("profile", profileID);
             intent.putExtra("expense", expense.GetID());
-            intent.putExtra("edit", 3);
+            intent.putExtra("editstate", ActivityNewExpense.EDIT_STATE.EditGhost.ordinal());
             intent.putExtra("cloneDate", date);
             startActivityForResult(intent, 2);
         }

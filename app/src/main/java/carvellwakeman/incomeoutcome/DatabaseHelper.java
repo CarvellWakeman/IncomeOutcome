@@ -44,7 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private String BACKUP_FILENAME;
     public File EXPORT_BACKUP;
     //Other
-    private static final String ITEM_DELIMITER = "|";
+    //private static final String ITEM_DELIMITER = "\\|";
     private static final String STATEMENT_DELIMITER = "\n";
     //Tables
     public static final String TABLE_SETTINGS_CATEGORIES = "SETTINGS_CATEGORIES_DATA";
@@ -730,10 +730,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             contentValues_tr.put(COLUMN_splitWith, (expense.GetSplitWith()!=null ? expense.GetSplitWith() : ""));
             contentValues_tr.put(COLUMN_splitValue, expense.GetSplitValue());
             contentValues_tr.put(COLUMN_paidBack, (expense.GetPaidBack() != null ? expense.GetPaidBack().toString(ProfileManager.simpleDateFormatSaving) : "") );
-            String childrenString = "";
-            for (int c : expense.GetChildren()){ childrenString+=c + ITEM_DELIMITER; }
-            if (childrenString.length() > 0) { childrenString = childrenString.substring(childrenString.length(), childrenString.length()-1); }//Remove last delimiter
-            contentValues_tr.put(COLUMN_children, childrenString);
+            contentValues_tr.put(COLUMN_children, expense.GetChildrenFormatted());
 
             //Insert/update row and return result
             long result = 0;
@@ -766,10 +763,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
             contentValues_tr.put(COLUMN_value, income.GetValue());
             contentValues_tr.put(COLUMN_staticValue, income.GetStatic());
             if (!tryupdate) { contentValues_tr.put(COLUMN_when, tp_id); }
-            String childrenString = "";
-            for (int c : income.GetChildren()){ childrenString+=c + ITEM_DELIMITER; }
-            if (childrenString.length() > 0) { childrenString = childrenString.substring(childrenString.length(), childrenString.length()-1); }//Remove last delimiter
-            contentValues_tr.put(COLUMN_children, childrenString);
+            contentValues_tr.put(COLUMN_children, income.GetChildrenFormatted());
+
 
             //Insert/update row and return result
             long result = 0;
@@ -968,14 +963,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 //COLUMN_when + INT_TYPE //+ "," +
                 ex.SetTimePeriod(queryTimeperiod(c.getInt(c.getColumnIndex(COLUMN_when))));
                 //COLUMN_children
-                String children_base = c.getString(c.getColumnIndex(COLUMN_children));
-                if (children_base!=null && !children_base.equals("")) {
-                    for (String s : children_base.split(ITEM_DELIMITER)) { ex.AddChild(Integer.valueOf(s)); }
-                }
+                ex.AddChildrenFromFormattedString(c.getString(c.getColumnIndex(COLUMN_children)));
+
 
                 //ProfileManager.Print("Expense Loaded");
                 //Add loaded transaction to profile
-                pr.AddExpense(ex, true);
+                pr.AddExpenseDontSave(ex);
             }
             else {
                 ProfileManager.Print("Expense could not be loaded, profile -" + _profileID + "- not found.");
@@ -1020,10 +1013,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 //COLUMN_when + INT_TYPE //+ "," +
                 in.SetTimePeriod(queryTimeperiod(c.getInt(c.getColumnIndex(COLUMN_when))));
                 //COLUMN_children
-                String children_base = c.getString(c.getColumnIndex(COLUMN_children));
-                if (children_base!=null && !children_base.equals("")) {
-                    for (String s : children_base.split(ITEM_DELIMITER)) { in.AddChild(Integer.valueOf(s)); }
-                }
+                in.AddChildrenFromFormattedString(c.getString(c.getColumnIndex(COLUMN_children)));
 
                 //Add loaded transaction to profile
                 pr.AddIncome(in, true);

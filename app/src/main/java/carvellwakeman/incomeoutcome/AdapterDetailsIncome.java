@@ -184,65 +184,66 @@ public class AdapterDetailsIncome extends RecyclerView.Adapter<AdapterDetailsInc
         public boolean onLongClick(View v) {
             final Income in = _profile.GetIncomeAtIndexInTimeFrame(getAdapterPosition());
             final Income inp = _profile.GetParentIncomeFromTimeFrameIncome(in);
-            if (in.GetTimePeriod().DoesRepeat() || inp.GetTimePeriod().DoesRepeat()) {
-                String items[] = activity.getResources().getStringArray(R.array.RepeatingTransaction);
+            if (in != null && inp != null && in.GetTimePeriod() != null && inp.GetTimePeriod() != null) {
+                if (in.GetTimePeriod().DoesRepeat() || inp.GetTimePeriod().DoesRepeat()) {
+                    String items[] = activity.getResources().getStringArray(R.array.RepeatingTransaction);
 
-                new AlertDialog.Builder(activity).setItems(items, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        switch (item) {
-                            case 0: //Edit (parent)
-                                activity.editIncome(inp, _profileID);
-                                break;
-                            case 1: //Edit (instance)
-                                if (_profile.GetIncome(in.GetID()) != null) { //Child
+                    new AlertDialog.Builder(activity).setItems(items, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+                            switch (item) {
+                                case 0: //Edit (parent)
+                                    activity.editIncome(inp, _profileID);
+                                    break;
+                                case 1: //Edit (instance)
+                                    if (_profile.GetIncome(in.GetID()) != null) { //Child
+                                        activity.editIncome(in, _profileID);
+                                    }
+                                    else { //Ghost
+                                        activity.cloneIncome(inp, _profileID, in.GetTimePeriod().GetDate());
+                                    }
+                                    //activity.cloneIncome(inp, _profileID, in.GetTimePeriod().GetDate());
+                                    break;
+                                case 2: //Delete (parent)
+                                    activity.deleteIncome(inp, true, true);
+                                    break;
+                                case 3: //Delete (instance)
+                                    if (_profile.GetIncome(in.GetID()) != null) { //Child
+                                        activity.deleteIncome(in, true, false);
+                                    }
+                                    else { //Ghost
+                                        activity.deleteIncome(in, false, false);
+                                    }
+                                    //activity.deleteIncome(in, false);
+                                    break;
+                                default:
+                                    dialog.cancel();
+                                    break;
+                            }
+                        }
+                    }).create().show();
+                }
+                else {
+                    String items[] = activity.getResources().getStringArray(R.array.SingleTransaction);
+
+                    new AlertDialog.Builder(activity).setItems(items, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+                            switch (item) {
+                                case 0: //Edit (this)
                                     activity.editIncome(in, _profileID);
-                                }
-                                else { //Ghost
-                                    activity.cloneIncome(inp, _profileID, in.GetTimePeriod().GetDate());
-                                }
-                                //activity.cloneIncome(inp, _profileID, in.GetTimePeriod().GetDate());
-                                break;
-                            case 2: //Delete (parent)
-                                activity.deleteIncome(inp, true, true);
-                                break;
-                            case 3: //Delete (instance)
-                                if (_profile.GetIncome(in.GetID()) != null) { //Child
-                                    activity.deleteIncome(in, true, false);
-                                }
-                                else { //Ghost
-                                    activity.deleteIncome(in, false, false);
-                                }
-                                //activity.deleteIncome(in, false);
-                                break;
-                            default:
-                                dialog.cancel();
-                                break;
+                                    break;
+                                case 1: //Copy (this)
+                                    activity.copyIncome(in, _profileID);
+                                    break;
+                                case 2: //Delete (this)
+                                    activity.deleteIncome(in, true, true);
+                                    break;
+                                default:
+                                    dialog.cancel();
+                                    break;
+                            }
                         }
-                    }
-                }).create().show();
-            }
-            else
-            {
-                String items[] = activity.getResources().getStringArray(R.array.SingleTransaction);
-
-                new AlertDialog.Builder(activity).setItems(items, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        switch (item) {
-                            case 0: //Edit (this)
-                                activity.editIncome(in, _profileID);
-                                break;
-                            case 1: //Copy (this)
-                                activity.copyIncome(in, _profileID);
-                                break;
-                            case 2: //Delete (this)
-                                activity.deleteIncome(in, true, true);
-                                break;
-                            default:
-                                dialog.cancel();
-                                break;
-                        }
-                    }
-                }).create().show();
+                    }).create().show();
+                }
             }
 
 

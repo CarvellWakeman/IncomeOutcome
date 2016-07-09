@@ -217,8 +217,8 @@ public class Profile implements java.io.Serializable
 
 
     //Expense management
-    public void AddExpense(Expense expense, boolean dontsave) { ExpenseSources.add(expense); }
-    public void AddExpense(Expense expense) { AddExpense(expense, true); CalculateTimeFrame(); ProfileManager.InsertExpenseDatabase(this, expense, false);}
+    public void AddExpenseDontSave(Expense expense) { ExpenseSources.add(expense); }
+    public void AddExpense(Expense expense) { AddExpenseDontSave(expense); CalculateTimeFrame(); ProfileManager.InsertExpenseDatabase(this, expense, false);}
     public void RemoveExpenseDontSave(Expense expense, boolean deleteChildren) {
         if (expense != null) {
             if (deleteChildren) {
@@ -226,6 +226,15 @@ public class Profile implements java.io.Serializable
                     RemoveExpense(GetExpense(id), deleteChildren);
                 }
             }
+            //Remove expense from it's parent as a child
+            if (expense.GetParentID() != 0){
+                Expense parent = GetExpense(expense.GetParentID());
+                if (parent != null){
+                    parent.RemoveChild(expense.GetID());
+                    UpdateExpense(parent);
+                }
+            }
+            //Remove expense from profile
             ExpenseSources.remove(expense);
         }
     }
@@ -233,11 +242,20 @@ public class Profile implements java.io.Serializable
     public void RemoveExpense(int id, boolean deleteChildren) { RemoveExpense(GetExpense(id), deleteChildren); }
 
     public void UpdateExpense(Expense expense) { UpdateExpense(expense, this); }
-    public void UpdateExpense(Expense expense, Profile profile) { ProfileManager.InsertExpenseDatabase(profile, expense, true); }
+    private void UpdateExpense(Expense expense, Profile profile) { ProfileManager.InsertExpenseDatabase(profile, expense, true); }
+
+    public void CloneExpense(Expense oldEx, Expense newEx){
+        //Set child relationship
+        oldEx.AddChild(newEx, true);
+        newEx.SetParentID(oldEx.GetID());
+
+        AddExpense(newEx);
+        UpdateExpense(oldEx);
+    }
 
     public void TransferExpense(Expense expense, Profile moveTo){
         UpdateExpense(expense, moveTo);
-        moveTo.AddExpense(expense, true);
+        moveTo.AddExpenseDontSave(expense);
         RemoveExpense(expense, true);
     }
     public void TransferAllExpenses(Profile moveTo){
@@ -270,6 +288,31 @@ public class Profile implements java.io.Serializable
             if (in.GetCategory().equals(old)) {
                 in.SetCategory(name);
                 UpdateIncome(in);
+            }
+        }
+    }
+
+    public void UpdatePaidBackInTimeFrame(LocalDate paidBack, boolean override){
+        for (int i = 0; i < _ExpenseSources_timeFrame.size(); i++){
+            Expense ex = _ExpenseSources_timeFrame.get(i);
+            //Child : Set paid back unless it already exists or override
+            if (GetExpense(ex.GetID()) != null){
+                if (ex.IsChild()) {
+                    if (ex.GetPaidBack() == null || override) {
+                        ex.SetPaidBack(paidBack);
+                    }
+                } else { //Parent : clone expense to avoid affecting children
+                    Expense newExp = new Expense(ex);
+                    newExp.SetTimePeriod(new TimePeriod(ex.GetTimePeriod().GetDate()));
+                    newExp.SetPaidBack(paidBack);
+                    newExp.RemoveChildren();
+                    CloneExpense(ex, newExp);
+                }
+            }
+            else { //Not independent transaction : CloneExpense and set paid back
+                Expense newExp = new Expense(ex);
+                newExp.SetPaidBack(paidBack);
+                CloneExpense(GetParentExpenseFromTimeFrameExpense(ex), newExp);
             }
         }
     }

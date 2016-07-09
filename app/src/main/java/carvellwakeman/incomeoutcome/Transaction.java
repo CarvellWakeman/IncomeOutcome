@@ -1,6 +1,8 @@
 package carvellwakeman.incomeoutcome;
 
 
+import android.content.res.Resources;
+
 import java.util.ArrayList;
 
 public class Transaction implements java.io.Serializable
@@ -70,7 +72,8 @@ public class Transaction implements java.io.Serializable
     public String GetValueFormatted() { return (staticValue ? "" : "~") + ProfileManager.currencyFormat.format(GetValue()); }
 
     public int GetParentID() { return _parentID; }
-    public Boolean IsChild(){ return GetParentID() != 0; }
+    public Boolean IsChild(){ return GetParentID() != 0;
+    }
     public ArrayList<Integer> GetChildren() { return children; }
     public ArrayList<Integer> GetChildrenCopy() {
         ArrayList<Integer> newList = new ArrayList<>();
@@ -78,6 +81,14 @@ public class Transaction implements java.io.Serializable
             newList.add(i);
         }
         return newList;
+    }
+    public String GetChildrenFormatted(){
+        String childrenString = "";
+        for (Integer id : children){
+            childrenString += id;
+            if (children.indexOf(id) != children.size()-1) { childrenString += ProfileManager.getString(R.string.item_delimiter); }
+        }
+        return childrenString;
     }
 
     public TimePeriod GetTimePeriod() { return when; }
@@ -102,9 +113,17 @@ public class Transaction implements java.io.Serializable
         TimePeriod tp = child.GetTimePeriod();
         if (tp != null) { when.AddBlacklistDate(tp.GetDate(), edited); }
     }
-    public void AddChild(int id){ children.add(id); }
-    public void RemoveChild(int CID){ children.remove(CID); }
-    public boolean HasChild(int CID){ return children.contains(CID); }
+    public void AddChild(Integer id){ children.add(id); }
+    public void AddChildrenFromFormattedString(String input){
+        if (input != null && !input.equals("")) {
+            for (String s : input.split(ProfileManager.getString(R.string.item_delimiter))) {
+                if (!s.equals("")) { try { AddChild(Integer.valueOf(s)); } catch (Exception e) { e.printStackTrace(); } }
+            }
+        }
+    }
+    public void RemoveChildren() { for (Integer CID : children) { RemoveChild(CID); } }
+    public void RemoveChild(Integer CID){ if (children.size() > 0) { children.remove(CID); } }
+    public boolean HasChild(Integer CID){ return children.contains(CID); }
 
 
     //Clear all

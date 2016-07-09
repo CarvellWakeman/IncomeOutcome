@@ -75,7 +75,7 @@ public class ActivityDetailsIncome extends AppCompatActivity implements GestureD
                     onBackPressed();
                 }
             });
-            toolbar.inflateMenu(R.menu.toolbar_menu_sortfilter);
+            toolbar.inflateMenu(R.menu.toolbar_menu_transaction_details);
             setSupportActionBar(toolbar);
 
             //Set title
@@ -114,7 +114,7 @@ public class ActivityDetailsIncome extends AppCompatActivity implements GestureD
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        getMenuInflater().inflate(R.menu.toolbar_menu_sortfilter, menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu_transaction_details, menu);
 
         return true;
     }

@@ -91,6 +91,7 @@
     <string name="info_domwarning">* Some months are limited to 28/29/30 days. The last day of the month will be chosen in these cases.</string>
 
     <!-- Formatting -->
+    <string name="item_delimiter">,</string>
     <string name="format_ipaid">%1$s owes %2$s (%3$s%%)</string>
     <string name="format_theypaid">I owe %1$s (%2$s%%)</string>
     <string name="format_me">You</string>
@@ -140,7 +141,7 @@
 
     <string-array name="SingleTransaction">
         <item>Edit</item>
-        <item>Copy</item>
+        <item>Duplicate</item>
         <item>Delete</item>
     </string-array>
 

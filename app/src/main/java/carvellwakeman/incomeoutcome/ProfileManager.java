@@ -575,6 +575,8 @@ public class ProfileManager
 
 
 
+    //Getting string resources from static contexts
+    public static String getString(int resourceID){ return MainActivityInstance.getString(resourceID); }
 
     //Date conversion for loading
     public static LocalDate ConvertDateFromString(String str){

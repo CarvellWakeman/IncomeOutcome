@@ -68,7 +68,7 @@ public class Expense extends Transaction
         if (name!=null && name.equals("")){ splitWith = null; } else { splitWith = name; }
         splitValue = val;
     }
-    public void SetIPaid(Boolean paid) { IPaid = paid; }
+    public void SetIPaid(boolean paid) { IPaid = paid; }
     public void SetPaidBack(LocalDate date) { paidBack = date; }
 
 

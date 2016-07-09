@@ -5,7 +5,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
@@ -25,8 +24,18 @@ public class ActivityNewExpense extends AppCompatActivity
 {
     //Data structure IDs
     int _profileID;
+    //If editing or cloning
     int _expenseID;
-    int _editCopyOrClone; //edit (1), copy(2), clone(3)
+
+    EDIT_STATE _editState;
+    public enum EDIT_STATE
+    {
+        NewTransaction,
+        EditUpdate,
+        EditGhost,
+        Duplicate
+    }
+
 
     LocalDate _cloneDate;
     LocalDate _paidBack;
@@ -96,9 +105,8 @@ public class ActivityNewExpense extends AppCompatActivity
         //Variable defaults
         noInfiniteLoopPlease = true;
         tCost = sCost = splitPercent = 0d;
-        _profileID = -1;
+        _profileID = 0;
         _expenseID = 0;
-        _editCopyOrClone = 0;
         _cloneDate = null;
 
 
@@ -167,7 +175,7 @@ public class ActivityNewExpense extends AppCompatActivity
                                         public void onClick(DialogInterface dialog, int which) {
                                             spinner_otherPeople.setAdapter(otherPeopleAdapter);
                                             spinner_otherPeople.setEnabled(true);
-                                            newExpenseSplitClick(v);
+                                            UpdateSplitClick();
                                             OtherPersonDoesNotExistBypass = true;
                                         }})
                                     .setNegativeButton(R.string.confirm_no, new DialogInterface.OnClickListener() {
@@ -178,11 +186,11 @@ public class ActivityNewExpense extends AppCompatActivity
                                     .setCancelable(false)
                                     .create().show();
                         }
-                        else { newExpenseSplitClick(v); }
+                        else { UpdateSplitClick(); }
                     }
-                    else { newExpenseSplitClick(v); }
+                    else { UpdateSplitClick(); }
                 }
-                else { newExpenseSplitClick(v); }
+                else { UpdateSplitClick(); }
 
             }
         });
@@ -421,15 +429,17 @@ public class ActivityNewExpense extends AppCompatActivity
 
         //Get intent from launching activity
         Intent intent = getIntent();
-        _profileID = intent.getIntExtra("profile", -1);
+        _profileID = intent.getIntExtra("profile", 0);
         _expenseID = intent.getIntExtra("expense", 0);
-        _editCopyOrClone = intent.getIntExtra("edit", 0);
+        _editState = EDIT_STATE.values()[intent.getIntExtra("editstate", 0)];
         _cloneDate = (LocalDate) intent.getSerializableExtra("cloneDate");
 
         //Copy expense details if expense was provided in the intent
-        if (_expenseID != 0){
-            EditExpense();
+        if (_profileID != 0 && _expenseID != 0){
+            //Copy transactions details into activity
+            CopyExpenseDetails();
         }
+
 
 
         //Clear timeperiod blacklistdates queue
@@ -474,7 +484,7 @@ public class ActivityNewExpense extends AppCompatActivity
                 finish();
                 return true;
             case R.id.toolbar_save: //SAVE button
-                FinishNewExpense();
+                FinishExpense();
                 return true;
             default:
                 return false;
@@ -512,14 +522,14 @@ public class ActivityNewExpense extends AppCompatActivity
 
 
     //Edit Expense
-    public void EditExpense()
+    public void CopyExpenseDetails()
     {
-        if (_profileID != -1) {
+        if (_profileID != 0) {
             if (_expenseID != 0) {
                 Profile pr = ProfileManager.GetProfileByID(_profileID);
                 Expense ex = (pr != null ? pr.GetExpense(_expenseID) : null);
 
-                //If we were sent an expense instead of creating a new one
+                //If we were sent an expense
                 if (ex != null) {
 
                     //Set paidback checkbox visibility
@@ -531,14 +541,14 @@ public class ActivityNewExpense extends AppCompatActivity
                     }
 
                     //Set activity title appropriately
-                    if (_editCopyOrClone == 1){
+                    if (_editState == EDIT_STATE.EditUpdate || _editState == EDIT_STATE.EditGhost){
                         TimePeriod tp = ex.GetTimePeriod();
-                        if (ex.IsChild() || tp!=null && tp.GetRepeatFrequency() == Repeat.NEVER) {
+
+                        if (ex.IsChild() || tp!=null && !tp.DoesRepeat() || _editState == EDIT_STATE.EditGhost) {
                             toolbar.setTitle("Edit Expense");
                         } else { toolbar.setTitle("Edit Expense Series"); }
                     }
-                    else if (_editCopyOrClone == 2) { toolbar.setTitle("Copy Expense"); }
-                    else if (_editCopyOrClone == 3){ toolbar.setTitle("Edit Expense"); }
+                    else if (_editState == EDIT_STATE.Duplicate) { toolbar.setTitle("Copy Expense"); }
 
                     //Copy category
                     if (ProfileManager.HasCategory(ex.GetCategory())) {
@@ -604,6 +614,19 @@ public class ActivityNewExpense extends AppCompatActivity
         }
     }
 
+
+    public void UpdateSplitClick()
+    {
+        //Change checkbox text
+        checkBox_split.setText((checkBox_split.isChecked() ? "Split Cost with" : "Split Cost"));
+
+        //Make Visible or Gone if split is checked or not
+        spinner_otherPeople.setVisibility( (checkBox_split.isChecked() ? View.VISIBLE : View.GONE) );
+        cardView_splitPercentage.setVisibility((checkBox_split.isChecked() ? View.VISIBLE : View.GONE));
+
+        //Update costs
+        UpdateCostBasedOnSeekBar();
+    }
     //Cost updates
     public void UpdateCost()
     {
@@ -678,7 +701,7 @@ public class ActivityNewExpense extends AppCompatActivity
     }
 
 
-    //Helpers
+    //Helper
     public Double getDouble(String str)
     {
         try {
@@ -690,62 +713,35 @@ public class ActivityNewExpense extends AppCompatActivity
     }
 
 
-    //Buttons
-    public void newExpenseSplitClick(View v)
-    {
-        //Change checkbox text
-        checkBox_split.setText((checkBox_split.isChecked() ? "Split Cost with" : "Split Cost"));
-
-        //Make Visible or Gone if split is checked or not
-        spinner_otherPeople.setVisibility( (checkBox_split.isChecked() ? View.VISIBLE : View.GONE) );
-        cardView_splitPercentage.setVisibility((checkBox_split.isChecked() ? View.VISIBLE : View.GONE));
-
-        //Update costs
-        UpdateCostBasedOnSeekBar();
-    }
-
-
-    public void FinishNewExpense()
+    public void FinishExpense()
     {
         //If the user selected a category
         if (spinner_categories.getSelectedItemPosition() != 0 || CategoryDoesNotExistBypass) {
             //Update editText_cost
-            UpdateCost();
+            UpdateCost(); //TODO Necessary?
 
             //Find profile
-            Profile pr = null;
-            if (_profileID != -1) {
-                pr = ProfileManager.GetProfileByID(_profileID);
-            }
+            Profile pr = (_profileID != 0 ? ProfileManager.GetProfileByID(_profileID) : null);
 
 
             //If profile exists
             if (pr != null) {
-
-                //Find original transaction
+                //Find originally passed transaction
                 Expense originalExp = pr.GetExpense(_expenseID);
+                Expense newExp = null;
 
-                //Create intent to send back
-                Intent intent = new Intent();
 
-                //Create a new transaction or locate the one we're editing
-                Expense newExp;
-
-                if (_expenseID != 0) {
-
-                    if (_editCopyOrClone == 1) { //edit
-                        newExp = originalExp;
-                    }
-                    else { newExp = new Expense(); }
+                //Determine if we are editing an existing transaction (EditUpdate), or creating a new one (EditGhost, Duplicate, _expenseID == 0)
+                if (_editState == EDIT_STATE.EditUpdate){
+                    newExp = originalExp;
                 }
-                else {
+                else {//if (_editState == EDIT_STATE.EditGhost || _editState == EDIT_STATE.Duplicate || _expenseID == 0) {
                     newExp = new Expense();
                 }
 
 
-                //If the transaction now exists
+                //Set expense fields based on this form to the new expense or the editing one
                 if (newExp != null) {
-
                     //Set Cost
                     newExp.SetValue(tCost);
 
@@ -761,54 +757,46 @@ public class ActivityNewExpense extends AppCompatActivity
                     newExp.SetDescription(editText_description.getText().toString());
 
                     //Set Time Period
-                    TimePeriod tp = fragment_timePeriod.GetTimePeriod();
+                    newExp.SetTimePeriod(fragment_timePeriod.GetTimePeriod());
 
-                    //Set time period
-                    newExp.SetTimePeriod(tp);
-
-                    //Set textView_percentageSplit value (If applicable)
+                    //Set Split value
                     if (checkBox_split.isChecked()) {
-                        //Set who paid (Me, by default)
                         newExp.SetIPaid(switch_paidBy.isChecked());
                         newExp.SetSplitValue(spinner_otherPeople.getSelectedItem().toString(), sCost);
                     }
-                    else {
-                        newExp.SetSplitValue(null, 0.0);
-                        //Set who paid (Me, by default)
-                        newExp.SetIPaid(true);
-                    }
 
                     //Set paidback
-                    if (checkBox_paidBack.isChecked()){
+                    if (checkBox_paidBack.isChecked()) {
                         newExp.SetPaidBack(_paidBack);
                     }
-                    else { newExp.SetPaidBack(null); }
-
-
-                    //Return new (or edited) transaction and profile in intent
-                    intent.putExtra("profile", _profileID);
-                    intent.putExtra("newExpense", newExp);
-
-                    //Return original transaction if cloned, and clone date
-                    if (_editCopyOrClone == 3) {
-                        intent.putExtra("originalExpense", _expenseID);
-                        //intent.putExtra("cloneDate", _cloneDate);
+                    else {
+                        newExp.SetPaidBack(null);
                     }
 
-                    //Clear timeperiod blacklistdates queue
+
+                    //Remove blacklist dates that are in queue for removal
                     if (originalExp != null) {
                         if (originalExp.GetTimePeriod() != null) {
                             originalExp.GetTimePeriod().RemoveBlacklistDateQueue();
                         }
                     }
 
-                    //Set result and finish activity
-                    setResult(RESULT_OK, intent);
+
+                    //If EditUpdate, call pr.UpdateExpense()
+                    if (_editState == EDIT_STATE.EditUpdate) {
+                        pr.UpdateExpense(newExp);
+                    }
+                    else if (_editState == EDIT_STATE.EditGhost && originalExp != null) { //If EditGhost, originalExp.AddChild(), newExp.SetParent() (Blacklist taken care of by AddChild()
+                        pr.CloneExpense(originalExp, newExp);
+                    }
+                    else if (_editState == EDIT_STATE.Duplicate || _editState == EDIT_STATE.NewTransaction) { //Else, call pr.AddExpense()
+                        pr.AddExpense(newExp);
+                    }
+
+                    //Finish()
                     finish();
                 }
-                else {
-                    Toast.makeText(this, "Missing Expense Data", Toast.LENGTH_LONG).show();
-                }
+
             }
         } else {
             Toast.makeText(this, "Missing Category", Toast.LENGTH_LONG).show();
