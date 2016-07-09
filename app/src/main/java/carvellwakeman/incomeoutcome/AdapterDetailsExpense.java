@@ -153,7 +153,7 @@ public class AdapterDetailsExpense extends RecyclerView.Adapter<AdapterDetailsEx
                     //ProfileManager.Print("ExpenseID:" + expense.GetID());
                     //ProfileManager.Print("ExpenseParentID:" + expense.GetParentID());
                     //Repeat text && Repeat Expense Indenting
-                    if (parent_tp.DoesRepeat() && parent_tp.GetFirstOccurrence() != null && tp.GetDate() != null) {
+                    if (parent_tp != null && parent_tp.DoesRepeat() && parent_tp.GetFirstOccurrence() != null && tp.GetDate() != null) {
                         //ProfileManager.Print("Arg1:" + (parent_tp.GetFirstOccurrence().compareTo(tp.GetDate()) == 0));
                         //ProfileManager.Print("Arg2:" + (parent.GetID() == expense.GetID()));
 

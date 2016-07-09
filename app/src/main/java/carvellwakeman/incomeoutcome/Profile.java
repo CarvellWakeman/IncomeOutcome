@@ -245,11 +245,13 @@ public class Profile implements java.io.Serializable
     private void UpdateExpense(Expense expense, Profile profile) { ProfileManager.InsertExpenseDatabase(profile, expense, true); }
 
     public void CloneExpense(Expense oldEx, Expense newEx){
+        AddExpense(newEx);
+
         //Set child relationship
         oldEx.AddChild(newEx, true);
         newEx.SetParentID(oldEx.GetID());
 
-        AddExpense(newEx);
+        UpdateExpense(newEx);
         UpdateExpense(oldEx);
     }
 
@@ -293,15 +295,26 @@ public class Profile implements java.io.Serializable
     }
 
     public void UpdatePaidBackInTimeFrame(LocalDate paidBack, boolean override){
-        for (int i = 0; i < _ExpenseSources_timeFrame.size(); i++){
-            Expense ex = _ExpenseSources_timeFrame.get(i);
+        CalculateTimeFrame();
+
+        ArrayList<Expense> tempList = new ArrayList<>();
+        for (Expense ex : _ExpenseSources_timeFrame) { tempList.add(ex); }
+
+        //ProfileManager.Print("Size:" + tempList.size());
+        for (int i = 0; i < tempList.size(); i++){
+            Expense ex = tempList.get(i);
+            //ProfileManager.Print(ex.GetID() + " : " + ex.GetCategory());
+
             //Child or Parent that doesn't repeat : Set paid back unless it already exists or override
             if (GetExpense(ex.GetID()) != null){
                 if (ex.IsChild() || ex.GetTimePeriod() != null && !ex.GetTimePeriod().DoesRepeat()) {
+                    //ProfileManager.Print("Option 1");
                     if (ex.GetPaidBack() == null || override) {
                         ex.SetPaidBack(paidBack);
+                        UpdateExpense(ex);
                     }
                 } else { //Parent that does repeat : clone expense to avoid affecting children
+                    //ProfileManager.Print("Option 2");
                     Expense newExp = new Expense(ex);
                     newExp.SetTimePeriod(new TimePeriod(ex.GetTimePeriod().GetDate()));
                     newExp.SetPaidBack(paidBack);
@@ -310,9 +323,11 @@ public class Profile implements java.io.Serializable
                 }
             }
             else { //Not independent transaction : CloneExpense and set paid back
+                //ProfileManager.Print("Option 3");
                 Expense newExp = new Expense(ex);
                 newExp.SetPaidBack(paidBack);
-                CloneExpense(GetParentExpenseFromTimeFrameExpense(ex), newExp);
+                newExp.RemoveChildren();
+                CloneExpense(GetExpense(ex.GetParentID()), newExp);
             }
         }
     }
@@ -503,11 +518,11 @@ public class Profile implements java.io.Serializable
         if (_startTime!= null && _endTime != null) {
             for (int i = 0; i < IncomeSources.size(); i++) {
                 tp = IncomeSources.get(i).GetTimePeriod();
-                occ = tp.GetOccurrencesWithin(_startTime, _endTime);
+                if (tp != null) { occ = tp.GetOccurrencesWithin(_startTime, _endTime); }
 
                 for (int ii = 0; ii < occ.size(); ii++) {
                     //Add income to temp array
-                    if (IncomeSources.get(i).GetTimePeriod().GetDate().equals(occ.get(ii))) {
+                    if (IncomeSources.get(i).GetTimePeriod() != null && IncomeSources.get(i).GetTimePeriod().GetDate() != null) {
                         _IncomeSources_timeFrame.add(IncomeSources.get(i));
                     }
                     else {
@@ -521,11 +536,11 @@ public class Profile implements java.io.Serializable
             for (int i = 0; i < ExpenseSources.size(); i++) {
 
                 tp = ExpenseSources.get(i).GetTimePeriod();
-                occ = tp.GetOccurrencesWithin(_startTime, _endTime);
+                if (tp != null) { occ = tp.GetOccurrencesWithin(_startTime, _endTime); }
 
                 for (int ii = 0; ii < occ.size(); ii++) {
                     //Add expense to temp array
-                    if (ExpenseSources.get(i).GetTimePeriod().GetDate() != null) {
+                    if (ExpenseSources.get(i).GetTimePeriod() != null && ExpenseSources.get(i).GetTimePeriod().GetDate() != null) {
                         if (ExpenseSources.get(i).GetTimePeriod().GetDate().equals(occ.get(ii))) {
                             _ExpenseSources_timeFrame.add(ExpenseSources.get(i));
                             //if (ExpenseSources.get(i).IsParent()) {} else{ ProfileManager.Print("Special case");}

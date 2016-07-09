@@ -312,7 +312,7 @@ public class TimePeriod implements java.io.Serializable
         ArrayList<LocalDate> occurrences = new ArrayList<>();
 
         //Event time section dates
-        LocalDate event_start = timeFrame_start; //dateMax(date, timeFrame_start);
+        LocalDate event_start = date; //dateMax(date, timeFrame_start);
         LocalDate event_end = timeFrame_end;
         LocalDate initialEvent = (event_start!=null ? event_start : date);
         //Null start_time (set to first occurrence of event)        ^^^^

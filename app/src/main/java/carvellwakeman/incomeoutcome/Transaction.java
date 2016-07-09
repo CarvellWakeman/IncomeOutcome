@@ -121,7 +121,7 @@ public class Transaction implements java.io.Serializable
             }
         }
     }
-    public void RemoveChildren() { for (Integer CID : children) { RemoveChild(CID); } }
+    public void RemoveChildren() { children.clear(); }
     public void RemoveChild(Integer CID){ if (children.size() > 0) { children.remove(CID); } }
     public boolean HasChild(Integer CID){ return children.contains(CID); }
 

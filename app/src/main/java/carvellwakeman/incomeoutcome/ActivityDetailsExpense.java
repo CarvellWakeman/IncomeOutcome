@@ -125,7 +125,7 @@ public class ActivityDetailsExpense extends AppCompatActivity implements Gesture
             _profile.CalculateTimeFrame();
             expenseAdapter.notifyDataSetChanged();
             totalsAdapter.notifyDataSetChanged();
-            //UpdateAdapters();
+            UpdateAdapters();
         }
     };
 
