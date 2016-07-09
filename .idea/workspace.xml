@@ -22,6 +22,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1e4c6623-5c8e-4b0d-bccf-6e697c7eaddd" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java" />
     </list>
     <ignored path="IncomeOutcome.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -83,11 +84,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Profile.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Profile.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="307" column="44" selection-start-line="307" selection-start-column="44" selection-end-line="307" selection-end-column="44" />
+            <state vertical-scroll-proportion="0.6710963">
+              <caret line="303" column="51" selection-start-line="303" selection-start-column="51" selection-end-line="303" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -160,11 +161,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TimePeriod.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TimePeriod.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/TimePeriod.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5199336">
-              <caret line="371" column="40" selection-start-line="371" selection-start-column="40" selection-end-line="371" selection-end-column="40" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="371" column="60" selection-start-line="371" selection-start-column="60" selection-end-line="371" selection-end-column="60" />
               <folding />
             </state>
           </provider>
@@ -1938,12 +1939,12 @@
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/DatabaseHelper.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityDetailsExpense.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Transaction.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityNewExpense.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterDetailsExpense.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterDetailsIncome.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/TimePeriod.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java" />
       </list>
     </option>
   </component>
@@ -2506,7 +2507,13 @@
       <option name="project" value="LOCAL" />
       <updated>1468035945434</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Now has all features present in MyTabs, and more!&#10;Transaction Details activity now has a &quot;Paid Back&quot; menu item that sets the paid back date of all transactions in that list&#10;Transaction children are now handled properly">
+      <created>1468035949299</created>
+      <option name="number" value="00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1468035949299</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -2969,14 +2976,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="307" column="44" selection-start-line="307" selection-start-column="44" selection-end-line="307" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityNewExpense.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-10.0">
@@ -3058,8 +3057,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/TimePeriod.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5199336">
-          <caret line="371" column="40" selection-start-line="371" selection-start-column="40" selection-end-line="371" selection-end-column="40" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="371" column="60" selection-start-line="371" selection-start-column="60" selection-end-line="371" selection-end-column="60" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6710963">
+          <caret line="303" column="51" selection-start-line="303" selection-start-column="51" selection-end-line="303" selection-end-column="51" />
           <folding />
         </state>
       </provider>

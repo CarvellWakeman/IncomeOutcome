@@ -295,13 +295,13 @@ public class Profile implements java.io.Serializable
     public void UpdatePaidBackInTimeFrame(LocalDate paidBack, boolean override){
         for (int i = 0; i < _ExpenseSources_timeFrame.size(); i++){
             Expense ex = _ExpenseSources_timeFrame.get(i);
-            //Child : Set paid back unless it already exists or override
+            //Child or Parent that doesn't repeat : Set paid back unless it already exists or override
             if (GetExpense(ex.GetID()) != null){
-                if (ex.IsChild()) {
+                if (ex.IsChild() || ex.GetTimePeriod() != null && !ex.GetTimePeriod().DoesRepeat()) {
                     if (ex.GetPaidBack() == null || override) {
                         ex.SetPaidBack(paidBack);
                     }
-                } else { //Parent : clone expense to avoid affecting children
+                } else { //Parent that does repeat : clone expense to avoid affecting children
                     Expense newExp = new Expense(ex);
                     newExp.SetTimePeriod(new TimePeriod(ex.GetTimePeriod().GetDate()));
                     newExp.SetPaidBack(paidBack);
