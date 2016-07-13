@@ -54,6 +54,7 @@ public class ProfileManager
     public static DecimalFormat currencyFormat;
     //public static DateFormat simpleDateFormat;
     public static String simpleDateFormat;
+    public static String simpleDateFormatJustYear;
     public static String simpleDateFormatNoYear;
     public static String simpleDateFormatNoDay;
     public static String simpleDateFormatSaving;
@@ -115,6 +116,7 @@ public class ProfileManager
         //simpleDateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
         simpleDateFormat = "MMMM dd, yyyy"; //May 12, 2016
         //simpleDateFormatNoYear = new SimpleDateFormat("MMMM dd", Locale.US);
+        simpleDateFormatJustYear = "yyyy"; //2016
         simpleDateFormatNoYear = "MMMM dd"; //May 12
         simpleDateFormatNoDay = "MMMM, yyyy"; //May, 2016
         simpleDateFormatSaving = "MM-dd-yyyy"; //05-12-2016

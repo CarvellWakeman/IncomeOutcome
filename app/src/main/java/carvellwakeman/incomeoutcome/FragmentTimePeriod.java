@@ -418,7 +418,7 @@ public class FragmentTimePeriod extends Fragment {
 
         //Date buttons
         button_setDate = (Button) myFragmentView.findViewById(R.id.button_newExpense_date);
-        button_setDate.setText(date.toString(ProfileManager.simpleDateFormat));
+        button_setDate.setText(String.format(getString(R.string.time_start_format), date.toString(ProfileManager.simpleDateFormat)));
         button_setDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -601,7 +601,7 @@ public class FragmentTimePeriod extends Fragment {
             date = new LocalDate(year, monthOfYear+1, dayOfMonth);
 
             //Format button text
-            if (date != null && button_setDate != null) { button_setDate.setText(date.toString(ProfileManager.simpleDateFormat)); }
+            if (date != null && button_setDate != null) { button_setDate.setText( String.format(getString(R.string.time_start_format), date.toString(ProfileManager.simpleDateFormat)) ); }
         }
     };
     DatePickerDialog.OnDateSetListener datePicker2 = new DatePickerDialog.OnDateSetListener() {

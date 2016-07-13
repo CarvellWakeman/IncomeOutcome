@@ -103,7 +103,10 @@ public class Profile implements java.io.Serializable
     public String GetDateFormatted()
     {
         if (_endTime != null && _startTime != null) {
-            if (_endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue() && _startTime.getDayOfMonth() == _startTime.dayOfMonth().getMinimumValue()) {
+            if (_endTime.getDayOfYear() == _endTime.dayOfYear().getMaximumValue() && _startTime.getDayOfYear() == _startTime.dayOfYear().getMinimumValue()){
+                return _startTime.toString(ProfileManager.simpleDateFormatJustYear);
+            }
+            else if (_endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue() && _startTime.getDayOfMonth() == _startTime.dayOfMonth().getMinimumValue()) {
                 return _startTime.toString(ProfileManager.simpleDateFormatNoDay);
             }
             else {
