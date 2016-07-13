@@ -8,6 +8,7 @@ import java.util.Map;
 
 import android.database.sqlite.SQLiteDatabase;
 import org.joda.time.LocalDate;
+import org.joda.time.Period;
 
 public class Profile implements java.io.Serializable
 {
@@ -19,6 +20,7 @@ public class Profile implements java.io.Serializable
     //TimeFrame
     private LocalDate _startTime;
     private LocalDate _endTime;
+    private Period _period;
 
     //Income sources
     private ArrayList<Income> IncomeSources;
@@ -90,6 +92,7 @@ public class Profile implements java.io.Serializable
 
     public LocalDate GetStartTime(){  return _startTime; }
     public LocalDate GetEndTime(){ return _endTime; }
+    public Period GetPeriod() { return _period; }
 
     public int GetIncomeSourcesSize() { return IncomeSources.size(); }
     public int GetExpenseSourcesSize() { return ExpenseSources.size(); }
@@ -117,33 +120,41 @@ public class Profile implements java.io.Serializable
     //Mutators
     public void SetID(int id){ _uniqueID = id; } //TODO Should not be used outside of loading
     public void SetName(String newName){ name = newName; }
-    public void SetStartTime(LocalDate start, Boolean dontsave){ _startTime = start;  }
+    public void SetStartTimeDontSave(LocalDate start){
+        _startTime = start;
+    }
     public void SetStartTime(LocalDate start){ //[EXCLUDE] Removing insertSettingDatabase so that the database is not updated many times for one profile
-        SetStartTime(start, true);
+        SetStartTimeDontSave(start);
+        SetEndTimeDontSave(GetStartTime().plus(GetPeriod()));
+        SetEndTimeDontSave(GetEndTime().minusDays(1));
         ProfileManager.InsertSettingDatabase(this, true);
     }
-    public void SetEndTime(LocalDate end, Boolean dontsave){ _endTime = end; }
+    public void SetEndTimeDontSave(LocalDate end){ _endTime = end; }
     public void SetEndTime(LocalDate end){
-        SetEndTime(end, true);
+        SetEndTimeDontSave(end);
         ProfileManager.InsertSettingDatabase(this, true);
     }
-    public void TimePeriodPlus(int n){ //TODO: Profile includes a time interval variable that is set up with the profile setup (Monthly/n-weekly/annually)
-        LocalDate e;
-        if (GetEndTime() == null) { e = new LocalDate(); }
-        else { e = GetEndTime().plusMonths(1); }
-        e = e.withDayOfMonth(e.dayOfMonth().getMaximumValue());
+    public void SetPeriodDontSave(Period period){
+        _period = period;
+    }
+    public void SetPeriod(Period period){
+        SetPeriodDontSave(period);
+        ProfileManager.InsertSettingDatabase(this, true);
+    }
 
-        SetStartTime(e.withDayOfMonth(e.dayOfMonth().getMinimumValue()));
-        SetEndTime(e);
+    public void TimePeriodPlus(int n){
+        if (GetStartTime() == null) { SetStartTime(new LocalDate()); }
+
+        for (int i = 0; i < n; i++) {
+            SetStartTime(GetStartTime().plus(GetPeriod()));
+        }
     }
     public void TimePeriodMinus(int n){
-        LocalDate e;
-        if (GetEndTime() == null) { e = new LocalDate(); }
-        else { e = GetEndTime().minusMonths(1); }
-        e = e.withDayOfMonth(e.dayOfMonth().getMaximumValue());
+        if (GetStartTime() == null) { SetStartTime(new LocalDate()); }
 
-        SetStartTime(e.withDayOfMonth(e.dayOfMonth().getMinimumValue()));
-        SetEndTime(e);
+        for (int i = 0; i < n; i++) {
+            SetStartTime(GetStartTime().minus(GetPeriod()));
+        }
     }
 
 

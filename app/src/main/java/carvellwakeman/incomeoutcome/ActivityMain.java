@@ -333,7 +333,7 @@ public class ActivityMain extends AppCompatActivity
             case R.id.toolbar_action_settings: //Start settings activity
                 Intent intent = new Intent(ActivityMain.this, ActivitySettings.class);
                 //intent.putExtra("profile", pr.GetID());
-                startActivity(intent);
+                startActivityForResult(intent, 3);
                 return true;
             /*
             case R.id.toolbar_action_manageprofiles:
@@ -363,37 +363,37 @@ public class ActivityMain extends AppCompatActivity
 
     //Return results from child activities
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Profile pr = null;
         if (data != null) {
+            pr = ProfileManager.GetProfileByID(data.getIntExtra("profile", -1));
+        }
 
-            Profile pr = ProfileManager.GetProfileByID(data.getIntExtra("profile", -1));
+        switch (requestCode) {
+            case 0: //New expense
+                if (resultCode == RESULT_OK) {
+                    if (pr != null && data != null) {
+                        Expense newExp = (Expense) data.getSerializableExtra("newExpense");
 
-            switch (requestCode) {
-                case 0: //New expense
-                    if (resultCode == RESULT_OK) {
-                        if (pr != null) {
-                            Expense newExp = (Expense) data.getSerializableExtra("newExpense");
-
-                            if (newExp != null) {
-                                pr.AddExpense(newExp);
-                            }
+                        if (newExp != null) {
+                            pr.AddExpense(newExp);
                         }
                     }
-                    break;
-                case 1: //New Income
-                    if (resultCode == RESULT_OK) {
-                        if (pr != null) {
-                            Income newInc = (Income) data.getSerializableExtra("newIncome");
+                }
+                break;
+            case 1: //New Income
+                if (resultCode == RESULT_OK) {
+                    if (pr != null && data != null) {
+                        Income newInc = (Income) data.getSerializableExtra("newIncome");
 
-                            if (newInc != null) {
-                                pr.AddIncome(newInc);
-                            }
+                        if (newInc != null) {
+                            pr.AddIncome(newInc);
                         }
                     }
-                    break;
-                case 3: //Refresh info
-                    UpdateStartEndDate();
-                    break;
-            }
+                }
+                break;
+            case 3: //Refresh info
+                UpdateStartEndDate();
+                break;
         }
     }
 
@@ -452,9 +452,6 @@ public class ActivityMain extends AppCompatActivity
                     textView_endDate.setText(R.string.time_end);
                 }
             }
-
-            //Update timeframes
-            pr.CalculateTimeFrame();
         }
     }
 
@@ -593,6 +590,8 @@ public class ActivityMain extends AppCompatActivity
         */
         Profile pr = ProfileManager.GetCurrentProfile();
         if (pr != null) {
+            pr.CalculateTimeFrame();//Update timeframes
+
             //Start income (details) activity and send it the profile we clicked on
             Intent intent = new Intent(ActivityMain.this, ActivityDetailsIncome.class);
             intent.putExtra("profile", pr.GetID());
@@ -606,7 +605,8 @@ public class ActivityMain extends AppCompatActivity
     {
         Profile pr = ProfileManager.GetCurrentProfile();
         if (pr != null) {
-            pr.CalculateTimeFrame();
+            pr.CalculateTimeFrame();//Update timeframes
+
             //Start expense (details) activity and send it the profile we clicked on
             Intent intent = new Intent(ActivityMain.this, ActivityDetailsExpense.class);
             intent.putExtra("profile", pr.GetID());

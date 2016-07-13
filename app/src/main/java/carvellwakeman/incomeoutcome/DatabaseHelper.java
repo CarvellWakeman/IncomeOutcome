@@ -17,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.LocalDate;
+import org.joda.time.Period;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     ContentValues contentValues_tp;
 
     //DATABASE_VERSION
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     //File information
     private static final String FILE_NAME = "data.db";
     private File EXPORT_DIRECTORY;
@@ -92,6 +93,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String COLUMN_splitValue = "SPLITVALUE";
     private static final String COLUMN_paidBack = "PAIDBACK";
     //Settings only
+    private static final String COLUMN_period = "PERIOD";
     private static final String COLUMN_categorycolor = "CATEGORY_COLOR";
     private static final String COLUMN_profileSelected = "PROFILE_SEL";
     private static final String COLUMN_startdate = "START_DATE";
@@ -115,7 +117,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
             COLUMN_profile + TEXT_TYPE + "," +
             COLUMN_profileSelected + INT_TYPE + "," +
             COLUMN_startdate + DATE_TYPE + "," +
-            COLUMN_enddate + DATE_TYPE
+            COLUMN_enddate + DATE_TYPE + "," +
+            COLUMN_period + TEXT_TYPE
             + ");";
 
     private static final String CREATE_TABLE_EXPENSES = "CREATE TABLE IF NOT EXISTS " + TABLE_EXPENSES + "(" + COLUMN_ID + INT_TYPE + PRIMARYKEY + "," +
@@ -173,15 +176,21 @@ public class DatabaseHelper extends SQLiteOpenHelper
     //Upgrade statements
     //private static final String UPGRADE_TABLE_SETTINGS_CATEGORIES_1_2 = "ALTER TABLE " + TABLE_SETTINGS_CATEGORIES + " ADD COLUMN " + COLUMN_splitWith2 + TEXT_TYPE;
     //Add column COLUMN_splitWith2, copy value from COLUMN_splitWith into COLUMN_splitWith2
-    private static final String UPGRADE_TABLE_SETTINGS_OTHERPEOPLE_2_3 = "ALTER TABLE " + TABLE_SETTINGS_OTHERPEOPLE +
-            " ADD COLUMN " + COLUMN_splitWith2 + TEXT_TYPE + STATEMENT_DELIMITER +
+    private static final String UPGRADE_2_3 = "ALTER TABLE " + TABLE_SETTINGS_OTHERPEOPLE +
+            " ADD COLUMN " + COLUMN_splitWith2 + TEXT_TYPE +
+            STATEMENT_DELIMITER +
             "UPDATE " + TABLE_SETTINGS_OTHERPEOPLE + " SET " + COLUMN_splitWith2 + " = " +COLUMN_splitWith;
 
     private static final String UPGRADE_3_4 = "ALTER TABLE " + TABLE_EXPENSES +
-            " ADD COLUMN " + COLUMN_children + TEXT_TYPE + STATEMENT_DELIMITER +
-
+            " ADD COLUMN " + COLUMN_children + TEXT_TYPE +
+            STATEMENT_DELIMITER +
             "ALTER TABLE " + TABLE_INCOME +
             " ADD COLUMN " + COLUMN_children + TEXT_TYPE;
+
+    private static final String UPGRADE_4_5 = "ALTER TABLE " + TABLE_SETTINGS_PROFILES +
+            " ADD COLUMN " + COLUMN_period + TEXT_TYPE +
+            STATEMENT_DELIMITER +
+            "UPDATE " + TABLE_SETTINGS_PROFILES + " SET " + COLUMN_period + " = '" + (new Period(0,1,0,0,0,0,0,0)).toString() + "'" ; //Default value monthly period
 
 
     public DatabaseHelper(Context context) {
@@ -208,7 +217,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        ProfileManager.Print("OnUpgrade (" + oldVersion + "->" + newVersion + ")");
+        //ProfileManager.Print("OnUpgrade (" + oldVersion + "->" + newVersion + ")");
         try {
             ContentValues cv = new ContentValues();
 
@@ -216,20 +225,16 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 case 1: //To version 2
                     cv.clear();
                     ProfileManager.Print("Version 1 Upgrade not supported");
-                case 2: //To version 3
-                    cv.clear();
-                    //Other People table
-                    //SQLExecuteMultiple(db, UPGRADE_TABLE_SETTINGS_OTHERPEOPLE_2_3);
-                        //Add COLUMN_splitwith2, set default value to DefaultValue
-                        //cv.put(COLUMN_splitWith2, "DefaultValue");
-                        //db.update(TABLE_SETTINGS_OTHERPEOPLE, cv, null, null);
-                    //Convert profile string to ID
-
-                    ProfileManager.Print("Upgrade from Ver.2 to Ver.3");
+                case 2: //To version 3 (Not neccessary upgrade)
+                    //SQLExecuteMultiple(db, UPGRADE_2_3);
+                    //ProfileManager.Print("Upgrade from Ver.2 to Ver.3");
                 case 3: //To version 4
                     SQLExecuteMultiple(db, UPGRADE_3_4);
                     ProfileManager.Print("Upgrade from Ver.3 to Ver.4");
                 case 4: //To version 5
+                    SQLExecuteMultiple(db, UPGRADE_4_5);
+                    ProfileManager.Print("Upgrade from Ver.4 to Ver.5");
+                case 5: //To version 6
             }
             //OLD
             //if (newVersion > oldVersion){
@@ -687,6 +692,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     if (profile.GetEndTime() != null) {
                         contentValues_tr.put(COLUMN_enddate, profile.GetEndTime().toString(ProfileManager.simpleDateFormatSaving));
                     }
+                    if (profile.GetPeriod() != null) {
+                        contentValues_tr.put(COLUMN_period, profile.GetPeriod().toString());
+                    }
 
                     //Insert/update row and return result
                     long result = 0;
@@ -896,6 +904,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 int profileSel = c.getInt(c.getColumnIndex(COLUMN_profileSelected));
                 String start_date = c.getString(c.getColumnIndex(COLUMN_startdate));
                 String end_date = c.getString(c.getColumnIndex(COLUMN_enddate));
+                String period = c.getString(c.getColumnIndex(COLUMN_period));
 
                 //Fill out profiles
                 if (profile != null){
@@ -903,6 +912,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     p.SetID(uniqueID);
                     if (start_date != null){ p.SetStartTime(ProfileManager.ConvertDateFromString(start_date)); }
                     if (end_date != null){ p.SetEndTime(ProfileManager.ConvertDateFromString(end_date)); }
+                    if (period != null){ try { p.SetPeriod(Period.parse(period)); } catch (Exception e) { e.printStackTrace(); } }
                     ProfileManager.AddProfile(p, true);
 
                     if (profileSel == 1){ ProfileManager.SelectProfile(p); }

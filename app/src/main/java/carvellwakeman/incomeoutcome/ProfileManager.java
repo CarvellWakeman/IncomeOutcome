@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import org.joda.time.LocalDate;
+import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -149,8 +150,9 @@ public class ProfileManager
         LocalDate c2 = LocalDate.now().withDayOfMonth(LocalDate.now().dayOfMonth().getMaximumValue());
 
         Profile p1 = new Profile("Monthly Budget");
-        p1.SetStartTime(c1, true);
-        p1.SetEndTime(c2, true);
+        p1.SetStartTimeDontSave(c1);
+        p1.SetEndTimeDontSave(c2);
+        p1.SetPeriodDontSave(new Period(0,1,0,0,0,0,0,0)); //Monthly default period
 
         Profile p2 = new Profile("Empty Profile");
 

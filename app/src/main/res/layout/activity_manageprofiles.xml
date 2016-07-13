@@ -36,7 +36,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/linearLayout_dialogmpr_editprofile"
-        android:layout_below="@+id/linearLayout2">
+        android:layout_below="@+id/linearLayout2"
+        android:visibility="visible">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView_dialogmpr_profiles"
@@ -83,6 +84,7 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp" />
 
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -93,7 +95,48 @@
             android:layout_marginTop="8dp"
             android:layout_marginRight="4dp"
             android:layout_marginLeft="4dp"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:visibility="gone" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Occur Every"
+                android:id="@+id/textView"
+                android:layout_alignTop="@+id/editText_profile_period"
+                android:layout_alignBottom="@+id/editText_profile_period"
+                android:gravity="center_vertical"
+                android:layout_marginRight="8dp" />
+
+            <EditText
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/editText_profile_period"
+                android:theme="@style/Base.Theme.AppCompat.Light"
+                android:text="1"
+                android:digits="1234567890"
+                android:maxLines="1"
+                android:layout_toRightOf="@+id/textView"
+                android:layout_marginRight="8dp"
+                android:gravity="center_horizontal" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner_profile_period"
+                android:theme="@style/MaterialTheme"
+                android:layout_toEndOf="@+id/editText_profile_period" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 

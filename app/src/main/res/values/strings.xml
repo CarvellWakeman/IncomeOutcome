@@ -116,6 +116,13 @@
         <item>Yearly</item>
     </string-array>
 
+    <string-array name="period_array">
+        <item>Days</item>
+        <item>Weeks</item>
+        <item>Months</item>
+        <item>Years</item>
+    </string-array>
+
     <string-array name="repeat_until">
         <item>Forever</item>
         <item>Until a date</item>
