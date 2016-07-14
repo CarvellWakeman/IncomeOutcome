@@ -128,8 +128,10 @@ public class Profile implements java.io.Serializable
     }
     public void SetStartTime(LocalDate start){ //[EXCLUDE] Removing insertSettingDatabase so that the database is not updated many times for one profile
         SetStartTimeDontSave(start);
-        SetEndTimeDontSave(GetStartTime().plus(GetPeriod()));
-        SetEndTimeDontSave(GetEndTime().minusDays(1));
+        if (GetStartTime() != null) {
+            SetEndTimeDontSave(GetStartTime().plus(GetPeriod()));
+            SetEndTimeDontSave(GetEndTime().minusDays(1));
+        }
         ProfileManager.InsertSettingDatabase(this, true);
     }
     public void SetEndTimeDontSave(LocalDate end){ _endTime = end; }
@@ -146,14 +148,14 @@ public class Profile implements java.io.Serializable
     }
 
     public void TimePeriodPlus(int n){
-        if (GetStartTime() == null) { SetStartTime(new LocalDate()); }
+        if (GetStartTime() == null) { SetStartTime( (new LocalDate()).withDayOfMonth(1) ); }
 
         for (int i = 0; i < n; i++) {
             SetStartTime(GetStartTime().plus(GetPeriod()));
         }
     }
     public void TimePeriodMinus(int n){
-        if (GetStartTime() == null) { SetStartTime(new LocalDate()); }
+        if (GetStartTime() == null) { SetStartTime( (new LocalDate()).withDayOfMonth(1) ); }
 
         for (int i = 0; i < n; i++) {
             SetStartTime(GetStartTime().minus(GetPeriod()));
