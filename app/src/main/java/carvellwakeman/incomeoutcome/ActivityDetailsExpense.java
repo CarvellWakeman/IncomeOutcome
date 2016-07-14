@@ -34,7 +34,6 @@ public class ActivityDetailsExpense extends AppCompatActivity implements Gesture
     View.OnTouchListener gestureListener;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,20 +114,6 @@ public class ActivityDetailsExpense extends AppCompatActivity implements Gesture
     }
 
 
-    final DatePickerDialog.OnDateSetListener datePicker = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
-        {
-            //Set local variable date
-            _profile.UpdatePaidBackInTimeFrame(new LocalDate(year, monthOfYear + 1, dayOfMonth), false);
-
-            _profile.CalculateTimeFrame();
-            expenseAdapter.notifyDataSetChanged();
-            totalsAdapter.notifyDataSetChanged();
-            UpdateAdapters();
-        }
-    };
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -165,9 +150,7 @@ public class ActivityDetailsExpense extends AppCompatActivity implements Gesture
                 return true;
 
             case R.id.toolbar_paidback:
-                LocalDate c = new LocalDate();
-                DatePickerDialog d = new DatePickerDialog(ActivityDetailsExpense.this, datePicker, c.getYear(), c.getMonthOfYear() - 1, c.getDayOfMonth());
-                d.show();
+                ProfileManager.OpenDialogFragment(this, DialogFragmentPaidBack.newInstance(this, _profile), true);
                 return true;
             default:
                 return false;

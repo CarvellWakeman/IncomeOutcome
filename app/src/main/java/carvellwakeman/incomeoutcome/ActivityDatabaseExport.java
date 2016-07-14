@@ -50,7 +50,7 @@ public class ActivityDatabaseExport extends AppCompatActivity {
 
         existingDatabases = ProfileManager.GetImportDatabaseFilesString();
 
-        textView_directory = (TextView) findViewById(R.id.textView_dialogex_directory);
+        textView_directory = (TextView) findViewById(R.id.textView_dialogpb_directory);
 
         switch_override = (SwitchCompat) findViewById(R.id.switch_override_export);
 

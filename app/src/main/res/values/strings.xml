@@ -23,9 +23,11 @@
     <string name="title_deleteand">Delete Profile and</string>
     <string name="title_editpeople">Edit People</string>
     <string name="title_editcategory">Edit Category</string>
+    <string name="title_paidback">Paid Back</string>
     <!-- Sub titles -->
     <string name="subtitle_transferto">transfer its transactions to</string>
     <string name="subtitle_or">OR</string>
+
 
 
     <!-- Setting titles -->
@@ -74,10 +76,15 @@
     <string name="confirm_areyousure_transferdelete">Take action for transactions in this profile</string>
 
     <!-- Time -->
+    <string name="time_setdate">Set Date</string>
     <string name="time_start">START DATE</string>
     <string name="time_end">END DATE</string>
     <string name="time_start_format">START %1$s</string>
     <string name="time_end_format">END %1$s</string>
+    <string name="time_today">Today</string>
+    <string name="time_ondate">On Date</string>
+    <string name="time_ondate_formatted">On %1$s</string>
+    <string name="time_never">Never</string>
 
     <!-- Information -->
     <string name="info_paidback">Paid Back %1$s</string>

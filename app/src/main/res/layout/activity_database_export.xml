@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="&lt;Directory Path>"
-        android:id="@+id/textView_dialogex_directory"
+        android:id="@+id/textView_dialogpb_directory"
         android:layout_marginBottom="12dp"
         android:layout_below="@+id/linearLayout2"
         android:layout_marginLeft="24dp"
@@ -38,7 +38,7 @@
         android:layout_marginRight="24dp"
         android:layout_marginLeft="24dp"
         android:id="@+id/linearLayout_dialogex_files"
-        android:layout_below="@+id/textView_dialogex_directory">
+        android:layout_below="@+id/textView_dialogpb_directory">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/TIL_dialog_filename"
