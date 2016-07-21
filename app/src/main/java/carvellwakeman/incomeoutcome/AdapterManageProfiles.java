@@ -72,7 +72,7 @@ public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManagePro
                 public void onClick(View v) {
                     final Profile pr = ProfileManager.GetProfileByIndex(getAdapterPosition());
                     if (pr != null) {
-                        if (pr.GetIncomeSourcesSize() + pr.GetExpenseSourcesSize() > 0) {
+                        if (pr.GetTransactionsSize() > 0) {
                             ProfileManager.OpenDialogFragment(parent, DialogFragmentTransferTransaction.newInstance(parent, pr), true); //TODO: Handle mIsLargeDisplay
                             //parent.dismiss();
                         }

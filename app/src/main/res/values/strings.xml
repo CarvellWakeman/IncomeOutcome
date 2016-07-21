@@ -3,27 +3,35 @@
     <string name="app_name_nospace">IncomeOutcome</string>
 
     <!-- Activity Titles -->
-    <string name="title_activity_tab">Tab</string>
-    <string name="title_activity_new_tab">Create new Tab</string>
     <string name="title_activity_new_transaction">Add a Transaction</string>
     <string name="title_activity_transaction">TransactionActivity</string>
 
     <!-- Titles -->
     <string name="title_settings">Settings</string>
+    <string name="title_expenses">Expenses</string>
+    <string name="title_income">Income</string>
+
+    <string name="title_exportdatabase">Export Database</string>
+    <string name="title_importdatabase">Import Database</string>
     <string name="title_manageprofiles">Manage Profiles</string>
     <string name="title_manageotherpeople">Manage People</string>
     <string name="title_managecategories">Manage Categories</string>
-    <string name="title_exportdatabase">Export Database</string>
-    <string name="title_importdatabase">Import Database</string>
+    <string name="title_newexpense">New Expense</string>
+    <string name="title_newincome">New Income</string>
+    <string name="title_newtransaction">New Transaction</string>
     <string name="title_addnewprofile">New Profile</string>
     <string name="title_addnewperson">New Person</string>
     <string name="title_addnewcategory">New Category</string>
-    <string name="title_editprofile">Edit Profile</string>
     <string name="title_selectprofile">Select Profile</string>
     <string name="title_deleteand">Delete Profile and</string>
+    <string name="title_edittransaction">Edit Transaction</string>
+    <string name="title_edittransactionseries">Edit Transaction Series</string>
+    <string name="title_editprofile">Edit Profile</string>
     <string name="title_editpeople">Edit People</string>
     <string name="title_editcategory">Edit Category</string>
+    <string name="title_copytransaction">Copy Transaction</string>
     <string name="title_paidback">Paid Back</string>
+    <string name="title_sourcecategory">Category and Source</string>
     <!-- Sub titles -->
     <string name="subtitle_transferto">transfer its transactions to</string>
     <string name="subtitle_or">OR</string>
@@ -41,6 +49,11 @@
     <string name="subtitle_settings_deletealldata">Erase all data and restore default settings.</string>
     <string name="subtitle_settings_import">Erase all current data and import new data</string>
 
+
+
+    <!-- Headers -->
+    <string name="header_cost">Cost</string>
+    <string name="header_amount">Payment Amount</string>
 
 
     <!-- Spinner selection -->
@@ -92,7 +105,7 @@
     <string name="info_restorebackup">Restore Backup</string>
     <string name="info_backupnotice">Restore backup created last time data was imported</string>
     <string name="info_nodescription"><i>No Description</i></string>
-    <string name="info_nocompany"><i>No Company</i></string>
+    <string name="info_nosource"><i>No Source</i></string>
     <string name="info_nocategory"><i>No Category</i></string>
     <string name="info_noname"><i>No Source Name</i></string>
     <string name="info_domwarning">* Some months are limited to 28/29/30 days. The last day of the month will be chosen in these cases.</string>

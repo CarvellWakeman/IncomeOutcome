@@ -37,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     ContentValues contentValues_tp;
 
     //DATABASE_VERSION
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
     //File information
     private static final String FILE_NAME = "data.db";
     private File EXPORT_DIRECTORY;
@@ -51,8 +51,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String TABLE_SETTINGS_CATEGORIES = "SETTINGS_CATEGORIES_DATA";
     public static final String TABLE_SETTINGS_OTHERPEOPLE = "SETTINGS_OTHERPEOPLE_DATA";
     public static final String TABLE_SETTINGS_PROFILES = "SETTINGS_PROFILES_DATA";
-    public static final String TABLE_EXPENSES = "EXPENSE_DATA";
-    public static final String TABLE_INCOME = "INCOME_DATA";
+        public static final String TABLE_EXPENSES = "EXPENSE_DATA";
+        public static final String TABLE_INCOME = "INCOME_DATA";
+    public static final String TABLE_TRANSACTIONS = "TRANSACTION_DATA";
     public static final String TABLE_TIMEPERIODS = "TIMEPERIOD_DATA";
     //Data types
     private static final String PRIMARYKEY = " PRIMARY KEY AUTOINCREMENT";
@@ -62,6 +63,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String BOOLEAN_TYPE = " BOOLEAN";
     private static final String DATE_TYPE = " DATE";
     //Shared
+    private static final String COLUMN_type = "TYPE";
     private static final String COLUMN_category = "CATEGORY";
     private static final String COLUMN_splitWith = "SPLITWITH";
     private static final String COLUMN_profile = "PROFILE";
@@ -121,6 +123,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             COLUMN_period + TEXT_TYPE
             + ");";
 
+    /*
     private static final String CREATE_TABLE_EXPENSES = "CREATE TABLE IF NOT EXISTS " + TABLE_EXPENSES + "(" + COLUMN_ID + INT_TYPE + PRIMARYKEY + "," +
             COLUMN_profile + INT_TYPE + "," +
             COLUMN_uniqueID + INT_TYPE + "," +
@@ -150,6 +153,24 @@ public class DatabaseHelper extends SQLiteOpenHelper
             COLUMN_children + TEXT_TYPE + "," +
             COLUMN_when + INT_TYPE
             + ");";
+            */
+    private static final String CREATE_TABLE_TRANSACTIONS = "CREATE TABLE IF NOT EXISTS " + TABLE_TRANSACTIONS + "(" +
+            COLUMN_type + INT_TYPE + "," +
+            COLUMN_profile + INT_TYPE + "," +
+            COLUMN_uniqueID + INT_TYPE + "," +
+            COLUMN_parentID + INT_TYPE + "," +
+            COLUMN_category + TEXT_TYPE + "," +
+            COLUMN_sourcename + TEXT_TYPE + "," +
+            COLUMN_description + TEXT_TYPE  + "," +
+            COLUMN_value + DOUBLE_TYPE  + "," +
+            COLUMN_staticValue + BOOLEAN_TYPE  + "," +
+            COLUMN_IPaid + BOOLEAN_TYPE + "," +
+            COLUMN_splitWith + TEXT_TYPE + "," +
+            COLUMN_splitValue + DOUBLE_TYPE  + "," +
+            COLUMN_paidBack + TEXT_TYPE + "," +
+            COLUMN_children + TEXT_TYPE + "," +
+            COLUMN_when + INT_TYPE
+            + ");";
 
     private static final String CREATE_TABLE_TIMEPERIOD = "CREATE TABLE IF NOT EXISTS " + TABLE_TIMEPERIODS + "(" + COLUMN_ID + INT_TYPE + PRIMARYKEY + "," +
             COLUMN_tp_parent + TEXT_TYPE + "," +
@@ -169,8 +190,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String DROP_TABLE_SETTINGS_CATEGORIES = "DROP TABLE IF EXISTS " + TABLE_SETTINGS_CATEGORIES;
     private static final String DROP_TABLE_SETTINGS_OTHERPEOPLE = "DROP TABLE IF EXISTS " + TABLE_SETTINGS_OTHERPEOPLE;
     private static final String DROP_TABLE_SETTINGS_PROFILES = "DROP TABLE IF EXISTS " + TABLE_SETTINGS_PROFILES;
-    private static final String DROP_TABLE_EXPENSES = "DROP TABLE IF EXISTS " + TABLE_EXPENSES;
-    private static final String DROP_TABLE_INCOME = "DROP TABLE IF EXISTS " + TABLE_INCOME;
+        private static final String DROP_TABLE_EXPENSES = "DROP TABLE IF EXISTS " + TABLE_EXPENSES;
+        private static final String DROP_TABLE_INCOME = "DROP TABLE IF EXISTS " + TABLE_INCOME;
+    private static final String DROP_TABLE_TRANSACTIONS = "DROP TABLE IF EXISTS " + TABLE_TRANSACTIONS;
     private static final String DROP_TABLE_TIMEPERIODS = "DROP TABLE IF EXISTS " + TABLE_TIMEPERIODS;
 
     //Upgrade statements
@@ -179,7 +201,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String UPGRADE_2_3 = "ALTER TABLE " + TABLE_SETTINGS_OTHERPEOPLE +
             " ADD COLUMN " + COLUMN_splitWith2 + TEXT_TYPE +
             STATEMENT_DELIMITER +
-            "UPDATE " + TABLE_SETTINGS_OTHERPEOPLE + " SET " + COLUMN_splitWith2 + " = " +COLUMN_splitWith;
+            "UPDATE " + TABLE_SETTINGS_OTHERPEOPLE + " SET " + COLUMN_splitWith2 + " = " + COLUMN_splitWith;
 
     private static final String UPGRADE_3_4 = "ALTER TABLE " + TABLE_EXPENSES +
             " ADD COLUMN " + COLUMN_children + TEXT_TYPE +
@@ -192,6 +214,105 @@ public class DatabaseHelper extends SQLiteOpenHelper
             STATEMENT_DELIMITER +
             "UPDATE " + TABLE_SETTINGS_PROFILES + " SET " + COLUMN_period + " = '" + (new Period(0,1,0,0,0,0,0,0)).toString() + "'" ; //Default value monthly period
 
+    private static final String UPGRADE_5_6 =
+            CREATE_TABLE_TRANSACTIONS +
+            STATEMENT_DELIMITER +
+            "INSERT INTO " + TABLE_TRANSACTIONS + "(" +
+                COLUMN_type + "," +
+                COLUMN_profile + "," +
+                COLUMN_uniqueID + "," +
+                COLUMN_parentID + "," +
+                COLUMN_category + "," +
+                COLUMN_sourcename + "," +
+                COLUMN_description + "," +
+                COLUMN_value + "," +
+                COLUMN_staticValue + "," +
+                COLUMN_IPaid + "," +
+                COLUMN_splitWith + "," +
+                COLUMN_splitValue + "," +
+                COLUMN_paidBack + "," +
+                COLUMN_children + "," +
+                COLUMN_when +
+                ") SELECT NULL," +
+                COLUMN_profile + "," +
+                COLUMN_uniqueID + "," +
+                COLUMN_parentID + "," +
+                COLUMN_category + "," +
+                COLUMN_sourcename + "," +
+                COLUMN_description + "," +
+                COLUMN_value + "," +
+                COLUMN_staticValue + "," +
+                COLUMN_IPaid + "," +
+                COLUMN_splitWith + "," +
+                COLUMN_splitValue + "," +
+                COLUMN_paidBack + "," +
+                COLUMN_children + "," +
+                COLUMN_when +
+                " FROM "  + TABLE_EXPENSES + STATEMENT_DELIMITER +
+            "UPDATE " + TABLE_TRANSACTIONS + " SET " + COLUMN_type + "='0' WHERE " + COLUMN_type + " IS NULL" + STATEMENT_DELIMITER +
+            "INSERT INTO " + TABLE_TRANSACTIONS + "(" +
+                COLUMN_type + "," +
+                COLUMN_profile + "," +
+                COLUMN_uniqueID + "," +
+                COLUMN_parentID + "," +
+                COLUMN_category + "," +
+                COLUMN_sourcename + "," +
+                COLUMN_description + "," +
+                COLUMN_value + "," +
+                COLUMN_staticValue + "," +
+                COLUMN_IPaid + "," +
+                COLUMN_splitWith + "," +
+                COLUMN_splitValue + "," +
+                COLUMN_paidBack + "," +
+                COLUMN_children + "," +
+                COLUMN_when +
+                ") SELECT NULL," +
+                COLUMN_profile + "," +
+                COLUMN_uniqueID + "," +
+                COLUMN_parentID + "," +
+                COLUMN_category + "," +
+                COLUMN_sourcename + "," +
+                COLUMN_description + "," +
+                COLUMN_value + "," +
+                COLUMN_staticValue +
+                ",NULL,NULL,NULL,NULL," +
+                COLUMN_children + "," +
+                COLUMN_when +
+                " FROM "  + TABLE_INCOME + STATEMENT_DELIMITER +
+            "UPDATE " + TABLE_TRANSACTIONS + " SET " + COLUMN_type + "='1' WHERE " + COLUMN_type + " IS NULL" + STATEMENT_DELIMITER +
+            DROP_TABLE_EXPENSES + STATEMENT_DELIMITER + DROP_TABLE_INCOME;
+
+                    /*
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_profile     + ") SELECT " + COLUMN_profile     + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_uniqueID    + ") SELECT " + COLUMN_uniqueID    + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_parentID    + ") SELECT " + COLUMN_parentID    + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_category    + ") SELECT " + COLUMN_category    + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_sourcename  + ") SELECT " + COLUMN_sourcename  + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_description + ") SELECT " + COLUMN_description + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_value       + ") SELECT " + COLUMN_value       + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_staticValue + ") SELECT " + COLUMN_staticValue + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_IPaid       + ") SELECT " + COLUMN_IPaid       + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_splitWith   + ") SELECT " + COLUMN_splitWith   + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_splitValue  + ") SELECT " + COLUMN_splitValue  + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_paidBack    + ") SELECT " + COLUMN_paidBack    + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_children    + ") SELECT " + COLUMN_children    + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_when        + ") SELECT " + COLUMN_when        + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                    "UPDATE "      + TABLE_TRANSACTIONS + " SET " + COLUMN_type     + "='0' WHERE " + COLUMN_type        + " IS NULL"                + STATEMENT_DELIMITER +
+
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_profile     + ") SELECT " + COLUMN_profile     + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_uniqueID    + ") SELECT " + COLUMN_uniqueID    + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_parentID    + ") SELECT " + COLUMN_parentID    + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_category    + ") SELECT " + COLUMN_category    + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_sourcename  + ") SELECT " + COLUMN_sourcename  + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_description + ") SELECT " + COLUMN_description + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_value       + ") SELECT " + COLUMN_value       + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_staticValue + ") SELECT " + COLUMN_staticValue + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_children    + ") SELECT " + COLUMN_children    + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_when        + ") SELECT " + COLUMN_when        + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                    "UPDATE "      + TABLE_TRANSACTIONS + " SET " + COLUMN_type     + "='1' WHERE " + COLUMN_type      + " IS NULL";//             + STATEMENT_DELIMITER +
+                    //DROP_TABLE_EXPENSES                                                                                                        + STATEMENT_DELIMITER +
+                    //DROP_TABLE_INCOME;
+                    */
 
     public DatabaseHelper(Context context) {
         super(context, FILE_NAME, null, DATABASE_VERSION);
@@ -235,6 +356,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     SQLExecuteMultiple(db, UPGRADE_4_5);
                     ProfileManager.Print("Upgrade from Ver.4 to Ver.5");
                 case 5: //To version 6
+                    SQLExecuteMultiple(db, UPGRADE_5_6);
+                    ProfileManager.Print("Upgrade from Ver.5 to Ver.6");
+                case 6: //To version 7
             }
             //OLD
             //if (newVersion > oldVersion){
@@ -338,26 +462,26 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 ProfileManager.Print("Error creating Settings table");
                 ex.printStackTrace();
             }
-            //Try create expenses table
+            //Try create transactions table
             try {
-                if (!isTableExists(TABLE_EXPENSES, false)) {
-                    db.execSQL(CREATE_TABLE_EXPENSES);
-                    //ProfileManager.Print("Expenses table created");
+                if (!isTableExists(TABLE_TRANSACTIONS, false)) {
+                    db.execSQL(CREATE_TABLE_TRANSACTIONS);
+                    //ProfileManager.Print("Transactions table created");
                 }
             } catch (SQLException ex){
-                ProfileManager.Print("Error creating Expenses table");
+                ProfileManager.Print("Error creating transactions table");
                 ex.printStackTrace();
             }
             //Try create income table
-            try {
-                if (!isTableExists(TABLE_INCOME, false)) {
-                    db.execSQL(CREATE_TABLE_INCOME);
-                    //ProfileManager.Print("Income table created");
-                }
-            } catch (SQLException ex){
-                ProfileManager.Print("Error creating Income table");
-                ex.printStackTrace();
-            }
+            //try {
+            //    if (!isTableExists(TABLE_INCOME, false)) {
+            //        db.execSQL(CREATE_TABLE_INCOME);
+            //        //ProfileManager.Print("Income table created");
+            //    }
+            //} catch (SQLException ex){
+            //    ProfileManager.Print("Error creating Income table");
+            //    ex.printStackTrace();
+            //}
             //Try create timeperiod table
             try {
                 if (!isTableExists(TABLE_TIMEPERIODS, false)) {
@@ -396,14 +520,18 @@ public class DatabaseHelper extends SQLiteOpenHelper
         } //else { ProfileManager.Print(TABLE_SETTINGS_PROFILES + " not found"); }
 
 
-        if (isTableExists(TABLE_EXPENSES, true)){
-            database.delete(TABLE_EXPENSES, null, null);
-            database.execSQL(DROP_TABLE_EXPENSES);
-        } //else { ProfileManager.Print(TABLE_EXPENSES + " not found"); }
-        if (isTableExists(TABLE_INCOME, true)){
-            database.delete(TABLE_INCOME, null, null);
-            database.execSQL(DROP_TABLE_INCOME);
-        } //else { ProfileManager.Print(TABLE_INCOME + " not found"); }
+            if (isTableExists(TABLE_EXPENSES, true)){
+                database.delete(TABLE_EXPENSES, null, null);
+                database.execSQL(DROP_TABLE_EXPENSES);
+            } //else { ProfileManager.Print(TABLE_EXPENSES + " not found"); }
+            if (isTableExists(TABLE_INCOME, true)){
+                database.delete(TABLE_INCOME, null, null);
+                database.execSQL(DROP_TABLE_INCOME);
+            } //else { ProfileManager.Print(TABLE_INCOME + " not found"); }
+        if (isTableExists(TABLE_TRANSACTIONS, true)){
+            database.delete(TABLE_TRANSACTIONS, null, null);
+            database.execSQL(DROP_TABLE_TRANSACTIONS);
+        }
         if (isTableExists(TABLE_TIMEPERIODS, true)){
             database.delete(TABLE_TIMEPERIODS, null, null);
             database.execSQL(DROP_TABLE_TIMEPERIODS);
@@ -559,8 +687,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
                         //Load new database
                         loadSettings();
-                        loadExpenses();
-                        loadIncome();
+                        loadTransactions();
+                        //loadIncome();
 
 
                         ProfileManager.PrintLong(importFile.getName() + " imported");
@@ -713,6 +841,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         } else { ProfileManager.Print("Profile is null"); return -1; }
     }
 
+    /*
     public long insert(Profile profile, Expense expense, Boolean tryupdate)
     {
         database = getWritableDatabase();
@@ -778,6 +907,46 @@ public class DatabaseHelper extends SQLiteOpenHelper
             long result = 0;
             if (tryupdate){ result = database.update(TABLE_INCOME, contentValues_tr, COLUMN_uniqueID + "=" + income.GetID(), null); }
             if (result == 0) { result = database.insert(TABLE_INCOME, null, contentValues_tr); }
+
+            return result;
+        }
+        else{
+            return -1;
+        }
+    }
+    */
+    public long insert(Profile profile, Transaction transaction, Boolean tryupdate)
+    {
+        database = getWritableDatabase();
+
+        if (database != null && isTableExists(TABLE_TRANSACTIONS, false)) {
+            contentValues_tr = new ContentValues();
+
+            //Timeperiod
+            long tp_id = insert(transaction.GetID(), transaction.GetTimePeriod(), tryupdate);
+
+            //Fill out row
+            contentValues_tr.put(COLUMN_type, transaction.GetType().ordinal());
+            contentValues_tr.put(COLUMN_profile, profile.GetID());
+            contentValues_tr.put(COLUMN_uniqueID, transaction.GetID());
+            contentValues_tr.put(COLUMN_parentID, transaction.GetParentID());
+            contentValues_tr.put(COLUMN_category, transaction.GetCategory());
+            contentValues_tr.put(COLUMN_sourcename, transaction.GetSourceName());
+            contentValues_tr.put(COLUMN_description, transaction.GetDescription());
+            contentValues_tr.put(COLUMN_value, transaction.GetValue());
+            contentValues_tr.put(COLUMN_staticValue, transaction.GetStatic());
+            if (!tryupdate) { contentValues_tr.put(COLUMN_when, tp_id); }
+
+            contentValues_tr.put(COLUMN_IPaid, transaction.GetIPaid());
+            contentValues_tr.put(COLUMN_splitWith, (transaction.GetSplitWith()!=null ? transaction.GetSplitWith() : ""));
+            contentValues_tr.put(COLUMN_splitValue, transaction.GetSplitValue());
+            contentValues_tr.put(COLUMN_paidBack, (transaction.GetPaidBack() != null ? transaction.GetPaidBack().toString(ProfileManager.simpleDateFormatSaving) : "") );
+            contentValues_tr.put(COLUMN_children, transaction.GetChildrenFormatted());
+
+            //Insert/update row and return result
+            long result = 0;
+            if (tryupdate){ result = database.update(TABLE_TRANSACTIONS, contentValues_tr, COLUMN_uniqueID + "=" + transaction.GetID(), null); }
+            if (result == 0) { result = database.insert(TABLE_TRANSACTIONS, null, contentValues_tr); }
 
             return result;
         }
@@ -933,6 +1102,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
 
     }
+    /*
     public void loadExpenses()
     {
         database = getWritableDatabase();
@@ -1037,6 +1207,64 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         c.close();
     }
+    */
+    public void loadTransactions()
+    {
+        database = getWritableDatabase();
+
+        Cursor c = database.query(TABLE_TRANSACTIONS, null, null, null, null, null, null);
+
+        while (c.moveToNext()) {
+            //Find profile
+            int _profileID = c.getInt(c.getColumnIndex(COLUMN_profile));
+            Profile pr = ProfileManager.GetProfileByID(_profileID);
+
+            if (pr != null) {
+                //Create new transaction
+                Transaction tr = new Transaction();
+
+                //Load and apply transaction properties
+
+                //COLUMN_type + TEXT_TYPE + "," +
+                tr.SetType(Transaction.TRANSACTION_TYPE.values()[c.getInt(c.getColumnIndex(COLUMN_type))]);
+                //COLUMN_uniqueID + TEXT_TYPE + "," +
+                tr.SetID(c.getInt(c.getColumnIndex(COLUMN_uniqueID)));
+                //COLUMN_parentID + TEXT_TYPE + "," +
+                tr.SetParentID(c.getInt(c.getColumnIndex(COLUMN_parentID)));
+                //COLUMN_category + TEXT_TYPE + "," +
+                tr.SetCategory(c.getString(c.getColumnIndex(COLUMN_category)));
+                //COLUMN_sourcename + TEXT_TYPE + "," +
+                tr.SetSourceName(c.getString(c.getColumnIndex(COLUMN_sourcename)));
+                //COLUMN_description + TEXT_TYPE  + "," +
+                tr.SetDescription(c.getString(c.getColumnIndex(COLUMN_description)));
+                //COLUMN_value + DOUBLE_TYPE  + "," +
+                tr.SetValue(c.getDouble(c.getColumnIndex(COLUMN_value)));
+                //COLUMN_staticValue + BOOLEAN_TYPE  + "," +
+                tr.SetStatic(c.getInt(c.getColumnIndex(COLUMN_staticValue)) == 1);
+                //COLUMN_IPaid + BOOLEAN_TYPE + "," +
+                tr.SetIPaid(c.getInt(c.getColumnIndex(COLUMN_IPaid)) == 1);
+                //COLUMN_splitWith + TEXT_TYPE + "," + //COLUMN_splitValue + DOUBLE_TYPE  + "," +
+                tr.SetSplitValue(c.getString(c.getColumnIndex(COLUMN_splitWith)), c.getDouble(c.getColumnIndex(COLUMN_splitValue)));
+                //COLUMN_paidBack + TEXT_TYPE + "," +
+                tr.SetPaidBack(ProfileManager.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_paidBack))));
+                //COLUMN_when + INT_TYPE //+ "," +
+                tr.SetTimePeriod(queryTimeperiod(c.getInt(c.getColumnIndex(COLUMN_when))));
+                //COLUMN_children
+                tr.AddChildrenFromFormattedString(c.getString(c.getColumnIndex(COLUMN_children)));
+
+
+                //ProfileManager.Print("Transaction Loaded");
+                //Add loaded transaction to profile
+                pr.AddTransactionDontSave(tr);
+            }
+            else {
+                //ProfileManager.Print("Transaction could not be loaded, profile -" + _profileID + "- not found.");
+            }
+        }
+
+
+        c.close();
+    }
 
 
     public boolean removeCategorySetting(String category){
@@ -1052,6 +1280,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return profile != null && database.delete(TABLE_SETTINGS_PROFILES, COLUMN_profile + "=?", new String[]{String.valueOf(profile.GetName())}) > 0;
     }
 
+    /*
     public boolean remove(Expense expense){
         database = getWritableDatabase();
 
@@ -1073,6 +1302,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
             c.close();
 
             return database.delete(TABLE_INCOME, COLUMN_uniqueID + "=?", new String[]{String.valueOf(income.GetID())}) > 0;
+        }
+        return false;
+    }
+    */
+    public boolean remove(Transaction transaction){
+        database = getWritableDatabase();
+
+        if (transaction != null) {
+            Cursor c = database.query(TABLE_TRANSACTIONS, new String[]{COLUMN_when}, COLUMN_uniqueID + "=?", new String[]{String.valueOf(transaction.GetID())}, null, null, null);
+            removeTimePeriod(c);
+            c.close();
+
+            return database.delete(TABLE_TRANSACTIONS, COLUMN_uniqueID + "=?", new String[]{String.valueOf(transaction.GetID())}) > 0;
         }
         return false;
     }

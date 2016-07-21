@@ -23,17 +23,22 @@ public class Profile implements java.io.Serializable
     private Period _period;
 
     //Income sources
-    private ArrayList<Income> IncomeSources;
-    private ArrayList<Income> _IncomeSources_timeFrame;
+    //private ArrayList<Income> IncomeSources;
+    //private ArrayList<Income> _IncomeSources_timeFrame;
 
     //Expenses sources
-    private ArrayList<Expense> ExpenseSources;
-    private ArrayList<Expense> _ExpenseSources_timeFrame;
+    //private ArrayList<Expense> ExpenseSources;
+    //private ArrayList<Expense> _ExpenseSources_timeFrame;
+
+    //Transaction sources
+    private ArrayList<Transaction> Transactions;
+    private ArrayList<Transaction> Transactions_timeFrame;
 
 
     //Totals
-    protected HashMap<String, Expense> _ExpenseTotals;
-    protected HashMap<String, Income> _IncomeTotals;
+    //protected HashMap<String, Expense> _ExpenseTotals;
+    //protected HashMap<String, Income> _IncomeTotals;
+    protected HashMap<String, Transaction> TransactionTotals;
 
 
 
@@ -41,16 +46,22 @@ public class Profile implements java.io.Serializable
         _uniqueID = java.lang.System.identityHashCode(this);
         name = _name;
 
-        IncomeSources = new ArrayList<>();
-        ExpenseSources = new ArrayList<>();
+        //IncomeSources = new ArrayList<>();
+        //ExpenseSources = new ArrayList<>();
+        Transactions = new ArrayList<>();
 
-        _IncomeSources_timeFrame = new ArrayList<>();
-        _ExpenseSources_timeFrame = new ArrayList<>();
+        //_IncomeSources_timeFrame = new ArrayList<>();
+        //_ExpenseSources_timeFrame = new ArrayList<>();
+        Transactions_timeFrame = new ArrayList<>();
 
-        _ExpenseTotals = new HashMap<>();
-        _IncomeTotals = new HashMap<>();
-        GetTotalCostPerPersonInTimeFrame();
-        GetTotalIncomePerSourceInTimeFrame();
+        //_ExpenseTotals = new HashMap<>();
+        //_IncomeTotals = new HashMap<>();
+        TransactionTotals = new HashMap<>();
+
+        //GetTotalCostPerPersonInTimeFrame();
+        //GetTotalIncomePerSourceInTimeFrame();
+        CalculateTotalsInTimeFrame(0);
+        CalculateTotalsInTimeFrame(1);
     }
 
     public void ClearAllObjects(){
@@ -58,31 +69,42 @@ public class Profile implements java.io.Serializable
         _endTime = null;
 
         //Income sources
-        for (Income in : IncomeSources){
-            in.ClearAllObjects();
-        }
-        IncomeSources.clear();
-        _IncomeSources_timeFrame.clear();
+       //for (Income in : IncomeSources){
+        //    in.ClearAllObjects();
+        //}
+        //IncomeSources.clear();
+        //_IncomeSources_timeFrame.clear();
 
         //Expenses sources
-        for (Expense ex : ExpenseSources){
-            ex.ClearAllObjects();
+        //for (Expense ex : ExpenseSources){
+        //    ex.ClearAllObjects();
+        //}
+        //ExpenseSources.clear();
+        //_ExpenseSources_timeFrame.clear();
+
+        //Transactions
+        for (Transaction tr : Transactions){
+            tr.ClearAllObjects();
         }
-        ExpenseSources.clear();
-        _ExpenseSources_timeFrame.clear();
+        Transactions.clear();
+        Transactions_timeFrame.clear();
 
 
         //Totals
-        _ExpenseTotals.clear();
-        _IncomeTotals.clear();
+        TransactionTotals.clear();
+        //_ExpenseTotals.clear();
+        //_IncomeTotals.clear();
     }
 
     public void RemoveAll(){
-        for (int i = 0; i < ExpenseSources.size(); i++){
-            RemoveExpenseDontSave(ExpenseSources.get(i), true);
-        }
-        for (int i = 0; i < IncomeSources.size(); i++){
-            RemoveIncomeDontSave(IncomeSources.get(i), true);
+        //for (int i = 0; i < ExpenseSources.size(); i++){
+        //    RemoveExpenseDontSave(ExpenseSources.get(i), true);
+        //}
+        //for (int i = 0; i < IncomeSources.size(); i++){
+        //    RemoveIncomeDontSave(IncomeSources.get(i), true);
+        //}
+        for (int i = 0; i < Transactions.size(); i++){
+            RemoveTransactionDontSave(Transactions.get(i), true);
         }
     }
 
@@ -94,11 +116,13 @@ public class Profile implements java.io.Serializable
     public LocalDate GetEndTime(){ return _endTime; }
     public Period GetPeriod() { return _period; }
 
-    public int GetIncomeSourcesSize() { return IncomeSources.size(); }
-    public int GetExpenseSourcesSize() { return ExpenseSources.size(); }
+    //public int GetIncomeSourcesSize() { return IncomeSources.size(); }
+    //public int GetExpenseSourcesSize() { return ExpenseSources.size(); }
+    public int GetTransactionsSize() { return Transactions.size(); }
 
-    public int GetIncomeSourcesInTimeFrameSize() { return _IncomeSources_timeFrame.size(); }
-    public int GetExpenseSourcesInTimeFrameSize() { return _ExpenseSources_timeFrame.size(); }
+    //public int GetIncomeSourcesInTimeFrameSize() { return _IncomeSources_timeFrame.size(); }
+    //public int GetExpenseSourcesInTimeFrameSize() { return _ExpenseSources_timeFrame.size(); }
+    public int GetTransactionsInTimeFrameSize() { return Transactions_timeFrame.size(); }
 
     public String GetDateFormatted()
     {
@@ -164,6 +188,7 @@ public class Profile implements java.io.Serializable
 
 
     //Income management
+    /*
     public void AddIncome(Income income, boolean dontsave) { IncomeSources.add(income); }
     public void AddIncome(Income income) { AddIncome(income, true); CalculateTimeFrame(); ProfileManager.InsertIncomeDatabase(this, income, false);}
     public void RemoveIncomeDontSave(Income income, boolean deleteChildren) {
@@ -229,10 +254,11 @@ public class Profile implements java.io.Serializable
     }
 
     //Get Income total cost
-
+    */
 
 
     //Expense management
+    /*
     public void AddExpenseDontSave(Expense expense) { ExpenseSources.add(expense); }
     public void AddExpense(Expense expense) { AddExpenseDontSave(expense); CalculateTimeFrame(); ProfileManager.InsertExpenseDatabase(this, expense, false);}
     public void RemoveExpenseDontSave(Expense expense, boolean deleteChildren) {
@@ -382,7 +408,7 @@ public class Profile implements java.io.Serializable
         return null;
     }
 
-    /*
+
     public Double GetExpenseOwedBy(String name){
         Double total = 0.0;
 
@@ -405,7 +431,7 @@ public class Profile implements java.io.Serializable
 
         return total;
     }
-*/
+
 
 
     //Get Expense total cost
@@ -456,6 +482,7 @@ public class Profile implements java.io.Serializable
         return _ExpenseTotals;
     }
 
+
     //Get Income total cost
     public HashMap<String, Income> GetTotalIncomePerSource(){
         _IncomeTotals.clear();
@@ -499,86 +526,286 @@ public class Profile implements java.io.Serializable
 
         return _IncomeTotals;
     }
+    */
 
 
-    //Transactions
-    public void TransferTransaction(Transaction tran, Profile moveTo){
-        boolean isExpense = ExpenseSources.contains(tran);
 
-        if (isExpense){
-            TransferExpense((Expense)tran, moveTo);
+    //Transaction management
+    public void AddTransactionDontSave(Transaction transaction) { Transactions.add(transaction); }
+    public void AddTransaction(Transaction transaction) { AddTransactionDontSave(transaction); ProfileManager.InsertTransactionDatabase(this, transaction, false);}
+    public void RemoveTransactionDontSave(Transaction transaction, boolean deleteChildren) {
+        if (transaction != null) {
+            if (deleteChildren) {
+                for (int id : transaction.GetChildren()) {
+                    RemoveTransaction(GetTransaction(id), deleteChildren);
+                }
+            }
+            //Remove transaction from it's parent as a child
+            if (transaction.GetParentID() != 0){
+                Transaction parent = GetTransaction(transaction.GetParentID());
+                if (parent != null){
+                    parent.RemoveChild(transaction.GetID());
+                    UpdateTransaction(parent);
+                }
+            }
+            //Remove expense from profile
+            Transactions.remove(transaction);
         }
-        else{
-            TransferIncome((Income)tran, moveTo);
+    }
+    public void RemoveTransaction(Transaction transaction, boolean deleteChildren) {
+        RemoveTransactionDontSave(transaction, deleteChildren);
+        ProfileManager.RemoveTransactionDatabase(transaction); }
+    public void RemoveTransaction(int id, boolean deleteChildren) { RemoveTransaction(GetTransaction(id), deleteChildren); }
+
+    private void UpdateTransaction(Transaction transaction, Profile profile) {
+        ProfileManager.InsertTransactionDatabase(profile, transaction, true);
+        //Check if transaction has a parent and is exactly like its parent, and if so, remove its date from the parent's blacklist and delete it
+        Transaction parent = null;
+        if (transaction.GetParentID() > 0){ parent = GetTransaction(transaction.GetParentID()); }
+        if (parent != null){
+            if (transaction.isSimilarChildOf(parent) ) {
+                //ProfileManager.Print("Special case, transaction just like parent, remove blacklist date ("+transaction.GetTimePeriod().GetDateFormatted()+") and delete transaction");
+
+                //Remove blacklist date
+                TimePeriod p_tp = parent.GetTimePeriod();
+                TimePeriod tp = transaction.GetTimePeriod();
+                if (tp != null && p_tp != null){
+                    p_tp.RemoveBlacklistDate(tp.GetDate());
+                }
+                //Remove transaction child from its parent
+                parent.RemoveChild(transaction.GetID());
+                //Remove transaction
+                profile.RemoveTransaction(transaction, false);
+            }
+        }
+    }
+    public void UpdateTransaction(Transaction transaction) { UpdateTransaction(transaction, this); }
+
+    public void CloneTransaction(Transaction oldTr, Transaction newTr){
+        AddTransaction(newTr);
+
+        //Set child relationship
+        oldTr.AddChild(newTr, true);
+        newTr.SetParentID(oldTr.GetID());
+
+        UpdateTransaction(newTr);
+        UpdateTransaction(oldTr);
+    }
+
+    public void UpdateOtherPerson(String old, String name) {
+        for (Transaction tr : Transactions){
+            if (tr.GetSplitWith().equals(old)) {
+                tr.SetSplitValue(name, tr.GetSplitValue());
+                UpdateTransaction(tr);
+            }
+        }
+    }
+
+    public void UpdateCategory(String old, String name) {
+        for (Transaction tr : Transactions){
+            if (tr.GetCategory().equals(old)) {
+                tr.SetCategory(name);
+                UpdateTransaction(tr);
+            }
+        }
+    }
+
+    public void UpdatePaidBackInTimeFrame(LocalDate paidBack, boolean override){
+        ArrayList<Transaction> tempList = new ArrayList<>();
+        for (Transaction tr : Transactions_timeFrame) { tempList.add(tr); }
+
+        //ProfileManager.Print("Size:" + tempList.size());
+        for (int i = 0; i < tempList.size(); i++){
+            Transaction tr = tempList.get(i);
+            //ProfileManager.Print(ex.GetID() + " : " + tr.GetCategory());
+
+            //Child or Parent that doesn't repeat : Set paid back unless it already exists or override
+            if (GetTransaction(tr.GetID()) != null){
+                if (tr.IsChild() || tr.GetTimePeriod() != null && !tr.GetTimePeriod().DoesRepeat()) {
+                    //ProfileManager.Print("Option 1");
+                    if (tr.GetPaidBack() == null || override) {
+                        tr.SetPaidBack(paidBack);
+                        UpdateTransaction(tr);
+                    }
+                } else { //Parent that does repeat : clone expense to avoid affecting children
+                    //ProfileManager.Print("Option 2");
+                    Transaction newTr = new Transaction(tr);
+                    newTr.SetTimePeriod(new TimePeriod(tr.GetTimePeriod().GetDate()));
+                    newTr.SetPaidBack(paidBack);
+                    newTr.RemoveChildren();
+                    CloneTransaction(tr, newTr);
+                }
+            }
+            else { //Not independent transaction : CloneExpense and set paid back
+                //ProfileManager.Print("Option 3");
+                Transaction newTr = new Transaction(tr);
+                newTr.SetPaidBack(paidBack);
+                newTr.RemoveChildren();
+                CloneTransaction(GetTransaction(tr.GetParentID()), newTr);
+            }
+        }
+    }
+
+    //Get transaction at index
+    public Transaction GetTransactionAtIndex(int index) { if (index >= 0 && Transactions.size() > 0){ return Transactions.get(index); } else { return null; } }
+    public Transaction GetTransactionAtIndexInTimeFrame(int index) { if (index >= 0 && Transactions_timeFrame.size() > 0){ return Transactions_timeFrame.get(index); } else { return null; } }
+
+    //Get transaction by ID
+    public Transaction GetTransaction(int id) {
+        for (int i = 0; i < Transactions.size(); i++) {
+            if (Transactions.get(i).GetID() == id) {
+                return Transactions.get(i);
+            }
+        }
+        return null;
+    }
+    public Transaction GetTransactionInTimeFrame(int id) {
+        for (int i = 0; i < Transactions_timeFrame.size(); i++) {
+            if (Transactions_timeFrame.get(i).GetID() == id) {
+                return Transactions_timeFrame.get(i);
+            }
+        }
+        return null;
+    }
+    public Transaction GetParentTransactionFromTimeFrameTransaction(Transaction transaction){
+        if (transaction != null) {
+            Transaction TF = GetTransactionInTimeFrame(transaction.GetID());
+            if (TF != null && TF.IsChild()) {
+                return GetTransaction(TF.GetParentID());
+            }
+            else {
+                return transaction;
+            }
+        }
+        return null;
+    }
+
+    //Get transaction total cost
+    public HashMap<String, Transaction> GetTotals(){
+        TransactionTotals.keySet().clear();
+        TransactionTotals.values().clear();
+        TransactionTotals.clear();
+
+        Transaction temp;
+
+        for (int i = 0; i < Transactions.size(); i++){
+            Transaction tr = Transactions.get(i);
+
+            temp = TransactionTotals.get( tr.GetSplitWith() );
+            if ( temp == null ){
+                TransactionTotals.put( tr.GetSplitWith(), new Transaction(tr.GetType()));
+                temp = TransactionTotals.get( tr.GetSplitWith() );
+            }
+
+            // Sum up values
+            temp.SetValue(temp.GetValue() + tr.GetMyDebt());
+            temp.SetSplitValue(tr.GetSplitWith(), temp.GetSplitValue() + tr.GetSplitDebt());
         }
 
-        CalculateTimeFrame();
+        return TransactionTotals;
+    }
+
+    public void CalculateTotalsInTimeFrame(int activityType){
+        TransactionTotals.keySet().clear();
+        TransactionTotals.values().clear();
+        TransactionTotals.clear();
+
+        Transaction temp;
+
+        if (activityType == 0) { //Expenses
+            for (int i = 0; i < Transactions_timeFrame.size(); i++) {
+                Transaction tr = Transactions_timeFrame.get(i);
+
+                temp = TransactionTotals.get(tr.GetSplitWith());
+                if (temp == null && tr.GetSplitWith() != null) {
+                    TransactionTotals.put(tr.GetSplitWith(), new Transaction(tr.GetType()));
+                    temp = TransactionTotals.get(tr.GetSplitWith());
+                }
+
+                //Sum up values
+                if (temp != null){
+                    temp.SetValue(temp.GetValue() + tr.GetMyDebt());
+                    temp.SetSplitValue(tr.GetSplitWith(), temp.GetSplitValue() + tr.GetSplitDebt());
+                }
+            }
+        }
+        else if (activityType == 1){ //Income
+            for (int i = 0; i < Transactions_timeFrame.size(); i++) {
+                Transaction tr = Transactions_timeFrame.get(i);
+
+                temp = TransactionTotals.get(tr.GetSourceName());
+                if (temp == null) {
+                    TransactionTotals.put(tr.GetSourceName(), new Transaction(Transaction.TRANSACTION_TYPE.Income));//TODO Avoid creating a new transaction, try to just sum up the value
+                    temp = TransactionTotals.get(tr.GetSourceName());
+                }
+
+                // Sum up values
+                temp.SetValue(temp.GetValue() + tr.GetValue());
+            }
+        }
+
+        //return TransactionTotals;
+    }
+
+    //Transfer
+    public void TransferTransaction(Transaction transaction, Profile moveTo){
+        UpdateTransaction(transaction, moveTo);
+        moveTo.AddTransactionDontSave(transaction);
+        RemoveTransaction(transaction, true);
     }
     public void TransferAllTransactions(Profile moveTo){
-        TransferAllExpenses(moveTo);
-        TransferAllIncome(moveTo);
+        for (int i = 0; i < Transactions.size(); i++){
+            TransferTransaction(Transactions.get(i), moveTo);
+        }
     }
 
 
     //Calculate the expenses and income sources that are within the timeframe provided
-    public void CalculateTimeFrame()
+    public void CalculateTimeFrame(int activityType)
     {
-        _IncomeSources_timeFrame.clear();
-        _ExpenseSources_timeFrame.clear();
+        Transactions_timeFrame.clear();
 
         TimePeriod tp;
         ArrayList<LocalDate> occ = null;
 
-        //TODO NULL CHECKS!
-        //Add income sources within the time period to the timeframe array
         if (_startTime!= null && _endTime != null) {
-            for (int i = 0; i < IncomeSources.size(); i++) {
-                tp = IncomeSources.get(i).GetTimePeriod();
-                if (tp != null) { occ = tp.GetOccurrencesWithin(_startTime, _endTime); }
 
-                for (int ii = 0; ii < occ.size(); ii++) {
-                    //Add income to temp array
-                    if (IncomeSources.get(i).GetTimePeriod() != null && IncomeSources.get(i).GetTimePeriod().GetDate() != null) {
-                        _IncomeSources_timeFrame.add(IncomeSources.get(i));
-                    }
-                    else {
-                        _IncomeSources_timeFrame.add(new Income(IncomeSources.get(i), new TimePeriod(occ.get(ii))));
+            //Add transactions within the time period to the timeframe array
+            for (int i = 0; i < Transactions.size(); i++) {
+                if (Transactions.get(i).GetType().ordinal() == activityType) {
+                    tp = Transactions.get(i).GetTimePeriod();
+                    if (tp != null) {
+                        occ = tp.GetOccurrencesWithin(_startTime, _endTime);
+
+                        for (int ii = 0; ii < occ.size(); ii++) {
+                            //Add transaction to temp array
+                            if (Transactions.get(i).GetTimePeriod() != null && Transactions.get(i).GetTimePeriod().GetDate() != null) {
+                                if (Transactions.get(i).GetTimePeriod().GetDate().equals(occ.get(ii))) {
+                                    Transactions_timeFrame.add(Transactions.get(i));
+                                }
+                                else {
+                                    Transaction temp = new Transaction(Transactions.get(i), new TimePeriod(occ.get(ii)));
+                                    temp.SetParentID(Transactions.get(i).GetID());
+                                    Transactions_timeFrame.add(temp);
+                                }
+                            }
+                        }
+
+                        //Add expense if there are no repetitions of it
+                        //if (occ.size() == 1){
+                        //_ExpenseSources_timeFrame.add( ExpenseSources.get(i) );
+                        //}
                     }
                 }
-            }
-
-
-            //Add expenses within the time period to the timeframe array
-            for (int i = 0; i < ExpenseSources.size(); i++) {
-
-                tp = ExpenseSources.get(i).GetTimePeriod();
-                if (tp != null) { occ = tp.GetOccurrencesWithin(_startTime, _endTime); }
-
-                for (int ii = 0; ii < occ.size(); ii++) {
-                    //Add expense to temp array
-                    if (ExpenseSources.get(i).GetTimePeriod() != null && ExpenseSources.get(i).GetTimePeriod().GetDate() != null) {
-                        if (ExpenseSources.get(i).GetTimePeriod().GetDate().equals(occ.get(ii))) {
-                            _ExpenseSources_timeFrame.add(ExpenseSources.get(i));
-                            //if (ExpenseSources.get(i).IsParent()) {} else{ ProfileManager.Print("Special case");}
-                        }
-                        else {
-                            Expense temp = new Expense(ExpenseSources.get(i), new TimePeriod(occ.get(ii)));
-                            temp.SetParentID(ExpenseSources.get(i).GetID());
-                            _ExpenseSources_timeFrame.add(temp);
-                        }
-                    }
-                }
-
-                //Add expense if there are no repetitions of it
-                //if (occ.size() == 1){
-                //_ExpenseSources_timeFrame.add( ExpenseSources.get(i) );
-                //}
             }
 
         }
         else{ //Add all transactions if start and end time are null
-            _IncomeSources_timeFrame.addAll(IncomeSources);
-            _ExpenseSources_timeFrame.addAll(ExpenseSources);
+            for (Transaction tr : Transactions){
+                if (tr.GetType().ordinal() == activityType) {
+                    Transactions_timeFrame.add(tr);
+                }
+            }
         }
     }
 }

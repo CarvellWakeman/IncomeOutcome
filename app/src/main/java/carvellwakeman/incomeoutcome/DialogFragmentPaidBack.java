@@ -15,7 +15,7 @@ package carvellwakeman.incomeoutcome;
 
 public class DialogFragmentPaidBack extends DialogFragment {
 
-    ActivityDetailsExpense _parent;
+    ActivityDetailsTransaction _parent;
     Profile _profile;
     LocalDate date;
 
@@ -28,7 +28,7 @@ public class DialogFragmentPaidBack extends DialogFragment {
     Button button_negative;
 
 
-    static DialogFragmentPaidBack newInstance(ActivityDetailsExpense parent, Profile profile) {
+    static DialogFragmentPaidBack newInstance(ActivityDetailsTransaction parent, Profile profile) {
         DialogFragmentPaidBack fg = new DialogFragmentPaidBack();
         fg._parent = parent;
         Bundle args = new Bundle();
@@ -86,21 +86,23 @@ public class DialogFragmentPaidBack extends DialogFragment {
         button_positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (radioButton_today.isChecked()){
-                    //Set local variable date
+                if (radioButton_today.isChecked()){ //Today
                     _profile.UpdatePaidBackInTimeFrame(new LocalDate(), true);
                 }
-                else if (radioButton_date.isChecked()){
+                else if (radioButton_date.isChecked()){ //A date
                     _profile.UpdatePaidBackInTimeFrame(date, true);
                 }
-                else if (radioButton_never.isChecked()){
+                else if (radioButton_never.isChecked()){ //Never
                     _profile.UpdatePaidBackInTimeFrame(null, true);
                 }
 
-                _profile.CalculateTimeFrame();
-                _parent.expenseAdapter.notifyDataSetChanged();
+                _parent.elementsAdapter.notifyDataSetChanged();
                 _parent.totalsAdapter.notifyDataSetChanged();
                 _parent.UpdateAdapters();
+
+                //_profile.CalculateTimeFrame(); //TODO Necessary? - Yes, necessary.
+                _profile.CalculateTimeFrame(_parent.activityType);
+                _profile.CalculateTotalsInTimeFrame(_parent.activityType);
 
                 dismiss();
             }

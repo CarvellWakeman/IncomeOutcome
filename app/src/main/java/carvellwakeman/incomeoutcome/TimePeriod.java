@@ -124,21 +124,23 @@ public class TimePeriod implements java.io.Serializable
 
     //Blacklist
     public void AddBlacklistDate(LocalDate date, Boolean edited){ blacklistDates.add(new BlacklistDate(date, edited)); }
-    public void RemoveBlacklistDateQueue(){
+    public void FlushBlacklistDateQueue(){
         for (int i = 0; i < _blacklistDatesQueue.size(); i++) {
             //Remove objects from queue
-            ProfileManager.Print("BlacklistDate " + _blacklistDatesQueue.get(i).date.toString(ProfileManager.simpleDateFormat) + " Removed");
             blacklistDates.remove(_blacklistDatesQueue.get(i));
         }
     }
-    public void RemoveBlacklistDate(LocalDate date) {
-        ProfileManager.Print("BlacklistDate " + date.toString(ProfileManager.simpleDateFormat) + " queued for removal on save");
+    public void QueueBlacklistDateRemoval(LocalDate date) {
         for (int i = 0; i < blacklistDates.size(); i++) {
             if (blacklistDates.get(i).date.compareTo(date) == 0) {
                 //Queue blacklist date for deletion
                 _blacklistDatesQueue.add(blacklistDates.get(i));
             }
         }
+    }
+    public void RemoveBlacklistDate(LocalDate date) {
+        QueueBlacklistDateRemoval(date);
+        FlushBlacklistDateQueue();
     }
     //public void ClearBlacklistDates(){ blacklistDates.clear(); }
     public void ClearBlacklistQueue() { _blacklistDatesQueue.clear(); }
@@ -192,25 +194,45 @@ public class TimePeriod implements java.io.Serializable
     }
 
     public static LocalDate calcNextDayOfWeek(LocalDate date, int dayOfWeek) {
-        return (date.getDayOfWeek() <= dayOfWeek) ? date.withDayOfWeek(dayOfWeek) : date.plusWeeks(1).withDayOfWeek(dayOfWeek);
+        if (date != null) {
+            return (date.getDayOfWeek() <= dayOfWeek) ? date.withDayOfWeek(dayOfWeek) : date.plusWeeks(1).withDayOfWeek(dayOfWeek);
+        }
+        return null;
     }
     public static LocalDate calcPrevDayOfWeek(LocalDate date, int dayOfWeek) {
-        if (date.getDayOfWeek() < dayOfWeek) { return date.minusWeeks(1).withDayOfWeek(dayOfWeek);
-        } else { return date.withDayOfWeek(dayOfWeek); }
+        if (date != null) {
+            if (date.getDayOfWeek() < dayOfWeek) {
+                return date.minusWeeks(1).withDayOfWeek(dayOfWeek);
+            }
+            else { return date.withDayOfWeek(dayOfWeek); }
+        }
+        return null;
     }
 
     public static LocalDate calcNextDayOfMonth(LocalDate date, int dayOfMonth) {
-        return (date.getDayOfMonth() <= dayOfMonth) ? date.withDayOfMonth(dayOfMonth) : date.plusMonths(1).withDayOfMonth(dayOfMonth);
+        if (date != null) {
+            return (date.getDayOfMonth() <= dayOfMonth) ? date.withDayOfMonth(dayOfMonth) : date.plusMonths(1).withDayOfMonth(dayOfMonth);
+        }
+        return null;
     }
     public static LocalDate calcPrevDayOfMonth(LocalDate date, int dayOfMonth) {
-        return (date.getDayOfMonth() >= dayOfMonth) ? date.withDayOfMonth(dayOfMonth) : date.minusMonths(1).withDayOfMonth(dayOfMonth);
+        if (date != null) {
+            return (date.getDayOfMonth() >= dayOfMonth) ? date.withDayOfMonth(dayOfMonth) : date.minusMonths(1).withDayOfMonth(dayOfMonth);
+        }
+        return null;
     }
 
     public static LocalDate calcNextDateOfYear(LocalDate date, LocalDate dateInYear){
-        return (date.compareTo(dateInYear) <= 0 ? dateInYear : dateInYear.plusYears(1));
+        if (date != null && dateInYear != null) {
+            return (date.compareTo(dateInYear) <= 0 ? dateInYear : dateInYear.plusYears(1));
+        }
+        return null;
     }
     public static LocalDate calcPrevDateOfYear(LocalDate date, LocalDate dateInYear){
-        return (date.compareTo(dateInYear) >= 0 ? dateInYear : dateInYear.minusYears(1));
+        if (date != null && dateInYear != null) {
+            return (date.compareTo(dateInYear) >= 0 ? dateInYear : dateInYear.minusYears(1));
+        }
+        return null;
     }
 
 
@@ -517,6 +539,37 @@ public class TimePeriod implements java.io.Serializable
 
         //Return
         return repeatTypeString;
+    }
+
+
+    //Equals
+    @Override
+    public boolean equals(Object o){
+        if (o.getClass() == TimePeriod.class) {
+            TimePeriod tp = (TimePeriod) o;
+
+            if (!tp.GetDate().equals(this.GetDate())) { return false; }
+            if (!tp.GetFirstOccurrence().equals(this.GetFirstOccurrence())) { return false; }
+
+            if (!tp.GetRepeatFrequency().equals(this.GetRepeatFrequency())) { return false; }
+
+            if (!tp.GetRepeatUntil().equals(this.GetRepeatUntil())) { return false; }
+            if (tp.GetRepeatANumberOfTimes() != this.GetRepeatANumberOfTimes()) { return false; }
+            if (!tp.GetRepeatUntilDate().equals(this.GetRepeatUntilDate())) { return false; }
+            if (tp.GetRepeatEveryN() != this.GetRepeatEveryN()) { return false; }
+
+            if (!tp.GetRepeatDayOfWeekBinary().equals(this.GetRepeatDayOfWeekBinary())) { return false; }
+            if (tp.GetRepeatDayOfMonth() != this.GetRepeatDayOfMonth()) { return false; }
+
+            if (!tp.GetDateOfYear().equals(this.GetDateOfYear())) { return false; }
+
+            if (!tp.GetBlacklistDatesSaving().equals(this.GetBlacklistDatesSaving())) { return false; }
+
+
+            return true;
+        }
+
+        return false;
     }
 
 }

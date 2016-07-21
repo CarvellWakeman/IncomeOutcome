@@ -61,13 +61,13 @@ public class ActivityMain extends AppCompatActivity
         FABMenuOpen = false;
 
 
-        Income in1 = new Income();
+        Transaction in1 = new Transaction(Transaction.TRANSACTION_TYPE.Income);
         in1.SetValue(10.0);
         in1.SetStatic(true);
         //p1.AddIncome(in1);
 
 
-        Expense ex1 = new Expense();
+        Transaction ex1 = new Transaction(Transaction.TRANSACTION_TYPE.Expense);
         //ex1.SetTimePeriod(new TimePeriod(LocalDate.now()));
         ex1.SetCategory("Snacks");
         ex1.SetSplitValue("Sabrina", 10.0);
@@ -88,7 +88,7 @@ public class ActivityMain extends AppCompatActivity
         //p1.AddExpense(ex1);
 
 
-        Expense ex2 = new Expense();
+        Transaction ex2 = new Transaction(Transaction.TRANSACTION_TYPE.Expense);
         ex2.SetTimePeriod(new TimePeriod(LocalDate.now()));
         ex2.SetCategory("Rent");
         ex2.SetSplitValue("Sabrina", 5.0);
@@ -96,7 +96,7 @@ public class ActivityMain extends AppCompatActivity
         //ex2.SetDescription("This is a very long and tedious description of exactly what I purchased on the date listed above. Does this description run across the rsoient fort of the sun? Will I ever do so much to look like as I am? How are they? Yes!");
         //p1.AddExpense(ex2);
 
-        Expense ex3 = new Expense();
+        Transaction ex3 = new Transaction(Transaction.TRANSACTION_TYPE.Expense);
         ex3.SetValue(713.26);
         ex3.SetSourceName("Insurance #3");
         ex3.SetCategory("Groceries");
@@ -369,6 +369,7 @@ public class ActivityMain extends AppCompatActivity
         }
 
         switch (requestCode) {
+            /*
             case 0: //New expense
                 if (resultCode == RESULT_OK) {
                     if (pr != null && data != null) {
@@ -391,6 +392,7 @@ public class ActivityMain extends AppCompatActivity
                     }
                 }
                 break;
+                */
             case 3: //Refresh info
                 UpdateStartEndDate();
                 break;
@@ -500,7 +502,6 @@ public class ActivityMain extends AppCompatActivity
             pr.SetStartTime(null);
             pr.SetEndTime(null);
             UpdateStartEndDate();
-            pr.CalculateTimeFrame();
         }
     }
 
@@ -590,10 +591,12 @@ public class ActivityMain extends AppCompatActivity
         */
         Profile pr = ProfileManager.GetCurrentProfile();
         if (pr != null) {
-            pr.CalculateTimeFrame();//Update timeframes
+            pr.CalculateTimeFrame(1);
+            pr.CalculateTotalsInTimeFrame(1);
 
             //Start income (details) activity and send it the profile we clicked on
-            Intent intent = new Intent(ActivityMain.this, ActivityDetailsIncome.class);
+            Intent intent = new Intent(ActivityMain.this, ActivityDetailsTransaction.class);
+            intent.putExtra("activitytype", 1);
             intent.putExtra("profile", pr.GetID());
             startActivityForResult(intent, 3);
         }
@@ -605,10 +608,12 @@ public class ActivityMain extends AppCompatActivity
     {
         Profile pr = ProfileManager.GetCurrentProfile();
         if (pr != null) {
-            pr.CalculateTimeFrame();//Update timeframes
+            pr.CalculateTimeFrame(0);
+            pr.CalculateTotalsInTimeFrame(0);
 
             //Start expense (details) activity and send it the profile we clicked on
-            Intent intent = new Intent(ActivityMain.this, ActivityDetailsExpense.class);
+            Intent intent = new Intent(ActivityMain.this, ActivityDetailsTransaction.class);
+            intent.putExtra("activitytype", 0);
             intent.putExtra("profile", pr.GetID());
             startActivityForResult(intent, 3);
         }
@@ -621,27 +626,28 @@ public class ActivityMain extends AppCompatActivity
     public void MainNewExpenseClick(View v){
         Profile pr = ProfileManager.GetCurrentProfile();
         if (pr != null) {
-            pr.CalculateTimeFrame();
-            Intent intent = new Intent(ActivityMain.this, ActivityNewExpense.class);
+            Intent intent = new Intent(ActivityMain.this, ActivityNewTransaction.class);
+            intent.putExtra("activitytype", 0);
             intent.putExtra("profile", pr.GetID());
             startActivityForResult(intent, 0);
             CloseFABMenu();
         }
         else {
-            ProfileManager.Print("ERROR: Profile not found, could not start NewExpenseActivity");
+            ProfileManager.Print("ERROR: Profile not found, could not start New Transaction Activity");
         }
     }
 
     public void MainNewIncomeClick(View v){
         Profile pr = ProfileManager.GetCurrentProfile();
         if (pr != null) {
-            Intent intent = new Intent(ActivityMain.this, ActivityNewIncome.class);
+            Intent intent = new Intent(ActivityMain.this, ActivityNewTransaction.class);
+            intent.putExtra("activitytype", 1);
             intent.putExtra("profile", pr.GetID());
             startActivityForResult(intent, 1);
             CloseFABMenu();
         }
         else {
-            ProfileManager.Print("ERROR: Profile not found, could not start NewIncomeActivity");
+            ProfileManager.Print("ERROR: Profile not found, could not start New Transaction Activity");
         }
     }
 

@@ -40,7 +40,7 @@ public class ActivitySettings extends AppCompatActivity
         //Toolbar setup
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.title_settings);
-        //toolbar.inflateMenu(R.menu.toolbar_menu_transaction_details);
+        //toolbar.inflateMenu(R.menu.toolbar_menu_sort_filter_paidback);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

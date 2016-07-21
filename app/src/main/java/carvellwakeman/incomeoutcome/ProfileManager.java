@@ -127,8 +127,9 @@ public class ProfileManager
 
         //Load from database
         databaseHelper.loadSettings();
-        databaseHelper.loadExpenses();
-        databaseHelper.loadIncome();
+        databaseHelper.loadTransactions();
+        //databaseHelper.loadExpenses();
+        //databaseHelper.loadIncome();
 
         //Default settings if database if empty
         if (!databaseHelper.isDatabaseEmpty()){
@@ -584,7 +585,7 @@ public class ProfileManager
 
     //Date conversion for loading
     public static LocalDate ConvertDateFromString(String str){
-        if (str.length() != 0) {
+        if (str != null && str.length() != 0) {
             try {
                 DateTimeFormatter dtf = DateTimeFormat.forPattern(simpleDateFormatSaving);
                 return dtf.parseLocalDate(str);
@@ -660,15 +661,20 @@ public class ProfileManager
         }
     }
 
-    public static void InsertExpenseDatabase(Profile pr, Expense ex, Boolean tryupdate){
-        if ( databaseHelper.insert(pr, ex, tryupdate) != -1){
-            ProfileManager.Print("Expense " + (tryupdate ? "updated" : "inserted into database") );
-        } else { ProfileManager.Print("Error inserting expense into database"); }
-    }
-    public static void InsertIncomeDatabase(Profile pr, Income in, Boolean tryupdate){
-        if ( databaseHelper.insert(pr, in, tryupdate) != -1){
-            ProfileManager.Print("Income " + (tryupdate ? "updated" : "inserted into database") );
-        } else { ProfileManager.Print("Error inserting income into database"); }
+    //public static void InsertExpenseDatabase(Profile pr, Expense ex, Boolean tryupdate){
+    //    if ( databaseHelper.insert(pr, ex, tryupdate) != -1){
+    //        ProfileManager.Print("Expense " + (tryupdate ? "updated" : "inserted into database") );
+    //    } else { ProfileManager.Print("Error inserting expense into database"); }
+    //}
+    //public static void InsertIncomeDatabase(Profile pr, Income in, Boolean tryupdate){
+    //    if ( databaseHelper.insert(pr, in, tryupdate) != -1){
+    //        ProfileManager.Print("Income " + (tryupdate ? "updated" : "inserted into database") );
+    //    } else { ProfileManager.Print("Error inserting income into database"); }
+    //}
+    public static void InsertTransactionDatabase(Profile pr, Transaction tr, Boolean tryupdate){
+        if ( databaseHelper.insert(pr, tr, tryupdate) != -1){
+            ProfileManager.Print("Transaction " + (tryupdate ? "updated" : "inserted into database") );
+        } else { ProfileManager.Print("Error inserting transaction into database"); }
     }
 
 
@@ -688,15 +694,20 @@ public class ProfileManager
         } else { ProfileManager.Print("Error removing person from database"); }
     }
 
-    public static void RemoveExpenseDatabase(Expense ex){
-        if ( databaseHelper.remove(ex) ){
-            ProfileManager.Print("Expense removed from database");
-        } else { ProfileManager.Print("Error removing expense from database"); }
-    }
-    public static void RemoveIncomeDatabase(Income in){
-        if ( databaseHelper.remove(in) ){
-            ProfileManager.Print("Income removed from database");
-        } else { ProfileManager.Print("Error removing income from database"); }
+    //public static void RemoveExpenseDatabase(Expense ex){
+    //    if ( databaseHelper.remove(ex) ){
+    //        ProfileManager.Print("Expense removed from database");
+    //    } else { ProfileManager.Print("Error removing expense from database"); }
+    //}
+    //public static void RemoveIncomeDatabase(Income in){
+    //    if ( databaseHelper.remove(in) ){
+    //        ProfileManager.Print("Income removed from database");
+    //    } else { ProfileManager.Print("Error removing income from database"); }
+    //}
+    public static void RemoveTransactionDatabase(Transaction tr){
+        if ( databaseHelper.remove(tr) ){
+            ProfileManager.Print("Transaction removed from database");
+        } else { ProfileManager.Print("Error removing transaction from database"); }
     }
     public static void DeleteDatabase(){
         databaseHelper.DeleteDB();
