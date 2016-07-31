@@ -23,7 +23,7 @@
     <string name="title_addnewperson">New Person</string>
     <string name="title_addnewcategory">New Category</string>
     <string name="title_selectprofile">Select Profile</string>
-    <string name="title_deleteand">Delete Profile and</string>
+    <string name="title_delete">Delete Profile</string>
     <string name="title_edittransaction">Edit Transaction</string>
     <string name="title_edittransactionseries">Edit Transaction Series</string>
     <string name="title_editprofile">Edit Profile</string>
@@ -33,7 +33,7 @@
     <string name="title_paidback">Paid Back</string>
     <string name="title_sourcecategory">Category and Source</string>
     <!-- Sub titles -->
-    <string name="subtitle_transferto">transfer its transactions to</string>
+    <string name="subtitle_transferto">and transfer its transactions to</string>
     <string name="subtitle_or">OR</string>
 
 
@@ -69,6 +69,7 @@
     <string name="action_back">BACK</string>
     <string name="action_edititem">EDIT</string>
     <string name="action_cancel">CANCEL</string>
+    <string name="action_continue">CONTINUE</string>
     <string name="action_save">SAVE</string>
     <string name="action_new">NEW</string>
     <string name="action_import">IMPORT</string>
@@ -99,8 +100,22 @@
     <string name="time_ondate_formatted">On %1$s</string>
     <string name="time_never">Never</string>
 
+    <!-- Sort & Filter -->
+    <string name="sort">Sort</string>
+    <string name="sort_date">Sort by date</string>
+    <string name="sort_cost">Sort by cost</string>
+    <string name="sort_category">Sort by category</string>
+    <string name="sort_source">Sort by source</string>
+    <string name="sort_paidby">Sort by who paid</string>
+    <string name="filter">Filter</string>
+    <string name="filter_none">Clear Filter</string>
+    <string name="filter_category">Filter by category</string>
+    <string name="filter_source">Filter by source</string>
+    <string name="filter_whopaid">Filter by who paid</string>
+
     <!-- Information -->
-    <string name="info_paidback">Paid Back %1$s</string>
+    <string name="info_paidback">Paid Back</string>
+    <string name="info_paidback_format">Paid Back %1$s</string>
     <string name="info_nobackup">No Backup Found</string>
     <string name="info_restorebackup">Restore Backup</string>
     <string name="info_backupnotice">Restore backup created last time data was imported</string>

@@ -10,12 +10,15 @@ import android.view.*;
 import android.widget.Toast;
 import org.joda.time.LocalDate;
 
+import java.util.ArrayList;
+
 
 public class ActivityDetailsTransaction extends AppCompatActivity implements GestureDetector.OnGestureListener
 {
     //Activity type (Expense or income)
     int activityType = -1;
-    int ac_toolbar_menu;
+    ArrayList<Integer> toolbar_menus;
+
     Class ac_editing_activity;
 
     AdapterDetailsTransaction elementsAdapter;
@@ -42,6 +45,9 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_transaction);
 
+        //Toolbar menus
+        toolbar_menus = new ArrayList<>();
+
         //Get the intent that opened this activity
         Intent intent = getIntent();
 
@@ -53,11 +59,14 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
             finish();
         }
         else if (activityType == 0) { //Expense
-            ac_toolbar_menu = R.menu.toolbar_menu_sort_filter_paidback;
+            toolbar_menus.add(R.menu.submenu_sort);
+            toolbar_menus.add(R.menu.submenu_filter);
+            toolbar_menus.add(R.menu.submenu_paidback);
             ac_editing_activity = ActivityNewTransaction.class;
         }
         else if (activityType == 1) { //Income
-            ac_toolbar_menu = R.menu.toolbar_menu_sort_filter;
+            toolbar_menus.add(R.menu.submenu_sort);
+            toolbar_menus.add(R.menu.submenu_filter);
             ac_editing_activity = ActivityNewTransaction.class;
         }
 
@@ -97,7 +106,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
                     onBackPressed();
                 }
             });
-            toolbar.inflateMenu(ac_toolbar_menu);
+            for(int m : toolbar_menus){ toolbar.inflateMenu(m); }
             setSupportActionBar(toolbar);
 
             //Title
@@ -140,7 +149,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        getMenuInflater().inflate(ac_toolbar_menu, menu);
+        for(int m : toolbar_menus){ getMenuInflater().inflate(m, menu); }
 
         return true;
     }
@@ -158,17 +167,39 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
                 return true;
 
             case R.id.toolbar_sort_category:
+                if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.CATEGORY_UP) { _profile.Sort(ProfileManager.SORT_METHODS.CATEGORY_DOWN); } else { _profile.Sort(ProfileManager.SORT_METHODS.CATEGORY_UP); }
+                elementsAdapter.notifyDataSetChanged();
                 return true;
-            case R.id.toolbar_sort_company:
+            case R.id.toolbar_sort_source:
+                if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.SOURCE_UP) { _profile.Sort(ProfileManager.SORT_METHODS.SOURCE_DOWN); } else { _profile.Sort(ProfileManager.SORT_METHODS.SOURCE_UP); }
+                elementsAdapter.notifyDataSetChanged();
                 return true;
             case R.id.toolbar_sort_cost:
+                if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.COST_UP) { _profile.Sort(ProfileManager.SORT_METHODS.COST_DOWN); } else { _profile.Sort(ProfileManager.SORT_METHODS.COST_UP); }
+                elementsAdapter.notifyDataSetChanged();
                 return true;
             case R.id.toolbar_sort_date:
+                if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.DATE_UP) { _profile.Sort(ProfileManager.SORT_METHODS.DATE_DOWN); } else { _profile.Sort(ProfileManager.SORT_METHODS.DATE_UP); }
+                elementsAdapter.notifyDataSetChanged();
                 return true;
             case R.id.toolbar_sort_paidby:
+                if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.PAIDBY_UP) { _profile.Sort(ProfileManager.SORT_METHODS.PAIDBY_DOWN); } else { _profile.Sort(ProfileManager.SORT_METHODS.PAIDBY_UP); }
+                elementsAdapter.notifyDataSetChanged();
                 return true;
 
-            case R.id.toolbar_filter:
+            case R.id.toolbar_filter_none:
+                _profile.Filter(ProfileManager.FILTER_METHODS.NONE, null, activityType);
+                elementsAdapter.notifyDataSetChanged();
+                totalsAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.toolbar_filter_category:
+                ProfileManager.OpenDialogFragment(this, DialogFragmentFilter.newInstance(this, _profile, ProfileManager.FILTER_METHODS.CATEGORY), true);
+                return true;
+            case R.id.toolbar_filter_source:
+                ProfileManager.OpenDialogFragment(this, DialogFragmentFilter.newInstance(this, _profile, ProfileManager.FILTER_METHODS.SOURCE), true);
+                return true;
+            case R.id.toolbar_filter_whopaid:
+                ProfileManager.OpenDialogFragment(this, DialogFragmentFilter.newInstance(this, _profile, ProfileManager.FILTER_METHODS.PAIDBY), true);
                 return true;
 
             case R.id.toolbar_paidback: //Expense only
@@ -302,8 +333,8 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
         //Update timeframe for profile
         _profile.CalculateTimeFrame(activityType);
         _profile.CalculateTotalsInTimeFrame(activityType);
-        elementsAdapter.notifyDataSetChanged();
-        totalsAdapter.notifyDataSetChanged();
+        if (elementsAdapter != null) { elementsAdapter.notifyDataSetChanged(); }
+        if (totalsAdapter != null) { totalsAdapter.notifyDataSetChanged(); }
         //expenseAdapter.notifyItemRangeRemoved(0, _profile.GetExpenseSourcesInTimeFrameSize());
         //UpdateAdapters();
     }

@@ -689,7 +689,7 @@ public class ActivityNewTransaction extends AppCompatActivity
     public void UpdatePaidBack(){
         //Update paidback checkbox
         if (_paidBack!=null){
-            checkBox_paidBack.setText(String.format(getString(R.string.info_paidback),_paidBack.toString(ProfileManager.simpleDateFormat)));
+            checkBox_paidBack.setText(String.format(getString(R.string.info_paidback_format),_paidBack.toString(ProfileManager.simpleDateFormat)));
 
             SetChildrenEnabled(cardView_splitPercentage, false);
             SetChildrenEnabled(cardView_cost, false);

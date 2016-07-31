@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="8dp">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/filter"
+        android:id="@+id/textView_dialogtt_title"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="24dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="24dp"
+        android:layout_marginRight="24dp" />
+
+    <Spinner
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner_filter"
+        android:spinnerMode="dropdown"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@+id/textView_dialogtt_title"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        style="@style/FlatButtonTheme"
+        android:text="@string/action_ok"
+        android:id="@+id/button_dialogtt_positive"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="8dp"
+        android:enabled="true"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentBottom="true" />
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        style="@style/FlatButtonTheme"
+        android:text="@string/action_cancel"
+        android:id="@+id/button_dialogtt_negative"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_alignParentRight="false"
+        android:layout_toLeftOf="@+id/button_dialogtt_positive" />
+
+
+    <!--Add new -->
+
+</RelativeLayout>

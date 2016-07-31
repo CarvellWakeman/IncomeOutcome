@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/title_deleteand"
+        android:text="@string/title_delete"
         android:id="@+id/textView_dialogtt_title"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="24dp"

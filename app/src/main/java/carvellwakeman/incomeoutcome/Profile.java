@@ -1,14 +1,10 @@
 package carvellwakeman.incomeoutcome;
 
 
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import android.database.sqlite.SQLiteDatabase;
-import org.joda.time.LocalDate;
-import org.joda.time.Period;
+import org.joda.time.*;
 
 public class Profile implements java.io.Serializable
 {
@@ -33,6 +29,10 @@ public class Profile implements java.io.Serializable
     //Transaction sources
     private ArrayList<Transaction> Transactions;
     private ArrayList<Transaction> Transactions_timeFrame;
+
+    //Sorting & Filtering
+    private ProfileManager.SORT_METHODS sortMethod;
+    private ProfileManager.FILTER_METHODS filterMethod;
 
 
     //Totals
@@ -758,6 +758,126 @@ public class Profile implements java.io.Serializable
             TransferTransaction(Transactions.get(i), moveTo);
         }
     }
+
+    //Sort
+    public ProfileManager.SORT_METHODS GetSortMethod(){ return sortMethod; }
+    public int dateSort(Transaction t1, Transaction t2){
+        TimePeriod tp1 = t1.GetTimePeriod();
+        TimePeriod tp2 = t2.GetTimePeriod();
+        if (tp1!=null && tp2!=null) {
+            LocalDate td1 = tp1.GetDate();
+            LocalDate td2 = tp2.GetDate();
+            if (td1!=null && td2!=null) {
+                MutableDateTime epoch = new MutableDateTime();
+                epoch.setDate(0);
+                return (int) Math.signum(Days.daysBetween(epoch, td1.toDateTime(new LocalTime())).getDays() - Days.daysBetween(epoch, td2.toDateTime(new LocalTime())).getDays());
+            }
+            return 0;
+        }
+        return 0;
+    }
+    public int valueSort(Transaction t1, Transaction t2){ return (int)Math.signum( (t1.GetValue()) - (t2.GetValue()) ); }
+    public int paidbySort(Transaction t1, Transaction t2){ return (t1.GetIPaid() ? 1 : 0) - (t2.GetIPaid() ? 1 : 0); }
+    public int categorySort(Transaction t1, Transaction t2){ return  t1.GetCategory().compareTo(t2.GetCategory()); }
+    public int sourceSort(Transaction t1, Transaction t2){ return  t1.GetSourceName().compareTo(t2.GetSourceName()); }
+    public void Sort(ProfileManager.SORT_METHODS method)
+    {
+        sortMethod = method;
+
+        switch (sortMethod) {
+            case DATE_UP:
+                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
+                    @Override public int compare(Transaction  t1, Transaction  t2) { return dateSort(t1, t2); }
+                });
+                break;
+            case DATE_DOWN:
+                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
+                    @Override public int compare(Transaction  t1, Transaction  t2) { return dateSort(t2, t1); }
+                });
+                break;
+            case COST_UP:
+                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
+                    @Override public int compare(Transaction  t1, Transaction  t2) { return valueSort(t1, t2); }
+                });
+                break;
+            case COST_DOWN:
+                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
+                    @Override public int compare(Transaction  t1, Transaction  t2) { return valueSort(t2, t1); }
+                });
+                break;
+            case CATEGORY_UP:
+                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
+                    @Override public int compare(Transaction  t1, Transaction  t2) { return categorySort(t1, t2); }
+                });
+                break;
+            case CATEGORY_DOWN:
+                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
+                    @Override public int compare(Transaction  t1, Transaction  t2) { return categorySort(t2, t1); }
+                });
+                break;
+            case SOURCE_UP:
+                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
+                    @Override public int compare(Transaction  t1, Transaction  t2) { return sourceSort(t1, t2); }
+                });
+                break;
+            case SOURCE_DOWN:
+                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
+                    @Override public int compare(Transaction  t1, Transaction  t2) { return sourceSort(t2, t1); }
+                });
+                break;
+            case PAIDBY_UP:
+                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
+                    @Override public int compare(Transaction  t1, Transaction  t2) { return paidbySort(t1, t2); }
+                });
+                break;
+            case PAIDBY_DOWN:
+                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
+                    @Override public int compare(Transaction  t1, Transaction  t2) { return paidbySort(t2, t1); }
+                });
+                break;
+        }
+    }
+
+    public void Filter(ProfileManager.FILTER_METHODS method, Object filterData, int activityType){
+        filterMethod = method;
+        ArrayList<Transaction> temp = new ArrayList<>();
+        temp.addAll(Transactions_timeFrame);
+
+        if (filterMethod == ProfileManager.FILTER_METHODS.NONE){
+            //Reset time frame
+            CalculateTimeFrame(activityType);
+            //Calculate totals
+            CalculateTotalsInTimeFrame(activityType);
+            return;
+        }
+
+        for (int i = 0; i < temp.size(); i++) {
+            switch (filterMethod) {
+                case CATEGORY:
+                    if (filterData == null || temp.get(i).GetCategory() == null) { Transactions_timeFrame.clear(); break; }
+                    if (filterData != null && temp.get(i).GetCategory() != null && !temp.get(i).GetCategory().equalsIgnoreCase(String.valueOf(filterData))) {
+                        Transactions_timeFrame.remove(temp.get(i));
+                    }
+                    break;
+                case SOURCE:
+                    if (filterData == null || temp.get(i).GetSourceName() == null) { Transactions_timeFrame.clear(); break; }
+                    if (filterData != null && temp.get(i).GetSourceName() != null && !temp.get(i).GetSourceName().equalsIgnoreCase(String.valueOf(filterData))) {
+                        Transactions_timeFrame.remove(temp.get(i));
+                    }
+                    break;
+                case PAIDBY:
+                    if (filterData == null || temp.get(i).GetSplitWith() == null) { Transactions_timeFrame.clear(); break; }
+                    if (filterData != null && temp.get(i).GetSplitWith() != null && !temp.get(i).GetSplitWith().equalsIgnoreCase(String.valueOf(filterData))) {
+                        Transactions_timeFrame.remove(temp.get(i));
+                    }
+                    break;
+            }
+        }
+
+        //Calculate totals
+        CalculateTotalsInTimeFrame(activityType);
+    }
+
 
 
     //Calculate the expenses and income sources that are within the timeframe provided

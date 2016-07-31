@@ -3,7 +3,7 @@
     <alpha xmlns:android="http://schemas.android.com/apk/res/android"
         android:fromAlpha="0.0"
         android:toAlpha="1.0"
-        android:duration="500"
+        android:duration="300"
         android:repeatCount="0" />
 
     <translate
@@ -11,6 +11,6 @@
         android:toXDelta="0"
         android:fromYDelta="25%p"
         android:toYDelta="0%p"
-        android:duration="300"
+        android:duration="200"
         android:fillAfter="true" />
 </set>

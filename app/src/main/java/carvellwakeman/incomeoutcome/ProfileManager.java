@@ -73,15 +73,17 @@ public class ProfileManager
     //Sort and filter methods
     enum SORT_METHODS
     {
-        DEFAULT,
         DATE_UP,
         COST_UP,
         PAIDBY_UP,
+        CATEGORY_UP,
+        SOURCE_UP,
+
         DATE_DOWN,
         COST_DOWN,
         PAIDBY_DOWN,
-        CATEGORY,
-        COMPANY
+        CATEGORY_DOWN,
+        SOURCE_DOWN
     }
 
     enum FILTER_METHODS
@@ -91,7 +93,7 @@ public class ProfileManager
         COST,
         PAIDBY,
         CATEGORY,
-        COMPANY
+        SOURCE
     }
 
     //Constructor
@@ -538,6 +540,18 @@ public class ProfileManager
     }
 
     public static int GetCategoryIndex(String title) { return _categories.indexOf(GetCategory(title)); }
+
+    //Get array of OtherPeople objects
+    public static ArrayList<Category> GetCategories(){
+        return _categories;
+    }
+    public static ArrayList<String> GetCategoriesString(){
+        ArrayList<String> arr = new ArrayList<>();
+        for(Category c : _categories){
+            arr.add(c.GetTitle());
+        }
+        return arr;
+    }
 
     public static int GetCategoriesCount() { return _categories.size(); }
 

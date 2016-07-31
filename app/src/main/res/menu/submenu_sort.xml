@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/toolbar_sort"
+        android:icon="@drawable/ic_sort_white_24dp"
+        android:title="Sort"
+        app:showAsAction="never"
+        android:orderInCategory="1" >
+
+        <menu>
+            <item
+                android:id="@+id/toolbar_sort_date"
+                android:title="@string/sort_date" />
+            <item
+                android:id="@+id/toolbar_sort_cost"
+                android:title="@string/sort_cost" />
+            <item
+                android:id="@+id/toolbar_sort_category"
+                android:title="@string/sort_category" />
+            <item
+                android:id="@+id/toolbar_sort_source"
+                android:title="@string/sort_source" />
+            <item
+                android:id="@+id/toolbar_sort_paidby"
+                android:title="@string/sort_paidby" />
+        </menu>
+    </item>
+</menu>

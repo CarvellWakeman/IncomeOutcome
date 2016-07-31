@@ -176,15 +176,16 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     //ProfileManager.Print("ExpenseParentID:" + expense.GetParentID());
                     //Repeat text && Repeat Expense Indenting
                     if (parent_tp != null && parent_tp.DoesRepeat() && parent_tp.GetFirstOccurrence() != null && tp.GetDate() != null) {
+
+                        //Repeat Text
+                        holder.repeat.setText(parent_tp.GetRepeatString(parent_tp.GetRepeatFrequency(), parent_tp.GetRepeatUntil()));
+
                         //ProfileManager.Print("Arg1:" + (parent_tp.GetFirstOccurrence().compareTo(tp.GetDate()) == 0));
                         //ProfileManager.Print("Arg2:" + (parent.GetID() == expense.GetID()));
                         //ProfileManager.Print("Parent First Occurrence:" + parent_tp.GetDate().toString(ProfileManager.simpleDateFormat));
                         //ProfileManager.Print("Expense Occurrence:" + tp.GetDate().toString(ProfileManager.simpleDateFormat));
 
                         if (parent_tp.GetFirstOccurrence().compareTo(tp.GetDate()) == 0 || parent.GetID() == transaction.GetID()) {
-                            //Repeat Text
-                            holder.repeat.setText(parent_tp.GetRepeatString(parent_tp.GetRepeatFrequency(), parent_tp.GetRepeatUntil()));
-
                             //Indent
                             holder.indent.setVisibility(View.GONE);
                             holder.moreInfoOn();
@@ -350,7 +351,6 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
         @Override
         public void onClick(View v) {
             //final Expense ex = _profile.GetExpenseAtIndexInTimeFrame(getAdapterPosition());
-            //ProfileManager.Print("ID:" + ex.GetID());
             //ProfileManager.Print("ParentID:" + ex.GetParentID());
 
             toggleMoreInfo();

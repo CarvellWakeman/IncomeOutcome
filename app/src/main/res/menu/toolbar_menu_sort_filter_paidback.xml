@@ -3,49 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="carvellwakeman.incomeoutcome">
 
-    <!--
-    <item android:id="@+id/action_settings"
-    android:title="@string/action_settings"
-    android:orderInCategory="100" />
-    -->
-
-
-    <item android:id="@+id/toolbar_sort"
-        android:icon="@drawable/ic_sort_white_24dp"
-        android:title="Sort"
-        app:showAsAction="never"
-        android:orderInCategory="1" >
-
-        <menu>
-            <item
-                android:id="@+id/toolbar_sort_date"
-                android:title="Sort by date" />
-            <item
-                android:id="@+id/toolbar_sort_cost"
-                android:title="Sort by cost" />
-            <item
-                android:id="@+id/toolbar_sort_category"
-                android:title="Sort by category" />
-            <item
-                android:id="@+id/toolbar_sort_company"
-                android:title="Sort by company" />
-            <item
-                android:id="@+id/toolbar_sort_paidby"
-                android:title="Sort by who paid" />
-        </menu>
-    </item>
-
-    <item android:id="@+id/toolbar_filter"
-        android:icon="@drawable/ic_filter_list_white_24dp"
-        android:title="Filter"
-        app:showAsAction="never"
-        android:orderInCategory="2" />
+    <include layout="@menu/toolbar_menu_sort_filter"/>
 
     <item android:id="@+id/toolbar_paidback"
         android:icon="@drawable/ic_check_white_24dp"
-        android:title="Paid Back"
+        android:title="@string/info_paidback"
         app:showAsAction="never"
         android:orderInCategory="3" />
-
 
 </menu>
