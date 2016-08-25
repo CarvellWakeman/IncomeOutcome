@@ -224,4 +224,14 @@
         android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/button2" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button4"
+        android:text="Overview"
+        android:theme="@style/Base.Theme.AppCompat.Light"
+        android:onClick="MainOverviewClick"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

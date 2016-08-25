@@ -21,7 +21,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
     int _profileID;
     Profile _profile;
 
-    //Expensne vs income adapter
+    //Expense vs income adapter
     int activityType = -1;
 
     //Constructor

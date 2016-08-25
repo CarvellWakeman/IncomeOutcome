@@ -17,6 +17,8 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
 {
     //Activity type (Expense or income)
     int activityType = -1;
+    int keyType = -1;
+
     ArrayList<Integer> toolbar_menus;
 
     Class ac_editing_activity;
@@ -54,6 +56,8 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
 
         //Determine if this is an expense or income activity
         activityType = intent.getIntExtra("activitytype", -1);
+        keyType = intent.getIntExtra("keytype", -1);
+
         if (activityType == -1){ //None (error)
             ProfileManager.Print("Error opening details activity, no type (expense/income) specified.");
             finish();
@@ -122,7 +126,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
 
             //Set totals adapter
             if (_profile.GetStartTime() != null && _profile.GetEndTime() != null) { //Only set up totals if there is a valid timeframe
-                totalsAdapter = new AdapterTransactionTotals(this, _profileID, activityType);
+                totalsAdapter = new AdapterTransactionTotals(this, _profileID, activityType, keyType);
                 totalsView.setAdapter(totalsAdapter);
 
                 //LinearLayoutManager for RecyclerView
@@ -256,7 +260,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
 
                 this.recreate();
                 _profile.CalculateTimeFrame(activityType);
-                _profile.CalculateTotalsInTimeFrame(activityType);
+                _profile.CalculateTotalsInTimeFrame(activityType, keyType);
             }
         }
         return true;
@@ -332,7 +336,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
 
         //Update timeframe for profile
         _profile.CalculateTimeFrame(activityType);
-        _profile.CalculateTotalsInTimeFrame(activityType);
+        _profile.CalculateTotalsInTimeFrame(activityType, keyType);
         if (elementsAdapter != null) { elementsAdapter.notifyDataSetChanged(); }
         if (totalsAdapter != null) { totalsAdapter.notifyDataSetChanged(); }
         //expenseAdapter.notifyItemRangeRemoved(0, _profile.GetExpenseSourcesInTimeFrameSize());
@@ -346,7 +350,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
         elementsAdapter = new AdapterDetailsTransaction(this, _profileID, activityType);
         elementsView.setAdapter(elementsAdapter);
 
-        totalsAdapter = new AdapterTransactionTotals(this, _profileID, activityType);
+        totalsAdapter = new AdapterTransactionTotals(this, _profileID, activityType, keyType);
         totalsView.setAdapter(totalsAdapter);
     }
 
@@ -434,7 +438,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
             if (elementsAdapter != null) { elementsAdapter.notifyDataSetChanged(); }
 
             //Update cost totals
-            _profile.CalculateTotalsInTimeFrame(activityType);
+            _profile.CalculateTotalsInTimeFrame(activityType, keyType);
             if (totalsAdapter != null) { totalsAdapter.notifyDataSetChanged(); }
         }
         else {
@@ -442,7 +446,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
         }
 
         _profile.CalculateTimeFrame(activityType);
-        _profile.CalculateTotalsInTimeFrame(activityType);
+        _profile.CalculateTotalsInTimeFrame(activityType, keyType);
     }
 
     // Blacklist a date
@@ -456,12 +460,12 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
 
         //Update transaction list
         _profile.CalculateTimeFrame(activityType);
-        _profile.CalculateTotalsInTimeFrame(activityType);
+        _profile.CalculateTotalsInTimeFrame(activityType, keyType);
 
         if (elementsAdapter != null) { elementsAdapter.notifyDataSetChanged(); }
 
         //Update cost totals
-        _profile.CalculateTotalsInTimeFrame(activityType);
+        _profile.CalculateTotalsInTimeFrame(activityType, keyType);
         if (totalsAdapter != null) { totalsAdapter.notifyDataSetChanged(); }
     }
 

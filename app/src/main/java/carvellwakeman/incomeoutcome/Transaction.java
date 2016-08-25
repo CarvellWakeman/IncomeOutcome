@@ -135,7 +135,7 @@ public class Transaction implements java.io.Serializable
     public Double GetSplitValue() { return splitValue; }
     public Double GetMySplitValue() { return GetValue() - GetSplitValue(); }
 
-    public Double GetMyDebt() { if (!GetIPaid() && !IsPaidBack()) { return GetValue() - GetSplitValue(); } else { return 0.0d; } }
+    public Double GetMyDebt() { if (!GetIPaid() && !IsPaidBack()) { return GetMySplitValue(); } else { return 0.0d; } }
     public Double GetSplitDebt() { if (GetIPaid() && !IsPaidBack()) { return GetSplitValue(); } else { return 0.0d; } }
 
     public Double GetMySplitPercentage() { if (GetValue() > 0) { return 1 - (GetSplitValue() / GetValue()); } else { return 0.0; } }

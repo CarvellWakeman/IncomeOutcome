@@ -10,6 +10,9 @@
     <string name="title_settings">Settings</string>
     <string name="title_expenses">Expenses</string>
     <string name="title_income">Income</string>
+    <string name="title_incomeexpenses">Income and Expenses</string>
+
+    <string name="title_overview">Overview</string>
 
     <string name="title_exportdatabase">Export Database</string>
     <string name="title_importdatabase">Import Database</string>
@@ -54,6 +57,36 @@
     <!-- Headers -->
     <string name="header_cost">Cost</string>
     <string name="header_amount">Payment Amount</string>
+
+    <string name="header_expenses_summary">Expenses Summary</string>
+    <string name="header_income_summary">Income Summary</string>
+    <string name="header_split_summary">Split Summary</string>
+
+
+    <!-- Information -->
+    <string name="info_title_value">%1$s %2$s</string>
+    <string name="info_income_summary_value">Earned %1$s</string>
+    <string name="info_expense_summary_value">Earned %1$s</string>
+    <string name="info_paidback">Paid Back</string>
+    <string name="info_paidback_format">Paid Back %1$s</string>
+    <string name="info_nobackup">No Backup Found</string>
+    <string name="info_restorebackup">Restore Backup</string>
+    <string name="info_backupnotice">Restore backup created last time data was imported</string>
+    <string name="info_nodescription"><i>No Description</i></string>
+    <string name="info_nosource"><i>No Source</i></string>
+    <string name="info_nocategory"><i>No Category</i></string>
+    <string name="info_noname"><i>No Source Name</i></string>
+    <string name="info_domwarning">* Some months are limited to 28/29/30 days. The last day of the month will be chosen in these cases.</string>
+
+    <!-- Formatting -->
+    <string name="item_delimiter">,</string>
+    <string name="format_ipaid">%1$s owes %2$s (%3$s%%)</string>
+    <string name="format_theypaid">I owe %1$s (%2$s%%)</string>
+    <string name="format_me">You</string>
+    <string name="balance_even">Balance is even between You and </string>
+    <string name="balance_uneven">owe</string>
+    <string name="balance_uneven_plural">owes</string>
+    <string name="format_dbversion">(ver. %1$s)</string>
 
 
     <!-- Spinner selection -->
@@ -113,27 +146,8 @@
     <string name="filter_source">Filter by source</string>
     <string name="filter_whopaid">Filter by who paid</string>
 
-    <!-- Information -->
-    <string name="info_paidback">Paid Back</string>
-    <string name="info_paidback_format">Paid Back %1$s</string>
-    <string name="info_nobackup">No Backup Found</string>
-    <string name="info_restorebackup">Restore Backup</string>
-    <string name="info_backupnotice">Restore backup created last time data was imported</string>
-    <string name="info_nodescription"><i>No Description</i></string>
-    <string name="info_nosource"><i>No Source</i></string>
-    <string name="info_nocategory"><i>No Category</i></string>
-    <string name="info_noname"><i>No Source Name</i></string>
-    <string name="info_domwarning">* Some months are limited to 28/29/30 days. The last day of the month will be chosen in these cases.</string>
 
-    <!-- Formatting -->
-    <string name="item_delimiter">,</string>
-    <string name="format_ipaid">%1$s owes %2$s (%3$s%%)</string>
-    <string name="format_theypaid">I owe %1$s (%2$s%%)</string>
-    <string name="format_me">You</string>
-    <string name="balance_even">Balance is even between You and </string>
-    <string name="balance_uneven">owe</string>
-    <string name="balance_uneven_plural">owes</string>
-    <string name="format_dbversion">(ver. %1$s)</string>
+
 
     <!-- Repeat Info -->
     <string name="repeat_days">day(s)</string>

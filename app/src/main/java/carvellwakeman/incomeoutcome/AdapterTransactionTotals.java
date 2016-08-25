@@ -1,6 +1,7 @@
 package carvellwakeman.incomeoutcome;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +17,7 @@ public class AdapterTransactionTotals extends RecyclerView.Adapter<AdapterTransa
     int activityType;
 
     //Calling activity context
-    ActivityDetailsTransaction activity;
+    Context context;
 
     //ID strings
     int _profileID;
@@ -26,17 +27,16 @@ public class AdapterTransactionTotals extends RecyclerView.Adapter<AdapterTransa
     HashMap<String, Transaction> data;
 
     //Constructor
-    public AdapterTransactionTotals(ActivityDetailsTransaction activity, int profileID, int activityType)
+    public AdapterTransactionTotals(Context context, int profileID, int activityType, int keyType)
     {
         _profileID = profileID;
         _profile = ProfileManager.GetProfileByID(profileID);
 
         if ( _profile != null ) {
-            _profile.CalculateTotalsInTimeFrame(activityType);
-            data = _profile.TransactionTotals;
+            data = _profile.CalculateTotalsInTimeFrame(activityType, keyType);
         }
 
-        this.activity = activity;
+        this.context = context;
 
         this.activityType = activityType;
     }

@@ -53,7 +53,7 @@ public class ActivitySettings extends AppCompatActivity
 
 
         //Setting Categories
-        SettingCard profilesPeopleCategories = new SettingCard( inflater, getString(R.string.title_settings_profilespeoplecategories));
+        CardSettings profilesPeopleCategories = new CardSettings( inflater, R.layout.row_layout_setting_card, getString(R.string.title_settings_profilespeoplecategories));
         //Manage profiles
             profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_account_white_24dp, getString(R.string.title_manageprofiles), null,
                     new View.OnClickListener() { @Override public void onClick(View v) {
@@ -76,7 +76,7 @@ public class ActivitySettings extends AppCompatActivity
                     }}
             ));
 
-        SettingCard database = new SettingCard(inflater, getString(R.string.title_settings_database));
+        CardSettings database = new CardSettings(inflater, R.layout.row_layout_setting_card, getString(R.string.title_settings_database));
         //Import
             database.AddSetting(new Setting(inflater, R.drawable.ic_input_white_24dp, getString(R.string.title_settings_import), getString(R.string.subtitle_settings_import),
                     new View.OnClickListener() { @Override public void onClick(View v) {

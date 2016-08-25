@@ -3,13 +3,11 @@ package carvellwakeman.incomeoutcome;
 
 import android.app.DatePickerDialog;
 //import android.content.DialogInterface;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 //import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -17,8 +15,6 @@ import android.view.*;
 import android.view.animation.*;
 import android.widget.*;
 import org.joda.time.LocalDate;
-
-import android.support.v4.app.NotificationCompat;
 
 //import org.joda.time.LocalDate;
 
@@ -591,12 +587,15 @@ public class ActivityMain extends AppCompatActivity
         */
         Profile pr = ProfileManager.GetCurrentProfile();
         if (pr != null) {
-            pr.CalculateTimeFrame(1);
-            pr.CalculateTotalsInTimeFrame(1);
+            int activityType = 1;
+            int keyType = 1;
+            pr.CalculateTimeFrame(activityType);
+            pr.CalculateTotalsInTimeFrame(activityType,keyType);
 
             //Start income (details) activity and send it the profile we clicked on
             Intent intent = new Intent(ActivityMain.this, ActivityDetailsTransaction.class);
-            intent.putExtra("activitytype", 1);
+            intent.putExtra("activitytype", activityType);
+            intent.putExtra("keytype", keyType);
             intent.putExtra("profile", pr.GetID());
             startActivityForResult(intent, 3);
         }
@@ -608,12 +607,15 @@ public class ActivityMain extends AppCompatActivity
     {
         Profile pr = ProfileManager.GetCurrentProfile();
         if (pr != null) {
-            pr.CalculateTimeFrame(0);
-            pr.CalculateTotalsInTimeFrame(0);
+            int activityType = 0;
+            int keyType = 0;
+            pr.CalculateTimeFrame(activityType);
+            pr.CalculateTotalsInTimeFrame(activityType,keyType);
 
             //Start expense (details) activity and send it the profile we clicked on
             Intent intent = new Intent(ActivityMain.this, ActivityDetailsTransaction.class);
-            intent.putExtra("activitytype", 0);
+            intent.putExtra("activitytype", activityType);
+            intent.putExtra("keytype", keyType);
             intent.putExtra("profile", pr.GetID());
             startActivityForResult(intent, 3);
         }
@@ -651,6 +653,20 @@ public class ActivityMain extends AppCompatActivity
         }
     }
 
+    public void MainOverviewClick(View v){
+        Profile pr = ProfileManager.GetCurrentProfile();
+        if (pr != null) {
+            //pr.CalculateTimeFrame(1);
+            //pr.CalculateTotalsInTimeFrame(1);
+
+            Intent intent = new Intent(ActivityMain.this, ActivityOverview.class);
+            intent.putExtra("profile", pr.GetID());
+            startActivityForResult(intent, 1);
+        }
+        else {
+            ProfileManager.Print("ERROR: Profile not found, could not start Overview Activity");
+        }
+    }
     /*
     public void MainImportBackup(View v){
         new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deleteall)
@@ -663,5 +679,6 @@ public class ActivityMain extends AppCompatActivity
             .create().show();
     }
     */
+
 
 }

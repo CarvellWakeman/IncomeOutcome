@@ -102,7 +102,7 @@ public class DialogFragmentPaidBack extends DialogFragment {
 
                 //_profile.CalculateTimeFrame(); //TODO Necessary? - Yes, necessary.
                 _profile.CalculateTimeFrame(_parent.activityType);
-                _profile.CalculateTotalsInTimeFrame(_parent.activityType);
+                _profile.CalculateTotalsInTimeFrame(_parent.activityType, _parent.keyType);
 
                 dismiss();
             }
