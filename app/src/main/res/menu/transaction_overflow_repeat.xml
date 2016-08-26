@@ -1,0 +1,33 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="carvellwakeman.incomeoutcome">
+
+    <item android:id="@+id/transaction_edit"
+        android:title="@string/action_edit"
+        android:orderInCategory="1" >
+
+        <menu>
+            <item
+                android:id="@+id/transaction_edit_instance"
+                android:title="@string/action_instance" />
+            <item
+                android:id="@+id/transaction_edit_all"
+                android:title="@string/action_all" />
+        </menu>
+    </item>
+
+    <item android:id="@+id/transaction_delete"
+        android:title="@string/action_delete"
+        android:orderInCategory="2" >
+
+        <menu>
+            <item
+                android:id="@+id/transaction_delete_instance"
+                android:title="@string/action_instance" />
+            <item
+                android:id="@+id/transaction_delete_all"
+                android:title="@string/action_all" />
+        </menu>
+    </item>
+
+</menu>

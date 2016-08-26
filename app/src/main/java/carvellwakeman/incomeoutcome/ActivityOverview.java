@@ -9,7 +9,7 @@ import android.view.*;
 import android.widget.Toast;
 
 
-public class ActivityOverview extends AppCompatActivity
+public class ActivityOverview extends AppCompatActivity implements GestureDetector.OnGestureListener
 {
     //ArrayList<Integer> toolbar_menus;
 
@@ -19,6 +19,8 @@ public class ActivityOverview extends AppCompatActivity
     int _profileID;
     Profile _profile;
 
+    private GestureDetector gestureDetector;
+    View.OnTouchListener gestureListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,16 @@ public class ActivityOverview extends AppCompatActivity
         else {
             //Find Views
             toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+            //Swiping gesture setup
+            gestureDetector = new GestureDetector(this, this);
+            gestureListener = new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    return gestureDetector.onTouchEvent(event);
+                }
+            };
+
+            toolbar.setOnTouchListener(gestureListener);
 
 
             //Configure toolbar
@@ -125,6 +137,47 @@ public class ActivityOverview extends AppCompatActivity
         setResult(RESULT_OK, intent);
 
         super.onBackPressed();
+    }
+
+
+    //Gestures
+    @Override
+    public boolean onTouchEvent(MotionEvent me) { return gestureDetector.onTouchEvent(me); }
+    @Override
+    public boolean onDown(MotionEvent e) {return true;}
+    @Override
+    public void onLongPress(MotionEvent e) {}
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {return true;}
+    @Override
+    public void onShowPress(MotionEvent e) {}
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) { return true; }
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
+    {
+        final int SWIPE_MIN_DISTANCE = 120;
+        final int SWIPE_MAX_OFF_PATH = 250;
+        final int SWIPE_THRESHOLD_VELOCITY = 200;
+
+        if (e1 != null && e2 != null) {
+            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) { return false; }
+
+            if (_profile != null) {
+                //Right to Left
+                if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    _profile.TimePeriodPlus(1);
+                }
+                else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    _profile.TimePeriodMinus(1);
+                }
+
+                this.recreate();
+                //_profile.CalculateTimeFrame(activityType);
+                //_profile.CalculateTotalsInTimeFrame(activityType, keyType);
+            }
+        }
+        return true;
     }
 
 

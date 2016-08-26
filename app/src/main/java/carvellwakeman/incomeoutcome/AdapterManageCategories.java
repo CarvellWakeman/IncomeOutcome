@@ -80,7 +80,7 @@ public class AdapterManageCategories extends RecyclerView.Adapter<AdapterManageC
                 @Override
                 public void onClick(View v) {
                     new AlertDialog.Builder(parent).setTitle(R.string.confirm_areyousure_deletesingle)
-                            .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             ProfileManager.RemoveCategory(ProfileManager.GetCategoryByIndex(getAdapterPosition()));

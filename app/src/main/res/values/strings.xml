@@ -67,13 +67,17 @@
     <string name="info_title_value">%1$s %2$s</string>
     <string name="info_income_summary_value">Earned %1$s</string>
     <string name="info_expense_summary_value">Earned %1$s</string>
+    <string name="info_paidby">Paid By</string>
     <string name="info_paidback">Paid Back</string>
     <string name="info_paidback_format">Paid Back %1$s</string>
     <string name="info_nobackup">No Backup Found</string>
     <string name="info_restorebackup">Restore Backup</string>
     <string name="info_backupnotice">Restore backup created last time data was imported</string>
+    <string name="info_description">Description</string>
     <string name="info_nodescription"><i>No Description</i></string>
+    <string name="info_source">Source</string>
     <string name="info_nosource"><i>No Source</i></string>
+    <string name="info_category">Category</string>
     <string name="info_nocategory"><i>No Category</i></string>
     <string name="info_noname"><i>No Source Name</i></string>
     <string name="info_domwarning">* Some months are limited to 28/29/30 days. The last day of the month will be chosen in these cases.</string>
@@ -94,9 +98,15 @@
     <string name="add_otherperson">Add New&#8230;</string>
 
     <!-- User actions -->
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_duplicate">Duplicate</string>
+    <string name="action_instance">Only this transaction</string>
+    <string name="action_all">All Transactions in series</string>
+
     <string name="action_ok">OK</string>
     <string name="action_add">ADD</string>
-    <string name="action_delete">DELETE</string>
+    <string name="action_deleteitem">DELETE</string>
     <string name="action_deleteall">DELETE ALL</string>
     <string name="action_deletetransactions">DELETE TRANSACTIONS</string>
     <string name="action_back">BACK</string>
@@ -123,6 +133,7 @@
     <string name="confirm_areyousure_transferdelete">Take action for transactions in this profile</string>
 
     <!-- Time -->
+    <string name="time_date">Date</string>
     <string name="time_setdate">Set Date</string>
     <string name="time_start">START DATE</string>
     <string name="time_end">END DATE</string>
@@ -150,6 +161,7 @@
 
 
     <!-- Repeat Info -->
+    <string name="repeat">Repeat</string>
     <string name="repeat_days">day(s)</string>
     <string name="repeat_weeks">week(s) on</string>
     <string name="repeat_months">month(s) on day</string>

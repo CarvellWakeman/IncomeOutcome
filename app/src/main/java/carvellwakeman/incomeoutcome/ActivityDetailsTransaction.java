@@ -339,8 +339,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
         _profile.CalculateTotalsInTimeFrame(activityType, keyType);
         if (elementsAdapter != null) { elementsAdapter.notifyDataSetChanged(); }
         if (totalsAdapter != null) { totalsAdapter.notifyDataSetChanged(); }
-        //expenseAdapter.notifyItemRangeRemoved(0, _profile.GetExpenseSourcesInTimeFrameSize());
-        //UpdateAdapters();
+        UpdateAdapters(); //TODO: Why aren't adapters updating even though I'm calling the above 4 lines? This call is inefficient.
     }
 
     public void UpdateAdapters(){
@@ -435,11 +434,6 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
         if (deleteParent) {
             //Remove expense from profile and update expense list
             _profile.RemoveTransaction(tran, deleteChildren);
-            if (elementsAdapter != null) { elementsAdapter.notifyDataSetChanged(); }
-
-            //Update cost totals
-            _profile.CalculateTotalsInTimeFrame(activityType, keyType);
-            if (totalsAdapter != null) { totalsAdapter.notifyDataSetChanged(); }
         }
         else {
             blacklistTransaction(tran);
@@ -447,6 +441,11 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
 
         _profile.CalculateTimeFrame(activityType);
         _profile.CalculateTotalsInTimeFrame(activityType, keyType);
+
+        if (elementsAdapter != null) { elementsAdapter.notifyDataSetChanged(); }
+        if (totalsAdapter != null) { totalsAdapter.notifyDataSetChanged(); }
+
+        UpdateAdapters();
     }
 
     // Blacklist a date
@@ -459,14 +458,11 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
         ProfileManager.InsertTransactionDatabase(_profile, tr, true);
 
         //Update transaction list
-        _profile.CalculateTimeFrame(activityType);
-        _profile.CalculateTotalsInTimeFrame(activityType, keyType);
+        //_profile.CalculateTimeFrame(activityType);
+        //_profile.CalculateTotalsInTimeFrame(activityType, keyType);
 
-        if (elementsAdapter != null) { elementsAdapter.notifyDataSetChanged(); }
-
-        //Update cost totals
-        _profile.CalculateTotalsInTimeFrame(activityType, keyType);
-        if (totalsAdapter != null) { totalsAdapter.notifyDataSetChanged(); }
+        //if (elementsAdapter != null) { elementsAdapter.notifyDataSetChanged(); }
+        //if (totalsAdapter != null) { totalsAdapter.notifyDataSetChanged(); }
     }
 
 }

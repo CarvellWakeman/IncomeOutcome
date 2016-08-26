@@ -1316,6 +1316,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
             return database.delete(TABLE_TRANSACTIONS, COLUMN_uniqueID + "=?", new String[]{String.valueOf(transaction.GetID())}) > 0;
         }
+
         return false;
     }
     private void removeTimePeriod(Cursor c){

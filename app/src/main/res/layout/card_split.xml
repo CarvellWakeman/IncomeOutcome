@@ -13,7 +13,7 @@
         card_view:cardCornerRadius="@dimen/cardview_default_radius"
         card_view:cardUseCompatPadding="true"
         card_view:cardElevation="@dimen/cardview_default_elevation"
-        card_view:contentPadding="15dp">
+        card_view:contentPadding="@dimen/cardview_default_padding">
 
         <RelativeLayout
             android:layout_width="match_parent"

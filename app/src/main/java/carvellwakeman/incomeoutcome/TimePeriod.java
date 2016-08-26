@@ -527,13 +527,13 @@ public class TimePeriod implements java.io.Serializable
         switch (until)
         {
             case FOREVER:
-                repeatTypeString += ",\nforever";
+                repeatTypeString += ", forever";
                 break;
             case DATE:
                 repeatTypeString += ",\nuntil " + GetRepeatUntilDateFormatted();
                 break;
             case TIMES:
-                repeatTypeString += ",\n" + GetRepeatANumberOfTimes() + " times";
+                repeatTypeString += "," + GetRepeatANumberOfTimes() + " times";
                 break;
         }
 

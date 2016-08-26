@@ -58,7 +58,7 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
                 //Textview1
                 holder.textView1.setText(file.getName());
                 //Textview2
-                holder.textView2.setText(parent.getString(R.string.format_dbversion, version));
+                holder.textView2.setText(parent.getString(R.string.format_dbversion, String.valueOf(version)));
                 if (version == currentVersion){ holder.textView2.setTextColor(Color.GREEN); }
                 else { holder.textView2.setTextColor(Color.RED); }
             }
@@ -100,7 +100,7 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
                 @Override
                 public void onClick(View v) {
                     new AlertDialog.Builder(parent).setTitle(R.string.confirm_areyousure_deletesingle)
-                            .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (database_import_files != null) {

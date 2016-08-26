@@ -212,8 +212,9 @@ public class Profile implements java.io.Serializable
         }
     }
     public void RemoveTransaction(Transaction transaction, boolean deleteChildren) {
+        ProfileManager.RemoveTransactionDatabase(transaction);
         RemoveTransactionDontSave(transaction, deleteChildren);
-        ProfileManager.RemoveTransactionDatabase(transaction); }
+    }
     public void RemoveTransaction(int id, boolean deleteChildren) { RemoveTransaction(GetTransaction(id), deleteChildren); }
 
     private void UpdateTransaction(Transaction transaction, Profile profile) {
@@ -409,19 +410,12 @@ public class Profile implements java.io.Serializable
                             if (next.GetSplitWith() != null) { //If Split expense
                                 if (!next.GetIPaid()) { //Paid back, only include my debt
                                     curr.SetValue(curr.GetValue() + next.GetMyDebt());
-                                }
-                                else {
-                                    if (next.IsPaidBack()){
-                                        curr.SetValue(curr.GetValue() + next.GetMySplitValue());
-                                    }
-                                    else {
-                                        curr.SetValue(curr.GetValue() + next.GetValue());
-                                    }
+                                } else {
+                                    if (next.IsPaidBack()){ curr.SetValue(curr.GetValue() + next.GetMySplitValue()); }
+                                    else { curr.SetValue(curr.GetValue() + next.GetValue()); }
                                 }
                             }
-                            else {
-                                curr.SetValue(curr.GetValue() + next.GetValue());
-                            }
+                            else { curr.SetValue(curr.GetValue() + next.GetValue()); }
                         }
                         else if (activityType == 1) { //Income
                             curr.SetValue(curr.GetValue() + next.GetValue());

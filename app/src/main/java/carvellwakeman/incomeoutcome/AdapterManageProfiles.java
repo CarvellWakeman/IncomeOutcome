@@ -78,7 +78,7 @@ public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManagePro
                         }
                         else {
                             new AlertDialog.Builder(parent).setTitle(R.string.confirm_areyousure_deletesingle)
-                                    .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
+                                    .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             ProfileManager.DeleteProfile(pr);

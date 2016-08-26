@@ -124,17 +124,6 @@ public class AdapterTransactionTotals extends RecyclerView.Adapter<AdapterTransa
 
         TextView total;
 
-
-        //Expensen only
-        TextView objectASpent;
-        TextView objectBSpent;
-
-        TextView objectADebt;
-        TextView objectBDebt;
-
-        TextView objectATotal;
-        TextView objectBTotal;
-
         TextView whoOwesWho;
 
 
@@ -151,15 +140,6 @@ public class AdapterTransactionTotals extends RecyclerView.Adapter<AdapterTransa
 
             objectA = (TextView) itemView.findViewById(R.id.transaction_objectA);
             objectB = (TextView) itemView.findViewById(R.id.transaction_objectB);
-
-            objectASpent = (TextView) itemView.findViewById(R.id.expense_personA_spent);
-            objectBSpent = (TextView) itemView.findViewById(R.id.expense_personB_spent);
-
-            objectADebt = (TextView) itemView.findViewById(R.id.expense_personA_debt);
-            objectBDebt = (TextView) itemView.findViewById(R.id.expense_personB_debt);
-
-            objectATotal = (TextView) itemView.findViewById(R.id.expense_personA_total);
-            objectBTotal = (TextView) itemView.findViewById(R.id.expense_personB_total);
 
             whoOwesWho = (TextView) itemView.findViewById(R.id.transaction_who_owes_who);
             total = (TextView) itemView.findViewById(R.id.transaction_total_cost);

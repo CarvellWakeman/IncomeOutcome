@@ -1,15 +1,16 @@
 package carvellwakeman.incomeoutcome;
 
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetailsTransaction.TransactionViewHolder>
@@ -85,7 +86,6 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                 //Time Period
                 TimePeriod tp = transaction.GetTimePeriod();
 
-
                 //Date
                 if (tp != null) {
                     holder.date.setText(tp.GetDateFormatted());
@@ -142,9 +142,11 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
                     //Color Bar
                     Category cat = ProfileManager.GetCategory(transaction.GetCategory());
-                    if (cat != null && cat.GetColor() != 0) { holder.colorbar.setBackgroundColor(cat.GetColor()); }
-                    else { holder.colorbar.setBackgroundColor(Color.TRANSPARENT); }
-
+                    if (cat != null && cat.GetColor() != 0) {
+                        holder.colorbar.setColorFilter(cat.GetColor());
+                    } else {
+                        holder.colorbar.setColorFilter(Color.TRANSPARENT);
+                    }
 
                 }
                 else if (activityType == 1){ //Income
@@ -156,34 +158,26 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     holder.sourceName.setVisibility(View.GONE);
 
                     //Color Bar
-                    holder.colorbar.setBackgroundColor(ProfileManager.ColorFromString(transaction.GetSourceName()));
+                    holder.colorbar.setColorFilter(ProfileManager.ColorFromString(transaction.GetSourceName()));
 
                 }
 
 
                 //Descripiton
-                if (transaction.GetDescription().equals("")) { holder.description.setText(R.string.info_nodescription); }
-                else { holder.description.setText(transaction.GetDescription()); }
+                //if (transaction.GetDescription().equals("")) { holder.description.setText(R.string.info_nodescription); }
+                //else { holder.description.setText(transaction.GetDescription()); }
+                holder.description.setText(transaction.GetDescription());
 
 
                 //Children indenting
                 if (parent != null && tp != null) {
                     //Parent Time Period
                     TimePeriod parent_tp = parent.GetTimePeriod();
-
-                    //ProfileManager.Print("ParentID:" + parent.GetID());
-                    //ProfileManager.Print("ExpenseID:" + expense.GetID());
-                    //ProfileManager.Print("ExpenseParentID:" + expense.GetParentID());
                     //Repeat text && Repeat Expense Indenting
                     if (parent_tp != null && parent_tp.DoesRepeat() && parent_tp.GetFirstOccurrence() != null && tp.GetDate() != null) {
 
                         //Repeat Text
                         holder.repeat.setText(parent_tp.GetRepeatString(parent_tp.GetRepeatFrequency(), parent_tp.GetRepeatUntil()));
-
-                        //ProfileManager.Print("Arg1:" + (parent_tp.GetFirstOccurrence().compareTo(tp.GetDate()) == 0));
-                        //ProfileManager.Print("Arg2:" + (parent.GetID() == expense.GetID()));
-                        //ProfileManager.Print("Parent First Occurrence:" + parent_tp.GetDate().toString(ProfileManager.simpleDateFormat));
-                        //ProfileManager.Print("Expense Occurrence:" + tp.GetDate().toString(ProfileManager.simpleDateFormat));
 
                         if (parent_tp.GetFirstOccurrence().compareTo(tp.GetDate()) == 0 || parent.GetID() == transaction.GetID()) {
                             //Indent
@@ -199,7 +193,9 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                         holder.moreInfoOff();
                         holder.repeat.setText("");
                         holder.repeat.setVisibility(View.GONE);
+                        holder.description.setVisibility(View.GONE);
                         holder.indent.setVisibility(View.GONE);
+                        holder.expandCard.setVisibility(View.GONE);
                     }
                 }
 
@@ -223,12 +219,14 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
 
     //View Holder class
-    public class TransactionViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener
+    public class TransactionViewHolder extends RecyclerView.ViewHolder implements PopupMenu.OnMenuItemClickListener
     {
-        LinearLayout colorbar;
+        ImageView colorbar;
         LinearLayout indent;
 
         CardView cv;
+        RelativeLayout dateBox;
+
         TextView category;
         TextView sourceName;
         TextView description;
@@ -243,6 +241,10 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
         TextView paidByWho;
         TextView cost;
 
+        ImageView overflow;
+        ImageView expandCard;
+
+        int overflowMenu;
         Boolean moreInfo;
 
 
@@ -252,10 +254,11 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
             moreInfo = false;
 
-            colorbar = (LinearLayout) itemView.findViewById(R.id.transaction_row_colorbar);
+            colorbar = (ImageView) itemView.findViewById(R.id.transaction_row_colorbar);
             indent = (LinearLayout) itemView.findViewById(R.id.transaction_row_indent);
 
             cv = (CardView) itemView.findViewById(R.id.transaction_row_cardView);
+            dateBox = (RelativeLayout) itemView.findViewById(R.id.transaction_row_relativelayout_date) ;
 
             category = (TextView) itemView.findViewById(R.id.transaction_row_category);
             sourceName = (TextView) itemView.findViewById(R.id.transaction_row_source);
@@ -267,102 +270,127 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
             cost = (TextView) itemView.findViewById(R.id.transaction_row_cost);
 
             //Expense only
-            split = (TextView) itemView.findViewById(R.id.expense_row_split);
-            paidBack = (TextView) itemView.findViewById(R.id.expense_row_paidback);
-            paidBy = (TextView) itemView.findViewById(R.id.expense_row_paidby);
-            paidByWho = (TextView) itemView.findViewById(R.id.expense_row_paidby_who);
+            split = (TextView) itemView.findViewById(R.id.transaction_row_split);
+            paidBack = (TextView) itemView.findViewById(R.id.transaction_row_paidback);
+            paidBack.setVisibility(View.GONE);
+            paidBy = (TextView) itemView.findViewById(R.id.transaction_row_paidby);
+            paidByWho = (TextView) itemView.findViewById(R.id.transaction_row_paidby_who);
+
+            //Buttons
+            overflow = (ImageView) itemView.findViewById(R.id.transaction_row_overflow);
+            expandCard = (ImageView) itemView.findViewById(R.id.transaction_row_expand);
 
 
             //Short and long click listeners for the expenses context menu
-            cv.setOnClickListener(this);
-            cv.setOnLongClickListener(this);
+            dateBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    toggleMoreInfo();
+                }
+            });
+
+            //Overflow click listener set per instance (due to varying overflowMenu value)
+            overflow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PopupMenu popup = new PopupMenu(activity, overflow);
+                    MenuInflater inflater = popup.getMenuInflater();
+
+                    Transaction tran = GetTransactionParent(GetTransaction(getAdapterPosition()));
+                    if (tran != null) {
+                        TimePeriod tp = tran.GetTimePeriod();
+                        if (tp != null){
+                            overflowMenu = (tp.DoesRepeat() ? R.menu.transaction_overflow_repeat : R.menu.transaction_overflow_single);
+                        } else { overflowMenu = R.menu.transaction_overflow_single; }
+
+                        inflater.inflate(overflowMenu, popup.getMenu());
+                        popup.setOnMenuItemClickListener(TransactionViewHolder.this);
+                        popup.show();
+                    }
+
+                }
+            });
         }
 
+        //Overflow menu
+
         @Override
-        public boolean onLongClick(View v) {
+        public boolean onMenuItemClick(MenuItem item) {
             final Transaction tran = GetTransaction(getAdapterPosition());
             final Transaction tranp = GetTransactionParent(tran);
 
-            if (tran != null && tranp != null && tran.GetTimePeriod() != null && tranp.GetTimePeriod() != null) {
-                if (tran.GetTimePeriod().DoesRepeat() || tranp.GetTimePeriod().DoesRepeat()) {
-                    String items[] = activity.getResources().getStringArray(R.array.RepeatingTransaction);
-                    new AlertDialog.Builder(activity).setItems(items, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int item) {
-                            switch (item) {
-                                case 0: //Edit (parent)
-                                    activity.editTransaction(tranp, _profileID);
-                                    break;
-                                case 1: //Edit (instance)
-                                    //If the expense is not a ghost expense (only exists in the _timeframe array), then edit it normally, else clone it and blacklist the old date
-                                    if (GetTransactionByID(tran.GetID()) != null) { //Child
-                                        activity.editTransaction(tran, _profileID);
-                                    }
-                                    else { //Ghost
-                                        activity.cloneTransaction(tranp, _profileID, tran.GetTimePeriod().GetDate());
-                                    }
+            if (tran != null && tranp != null) {
 
-                                    break;
-                                case 2: //Delete (parent)
-                                    activity.deleteTransaction(tranp, true, true);
-                                    break;
-                                case 3: //Delete (instance)
-                                    if (GetTransactionByID(tran.GetID()) != null) { //Child
-                                        activity.deleteTransaction(tran, true, false);
-                                    }
-                                    else { //Ghost
-                                        activity.deleteTransaction(tran, false, false);
-                                    }
-                                    break;
-                                default:
-                                    dialog.cancel();
-                                    break;
+                //If the expense is not a ghost expense (only exists in the _timeframe array), then edit it normally, else clone it and blacklist the old date
+                switch (item.getItemId()) {
+                    case R.id.transaction_edit_instance: //Edit(instance)
+                        if (GetTransactionByID(tran.GetID()) != null) {
+                            if (tran.GetID() == tranp.GetID() && tran.GetTimePeriod()!=null && (tran.GetTimePeriod().DoesRepeat() || tranp.GetTimePeriod().DoesRepeat()) ){ //Editing parent as an instance
+                                activity.cloneTransaction(tranp, _profileID, tran.GetTimePeriod().GetDate()); //ProfileManager.Print("EditChildButActuallyParent");
+                            } else { //Child
+                                activity.editTransaction(tran, _profileID); //ProfileManager.Print("EditChild");
                             }
+                        } else { //Ghost
+                            activity.cloneTransaction(tranp, _profileID, tran.GetTimePeriod().GetDate()); //ProfileManager.Print("EditGhost");
                         }
-                    }).create().show();
-                }
-                else {
-                    String items[] = activity.getResources().getStringArray(R.array.SingleTransaction);
-
-                    new AlertDialog.Builder(activity).setItems(items, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int item) {
-                            switch (item) {
-                                case 0: //Edit (this)
-                                    activity.editTransaction(tran, _profileID);
-                                    break;
-                                case 1: //Duplicate (this)
-                                    activity.duplicateTransaction(tran, _profileID);
-                                    break;
-                                case 2: //Delete (this)
-                                    activity.deleteTransaction(tran, true, true);
-                                    break;
-                                default:
-                                    dialog.cancel();
-                                    break;
+                        return true;
+                    case R.id.transaction_edit_all: //Edit(all, parent)
+                        //ProfileManager.Print("EditParent");
+                        activity.editTransaction(tranp, _profileID);
+                        return true;
+                    case R.id.transaction_delete_instance: //Delte(instance)
+                        if (GetTransactionByID(tran.GetID()) != null) { //Child
+                            if (tran.GetID() == tranp.GetID() && tran.GetTimePeriod()!=null && (tran.GetTimePeriod().DoesRepeat() || tranp.GetTimePeriod().DoesRepeat()) ){ //Deleting parent as an instance
+                                activity.deleteTransaction(tran, true, false); //ProfileManager.Print("DeleteChildButActuallyParent");
+                            } else { //Child
+                                activity.deleteTransaction(tran, true, false); //ProfileManager.Print("DeleteChild");
                             }
+                        } else { //Ghost
+                            activity.deleteTransaction(tran, false, false); //ProfileManager.Print("DeleteGhost");
                         }
-                    }).create().show();
+                        return true;
+                    case R.id.transaction_delete_all: //Delete(all, parent)
+                        //ProfileManager.Print("DeleteParent");
+                        activity.deleteTransaction(tranp, true, true);
+                        return true;
+                    case R.id.transaction_duplicate: //Duplicate
+                        //ProfileManager.Print("Duplicate");
+                        activity.duplicateTransaction(tran, _profileID);
+                        return true;
                 }
             }
 
-
-            return true;
+            return false;
         }
 
-        @Override
-        public void onClick(View v) {
-            //final Expense ex = _profile.GetExpenseAtIndexInTimeFrame(getAdapterPosition());
-            //ProfileManager.Print("ParentID:" + ex.GetParentID());
-
-            toggleMoreInfo();
-        }
-
-
-        //More Info
+        //More Info (expand card)
         public void toggleMoreInfo(){
             moreInfo = !moreInfo;
             if (moreInfo) { moreInfoOn(); } else { moreInfoOff(); }
         }
-        public void moreInfoOn() { moreInfo = true; if (!repeat.getText().toString().equals("")) { repeat.setVisibility(View.VISIBLE); } }
-        public void moreInfoOff() { moreInfo = false; repeat.setVisibility(View.GONE); }
+        public void moreInfoOn() {
+            RotateAnimation rot = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            rot.setDuration(200);
+            rot.setFillAfter(true);
+            expandCard.startAnimation(rot);
+
+            moreInfo = true;
+            if (!repeat.getText().toString().equals("")) {
+                repeat.setVisibility(View.VISIBLE);
+            }
+            if (!description.getText().toString().equals("")) {
+                description.setVisibility(View.VISIBLE);
+            }
+        }
+        public void moreInfoOff() {
+            RotateAnimation rot = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            rot.setDuration(200);
+            rot.setFillAfter(true);
+            expandCard.startAnimation(rot);
+
+            moreInfo = false;
+            repeat.setVisibility(View.GONE);
+            description.setVisibility(View.GONE);
+        }
     }
 }

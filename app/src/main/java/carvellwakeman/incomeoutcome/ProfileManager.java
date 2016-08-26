@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.SystemClock;
 import android.support.v4.app.*;
@@ -596,6 +597,8 @@ public class ProfileManager
 
     //Getting string resources from static contexts
     public static String getString(int resourceID){ return MainActivityInstance.getString(resourceID); }
+    public static int getDrawbleResourceID(String title) { return MainActivityInstance.getResources().getIdentifier(title, "drawable", MainActivityInstance.getPackageName()); }
+    //public static Drawable getDrawable(int resourceID){ return MainActivityInstance.getResources().getDrawable(resourceID); }
 
     //Date conversion for loading
     public static LocalDate ConvertDateFromString(String str){

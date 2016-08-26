@@ -97,7 +97,7 @@ public class ActivitySettings extends AppCompatActivity
             database.AddSetting(new Setting(inflater, R.drawable.ic_delete_white_24dp, getString(R.string.title_settings_deletealldata), getString(R.string.subtitle_settings_deletealldata),
                     new View.OnClickListener() { @Override public void onClick(View v) {
                         new AlertDialog.Builder(ActivitySettings.this).setTitle(R.string.confirm_areyousure_deleteall)
-                                .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
+                                .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                                     @Override public void onClick(DialogInterface dialog, int which) {
                                         ProfileManager.DeleteDatabase();
                                         ProfileManager.ClearAllObjects();

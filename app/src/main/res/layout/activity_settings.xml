@@ -13,6 +13,7 @@
         android:orientation="vertical"
         android:fillViewport="false"
         android:theme="@style/Base.Theme.AppCompat.Light">
+
         <LinearLayout
             android:id="@+id/settings_layout"
             android:layout_width="match_parent"
