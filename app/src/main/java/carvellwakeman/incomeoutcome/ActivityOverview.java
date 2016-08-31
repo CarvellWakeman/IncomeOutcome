@@ -72,30 +72,20 @@ public class ActivityOverview extends AppCompatActivity implements GestureDetect
             toolbar.setSubtitle(_profile.GetDateFormatted());
 
 
-            //Populate cards
+            //Card inflater
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             ViewGroup insertPoint = (ViewGroup) findViewById(R.id.overview_layout);
 
             //Cards
-            CardIncome incomeCard = new CardIncome( _profileID, this, inflater, R.layout.card_income,
-                new View.OnClickListener() { @Override public void onClick(View v) {
-                    ProfileManager.Print("Income Card Click");
-                }});
+            CardVersus versusCard = new CardVersus( _profileID, this, inflater, R.layout.card_versus);
 
-            CardExpenses expensesCard = new CardExpenses( _profileID, this, inflater, R.layout.card_expenses,
-                new View.OnClickListener() { @Override public void onClick(View v) {
-                    ProfileManager.Print("Expenses Card Click");
-                }});
-
-            CardSplit splitCard = new CardSplit( _profileID, this, inflater, R.layout.card_split,
-                new View.OnClickListener() { @Override public void onClick(View v) {
-                    ProfileManager.Print("Split Card Click");
-                }});
+            CardTransaction expensesCard = new CardTransaction( _profileID, 0, 1, ProfileManager.getString(R.string.header_expenses_summary), this, inflater, R.layout.card_transaction);
+            CardTransaction incomeCard = new CardTransaction( _profileID, 1, 1, ProfileManager.getString(R.string.header_income_summary), this, inflater, R.layout.card_transaction);
 
 
-            incomeCard.insert(insertPoint, 0);
+            versusCard.insert(insertPoint, 0);
             expensesCard.insert(insertPoint, 1);
-            splitCard.insert(insertPoint, 2);
+            incomeCard.insert(insertPoint, 2);
 
         }
     }

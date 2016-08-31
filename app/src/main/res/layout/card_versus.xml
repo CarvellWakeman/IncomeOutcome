@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    style="@style/SelectableItemForeground"
+    android:clickable="true"
+    android:paddingBottom="10dp">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/cardVersus"
+
+        card_view:cardCornerRadius="@dimen/cardview_default_radius"
+        card_view:cardUseCompatPadding="true"
+        card_view:cardElevation="@dimen/cardview_default_elevation"
+        card_view:contentPadding="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="@string/header_versus_summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView_cardVersus_title"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="8dp" />
+
+            <com.github.mikephil.charting.charts.HorizontalBarChart
+                android:id="@+id/barChart_cardVersus"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginBottom="8dp"
+                android:layout_below="@+id/textView_cardVersus_title"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:id="@+id/textView_cardVersus_nodata"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/barChart_cardVersus"
+                android:layout_marginTop="20dp"
+                android:text="@string/tt_nodata"
+                android:textStyle="normal|italic"
+                android:textSize="20sp"
+                android:gravity="center_horizontal"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

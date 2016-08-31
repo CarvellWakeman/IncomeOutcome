@@ -340,38 +340,43 @@ public class Profile implements java.io.Serializable
         return null;
     }
 
-    //Get transaction total cost
-    public HashMap<String, Transaction> GetOtherPersonTotals(){
-        TransactionTotals.keySet().clear();
-        TransactionTotals.values().clear();
-        TransactionTotals.clear();
+    //Get period total cost between two dates
+    public Transaction CalculatePeriodTotalBetweenDates(){
+        Transaction nt = new Transaction();
 
-        Transaction temp;
+        for (int i = 0; i < Transactions_timeFrame.size(); i++){
+            Transaction tr = Transactions_timeFrame.get(i);
 
-        for (int i = 0; i < Transactions.size(); i++){
-            Transaction tr = Transactions.get(i);
-
-            temp = TransactionTotals.get( tr.GetSplitWith() );
-            if ( temp == null ){
-                TransactionTotals.put( tr.GetSplitWith(), new Transaction(tr.GetType()));
-                temp = TransactionTotals.get( tr.GetSplitWith() );
+            if (tr.GetType() == Transaction.TRANSACTION_TYPE.Expense){
+                nt.SetValue(nt.GetValue() - tr.GetValue());
+            }
+            else if (tr.GetType() == Transaction.TRANSACTION_TYPE.Income){
+                nt.SetValue(nt.GetValue() + tr.GetValue());
             }
 
-            // Sum up values
-            temp.SetValue(temp.GetValue() + tr.GetMyDebt());
-            temp.SetSplitValue(tr.GetSplitWith(), temp.GetSplitValue() + tr.GetSplitDebt());
+            nt.SetTimePeriod(new TimePeriod(GetStartTime()));
         }
 
-        return TransactionTotals;
+
+        return nt;
     }
 
-    public HashMap<String, Transaction> CalculateTotalsInTimeFrame(int activityType, int keyType){
+    ///ActivityType///
+    ///0 - Calculate expenses///
+    ///1 - Calculate income///
+    ///KeyType///
+    ///0 - SplitWith (Map of transactions by person)
+    ///1 - Source (Map by source)
+    ///2 - Category (Map by category)
+    public HashMap<String, Transaction> CalculateTotalsInTimeFrame(int activityType, int keyType){ return CalculateTotalsInTimeFrame(activityType, keyType, false); }
+    public HashMap<String, Transaction> CalculateTotalsInTimeFrame(int activityType, int keyType, boolean includeMe){
         TransactionTotals.keySet().clear();
         TransactionTotals.values().clear();
         TransactionTotals.clear();
 
         Transaction.TRANSACTION_TYPE ttype = (activityType==0 ? Transaction.TRANSACTION_TYPE.Expense : Transaction.TRANSACTION_TYPE.Income);
         String key = "";
+        String me = ProfileManager.getString(R.string.format_me);
 
         Transaction curr;
 
@@ -387,7 +392,7 @@ public class Profile implements java.io.Serializable
                     key = next.GetSourceName();
                     break;
                 case 2: //Category
-                    next.GetCategory();
+                    key = next.GetCategory();
                     break;
             }
 
@@ -395,16 +400,37 @@ public class Profile implements java.io.Serializable
             curr = TransactionTotals.get(key);
             if (curr == null && key != null && !key.equals("")) {
                 TransactionTotals.put(key, new Transaction( ttype ));//TODO Avoid creating a new transaction, try to just sum up the value
+
                 curr = TransactionTotals.get(key);
             }
+
 
             //Add up value
             if (curr != null) {
                 switch (keyType) {
                     case 0: //Split With
-                        curr.SetValue(curr.GetValue() + next.GetMyDebt());
-                        curr.SetSplitValue(next.GetSplitWith(), curr.GetSplitValue() + next.GetSplitDebt());
+                        //My part of this transaction
+                        if (includeMe){
+                            //Special case for Split With, add an additional transaction for MY part of this split
+                            if (TransactionTotals.get(me) == null){ TransactionTotals.put(me, new Transaction( ttype )); }
+
+                            //curr.SetValue(curr.GetValue() + next.GetSplitCost());
+                            //curr.SetSplitValue(next.GetSplitWith(), curr.GetSplitValue() + next.GetTotalZeroWeighted());
+
+                            //TransactionTotals.get(me).SetValue(TransactionTotals.get(me).GetValue() + next.GetMyCost());
+                            //TransactionTotals.get(me).SetSplitValue(me, 0.0d);
+
+
+                            curr.SetValue(curr.GetValue() + next.GetSplitDebt());
+
+                            TransactionTotals.get(me).SetValue(TransactionTotals.get(me).GetValue() + next.GetMyDebt());
+                        }
+                        else {
+                            curr.SetValue(curr.GetValue() + next.GetMyDebt());
+                            curr.SetSplitValue(next.GetSplitWith(), curr.GetSplitValue() + next.GetSplitDebt());
+                        }
                         break;
+                    case 2: //Category (same as source)
                     case 1: //Source name
                         if (activityType == 0) { //Expenses
                             if (next.GetSplitWith() != null) { //If Split expense
@@ -420,9 +446,8 @@ public class Profile implements java.io.Serializable
                         else if (activityType == 1) { //Income
                             curr.SetValue(curr.GetValue() + next.GetValue());
                         }
-                        break;
-                    case 2: //Category
-                        curr.SetValue(curr.GetValue() + next.GetValue());
+                        curr.SetSourceName(key);
+                        curr.SetCategory(next.GetCategory());
                         break;
                 }
             }
@@ -566,7 +591,7 @@ public class Profile implements java.io.Serializable
 
 
     //Calculate the expenses and income sources that are within the timeframe provided
-    public void CalculateTimeFrame(int activityType)
+    public void CalculateTimeFrame(Integer activityType)
     {
         Transactions_timeFrame.clear();
 
@@ -577,7 +602,7 @@ public class Profile implements java.io.Serializable
 
             //Add transactions within the time period to the timeframe array
             for (int i = 0; i < Transactions.size(); i++) {
-                if (Transactions.get(i).GetType().ordinal() == activityType) {
+                if (activityType == null || Transactions.get(i).GetType().ordinal() == activityType) {
                     tp = Transactions.get(i).GetTimePeriod();
                     if (tp != null) {
                         occ = tp.GetOccurrencesWithin(_startTime, _endTime);

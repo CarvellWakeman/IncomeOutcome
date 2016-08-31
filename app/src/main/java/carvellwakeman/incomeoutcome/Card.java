@@ -1,5 +1,6 @@
 package carvellwakeman.incomeoutcome;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,24 +9,24 @@ import android.widget.TextView;
 
 import java.util.zip.Inflater;
 
-public abstract class Card {
+public abstract class Card implements View.OnClickListener {
 
+    Context context;
     LayoutInflater _inflater;
     int _layout;
-    View.OnClickListener _clickListener;
 
     View v;
 
-    public Card(LayoutInflater inflater, int layout, View.OnClickListener clickListener){
+    public Card(Context context, LayoutInflater inflater, int layout){
+        this.context = context;
         _inflater = inflater;
         _layout = layout;
-        _clickListener = clickListener;
 
         //Populate layout
         v = _inflater.inflate(_layout, null);
 
         //Set listener
-        v.setOnClickListener(_clickListener);
+        v.setOnClickListener(this);
     }
 
     //Accessors
@@ -37,6 +38,11 @@ public abstract class Card {
     //Mutators
     public void insert(ViewGroup insertPoint, int index){
         insertPoint.addView(v, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    //Click listener
+    public void onClick(View view){
+        //ProfileManager.Print("Card Click");
     }
 
 }

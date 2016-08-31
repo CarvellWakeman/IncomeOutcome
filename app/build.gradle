@@ -40,4 +40,7 @@ dependencies {
 
     //File copying in databaseHelper.java
     compile 'commons-io:commons-io:2.4'
+
+    //Graphs and charts
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
 }

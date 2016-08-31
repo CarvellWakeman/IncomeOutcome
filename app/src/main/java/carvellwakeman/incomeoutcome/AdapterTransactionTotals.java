@@ -33,7 +33,7 @@ public class AdapterTransactionTotals extends RecyclerView.Adapter<AdapterTransa
         _profile = ProfileManager.GetProfileByID(profileID);
 
         if ( _profile != null ) {
-            data = _profile.CalculateTotalsInTimeFrame(activityType, keyType);
+            data = _profile.CalculateTotalsInTimeFrame(activityType, keyType, false);
         }
 
         this.context = context;

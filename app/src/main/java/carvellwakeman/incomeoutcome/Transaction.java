@@ -138,6 +138,17 @@ public class Transaction implements java.io.Serializable
     public Double GetMyDebt() { if (!GetIPaid() && !IsPaidBack()) { return GetMySplitValue(); } else { return 0.0d; } }
     public Double GetSplitDebt() { if (GetIPaid() && !IsPaidBack()) { return GetSplitValue(); } else { return 0.0d; } }
 
+    public Double GetMyCost() { if (GetIPaid() && GetSplitWith() != null || GetSplitWith() == null) { return GetMySplitValue(); } else { return GetMyDebt(); } }
+    public Double GetSplitCost() { if (!GetIPaid() && GetSplitWith() != null) { return GetSplitValue(); } else { return GetSplitDebt(); } }
+
+    public Double GetTotalZeroWeighted() {
+        //ProfileManager.Print("SplitWith:" + GetSplitWith());
+        //ProfileManager.Print("MyCost:" + GetMyCost());
+        //ProfileManager.Print("SplitCost:" + GetSplitCost());
+        //ProfileManager.Print("ZWCost:" + (GetMyCost() - GetSplitCost()));
+        return GetMyDebt() - GetSplitDebt();
+    }
+
     public Double GetMySplitPercentage() { if (GetValue() > 0) { return 1 - (GetSplitValue() / GetValue()); } else { return 0.0; } }
     public Double GetOtherSplitPercentage() { if (GetValue() > 0) { return (GetSplitValue() / GetValue()); } else { return 0.0; }   }
 

@@ -114,7 +114,8 @@
                     android:id="@+id/transaction_row_paidby"
                     android:layout_marginStart="4dp"
                     android:layout_alignBottom="@+id/transaction_row_cost"
-                    android:layout_toEndOf="@+id/transaction_row_cost"/>
+                    android:layout_toEndOf="@+id/transaction_row_cost"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -124,7 +125,8 @@
                     android:id="@+id/transaction_row_paidby_who"
                     android:layout_marginStart="4dp"
                     android:layout_alignBottom="@+id/transaction_row_paidby"
-                    android:layout_toEndOf="@+id/transaction_row_paidby"/>
+                    android:layout_toEndOf="@+id/transaction_row_paidby"
+                    android:visibility="gone"/>
 
 
                 <TextView
@@ -133,7 +135,8 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/format_ipaid"
                     android:id="@+id/transaction_row_split"
-                    android:layout_below="@id/transaction_row_cost" />
+                    android:layout_below="@id/transaction_row_cost"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -142,7 +145,8 @@
                     android:text="@string/info_paidback"
                     android:id="@+id/transaction_row_paidback"
                     android:layout_below="@+id/transaction_row_split"
-                    android:textColor="@color/darkgreen" />
+                    android:textColor="@color/darkgreen"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
 
@@ -158,15 +162,6 @@
                 android:paddingBottom="16dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:id="@+id/transaction_row_repeat"
-                    android:hint="@string/repeat"
-                    android:visibility="visible"
-                    android:layout_marginBottom="4dp" />
-
-                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
@@ -174,7 +169,6 @@
                     android:id="@+id/transaction_row_description"
                     android:textStyle="italic"
                     android:visibility="visible"
-                    android:layout_below="@+id/transaction_row_repeat"
                     android:layout_alignParentEnd="true" />
 
             </RelativeLayout>
@@ -195,6 +189,7 @@
                 android:layout_below="@+id/transaction_row_divider"
                 android:padding="16dp"
                 android:id="@+id/transaction_row_relativelayout_date">
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -215,6 +210,17 @@
                     android:layout_alignBottom="@+id/transaction_row_calendaricon"
                     android:layout_toEndOf="@+id/transaction_row_calendaricon"
                     android:layout_marginStart="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:id="@+id/transaction_row_repeat"
+                    android:hint="@string/repeat"
+                    android:layout_toEndOf="@+id/transaction_row_calendaricon"
+                    android:layout_below="@+id/transaction_row_date"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp" />
 
                 <ImageView
                     android:layout_width="wrap_content"

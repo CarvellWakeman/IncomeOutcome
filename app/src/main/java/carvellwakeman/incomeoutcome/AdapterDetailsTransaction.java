@@ -150,12 +150,12 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
                 }
                 else if (activityType == 1){ //Income
-                    //Category
-                    if (transaction.GetSourceName().equals("")) { holder.category.setText(R.string.info_nosource); }
-                    else { holder.category.setText(transaction.GetSourceName()); }
-
                     //Source
-                    holder.sourceName.setVisibility(View.GONE);
+                    if (transaction.GetSourceName().equals("")) { holder.sourceName.setText(R.string.info_nosource); }
+                    else { holder.sourceName.setText(transaction.GetSourceName()); }
+
+                    //Category
+                    holder.category.setVisibility(View.GONE);
 
                     //Color Bar
                     holder.colorbar.setColorFilter(ProfileManager.ColorFromString(transaction.GetSourceName()));

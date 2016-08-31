@@ -69,14 +69,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:theme="@style/Base.Theme.AppCompat.Light">
-
+                        <!--actionDone-->
                         <EditText
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
-                            android:imeOptions="actionDone"
+                            android:imeOptions="actionNext"
                             android:hint="@string/header_cost"
                             android:textColorHint="@android:color/transparent"
                             android:maxLines="1"
@@ -195,6 +195,7 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="number"
+                                android:imeOptions="actionNext"
                                 android:ems="10"
                                 android:maxLines="1"
                                 android:minLines="1"
@@ -215,6 +216,7 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="number"
+                                android:imeOptions="actionNext"
                                 android:ems="10"
                                 android:maxLines="1"
                                 android:minLines="1"
@@ -307,11 +309,12 @@
                             <EditText
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:inputType="textCapSentences|textMultiLine"
+                                android:inputType="textCapSentences"
                                 android:layout_below="@+id/editText_newTransaction_name"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignEnd="@+id/editText_newTransaction_name"
                                 android:maxLines="1"
+                                android:imeOptions="actionNext"
                                 android:hint="Source"
                                 android:minLines="1"
                                 android:maxLength="30" />
@@ -349,6 +352,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignEnd="@+id/editText_newTransaction_name"
                         android:maxLines="4"
+                        android:imeOptions="actionNext"
                         android:hint="Description"
                         android:minLines="1" />
                 </android.support.design.widget.TextInputLayout>

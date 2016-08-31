@@ -1,6 +1,7 @@
 package carvellwakeman.incomeoutcome;
 
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -12,8 +13,8 @@ public class CardSettings extends Card
 
     int settingsCount;
 
-    public CardSettings(LayoutInflater inflater, int layout, String title){
-        super(inflater, layout, null);
+    public CardSettings(Context context, LayoutInflater inflater, int layout, String title){
+        super(context, inflater, layout);
 
         //Settings count
         settingsCount = 0;

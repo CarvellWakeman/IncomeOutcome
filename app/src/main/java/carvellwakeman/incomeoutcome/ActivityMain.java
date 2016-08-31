@@ -28,7 +28,7 @@ public class ActivityMain extends AppCompatActivity
 
     private AdapterProfilesSpinner profile_adapter;
 
-    Boolean FABMenuOpen;
+    boolean FABMenuOpen = false;
     FloatingActionButton addNew;
     FloatingActionButton fab_newExpense;
     FloatingActionButton fab_newIncome;
@@ -52,55 +52,6 @@ public class ActivityMain extends AppCompatActivity
 
         //Initialize the profile manager
         ProfileManager.initialize(this);
-
-        //Default values
-        FABMenuOpen = false;
-
-
-        Transaction in1 = new Transaction(Transaction.TRANSACTION_TYPE.Income);
-        in1.SetValue(10.0);
-        in1.SetStatic(true);
-        //p1.AddIncome(in1);
-
-
-        Transaction ex1 = new Transaction(Transaction.TRANSACTION_TYPE.Expense);
-        //ex1.SetTimePeriod(new TimePeriod(LocalDate.now()));
-        ex1.SetCategory("Snacks");
-        ex1.SetSplitValue("Sabrina", 10.0);
-        ex1.SetValue(20.0);
-
-        TimePeriod tp = new TimePeriod();
-        tp.SetDate(new LocalDate(2016, 3, 14));
-
-        tp.SetRepeatFrequency(Repeat.WEEKLY);
-        tp.SetDayOfWeek(0,true);
-        tp.SetRepeatEveryN(1);
-        tp.SetRepeatUntil(RepeatUntil.FOREVER);
-        tp.SetRepeatUntilDate(null);
-        tp.SetRepeatANumberOfTimes(1);
-        //tp.SetRepeatANumberOfTimes(2);
-        ex1.SetTimePeriod(tp);
-
-        //p1.AddExpense(ex1);
-
-
-        Transaction ex2 = new Transaction(Transaction.TRANSACTION_TYPE.Expense);
-        ex2.SetTimePeriod(new TimePeriod(LocalDate.now()));
-        ex2.SetCategory("Rent");
-        ex2.SetSplitValue("Sabrina", 5.0);
-        ex2.SetValue(10.0);
-        //ex2.SetDescription("This is a very long and tedious description of exactly what I purchased on the date listed above. Does this description run across the rsoient fort of the sun? Will I ever do so much to look like as I am? How are they? Yes!");
-        //p1.AddExpense(ex2);
-
-        Transaction ex3 = new Transaction(Transaction.TRANSACTION_TYPE.Expense);
-        ex3.SetValue(713.26);
-        ex3.SetSourceName("Insurance #3");
-        ex3.SetCategory("Groceries");
-        ex3.SetDescription("This is a very long and tedious description of exactly what I purchased on the date listed above. Does this description run across the rsoient fort of the sun? Will I ever do so much to look like as I am? How are they? Yes!");
-        ex3.SetSplitValue("John", 204.0);
-        //p1.AddExpense(ex3);
-
-
 
         //Find views
         toolbar = (Toolbar) findViewById(R.id.toolbar);

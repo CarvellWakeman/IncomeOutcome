@@ -14,37 +14,36 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1666df32-c590-42ce-87db-27bbb09024ee" name="Default" comment="Transaction details layout rewritten, transactionDetailsActivity modified, Overview supports toolbar guestures">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/menu/transaction_overflow_repeat.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/menu/transaction_overflow_single.xml" />
+    <list default="true" id="1666df32-c590-42ce-87db-27bbb09024ee" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/MPAndroidChart_v3_0_0_beta1.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardTransaction.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CurrencyValueFormatter.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardIncome.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardSplit.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/layout/card_split.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/generated/mockable-android-23.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/intermediates/gradle_project_sync_data.bin" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardExpenses.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardVersus.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/layout/card_expenses.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/card_versus.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/res/layout/card_income.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/card_transaction.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityDetailsTransaction.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityDetailsTransaction.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityNewTransaction.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityNewTransaction.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityMain.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityMain.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityOverview.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityOverview.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivitySettings.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivitySettings.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterDatabaseImports.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterDatabaseImports.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterDetailsTransaction.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterDetailsTransaction.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterManageCategories.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterManageCategories.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterManagePeople.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterManagePeople.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterManageProfiles.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterManageProfiles.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterTransactionTotals.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterTransactionTotals.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/DatabaseHelper.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/DatabaseHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/DialogFragmentTransferTransaction.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/DialogFragmentTransferTransaction.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Card.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Card.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardSettings.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardSettings.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ProfileManager.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ProfileManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/TimePeriod.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/TimePeriod.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Transaction.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Transaction.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_new_transaction.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_new_transaction.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_settings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_settings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/card_expenses.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/card_expenses.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/card_income.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/card_income.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/card_split.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/card_split.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_time_period.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_time_period.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/row_layout_transaction.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/row_layout_transaction.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/row_layout_transaction_total.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/row_layout_transaction_total.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/intermediates/dex-cache/cache.xml" afterPath="$PROJECT_DIR$/build/intermediates/dex-cache/cache.xml" />
     </list>
     <ignored path="IncomeOutcome.iws" />
@@ -78,46 +77,105 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ActivityDetailsTransaction.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityDetailsTransaction.java">
+      <file leaf-file-name="CardTransaction.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardTransaction.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="15" column="65" selection-start-line="15" selection-start-column="65" selection-end-line="15" selection-end-column="110" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ActivityOverview.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityOverview.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-425">
-              <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+            <state relative-caret-position="2278">
+              <caret line="156" column="17" selection-start-line="156" selection-start-column="17" selection-end-line="156" selection-end-column="57" />
               <folding>
-                <element signature="e#1399#1591#0" expanded="true" />
-                <element signature="e#1590#1591#0" expanded="true" />
+                <element signature="imports" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="colors.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/colors.xml">
+      <file leaf-file-name="CardVersus.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardVersus.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="10" selection-start-line="1" selection-start-column="10" selection-end-line="1" selection-end-column="10" />
+            <state relative-caret-position="558">
+              <caret line="149" column="39" selection-start-line="149" selection-start-column="39" selection-end-line="149" selection-end-column="39" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AdapterDatabaseImports.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterDatabaseImports.java">
+      <file leaf-file-name="ActivityOverview.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityOverview.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="205">
-              <caret line="60" column="109" selection-start-line="60" selection-start-column="109" selection-end-line="60" selection-end-column="109" />
+            <state relative-caret-position="238">
+              <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
               <folding>
-                <element signature="e#1939#2007#0" expanded="true" />
+                <element signature="e#2848#2904#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="card_versus.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_versus.xml">
+          <provider selected="true" editor-type-id="android-designer2">
+            <state />
+          </provider>
+          <provider editor-type-id="text-editor">
+            <state relative-caret-position="486">
+              <caret line="40" column="49" selection-start-line="40" selection-start-column="49" selection-end-line="40" selection-end-column="49" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ProfileManager.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ProfileManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1683">
+              <caret line="125" column="61" selection-start-line="125" selection-start-column="61" selection-end-line="125" selection-end-column="61" />
+              <folding>
+                <element signature="imports" expanded="false" />
+                <element signature="method#LoadDefaultSettings#0;class#ProfileManager#0" expanded="false" />
+                <element signature="method#AlertDialog#0;class#ProfileManager#0" expanded="false" />
+                <element signature="e#7819#7968#0" expanded="false" />
+                <element signature="e#7967#7968#0" expanded="false" />
+                <element signature="e#8009#8158#0" expanded="false" />
+                <element signature="e#8157#8158#0" expanded="false" />
+                <element signature="method#OpenDialogFragment#0;class#ProfileManager#0" expanded="false" />
+                <element signature="method#DeleteProfile#0;class#ProfileManager#0" expanded="false" />
+                <element signature="method#DeleteProfileByID#0;class#ProfileManager#0" expanded="false" />
+                <element signature="method#GetProfileByIndex#0;class#ProfileManager#0" expanded="false" />
+                <element signature="method#GetProfileByID#0;class#ProfileManager#0" expanded="false" />
+                <element signature="method#GetProfileByName#0;class#ProfileManager#0" expanded="false" />
+                <element signature="method#SelectProfile#0;class#ProfileManager#0" expanded="false" />
+                <element signature="method#SelectProfile#1;class#ProfileManager#0" expanded="false" />
+                <element signature="method#GetCurrentProfile#0;class#ProfileManager#0" expanded="false" />
+                <element signature="e#13099#13100#0" expanded="false" />
+                <element signature="e#13138#13139#0" expanded="false" />
+                <element signature="e#13216#13217#0" expanded="false" />
+                <element signature="e#13248#13249#0" expanded="false" />
+                <element signature="method#GetProfileNames#0;class#ProfileManager#0" expanded="false" />
+                <element signature="method#HasProfile#0;class#ProfileManager#0" expanded="false" />
+                <element signature="method#ClearProfiles#0;class#ProfileManager#0" expanded="false" />
+                <element signature="method#AddOtherPerson#0;class#ProfileManager#0" expanded="false" />
+                <element signature="method#AddOtherPerson#1;class#ProfileManager#0" expanded="false" />
+                <element signature="method#RemoveOtherPerson#0;class#ProfileManager#0" expanded="false" />
+                <element signature="e#14726#14727#0" expanded="false" />
+                <element signature="e#14770#14771#0" expanded="false" />
+                <element signature="method#HasOtherPerson#0;class#ProfileManager#0" expanded="false" />
+                <element signature="e#15138#15139#0" expanded="false" />
+                <element signature="e#15173#15174#0" expanded="false" />
+                <element signature="e#15251#15252#0" expanded="false" />
+                <element signature="e#15293#15294#0" expanded="false" />
+                <element signature="e#15362#15363#0" expanded="false" />
+                <element signature="e#15398#15399#0" expanded="false" />
+                <element signature="method#UpdateOtherPerson#0;class#ProfileManager#0" expanded="false" />
+                <element signature="e#15996#15997#0" expanded="false" />
+                <element signature="e#16050#16051#0" expanded="false" />
+                <element signature="e#17103#17104#0" expanded="false" />
+                <element signature="e#17146#17147#0" expanded="false" />
+                <element signature="e#17347#17348#0" expanded="false" />
+                <element signature="e#17381#17382#0" expanded="false" />
+                <element signature="e#18185#18186#0" expanded="false" />
+                <element signature="e#18220#18221#0" expanded="false" />
+                <element signature="e#24940#24941#0" expanded="false" />
+                <element signature="e#24981#24982#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -126,14 +184,17 @@
       <file leaf-file-name="Profile.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="227">
-              <caret line="198" column="74" selection-start-line="198" selection-start-column="74" selection-end-line="198" selection-end-column="74" />
+            <state relative-caret-position="4063">
+              <caret line="356" column="58" selection-start-line="356" selection-start-column="58" selection-end-line="356" selection-end-column="58" />
               <folding>
-                <element signature="method#ClearAllObjects#0;class#Profile#0" expanded="false" />
+                <element signature="imports" expanded="false" />
                 <element signature="method#RemoveAll#0;class#Profile#0" expanded="false" />
-                <element signature="method#GetDateFormatted#0;class#Profile#0" expanded="false" />
+                <element signature="e#5187#5188#0" expanded="false" />
+                <element signature="e#5221#5222#0" expanded="false" />
                 <element signature="method#SetStartTime#0;class#Profile#0" expanded="false" />
                 <element signature="method#SetEndTime#0;class#Profile#0" expanded="false" />
+                <element signature="e#5907#5908#0" expanded="false" />
+                <element signature="e#5939#5940#0" expanded="false" />
                 <element signature="method#SetPeriod#0;class#Profile#0" expanded="false" />
                 <element signature="method#TimePeriodPlus#0;class#Profile#0" expanded="false" />
                 <element signature="method#TimePeriodMinus#0;class#Profile#0" expanded="false" />
@@ -147,58 +208,27 @@
                 <element signature="method#TransferAllTransactions#0;class#Profile#0" expanded="false" />
                 <element signature="method#dateSort#0;class#Profile#0" expanded="false" />
                 <element signature="method#Sort#0;class#Profile#0" expanded="false" />
-                <element signature="method#CalculateTimeFrame#0;class#Profile#0" expanded="false" />
+                <element signature="e#20415#20576#0" expanded="false" />
+                <element signature="e#20575#20576#0" expanded="false" />
+                <element signature="e#20687#20848#0" expanded="false" />
+                <element signature="e#20847#20848#0" expanded="false" />
+                <element signature="e#20957#21119#0" expanded="false" />
+                <element signature="e#21118#21119#0" expanded="false" />
+                <element signature="e#21230#21392#0" expanded="false" />
+                <element signature="e#21391#21392#0" expanded="false" />
+                <element signature="e#21505#21670#0" expanded="false" />
+                <element signature="e#21669#21670#0" expanded="false" />
+                <element signature="e#21785#21950#0" expanded="false" />
+                <element signature="e#21949#21950#0" expanded="false" />
+                <element signature="e#22061#22224#0" expanded="false" />
+                <element signature="e#22223#22224#0" expanded="false" />
+                <element signature="e#22337#22500#0" expanded="false" />
+                <element signature="e#22499#22500#0" expanded="false" />
+                <element signature="e#22611#22774#0" expanded="false" />
+                <element signature="e#22773#22774#0" expanded="false" />
+                <element signature="e#22887#23050#0" expanded="false" />
+                <element signature="e#23049#23050#0" expanded="false" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Transaction.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Transaction.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="448">
-              <caret line="111" column="45" selection-start-line="111" selection-start-column="45" selection-end-line="111" selection-end-column="45" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ProfileManager.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ProfileManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
-              <caret line="723" column="65" selection-start-line="723" selection-start-column="65" selection-end-line="723" selection-end-column="65" />
-              <folding>
-                <element signature="method#LoadDefaultSettings#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#AlertDialog#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#OpenDialogFragment#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#DeleteProfile#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#DeleteProfileByID#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#GetProfileByIndex#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#GetProfileByID#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#GetProfileByName#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#SelectProfile#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#SelectProfile#1;class#ProfileManager#0" expanded="false" />
-                <element signature="method#GetCurrentProfile#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#GetProfileNames#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#HasProfile#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#ClearProfiles#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#AddOtherPerson#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#AddOtherPerson#1;class#ProfileManager#0" expanded="false" />
-                <element signature="method#RemoveOtherPerson#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#HasOtherPerson#0;class#ProfileManager#0" expanded="false" />
-                <element signature="method#UpdateOtherPerson#0;class#ProfileManager#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DatabaseHelper.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/DatabaseHelper.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="258">
-              <caret line="1319" column="0" selection-start-line="1319" selection-start-column="0" selection-end-line="1319" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -1619,7 +1649,7 @@
       <map>
         <entry key="$PROJECT_DIR$" value="4376039604329" />
         <entry key="$PROJECT_DIR$/../Resource Game" value="5707227391938" />
-        <entry key="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome" value="4376563370066" />
+        <entry key="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome" value="4377298798338" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -1882,54 +1912,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityDetailsGraphs.java" />
-        <option value="$PROJECT_DIR$/app/build.gradle" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_details_graphs.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Card.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_overview.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/row_layout_overview_total.xml" />
-        <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Setting.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardSettings.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterBasic.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardIncome.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardSplit.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardExpenses.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityMain.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/DialogFragmentPaidBack.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Transaction.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/card_expenses.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/card_income.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/card_split.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityNewTransaction.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_settings.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_new_transaction.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/row_layout_transaction_total.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterTransactionTotals.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ProfileManager.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/TimePeriod.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_time_period.xml" />
         <option value="$PROJECT_DIR$/app/build/intermediates/res/merged/debug/layout/row_layout_transaction.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/row_layout_transaction.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/DialogFragmentTransferTransaction.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivitySettings.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterManagePeople.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterManageCategories.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterManageProfiles.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/menu/transaction_overflow.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/menu/transaction_overflow_repeat.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/menu/transaction_overflow_single.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/DatabaseHelper.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityDetailsTransaction.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterDetailsTransaction.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityOverview.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterDatabaseImports.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterDetailsTransaction.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/row_layout_transaction.xml" />
+        <option value="$PROJECT_DIR$/build.gradle" />
+        <option value="$PROJECT_DIR$/app/build.gradle" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_new_transaction.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CurrencyValueFormatter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/card_expenses.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardIncome.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardSettings.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardSplit.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivitySettings.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Card.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardExpenses.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityMain.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/card_split.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterTransactionTotals.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Transaction.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/card_transaction.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardTransaction.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/row_layout_transaction_total.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityDetailsTransaction.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/DateAxisValueFormatter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ProfileManager.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/card_versus.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardVersus.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityOverview.java" />
       </list>
     </option>
   </component>
@@ -1964,12 +1997,18 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="ProjectPane" />
+      <pane id="PackagesPane" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="IncomeOutcome" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Gradle Scripts" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidBuildScriptsGroupNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -2002,24 +2041,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="res" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="IncomeOutcome" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="menu" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -2127,8 +2148,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -2157,8 +2176,8 @@
       <recent name="carvellwakeman.incomeoutcome" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\src\main\res\menu" />
       <recent name="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\src\main\res\layout" />
+      <recent name="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\src\main\res\menu" />
     </key>
   </component>
   <component name="RunManager" selected="Android App.app">
@@ -2607,36 +2626,44 @@
       <option name="project" value="LOCAL" />
       <updated>1472157711169</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Transaction details layout rewritten, transactionDetailsActivity modified, Overview supports toolbar guestures">
+      <created>1472187131722</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1472187131722</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="54" y="-8" width="1874" height="1096" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32916668" sideWeight="0.48923573" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32916668" sideWeight="0.5043057" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32916668" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.259375" sideWeight="0.4956943" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32916668" sideWeight="0.48923573" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32916668" sideWeight="0.5043057" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32916668" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32916668" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32916668" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="true" internal_type="SLIDING" type="FLOATING" visible="true" show_stripe_button="true" weight="0.1679225" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" x="-443" y="296" width="429" height="1028" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="true" internal_type="SLIDING" type="FLOATING" visible="true" show_stripe_button="true" weight="0.1679225" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" x="-452" y="299" width="429" height="1028" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.259375" sideWeight="0.4956943" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -2644,7 +2671,6 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32916668" sideWeight="0.4956943" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -2706,124 +2732,19 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Setting.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="237">
-          <caret line="17" column="18" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardSettings.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterBasic.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-          <folding>
-            <element signature="e#1880#1999#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardIncome.java">
+    <entry file="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.0/res/drawable-mdpi-v4/abc_textfield_activated_mtrl_alpha.9 (1).png" />
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="425">
-          <caret line="28" column="119" selection-start-line="28" selection-start-column="119" selection-end-line="28" selection-end-column="119" />
+          <caret line="25" column="1" selection-start-line="25" selection-start-column="1" selection-end-line="25" selection-end-column="1" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardSplit.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="28" column="119" selection-start-line="28" selection-start-column="119" selection-end-line="28" selection-end-column="119" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardExpenses.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="27" column="43" selection-start-line="27" selection-start-column="43" selection-end-line="27" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="232" column="43" selection-start-line="232" selection-start-column="43" selection-end-line="232" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/DialogFragmentPaidBack.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="102" column="68" selection-start-line="102" selection-start-column="68" selection-end-line="102" selection-end-column="68" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_details_transaction.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="56" selection-start-line="10" selection-start-column="25" selection-end-line="10" selection-end-column="56" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_overview.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="40" selection-start-line="24" selection-start-column="40" selection-end-line="24" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_income.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="16" column="18" selection-start-line="16" selection-start-column="18" selection-end-line="16" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_split.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="15" column="18" selection-start-line="15" selection-start-column="18" selection-end-line="15" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/FragmentTimePeriod.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/NoDefaultSpinner.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="205">
-          <caret line="335" column="56" selection-start-line="335" selection-start-column="56" selection-end-line="335" selection-end-column="56" />
-          <folding />
+          <caret line="47" column="51" selection-start-line="47" selection-start-column="51" selection-end-line="47" selection-end-column="51" />
         </state>
       </provider>
     </entry>
@@ -2835,339 +2756,323 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_settings.xml">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterDetailsTransaction.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="8" selection-start-line="15" selection-start-column="8" selection-end-line="15" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_expenses.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="33">
-          <caret line="2" column="4" selection-start-line="2" selection-start-column="4" selection-end-line="2" selection-end-column="61" />
+        <state relative-caret-position="235">
+          <caret line="143" column="35" selection-start-line="143" selection-start-column="35" selection-end-line="143" selection-end-column="89" />
           <folding>
-            <element signature="e#564#596#0" expanded="true" />
-            <element signature="e#744#777#0" expanded="true" />
+            <element signature="method#toggleMoreInfo#0;class#TransactionViewHolder#0;class#AdapterDetailsTransaction#0" expanded="false" />
+            <element signature="method#moreInfoOn#0;class#TransactionViewHolder#0;class#AdapterDetailsTransaction#0" expanded="false" />
           </folding>
         </state>
       </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/dimens.xml">
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.PhilJay/MPAndroidChart/v3.0.0-beta1/72cd409034749fa5cf7a9481d87ba65429fc57a0/MPAndroidChart-v3.0.0-beta1-sources.jar!/com/github/mikephil/charting/formatter/ValueFormatter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="44" selection-start-line="9" selection-start-column="44" selection-end-line="9" selection-end-column="44" />
-          <folding />
+        <state relative-caret-position="204">
+          <caret line="13" column="17" selection-start-line="13" selection-start-column="17" selection-end-line="13" selection-end-column="17" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_new_transaction.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="230">
-          <caret line="18" column="63" selection-start-line="18" selection-start-column="63" selection-end-line="18" selection-end-column="63" />
-          <folding>
-            <element signature="e#1193#1225#0" expanded="false" />
-            <element signature="e#1320#1355#0" expanded="false" />
-            <element signature="e#1397#1430#0" expanded="false" />
-            <element signature="e#1473#1505#0" expanded="false" />
-            <element signature="e#1549#1581#0" expanded="false" />
-            <element signature="e#1623#1655#0" expanded="false" />
-            <element signature="e#2107#6352#0" expanded="false" />
-            <element signature="e#2350#2382#0" expanded="false" />
-            <element signature="e#2477#2512#0" expanded="false" />
-            <element signature="e#2554#2587#0" expanded="false" />
-            <element signature="e#2630#2662#0" expanded="false" />
-            <element signature="e#2706#2738#0" expanded="false" />
-            <element signature="e#2780#2812#0" expanded="false" />
-            <element signature="e#6393#12356#0" expanded="false" />
-            <element signature="e#6637#6669#0" expanded="false" />
-            <element signature="e#6764#6799#0" expanded="false" />
-            <element signature="e#6841#6874#0" expanded="false" />
-            <element signature="e#6917#6949#0" expanded="false" />
-            <element signature="e#6993#7025#0" expanded="false" />
-            <element signature="e#7067#7099#0" expanded="false" />
-            <element signature="e#12411#15937#0" expanded="false" />
-            <element signature="e#12658#12690#0" expanded="false" />
-            <element signature="e#12785#12820#0" expanded="false" />
-            <element signature="e#12862#12895#0" expanded="false" />
-            <element signature="e#12938#12970#0" expanded="false" />
-            <element signature="e#13014#13046#0" expanded="false" />
-            <element signature="e#13088#13120#0" expanded="false" />
-            <element signature="e#15984#17700#0" expanded="false" />
-            <element signature="e#16234#16266#0" expanded="false" />
-            <element signature="e#16361#16396#0" expanded="false" />
-            <element signature="e#16438#16471#0" expanded="false" />
-            <element signature="e#16514#16546#0" expanded="false" />
-            <element signature="e#16590#16622#0" expanded="false" />
-            <element signature="e#16664#16696#0" expanded="false" />
-            <element signature="e#17906#17938#0" expanded="false" />
-            <element signature="e#17983#18015#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_managecategories.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Desktop/row_layout_transaction_old.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/row_layout_transaction_total.xml">
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="656">
-          <caret line="72" column="52" selection-start-line="72" selection-start-column="52" selection-end-line="72" selection-end-column="52" />
-          <folding>
-            <element signature="e#470#502#0" expanded="true" />
-            <element signature="e#581#616#0" expanded="true" />
-            <element signature="e#650#683#0" expanded="true" />
-            <element signature="e#718#750#0" expanded="true" />
-            <element signature="e#786#818#0" expanded="true" />
-            <element signature="e#852#884#0" expanded="true" />
-            <element signature="e#1691#1715#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/TimePeriod.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="431">
-          <caret line="529" column="39" selection-start-line="529" selection-start-column="39" selection-end-line="529" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/build/intermediates/res/merged/debug/layout/row_layout_transaction.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="39" selection-start-line="4" selection-start-column="39" selection-end-line="4" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterTransactionTotals.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="82">
-          <caret line="125" column="0" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/selectable_item_background.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="28" selection-start-line="2" selection-start-column="28" selection-end-line="2" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_time_period.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="42" selection-start-line="19" selection-start-column="42" selection-end-line="19" selection-end-column="42" />
-          <folding>
-            <element signature="e#667#689#0" expanded="true" />
-            <element signature="e#807#12951#0" expanded="false" />
-            <element signature="e#1020#1052#0" expanded="true" />
-            <element signature="e#1268#1300#0" expanded="true" />
-            <element signature="e#1336#1368#0" expanded="true" />
-            <element signature="e#1402#1434#0" expanded="true" />
-            <element signature="e#13372#13405#0" expanded="true" />
-            <element signature="e#13440#13472#0" expanded="true" />
-            <element signature="e#13508#13540#0" expanded="true" />
-            <element signature="e#13574#13606#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityMain.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="514">
-          <caret line="516" column="0" selection-start-line="516" selection-start-column="0" selection-end-line="519" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/submenu_sort.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="11" selection-start-line="3" selection-start-column="3" selection-end-line="26" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/OLD/ASSETS &amp; BACKUP CODE/Before DialogFragment FullScreen Conversion/DialogFragmentTransferTransaction.java">
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.PhilJay/MPAndroidChart/v3.0.0-beta1/72cd409034749fa5cf7a9481d87ba65429fc57a0/MPAndroidChart-v3.0.0-beta1-sources.jar!/com/github/mikephil/charting/data/BaseDataSet.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="227">
-          <caret line="73" column="52" selection-start-line="73" selection-start-column="52" selection-end-line="73" selection-end-column="52" />
+          <caret line="259" column="41" selection-start-line="259" selection-start-column="41" selection-end-line="259" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.PhilJay/MPAndroidChart/v3.0.0-beta1/72cd409034749fa5cf7a9481d87ba65429fc57a0/MPAndroidChart-v3.0.0-beta1-sources.jar!/com/github/mikephil/charting/formatter/DefaultValueFormatter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-68">
+          <caret line="14" column="13" selection-start-line="0" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CurrencyValueFormatter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#419#420#0" expanded="false" />
+            <element signature="e#448#449#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Desktop/MPAndroidChart-master/MPAndroidChart-master/MPChartExample/src/com/xxmassdeveloper/mpchartexample/PieChartActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2445">
+          <caret line="99" column="29" selection-start-line="99" selection-start-column="29" selection-end-line="99" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Desktop/MPAndroidChart-master/MPAndroidChart-master/MPChartExample/src/com/xxmassdeveloper/mpchartexample/PiePolylineChartActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="226" column="74" selection-start-line="226" selection-start-column="74" selection-end-line="226" selection-end-column="74" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.PhilJay/MPAndroidChart/v3.0.0-beta1/72cd409034749fa5cf7a9481d87ba65429fc57a0/MPAndroidChart-v3.0.0-beta1-sources.jar!/com/github/mikephil/charting/charts/PieChart.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="27" column="13" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AndroidDatabaseManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="205">
+          <caret line="119" column="8" selection-start-line="119" selection-start-column="8" selection-end-line="119" selection-end-column="132" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_overview.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="24" column="40" selection-start-line="24" selection-start-column="40" selection-end-line="24" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardSettings.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="15" column="41" selection-start-line="15" selection-start-column="41" selection-end-line="15" selection-end-column="41" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivitySettings.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="14">
+          <caret line="55" column="70" selection-start-line="55" selection-start-column="70" selection-end-line="55" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Card.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_expenses.xml" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_new_transaction.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="581">
+          <caret line="349" column="73" selection-start-line="349" selection-start-column="73" selection-end-line="349" selection-end-column="73" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/styles.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="392">
+          <caret line="27" column="12" selection-start-line="27" selection-start-column="12" selection-end-line="27" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/toolbar_spinner.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="14" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="32" selection-start-line="9" selection-start-column="32" selection-end-line="9" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityMain.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="227">
-          <caret line="99" column="77" selection-start-line="99" selection-start-column="77" selection-end-line="99" selection-end-column="77" />
-          <folding>
-            <element signature="e#5274#5300#0" expanded="true" />
-            <element signature="e#5302#5708#0" expanded="true" />
-            <element signature="e#5707#5708#0" expanded="true" />
-          </folding>
+          <caret line="107" column="0" selection-start-line="107" selection-start-column="0" selection-end-line="133" selection-end-column="106" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/DialogFragmentTransferTransaction.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterProfilesSpinner.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="73" column="41" selection-start-line="73" selection-start-column="41" selection-end-line="73" selection-end-column="41" />
-          <folding>
-            <element signature="e#2766#3123#0" expanded="false" />
-            <element signature="e#3122#3123#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="37">
+          <caret line="17" column="11" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterManagePeople.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardIncome.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/dimens.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="76" column="73" selection-start-line="76" selection-start-column="73" selection-end-line="76" selection-end-column="73" />
-          <folding>
-            <element signature="e#2418#2773#0" expanded="false" />
-            <element signature="e#2772#2773#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="153">
+          <caret line="9" column="17" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterManageCategories.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/row_layout_transaction.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="326">
-          <caret line="82" column="73" selection-start-line="82" selection-start-column="73" selection-end-line="82" selection-end-column="73" />
-          <folding>
-            <element signature="e#2812#3161#0" expanded="false" />
-            <element signature="e#3160#3161#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="442">
+          <caret line="26" column="67" selection-start-line="24" selection-start-column="7" selection-end-line="26" selection-end-column="67" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterManageProfiles.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardSplit.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_split.xml" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterTransactionTotals.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="80" column="81" selection-start-line="80" selection-start-column="81" selection-end-line="80" selection-end-column="81" />
-          <folding>
-            <element signature="e#2846#3221#0" expanded="false" />
-            <element signature="e#3220#3221#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="85">
+          <caret line="35" column="83" selection-start-line="35" selection-start-column="83" selection-end-line="35" selection-end-column="83" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Transaction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="805">
+          <caret line="147" column="10" selection-start-line="147" selection-start-column="10" selection-end-line="147" selection-end-column="10" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="159">
-          <caret line="101" column="47" selection-start-line="101" selection-start-column="47" selection-end-line="101" selection-end-column="47" />
+        <state relative-caret-position="334">
+          <caret line="177" column="34" selection-start-line="177" selection-start-column="34" selection-end-line="177" selection-end-column="34" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/transaction_overflow_repeat.xml">
+    <entry file="file://$USER_HOME$/Desktop/MPAndroidChart-master/MPAndroidChart-master/MPChartExample/res/layout/activity_barchart_noseekbar.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="50" selection-start-line="1" selection-start-column="50" selection-end-line="1" selection-end-column="50" />
-          <folding>
-            <element signature="e#234#255#0" expanded="true" />
-            <element signature="e#418#443#0" expanded="true" />
-            <element signature="e#550#570#0" expanded="true" />
-            <element signature="e#672#695#0" expanded="true" />
-            <element signature="e#860#885#0" expanded="true" />
-            <element signature="e#994#1014#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="85">
+          <caret line="5" column="5" selection-start-line="5" selection-start-column="5" selection-end-line="5" selection-end-column="49" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_transaction.xml">
       <provider editor-type-id="android-designer2">
         <state />
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/transaction_overflow_single.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="50" selection-start-line="1" selection-start-column="50" selection-end-line="1" selection-end-column="50" />
-          <folding />
+        <state relative-caret-position="384">
+          <caret line="35" column="57" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="57" />
         </state>
       </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
+    </entry>
+    <entry file="file://$USER_HOME$/Desktop/MPAndroidChart-master/MPAndroidChart-master/MPChartExample/src/com/xxmassdeveloper/mpchartexample/HorizontalBarChartActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="787">
+          <caret line="98" column="0" selection-start-line="98" selection-start-column="0" selection-end-line="99" selection-end-column="30" />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/row_layout_transaction.xml">
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="2856">
-          <caret line="203" column="0" selection-start-line="203" selection-start-column="0" selection-end-line="203" selection-end-column="0" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardTransaction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2278">
+          <caret line="156" column="17" selection-start-line="156" selection-start-column="17" selection-end-line="156" selection-end-column="57" />
           <folding>
-            <element signature="e#6728#8211#0" expanded="false" />
-            <element signature="e#8226#8532#0" expanded="false" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/row_layout_transaction_total.xml">
       <provider selected="true" editor-type-id="android-designer2">
         <state />
       </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" column="49" selection-start-line="21" selection-start-column="49" selection-end-line="21" selection-end-column="49" />
+        </state>
+      </provider>
     </entry>
-    <entry file="jar://$USER_HOME$/AppData/Local/Android/sdk/platforms/android-24/android.jar!/android/database/sqlite/SQLiteOpenHelper.class">
+    <entry file="file://$USER_HOME$/Desktop/MPAndroidChart-master/MPAndroidChart-master/MPChartExample/src/com/xxmassdeveloper/mpchartexample/custom/MyAxisValueFormatter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="29" column="49" selection-start-line="29" selection-start-column="49" selection-end-line="29" selection-end-column="49" />
+        <state relative-caret-position="34">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityDetailsTransaction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="205">
+          <caret line="123" column="40" selection-start-line="123" selection-start-column="32" selection-end-line="123" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/DateAxisValueFormatter.java" />
+    <entry file="file://$USER_HOME$/Desktop/MPAndroidChart-master/MPAndroidChart-master/MPChartExample/src/com/xxmassdeveloper/mpchartexample/custom/MyFillFormatter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Desktop/MPAndroidChart-master/MPAndroidChart-master/MPChartExample/src/com/xxmassdeveloper/mpchartexample/custom/MyCustomXAxisValueFormatter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Desktop/MPAndroidChart-master/MPAndroidChart-master/MPChartExample/src/com/xxmassdeveloper/mpchartexample/BarChartPositiveNegative.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1241">
+          <caret line="94" column="0" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
           <folding>
-            <element signature="e#1003#1004#0" expanded="true" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#3638#3639#0" expanded="false" />
+            <element signature="e#3678#3679#0" expanded="false" />
+            <element signature="e#5607#5608#0" expanded="false" />
+            <element signature="e#5670#5671#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="jar://$USER_HOME$/AppData/Local/Android/sdk/platforms/android-24/android.jar!/android/database/sqlite/SQLiteCursor.class">
+    <entry file="file://$USER_HOME$/Desktop/MPAndroidChart-master/MPAndroidChart-master/MPChartExample/src/com/xxmassdeveloper/mpchartexample/BarChartActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="48" column="25" selection-start-line="48" selection-start-column="25" selection-end-line="48" selection-end-column="25" />
+        <state relative-caret-position="1071">
+          <caret line="100" column="48" selection-start-line="100" selection-start-column="48" selection-end-line="100" selection-end-column="48" />
           <folding>
-            <element signature="e#1410#1411#0" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="198" column="74" selection-start-line="198" selection-start-column="74" selection-end-line="198" selection-end-column="74" />
+        <state relative-caret-position="4063">
+          <caret line="356" column="58" selection-start-line="356" selection-start-column="58" selection-end-line="356" selection-end-column="58" />
           <folding>
-            <element signature="method#ClearAllObjects#0;class#Profile#0" expanded="false" />
+            <element signature="imports" expanded="false" />
             <element signature="method#RemoveAll#0;class#Profile#0" expanded="false" />
-            <element signature="method#GetDateFormatted#0;class#Profile#0" expanded="false" />
+            <element signature="e#5187#5188#0" expanded="false" />
+            <element signature="e#5221#5222#0" expanded="false" />
             <element signature="method#SetStartTime#0;class#Profile#0" expanded="false" />
             <element signature="method#SetEndTime#0;class#Profile#0" expanded="false" />
+            <element signature="e#5907#5908#0" expanded="false" />
+            <element signature="e#5939#5940#0" expanded="false" />
             <element signature="method#SetPeriod#0;class#Profile#0" expanded="false" />
             <element signature="method#TimePeriodPlus#0;class#Profile#0" expanded="false" />
             <element signature="method#TimePeriodMinus#0;class#Profile#0" expanded="false" />
@@ -3181,36 +3086,56 @@
             <element signature="method#TransferAllTransactions#0;class#Profile#0" expanded="false" />
             <element signature="method#dateSort#0;class#Profile#0" expanded="false" />
             <element signature="method#Sort#0;class#Profile#0" expanded="false" />
-            <element signature="method#CalculateTimeFrame#0;class#Profile#0" expanded="false" />
+            <element signature="e#20415#20576#0" expanded="false" />
+            <element signature="e#20575#20576#0" expanded="false" />
+            <element signature="e#20687#20848#0" expanded="false" />
+            <element signature="e#20847#20848#0" expanded="false" />
+            <element signature="e#20957#21119#0" expanded="false" />
+            <element signature="e#21118#21119#0" expanded="false" />
+            <element signature="e#21230#21392#0" expanded="false" />
+            <element signature="e#21391#21392#0" expanded="false" />
+            <element signature="e#21505#21670#0" expanded="false" />
+            <element signature="e#21669#21670#0" expanded="false" />
+            <element signature="e#21785#21950#0" expanded="false" />
+            <element signature="e#21949#21950#0" expanded="false" />
+            <element signature="e#22061#22224#0" expanded="false" />
+            <element signature="e#22223#22224#0" expanded="false" />
+            <element signature="e#22337#22500#0" expanded="false" />
+            <element signature="e#22499#22500#0" expanded="false" />
+            <element signature="e#22611#22774#0" expanded="false" />
+            <element signature="e#22773#22774#0" expanded="false" />
+            <element signature="e#22887#23050#0" expanded="false" />
+            <element signature="e#23049#23050#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="jar://$USER_HOME$/AppData/Local/Android/sdk/extras/android/m2repository/com/android/support/support-fragment/24.2.0/support-fragment-24.2.0-sources.jar!/android/support/v4/app/FragmentActivity.java">
+    <entry file="file://$USER_HOME$/Desktop/MPAndroidChart-master/MPAndroidChart-master/MPChartExample/src/com/xxmassdeveloper/mpchartexample/custom/DayAxisValueFormatter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="847" column="16" selection-start-line="847" selection-start-column="16" selection-end-line="847" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/AppData/Local/Android/sdk/platforms/android-24/android.jar!/android/database/sqlite/SQLiteDatabase.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="250" column="77" selection-start-line="250" selection-start-column="77" selection-end-line="250" selection-end-column="77" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#8840#8841#0" expanded="true" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#600#601#0" expanded="false" />
+            <element signature="e#634#635#0" expanded="false" />
+            <element signature="e#3486#3487#0" expanded="false" />
+            <element signature="e#3510#3511#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ProfileManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="723" column="65" selection-start-line="723" selection-start-column="65" selection-end-line="723" selection-end-column="65" />
+        <state relative-caret-position="1683">
+          <caret line="125" column="61" selection-start-line="125" selection-start-column="61" selection-end-line="125" selection-end-column="61" />
           <folding>
+            <element signature="imports" expanded="false" />
             <element signature="method#LoadDefaultSettings#0;class#ProfileManager#0" expanded="false" />
             <element signature="method#AlertDialog#0;class#ProfileManager#0" expanded="false" />
+            <element signature="e#7819#7968#0" expanded="false" />
+            <element signature="e#7967#7968#0" expanded="false" />
+            <element signature="e#8009#8158#0" expanded="false" />
+            <element signature="e#8157#8158#0" expanded="false" />
             <element signature="method#OpenDialogFragment#0;class#ProfileManager#0" expanded="false" />
             <element signature="method#DeleteProfile#0;class#ProfileManager#0" expanded="false" />
             <element signature="method#DeleteProfileByID#0;class#ProfileManager#0" expanded="false" />
@@ -3220,78 +3145,76 @@
             <element signature="method#SelectProfile#0;class#ProfileManager#0" expanded="false" />
             <element signature="method#SelectProfile#1;class#ProfileManager#0" expanded="false" />
             <element signature="method#GetCurrentProfile#0;class#ProfileManager#0" expanded="false" />
+            <element signature="e#13099#13100#0" expanded="false" />
+            <element signature="e#13138#13139#0" expanded="false" />
+            <element signature="e#13216#13217#0" expanded="false" />
+            <element signature="e#13248#13249#0" expanded="false" />
             <element signature="method#GetProfileNames#0;class#ProfileManager#0" expanded="false" />
             <element signature="method#HasProfile#0;class#ProfileManager#0" expanded="false" />
             <element signature="method#ClearProfiles#0;class#ProfileManager#0" expanded="false" />
             <element signature="method#AddOtherPerson#0;class#ProfileManager#0" expanded="false" />
             <element signature="method#AddOtherPerson#1;class#ProfileManager#0" expanded="false" />
             <element signature="method#RemoveOtherPerson#0;class#ProfileManager#0" expanded="false" />
+            <element signature="e#14726#14727#0" expanded="false" />
+            <element signature="e#14770#14771#0" expanded="false" />
             <element signature="method#HasOtherPerson#0;class#ProfileManager#0" expanded="false" />
+            <element signature="e#15138#15139#0" expanded="false" />
+            <element signature="e#15173#15174#0" expanded="false" />
+            <element signature="e#15251#15252#0" expanded="false" />
+            <element signature="e#15293#15294#0" expanded="false" />
+            <element signature="e#15362#15363#0" expanded="false" />
+            <element signature="e#15398#15399#0" expanded="false" />
             <element signature="method#UpdateOtherPerson#0;class#ProfileManager#0" expanded="false" />
+            <element signature="e#15996#15997#0" expanded="false" />
+            <element signature="e#16050#16051#0" expanded="false" />
+            <element signature="e#17103#17104#0" expanded="false" />
+            <element signature="e#17146#17147#0" expanded="false" />
+            <element signature="e#17347#17348#0" expanded="false" />
+            <element signature="e#17381#17382#0" expanded="false" />
+            <element signature="e#18185#18186#0" expanded="false" />
+            <element signature="e#18220#18221#0" expanded="false" />
+            <element signature="e#24940#24941#0" expanded="false" />
+            <element signature="e#24981#24982#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Transaction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="448">
-          <caret line="111" column="45" selection-start-line="111" selection-start-column="45" selection-end-line="111" selection-end-column="45" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_versus.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="486">
+          <caret line="40" column="49" selection-start-line="40" selection-start-column="49" selection-end-line="40" selection-end-column="49" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/DatabaseHelper.java">
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.PhilJay/MPAndroidChart/v3.0.0-beta1/72cd409034749fa5cf7a9481d87ba65429fc57a0/MPAndroidChart-v3.0.0-beta1-sources.jar!/com/github/mikephil/charting/components/YAxis.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="1319" column="0" selection-start-line="1319" selection-start-column="0" selection-end-line="1319" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterDetailsTransaction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="343">
-          <caret line="353" column="39" selection-start-line="353" selection-start-column="39" selection-end-line="353" selection-end-column="39" />
+        <state relative-caret-position="327">
+          <caret line="239" column="27" selection-start-line="239" selection-start-column="8" selection-end-line="239" selection-end-column="27" />
           <folding>
-            <element signature="method#toggleMoreInfo#0;class#TransactionViewHolder#0;class#AdapterDetailsTransaction#0" expanded="false" />
-            <element signature="method#moreInfoOn#0;class#TransactionViewHolder#0;class#AdapterDetailsTransaction#0" expanded="false" />
+            <element signature="e#5731#5732#0" expanded="true" />
+            <element signature="e#5776#5777#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityDetailsTransaction.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardVersus.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="15" column="65" selection-start-line="15" selection-start-column="65" selection-end-line="15" selection-end-column="110" />
+        <state relative-caret-position="558">
+          <caret line="149" column="39" selection-start-line="149" selection-start-column="39" selection-end-line="149" selection-end-column="39" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityOverview.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-425">
-          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+        <state relative-caret-position="238">
+          <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
           <folding>
-            <element signature="e#1399#1591#0" expanded="true" />
-            <element signature="e#1590#1591#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/colors.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="10" selection-start-line="1" selection-start-column="10" selection-end-line="1" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/AdapterDatabaseImports.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="205">
-          <caret line="60" column="109" selection-start-line="60" selection-start-column="109" selection-end-line="60" selection-end-column="109" />
-          <folding>
-            <element signature="e#1939#2007#0" expanded="true" />
+            <element signature="e#2848#2904#0" expanded="true" />
           </folding>
         </state>
       </provider>

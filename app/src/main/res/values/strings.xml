@@ -58,10 +58,16 @@
     <string name="header_cost">Cost</string>
     <string name="header_amount">Payment Amount</string>
 
+    <string name="header_versus_summary">Income Vs. Expenses</string>
     <string name="header_expenses_summary">Expenses Summary</string>
     <string name="header_income_summary">Income Summary</string>
     <string name="header_split_summary">Split Summary</string>
 
+    <!-- Tool Tip -->
+    <string name="tt_showmore">Show More</string>
+    <string name="tt_showlegend">Show Legend</string>
+    <string name="tt_displaydata">Display Data </string>
+    <string name="tt_nodata">No Data</string>
 
     <!-- Information -->
     <string name="info_title_value">%1$s %2$s</string>
@@ -167,6 +173,16 @@
     <string name="repeat_months">month(s) on day</string>
     <string name="repeat_years">year(s) on</string>
 
+    <!-- Key Type array -->
+    <string-array name="keytype_array_ex">
+        <item>Display Data by Debt</item>
+        <item>Display Data by Source</item>
+        <item>Display Data by Category</item>
+    </string-array>
+    <string-array name="keytype_array_in">
+        <item>By Source</item>
+        <item>By Category</item>
+    </string-array>
 
     <!-- Repeat arrays -->
     <string-array name="repeat_array">

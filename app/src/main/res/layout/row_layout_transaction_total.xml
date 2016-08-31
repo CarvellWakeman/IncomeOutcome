@@ -14,7 +14,7 @@
         card_view:contentPadding="@dimen/cardview_default_padding"
         android:layout_marginLeft="@dimen/cardview_default_margin"
         android:layout_marginRight="@dimen/cardview_default_margin"
-        android:layout_marginTop="@dimen/cardview_default_margin">
+        android:layout_marginTop="4dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -27,7 +27,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="ObjectA"
                 android:id="@+id/transaction_objectA"
-                android:layout_marginRight="4dp"
+                android:layout_marginEnd="4dp"
                 android:layout_centerVertical="true" />
 
             <TextView

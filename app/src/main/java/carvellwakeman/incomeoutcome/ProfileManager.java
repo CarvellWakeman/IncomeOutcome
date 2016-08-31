@@ -58,6 +58,7 @@ public class ProfileManager
     public static String simpleDateFormatJustYear;
     public static String simpleDateFormatNoYear;
     public static String simpleDateFormatNoDay;
+    public static String simpleDateFormatShortNoDay;
     public static String simpleDateFormatSaving;
 
 
@@ -122,6 +123,7 @@ public class ProfileManager
         simpleDateFormatJustYear = "yyyy"; //2016
         simpleDateFormatNoYear = "MMMM dd"; //May 12
         simpleDateFormatNoDay = "MMMM, yyyy"; //May, 2016
+        simpleDateFormatShortNoDay = "MMM, yyyy"; //Apr, 2016
         simpleDateFormatSaving = "MM-dd-yyyy"; //05-12-2016
 
 
@@ -597,6 +599,7 @@ public class ProfileManager
 
     //Getting string resources from static contexts
     public static String getString(int resourceID){ return MainActivityInstance.getString(resourceID); }
+    public static int getColor(int resourceID){ return MainActivityInstance.getResources().getColor(resourceID); }
     public static int getDrawbleResourceID(String title) { return MainActivityInstance.getResources().getIdentifier(title, "drawable", MainActivityInstance.getPackageName()); }
     //public static Drawable getDrawable(int resourceID){ return MainActivityInstance.getResources().getDrawable(resourceID); }
 
