@@ -2,20 +2,20 @@ package carvellwakeman.incomeoutcome;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 
 
-public class ActivityDetailsTransaction extends AppCompatActivity implements GestureDetector.OnGestureListener
+public class ActivityDetailsTransaction extends AppCompatActivity
 {
     //Activity type (Expense or income)
     int activityType = -1;
@@ -31,6 +31,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
     NpaLinearLayoutManager linearLayoutManager;
     NpaLinearLayoutManager linearLayoutManager2;
 
+    CollapsingToolbarLayout collapsingToolbarLayout;
     Toolbar toolbar;
 
     RecyclerView totalsView;
@@ -44,8 +45,11 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
     int _profileID;
     Profile _profile;
 
-    private GestureDetector gestureDetector;
-    View.OnTouchListener gestureListener;
+    LocalDate storedStartTime;
+    LocalDate storedEndTime;
+    Button button_nextPeriod;
+    Button button_prevPeriod;
+    CheckBox checkbox_showall;
 
 
     @Override
@@ -91,6 +95,42 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
         else {
             //Find Views
             toolbar = (Toolbar) findViewById(R.id.toolbar);
+            collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar) ;
+
+            //Period management
+            button_nextPeriod = (Button) findViewById(R.id.button_nextPeriod);
+            button_prevPeriod = (Button) findViewById(R.id.button_prevPeriod);
+            checkbox_showall = (CheckBox) findViewById(R.id.checkbox_showall);
+
+            button_nextPeriod.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View view) {
+                    if (_profile != null){
+                        _profile.TimePeriodPlus(1);
+                        RefreshActivity();
+                    }
+                }
+            });
+            button_prevPeriod.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View view) {
+                    if (_profile != null){
+                        _profile.TimePeriodMinus(1);
+                        RefreshActivity();
+                    }
+                }
+            });
+            checkbox_showall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if (_profile != null){
+                        if (b){
+                            storedStartTime = _profile.GetStartTime();
+                            storedEndTime = _profile.GetEndTime();
+                        }
+                        _profile.SetStartTime( (b ? null : storedStartTime) );
+                        _profile.SetEndTime( (b ? null : storedEndTime) );
+                        RefreshActivity();
+                    }
+                }
+            });
 
             totalsView = (RecyclerView) findViewById(R.id.recyclerView_transaction_totals);
             elementsView = (RecyclerView) findViewById(R.id.recyclerView_transaction_elements);
@@ -106,7 +146,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
                         Intent intent = new Intent(ActivityDetailsTransaction.this, ActivityNewTransaction.class);
                         intent.putExtra("activitytype", activityType);
                         intent.putExtra("profile", _profileID);
-                        startActivity(intent);
+                        startActivityForResult(intent, 4);
                     }
                     else {
                         ProfileManager.Print("ERROR: Profile not found, could not start New Transaction Activity");
@@ -123,17 +163,6 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
                 }
             });
 
-            //Swiping gesture setup
-            gestureDetector = new GestureDetector(this, this);
-            gestureListener = new View.OnTouchListener() {
-                public boolean onTouch(View v, MotionEvent event) {
-                    return gestureDetector.onTouchEvent(event);
-                }
-            };
-
-            toolbar.setOnTouchListener(gestureListener);
-
-
 
             //Configure toolbar
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
@@ -146,12 +175,8 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
             for(int m : toolbar_menus){ toolbar.inflateMenu(m); }
             setSupportActionBar(toolbar);
 
-            //Title
-            if (activityType == 0) { toolbar.setTitle(R.string.title_expenses); }
-            else if (activityType == 1) { toolbar.setTitle(R.string.title_income); }
+            SetToolbarTitle();
 
-            //Subtitle
-            toolbar.setSubtitle(_profile.GetDateFormatted());
 
 
             //Set totals adapter
@@ -180,7 +205,6 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
             if (elementsAdapter.getItemCount()==0) { textView_nodata.setVisibility(View.VISIBLE); }
         }
     }
-
 
 
     @Override
@@ -259,128 +283,38 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
         super.onBackPressed();
     }
 
-    //Gestures
-    @Override
-    public boolean onTouchEvent(MotionEvent me) { return gestureDetector.onTouchEvent(me); }
-    @Override
-    public boolean onDown(MotionEvent e) {return true;}
-    @Override
-    public void onLongPress(MotionEvent e) {}
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {return true;}
-    @Override
-    public void onShowPress(MotionEvent e) {}
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) { return true; }
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
-    {
-        final int SWIPE_MIN_DISTANCE = 120;
-        final int SWIPE_MAX_OFF_PATH = 250;
-        final int SWIPE_THRESHOLD_VELOCITY = 200;
-
-        if (e1 != null && e2 != null) {
-            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) { return false; }
-
-            if (_profile != null) {
-                //Right to Left
-                if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    _profile.TimePeriodPlus(1);
-                }
-                else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    _profile.TimePeriodMinus(1);
-                }
-
-                this.recreate();
-                _profile.CalculateTimeFrame(activityType);
-                _profile.CalculateTotalsInTimeFrame(activityType, keyType);
-            }
-        }
-        return true;
-    }
-
-
     //Get return results from activities
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data != null) {
-            /*
-            //Find returned expense
-            Profile pr = ProfileManager.GetProfileByID(data.getIntExtra("profile", -1));
-            Expense newExp = (Expense) data.getSerializableExtra("newExpense");
-
-            switch (requestCode) {
-                case 0: //New expense (copy)
-                    if (resultCode == RESULT_OK) {
-                        if (pr != null) {
-                            if (newExp != null) {
-                                pr.AddExpense(newExp);
-                            }
-                        }
-                    }
-                    break;
-                case 1: //Edit expense
-                    if (resultCode == RESULT_OK) {
-                        if (pr != null) {
-                            if (newExp != null) {
-                                pr.UpdateExpense(newExp);
-                            }
-                        }
-                    }
-                    break;
-                case 2: // Clone expense
-                    if (resultCode == RESULT_OK) {
-                        if (pr != null) {
-                            if (newExp != null) {
-                                pr.AddExpense(newExp);
-
-                                Expense originalEx = pr.GetExpense((int) data.getSerializableExtra("originalExpense"));
-
-                                //Add child
-                                if (originalEx != null) {
-                                    originalEx.AddChild(newExp, true);
-                                    newExp.SetParentID(originalEx.GetID());
-                                }
-
-
-                                //Blacklist old date
-                                //LocalDate _cloneDate = (LocalDate) data.getSerializableExtra("cloneDate");
-
-                                //if (originalEx != null) {
-                                //    TimePeriod tp = originalEx.GetTimePeriod();
-                                //    if (tp != null) {
-                                //        if (_cloneDate != null) {
-                                //            ProfileManager.Print("Blacklist Clone Date: " + _cloneDate.toString(ProfileManager.simpleDateFormat));
-                                //            tp.AddBlacklistDate(_cloneDate, true);
-                                //            //Update original transaction and its timeperiod
-                                //            pr.UpdateExpense(originalEx);
-                                //        }
-                                //    }
-                                //}
-
-                            }
-
-                        }
-                    }
-                    break;
-            }
-            */
-
         }
 
         //Update timeframe for profile
+        RefreshActivity();
+        UpdateAdapters();
+    }
+
+    public void SetToolbarTitle(){
+        if (getSupportActionBar() != null) {
+            if (activityType == 0) { getSupportActionBar().setTitle(R.string.title_expenses); }
+            else if (activityType == 1) { getSupportActionBar().setTitle(R.string.title_income); }
+
+            getSupportActionBar().setSubtitle(_profile.GetDateFormatted());
+        }
+    }
+    public void RefreshActivity(){
         _profile.CalculateTimeFrame(activityType);
         _profile.CalculateTotalsInTimeFrame(activityType, keyType);
-        if (elementsAdapter != null) { elementsAdapter.notifyDataSetChanged(); }
-        if (totalsAdapter != null) { totalsAdapter.notifyDataSetChanged(); }
-        UpdateAdapters(); //TODO: Why aren't adapters updating even though I'm calling the above 4 lines? This call is inefficient.
+        totalsAdapter.notifyDataSetChanged();
+        elementsAdapter.notifyDataSetChanged();
+        SetToolbarTitle();
     }
 
     public void UpdateAdapters(){
-        elementsView.setAdapter(null);
+        //elementsView.setAdapter(null);
         totalsView.setAdapter(null);
 
-        elementsAdapter = new AdapterDetailsTransaction(this, _profileID, activityType);
-        elementsView.setAdapter(elementsAdapter);
+        //elementsAdapter = new AdapterDetailsTransaction(this, _profileID, activityType);
+        //elementsView.setAdapter(elementsAdapter);
 
         totalsAdapter = new AdapterTransactionTotals(this, _profileID, activityType, keyType);
         totalsView.setAdapter(totalsAdapter);

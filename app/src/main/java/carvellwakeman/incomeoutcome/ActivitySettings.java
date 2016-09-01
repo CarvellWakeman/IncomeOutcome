@@ -103,7 +103,7 @@ public class ActivitySettings extends AppCompatActivity
                                     @Override public void onClick(DialogInterface dialog, int which) {
                                         ProfileManager.DeleteDatabase();
                                         ProfileManager.ClearAllObjects();
-                                        ProfileManager.LoadDefaultSettings();
+                                        //ProfileManager.LoadDefaultSettings();
                                     }})
                                 .setNegativeButton(R.string.action_cancel, null)
                                 .create().show();

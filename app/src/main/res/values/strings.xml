@@ -50,7 +50,7 @@
     <string name="title_settings_deletealldata">Delete ALL Data</string>
     <string name="title_settings_importbackup">Import Secret Backup</string>
     <!-- Setting subtitles -->
-    <string name="subtitle_settings_deletealldata">Erase all data and restore default settings.</string>
+    <string name="subtitle_settings_deletealldata">Erase all data permanently \n(excluding exported data)</string>
     <string name="subtitle_settings_import">Erase all current data and import new data</string>
 
 
@@ -66,7 +66,8 @@
 
     <!-- Tool Tip -->
     <string name="tt_showmore">Show More</string>
-    <string name="tt_showlegend">Show Legend</string>
+    <string name="tt_showall">Show All</string>
+    <string name="tt_showlegend">Legend</string>
     <string name="tt_displaydata">Display Data </string>
     <string name="tt_nodata">No Data</string>
     <string name="tt_nodata_viewdetails">No Data, click the button below to add a transaction</string>
@@ -155,6 +156,8 @@
     <string name="time_ondate">On Date</string>
     <string name="time_ondate_formatted">On %1$s</string>
     <string name="time_never">Never</string>
+    <string name="time_nextperiod">Next</string>
+    <string name="time_prevperiod">Prev</string>
 
     <!-- Sort & Filter -->
     <string name="sort">Sort</string>

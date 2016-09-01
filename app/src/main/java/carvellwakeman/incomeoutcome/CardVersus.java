@@ -33,7 +33,7 @@ public class CardVersus extends Card
 
     int monthsBackMax = 20;
     int monthsBackMin = 2;
-    int monthsBack = 6;
+    int monthsBack = 5;
 
     TextView textView_title;
     TextView textView_nodata;
@@ -89,6 +89,7 @@ public class CardVersus extends Card
         chart.setDrawBarShadow(false);
         chart.setDrawGridBackground(false);
         chart.setDrawValueAboveBar(true);
+
         chart.setDoubleTapToZoomEnabled(false);
         chart.setPinchZoom(false);
         chart.setScaleEnabled(false);
@@ -162,7 +163,7 @@ public class CardVersus extends Card
                 }
 
                 XAxis xAxis = chart.getXAxis();
-                xAxis.setLabelCount(monthsBack);
+                //xAxis.setLabelCount(monthsBack, true);
                 xAxis.setValueFormatter(new AxisValueFormatter() {
                     @Override
                     public String getFormattedValue(float value, AxisBase axis) {
@@ -197,9 +198,11 @@ public class CardVersus extends Card
 
                 chart.getAxisLeft().setAxisMaxValue(dataSet.getYMax() * 1.2f);
                 chart.getAxisLeft().setAxisMinValue(dataSet.getYMin() * 1.2f);
+                //chart.setMaxVisibleValueCount(monthsBack+10);
 
                 dataSet.setValueTextSize(12);
                 dataSet.setValueFormatter(new CurrencyValueFormatter(2));
+
 
                 BarData barData = new BarData(dataSet);
                 barData.setBarWidth(0.95f);

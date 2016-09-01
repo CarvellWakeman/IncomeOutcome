@@ -129,13 +129,33 @@ public class Profile implements java.io.Serializable
     public String GetDateFormatted()
     {
         if (_endTime != null && _startTime != null) {
-            if (_endTime.getDayOfYear() == _endTime.dayOfYear().getMaximumValue() && _startTime.getDayOfYear() == _startTime.dayOfYear().getMinimumValue()){
+            if (_endTime.getDayOfYear() == _endTime.dayOfYear().getMaximumValue() && _startTime.getDayOfYear() == _startTime.dayOfYear().getMinimumValue()){ //Yearly
                 return _startTime.toString(ProfileManager.simpleDateFormatJustYear);
             }
-            else if (_endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue() && _startTime.getDayOfMonth() == _startTime.dayOfMonth().getMinimumValue()) {
+            else if (_startTime.getMonthOfYear()==_endTime.getMonthOfYear() &&  _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue() && _startTime.getDayOfMonth() == _startTime.dayOfMonth().getMinimumValue()) { //Monthly
                 return _startTime.toString(ProfileManager.simpleDateFormatNoDay);
             }
-            else {
+
+
+            else if (_startTime.getMonthOfYear()==DateTimeConstants.DECEMBER && _startTime.getDayOfMonth() == 1 &&
+                    _endTime.getMonthOfYear()==DateTimeConstants.FEBRUARY && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){ //Seasonally (Winter)
+                return "Winter, " + _startTime.getYear() + "-" + _endTime.getYear();
+            }
+            else if (_startTime.getMonthOfYear()==DateTimeConstants.MARCH && _startTime.getDayOfMonth() == 1 &&
+                    _endTime.getMonthOfYear()==DateTimeConstants.MAY && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){ //Seasonally (Spring)
+                return "Spring, " + _startTime.getYear();
+            }
+            else if (_startTime.getMonthOfYear()==DateTimeConstants.JUNE && _startTime.getDayOfMonth() == 1 &&
+                    _endTime.getMonthOfYear()==DateTimeConstants.AUGUST && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){ //Seasonally (Summer)
+                return "Summer, " + _startTime.getYear();
+            }
+            else if (_startTime.getMonthOfYear()==DateTimeConstants.SEPTEMBER && _startTime.getDayOfMonth() == 1 &&
+                    _endTime.getMonthOfYear()==DateTimeConstants.NOVEMBER && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){ //Seasonally (Fall)
+                return "Autumn, " + _startTime.getYear();
+            }
+
+
+            else { //Default
                 return _startTime.toString(ProfileManager.simpleDateFormat) + " to " + _endTime.toString(ProfileManager.simpleDateFormat);
             }
         }
@@ -154,9 +174,9 @@ public class Profile implements java.io.Serializable
     }
     public void SetStartTime(LocalDate start){ //[EXCLUDE] Removing insertSettingDatabase so that the database is not updated many times for one profile
         SetStartTimeDontSave(start);
-        if (GetStartTime() != null) {
-            SetEndTimeDontSave(GetStartTime().plus(GetPeriod()));
-            SetEndTimeDontSave(GetEndTime().minusDays(1));
+        if (GetStartTime() != null && GetEndTime() == null) {
+            SetEndTime(GetStartTime().plus(GetPeriod()));
+            SetEndTime(GetEndTime().minusDays(1));
         }
         ProfileManager.InsertSettingDatabase(this, true);
     }
@@ -179,6 +199,9 @@ public class Profile implements java.io.Serializable
         for (int i = 0; i < n; i++) {
             SetStartTime(GetStartTime().plus(GetPeriod()));
         }
+
+        SetEndTime(GetStartTime().plus(GetPeriod()));
+        SetEndTime(GetEndTime().minusDays(1));
     }
     public void TimePeriodMinus(int n){
         if (GetStartTime() == null) { SetStartTime( (new LocalDate()).withDayOfMonth(1) ); }
@@ -186,6 +209,9 @@ public class Profile implements java.io.Serializable
         for (int i = 0; i < n; i++) {
             SetStartTime(GetStartTime().minus(GetPeriod()));
         }
+
+        SetEndTime(GetStartTime().plus(GetPeriod()));
+        SetEndTime(GetEndTime().minusDays(1));
     }
 
 

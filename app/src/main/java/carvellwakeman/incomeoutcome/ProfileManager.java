@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.SystemClock;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.*;
 import android.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -26,6 +27,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -136,8 +138,8 @@ public class ProfileManager
         //databaseHelper.loadExpenses();
         //databaseHelper.loadIncome();
 
-        //Default settings if database if empty
-        if (!databaseHelper.isDatabaseEmpty()){
+        //Load default categories if database is empty
+        if (databaseHelper.isTableEmpty(databaseHelper.TABLE_SETTINGS_CATEGORIES) && databaseHelper.isTableEmpty(databaseHelper.TABLE_TRANSACTIONS)){
             LoadDefaultSettings();
          }
     }
@@ -154,7 +156,6 @@ public class ProfileManager
 
         //[DEBUG] Testing structures
         LocalDate c1 = LocalDate.now().withDayOfMonth(1);
-
         LocalDate c2 = LocalDate.now().withDayOfMonth(LocalDate.now().dayOfMonth().getMaximumValue());
 
         Profile p1 = new Profile("Monthly Budget");
@@ -164,16 +165,16 @@ public class ProfileManager
 
         Profile p2 = new Profile("Empty Profile");
 
-        AddProfile(p1);
-        AddProfile(p2);
-        SelectProfile(p1);
+        //AddProfile(p1);
+        //AddProfile(p2);
+        //SelectProfile(p1);
 
-
-
-        //Default other people
+        //DEBUG other people
         AddOtherPerson("Sabrina");
         AddOtherPerson("Zach Homen");
         AddOtherPerson("Mom");
+
+
 
         //Default initial category
         //AddCategory(MainActivityContext.getString(R.string.select_category), 0, true);
@@ -602,6 +603,19 @@ public class ProfileManager
     public static int getColor(int resourceID){ return MainActivityInstance.getResources().getColor(resourceID); }
     public static int getDrawbleResourceID(String title) { return MainActivityInstance.getResources().getIdentifier(title, "drawable", MainActivityInstance.getPackageName()); }
     //public static Drawable getDrawable(int resourceID){ return MainActivityInstance.getResources().getDrawable(resourceID); }
+
+    public static void setRefreshToolbarEnable(CollapsingToolbarLayout collapsingToolbarLayout,
+                                               boolean refreshToolbarEnable) {
+        try {
+            Field field = CollapsingToolbarLayout.class.getDeclaredField("mRefreshToolbar");
+            field.setAccessible(true);
+            field.setBoolean(collapsingToolbarLayout, refreshToolbarEnable);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
 
     //Date conversion for loading
     public static LocalDate ConvertDateFromString(String str){

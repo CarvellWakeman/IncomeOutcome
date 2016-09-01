@@ -41,7 +41,6 @@ public class CardTransaction extends Card
 
     CardView cardView;
 
-    RelativeLayout relativeLayout_controls;
     Spinner spinner_keyType;
     Switch switch_showMore;
 
@@ -69,9 +68,6 @@ public class CardTransaction extends Card
 
         //No Data notice
         textView_nodata = (TextView) v.findViewById(R.id.textView_cardTransaction_nodata);
-
-        //Controls layout
-        relativeLayout_controls = (RelativeLayout) v.findViewById(R.id.relativeLayout_cardTransaction_controls);
 
         //Show More switch
         switch_showMore = (Switch) v.findViewById(R.id.switch_cardTransaction);
@@ -222,12 +218,12 @@ public class CardTransaction extends Card
                 chart.invalidate(); //Refresh
 
                 chart.setVisibility(View.VISIBLE);
-                relativeLayout_controls.setVisibility(View.VISIBLE);
+                //relativeLayout_controls.setVisibility(View.VISIBLE);
                 textView_nodata.setVisibility(View.GONE);
             }
             else { //No data
                 chart.setVisibility(View.GONE);
-                relativeLayout_controls.setVisibility(View.GONE);
+                //relativeLayout_controls.setVisibility(View.GONE);
                 textView_nodata.setVisibility(View.VISIBLE);
             }
         }

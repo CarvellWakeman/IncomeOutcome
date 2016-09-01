@@ -786,7 +786,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                     newTr.SetTimePeriod(fragment_timePeriod.GetTimePeriod());
 
                     //Set Split value
-                    if (checkBox_split.isChecked()) {
+                    if (checkBox_split.isChecked() && spinner_otherPeople.getSelectedItem() != null) {
                         newTr.SetIPaid(switch_paidBy.isChecked());
                         newTr.SetSplitValue(spinner_otherPeople.getSelectedItem().toString(), sCost);
                     }

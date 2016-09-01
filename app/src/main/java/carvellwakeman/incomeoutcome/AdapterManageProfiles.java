@@ -83,6 +83,7 @@ public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManagePro
                                         public void onClick(DialogInterface dialog, int which) {
                                             ProfileManager.DeleteProfile(pr);
                                             notifyDataSetChanged();
+                                            parent.profile_adapter.notifyDataSetChanged();
                                         }})
                                     .setNegativeButton(R.string.action_cancel, null).create().show();
 

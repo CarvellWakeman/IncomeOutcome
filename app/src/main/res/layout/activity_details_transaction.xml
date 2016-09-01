@@ -5,15 +5,14 @@
     android:orientation="vertical"
     android:id="@+id/linearLayout_transactions">
 
-    <include android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+    <include android:id="@+id/toolbar_top" layout="@layout/toolbar_timeframe" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView_transaction_totals"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
-        android:layout_below="@+id/toolbar" />
+        android:layout_below="@+id/toolbar_top" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView_transaction_elements"
@@ -26,7 +25,7 @@
         android:id="@+id/textView_transaction_nodata"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/toolbar_top"
         android:layout_marginTop="20dp"
         android:text="@string/tt_nodata_viewdetails"
         android:textStyle="normal|italic"

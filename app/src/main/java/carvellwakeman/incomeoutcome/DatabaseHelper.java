@@ -403,12 +403,17 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     public boolean isDatabaseEmpty(){
 
-        return (!isTableEmpty(TABLE_SETTINGS_PROFILES) ||
+        return (!isTableExists(TABLE_SETTINGS_PROFILES, false) ||
+                !isTableExists(TABLE_SETTINGS_OTHERPEOPLE, false) ||
+                !isTableExists(TABLE_SETTINGS_CATEGORIES, false) ||
+                !isTableExists(TABLE_TRANSACTIONS, false) ||
+                !isTableExists(TABLE_TIMEPERIODS, false) ||
+
+                !isTableEmpty(TABLE_SETTINGS_PROFILES) ||
                 !isTableEmpty(TABLE_SETTINGS_OTHERPEOPLE) ||
                 !isTableEmpty(TABLE_SETTINGS_CATEGORIES) ||
-                !isTableEmpty(TABLE_EXPENSES) ||
-                !isTableEmpty(TABLE_INCOME) ||
-                isTableEmpty(TABLE_TIMEPERIODS));
+                !isTableEmpty(TABLE_TRANSACTIONS) ||
+                !isTableEmpty(TABLE_TIMEPERIODS));
     }
 
     public boolean isTableExists(String tableName, boolean openDb) {
@@ -436,10 +441,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return false;
     }
     public boolean isTableEmpty(String tableName){
-        database = getReadableDatabase();
-        long cnt = DatabaseUtils.queryNumEntries(database, tableName);
+        if (isTableExists(tableName, false)) {
+            database = getReadableDatabase();
+            long cnt = DatabaseUtils.queryNumEntries(database, tableName);
 
-        return cnt==0;
+            return cnt == 0;
+        }
+        return true;
     }
 
     public void TryCreateDatabase(){ TryCreateDatabase(getWritableDatabase()); }

@@ -71,6 +71,9 @@ public class ActivityManageProfiles extends AppCompatActivity {
 
         recyclerView_profiles = (RecyclerView) findViewById(R.id.recyclerView_dialogmpr_profiles);
 
+        //Calculate the default period
+        CalculatePeriod();
+
         //Period type multiplier min value
         editText_period.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -181,6 +184,8 @@ public class ActivityManageProfiles extends AppCompatActivity {
             public void onClick(View v) {
                 //ProfileManager.Print("New Button Click");
                 ToggleMenus(false);
+                //Visibility
+                button_enddate.setVisibility(View.GONE);
             }
         });
 
@@ -243,11 +248,12 @@ public class ActivityManageProfiles extends AppCompatActivity {
                         if (!editText_profilename.getText().toString().equals("")){
                             editingprofile.SetName(editText_profilename.getText().toString());
 
-                            editingprofile.SetStartTimeDontSave(start_date);
-                            editingprofile.SetEndTimeDontSave(end_date);
-                            editingprofile.SetPeriodDontSave(period);
+                            editingprofile.SetPeriod(period);
+                            editingprofile.SetStartTime(start_date);
+                            if (end_date!= null) { editingprofile.SetEndTime(end_date); }
 
                             ProfileManager.UpdateProfile(editingprofile);
+                            profile_adapter.notifyDataSetChanged();
 
                             finish();
                         }
@@ -256,14 +262,17 @@ public class ActivityManageProfiles extends AppCompatActivity {
                 else{ //Add a new profile
                     if (!editText_profilename.getText().toString().equals("")){
                         Profile pr = new Profile(editText_profilename.getText().toString());
-                        pr.SetStartTimeDontSave(start_date);
-                        pr.SetEndTimeDontSave(end_date);
-                        pr.SetPeriodDontSave(period);
+
+                        pr.SetPeriod(period);
+                        pr.SetStartTime(start_date);
+                        if (end_date!= null) { pr.SetEndTime(end_date); }
 
                         ProfileManager.AddProfile(pr);
 
-                        //Apparently updating the adapter from here doesn't work, so now I have to create a new one...
+                        ProfileManager.SelectProfile(pr);
+
                         adapter.notifyDataSetChanged();
+                        profile_adapter.notifyDataSetChanged();
 
                         finish();
                     }
@@ -298,6 +307,8 @@ public class ActivityManageProfiles extends AppCompatActivity {
             UpdateDates();
             UpdatePeriod();
         }
+        //Visibility
+        button_enddate.setVisibility(View.VISIBLE);
     }
 
     //Check if the user is allowed to save
@@ -375,7 +386,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
         {
-            //Set date
+            //Set startdate
             start_date = new LocalDate(year, monthOfYear + 1, dayOfMonth);
             UpdateDates();
             CheckCanSave();
@@ -385,7 +396,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
         {
-            //Set date
+            //Set end date
             end_date = new LocalDate(year, monthOfYear + 1, dayOfMonth);
             UpdateDates();
             CheckCanSave();

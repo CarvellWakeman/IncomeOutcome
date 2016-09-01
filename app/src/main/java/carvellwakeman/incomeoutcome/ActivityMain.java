@@ -6,11 +6,15 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
+import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 
-public class ActivityMain extends AppCompatActivity implements GestureDetector.OnGestureListener
+public class ActivityMain extends AppCompatActivity
 {
     Toolbar toolbar;
 
@@ -21,8 +25,12 @@ public class ActivityMain extends AppCompatActivity implements GestureDetector.O
     CardTransaction expensesCard;
     CardTransaction incomeCard;
 
-    private GestureDetector gestureDetector;
-    View.OnTouchListener gestureListener;
+    LocalDate storedStartTime;
+    LocalDate storedEndTime;
+    Button button_nextPeriod;
+    Button button_prevPeriod;
+    CheckBox checkbox_showall;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,50 +40,75 @@ public class ActivityMain extends AppCompatActivity implements GestureDetector.O
         //Initialize the profile manager
         ProfileManager.initialize(this);
 
+
         //Set our activity's data
         _profile = ProfileManager.GetCurrentProfile();
         if (_profile != null) {
             _profileID = _profile.GetID();
-
-
-            //Find Views
-            toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-            //Swiping gesture setup
-            gestureDetector = new GestureDetector(this, this);
-            gestureListener = new View.OnTouchListener() {
-                public boolean onTouch(View v, MotionEvent event) {
-                    return gestureDetector.onTouchEvent(event);
-                }
-            };
-
-            toolbar.setOnTouchListener(gestureListener);
-
-
-            //Configure toolbar
-            //toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-            //toolbar.setNavigationOnClickListener(new View.OnClickListener() { @Override public void onClick(View v) { onBackPressed(); } });
-            toolbar.inflateMenu(R.menu.toolbar_menu_main);
-            setSupportActionBar(toolbar);
-            ToolbarTitleUpdate();
-
-
-            //Card inflater
-            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            ViewGroup insertPoint = (ViewGroup) findViewById(R.id.overview_layout);
-
-
-            //Cards
-            versusCard = new CardVersus(_profileID, this, inflater, R.layout.card_versus);
-
-            expensesCard = new CardTransaction(_profileID, 0, 1, ProfileManager.getString(R.string.header_expenses_summary), this, inflater, R.layout.card_transaction);
-            incomeCard = new CardTransaction(_profileID, 1, 1, ProfileManager.getString(R.string.header_income_summary), this, inflater, R.layout.card_transaction);
-
-
-            versusCard.insert(insertPoint, 0);
-            expensesCard.insert(insertPoint, 1);
-            incomeCard.insert(insertPoint, 2);
         }
+        //Find Views
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        //Period management
+        button_nextPeriod = (Button) findViewById(R.id.button_nextPeriod);
+        button_prevPeriod = (Button) findViewById(R.id.button_prevPeriod);
+        checkbox_showall = (CheckBox) findViewById(R.id.checkbox_showall);
+
+        button_nextPeriod.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                if (_profile != null){
+                    _profile.TimePeriodPlus(1);
+                    RefreshOverview();
+                }
+            }
+        });
+        button_prevPeriod.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                if (_profile != null){
+                    _profile.TimePeriodMinus(1);
+                    RefreshOverview();
+                }
+            }
+        });
+        checkbox_showall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (_profile != null){
+                    if (b){
+                        storedStartTime = _profile.GetStartTime();
+                        storedEndTime = _profile.GetEndTime();
+                    }
+                    _profile.SetStartTime( (b ? null : storedStartTime) );
+                    _profile.SetEndTime( (b ? null : storedEndTime) );
+                    RefreshOverview();
+                }
+            }
+        });
+
+
+        //Configure toolbar
+        //toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        //toolbar.setNavigationOnClickListener(new View.OnClickListener() { @Override public void onClick(View v) { onBackPressed(); } });
+        toolbar.inflateMenu(R.menu.toolbar_menu_main);
+        setSupportActionBar(toolbar);
+        ToolbarTitleUpdate();
+
+
+        //Card inflater
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ViewGroup insertPoint = (ViewGroup) findViewById(R.id.overview_layout);
+
+
+        //Cards
+        versusCard = new CardVersus(_profileID, this, inflater, R.layout.card_versus);
+
+        expensesCard = new CardTransaction(_profileID, 0, 2, ProfileManager.getString(R.string.header_expenses_summary), this, inflater, R.layout.card_transaction);
+        incomeCard = new CardTransaction(_profileID, 1, 1, ProfileManager.getString(R.string.header_income_summary), this, inflater, R.layout.card_transaction);
+
+
+        versusCard.insert(insertPoint, 0);
+        expensesCard.insert(insertPoint, 1);
+        incomeCard.insert(insertPoint, 2);
+
     }
 
 
@@ -121,48 +154,6 @@ public class ActivityMain extends AppCompatActivity implements GestureDetector.O
         super.onBackPressed();
     }
 
-
-    //Gestures
-    @Override
-    public boolean onTouchEvent(MotionEvent me) { return gestureDetector.onTouchEvent(me); }
-    @Override
-    public boolean onDown(MotionEvent e) {return true;}
-    @Override
-    public void onLongPress(MotionEvent e) {}
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {return true;}
-    @Override
-    public void onShowPress(MotionEvent e) {}
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) { return true; }
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
-    {
-        final int SWIPE_MIN_DISTANCE = 120;
-        final int SWIPE_MAX_OFF_PATH = 250;
-        final int SWIPE_THRESHOLD_VELOCITY = 200;
-
-        if (e1 != null && e2 != null) {
-            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) { return false; }
-
-            if (_profile != null) {
-                //Right to Left
-                if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    _profile.TimePeriodPlus(1);
-                }
-                else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    _profile.TimePeriodMinus(1);
-                }
-
-                this.recreate();
-                //_profile.CalculateTimeFrame(activityType);
-                //_profile.CalculateTotalsInTimeFrame(activityType, keyType);
-            }
-        }
-        return true;
-    }
-
-
     //Get return results from activities
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data != null) {}
@@ -192,11 +183,16 @@ public class ActivityMain extends AppCompatActivity implements GestureDetector.O
 
     //Toolbar title update
     public void ToolbarTitleUpdate(){
-        //Title
-        toolbar.setTitle(_profile.GetName() + " " + ProfileManager.getString(R.string.title_overview));
-
-        //Subtitle
-        toolbar.setSubtitle(_profile.GetDateFormatted());
+        if (getSupportActionBar() != null) {
+            if (_profile != null) {
+                getSupportActionBar().setTitle(_profile.GetName() + " " + ProfileManager.getString(R.string.title_overview));
+                getSupportActionBar().setSubtitle(_profile.GetDateFormatted());
+            }
+            else {
+                getSupportActionBar().setTitle(R.string.title_overview);
+                getSupportActionBar().setSubtitle("");
+            }
+        }
     }
 
 }
