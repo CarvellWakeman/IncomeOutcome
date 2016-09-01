@@ -26,6 +26,7 @@
     <string name="title_addnewperson">New Person</string>
     <string name="title_addnewcategory">New Category</string>
     <string name="title_selectprofile">Select Profile</string>
+    <string name="title_selectcurrentprofile">Select Current Profile</string>
     <string name="title_delete">Delete Profile</string>
     <string name="title_edittransaction">Edit Transaction</string>
     <string name="title_edittransactionseries">Edit Transaction Series</string>
@@ -68,6 +69,7 @@
     <string name="tt_showlegend">Show Legend</string>
     <string name="tt_displaydata">Display Data </string>
     <string name="tt_nodata">No Data</string>
+    <string name="tt_nodata_viewdetails">No Data, click the button below to add a transaction</string>
 
     <!-- Information -->
     <string name="info_title_value">%1$s %2$s</string>
@@ -98,6 +100,8 @@
     <string name="balance_uneven_plural">owes</string>
     <string name="format_dbversion">(ver. %1$s)</string>
 
+    <!-- DEBUG -->
+    <string name="debug_database">View Database</string>
 
     <!-- Spinner selection -->
     <string name="select_category">Select a Category&#8230;</string>
@@ -124,6 +128,8 @@
     <string name="action_import">IMPORT</string>
     <string name="action_export">EXPORT</string>
     <string name="action_transfer">TRANSFER</string>
+    <string name="action_viewdetails">VIEW DETAILS</string>
+    <string name="action_setpaidback">Set Paid Back Date</string>
 
 
     <!-- Confirmation -->

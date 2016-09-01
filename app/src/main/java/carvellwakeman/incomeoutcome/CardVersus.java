@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
@@ -30,10 +31,17 @@ public class CardVersus extends Card
 {
     int _profileID;
 
+    int monthsBackMax = 20;
+    int monthsBackMin = 2;
+    int monthsBack = 6;
+
     TextView textView_title;
     TextView textView_nodata;
 
     CardView cardView;
+
+    ImageView button_monthsBackUp;
+    ImageView button_monthsBackDown;
 
     HorizontalBarChart chart;
     BarDataSet dataSet;
@@ -50,6 +58,27 @@ public class CardVersus extends Card
 
         //Parent layout
         cardView = (CardView) v.findViewById(R.id.cardVersus);
+
+        //Control buttons
+        button_monthsBackUp = (ImageView) v.findViewById(R.id.button_cardVersus_up);
+        button_monthsBackDown = (ImageView) v.findViewById(R.id.button_cardVersus_down);
+
+        button_monthsBackUp.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                int t = monthsBack;
+
+                monthsBack++;
+                monthsBack = Math.min(Math.max(monthsBack, monthsBackMin), monthsBackMax);
+                if (monthsBack != t){ SetData(); }
+            }});
+        button_monthsBackDown.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                int t = monthsBack;
+
+                monthsBack--;
+                monthsBack = Math.min(Math.max(monthsBack, monthsBackMin), monthsBackMax);
+                if (monthsBack != t){ SetData(); }
+            }});
 
         //Pie chart
         chart = (HorizontalBarChart) v.findViewById(R.id.barChart_cardVersus);
@@ -83,44 +112,46 @@ public class CardVersus extends Card
         left.setZeroLineWidth(1f);
         chart.getAxisRight().setEnabled(false);
 
+        chart.getLegend().setEnabled(false);
+
         SetData();
     }
 
+    public void SetProfileID(int profileID){ _profileID = profileID; }
 
     public void SetData(){
         Profile _profile = ProfileManager.GetProfileByID(_profileID);
         if (_profile != null){
 
+            //Clear chart info
+            if (dataSet != null) { dataSet.clear(); }
+
             //Get expense data
             LocalDate origStart = _profile.GetStartTime();
             LocalDate origEnd = _profile.GetEndTime();
-            int back = 4;
-            _profile.TimePeriodMinus(back-1);
+
+            _profile.TimePeriodMinus(monthsBack-1);
+
             final ArrayList<Transaction> pastTransactionPeriods = new ArrayList<>();
-            for (int i = 0; i < back; i++){
+            for (int i = 0; i < monthsBack; i++){
                 _profile.CalculateTimeFrame(null);
                 pastTransactionPeriods.add(_profile.CalculatePeriodTotalBetweenDates());
                 _profile.TimePeriodPlus(1);
             }
+
             //Reset time periods back to original dates
             _profile.SetStartTime(origStart);
             _profile.SetEndTime(origEnd);
 
 
             if (pastTransactionPeriods.size() > 0) {
-
                 //Convert transactions data to a list of entries
                 List<BarEntry> entries = new ArrayList<>();
                 List<Integer> colors = new ArrayList<>();
                 for (int i = 0; i < pastTransactionPeriods.size(); i++){
                     Transaction tr = pastTransactionPeriods.get(i);
 
-                    String date = "";
                     Double val = tr.GetValue();
-
-                    TimePeriod tp = tr.GetTimePeriod();
-                    if (tp != null && tp.GetDate() != null){ date = tp.GetDate().toString(ProfileManager.simpleDateFormatNoDay); }
-
                     entries.add(new BarEntry(i, val.floatValue()));
 
                     if (val >= 0) { //TODO: Better colors
@@ -131,23 +162,27 @@ public class CardVersus extends Card
                 }
 
                 XAxis xAxis = chart.getXAxis();
+                xAxis.setLabelCount(monthsBack);
                 xAxis.setValueFormatter(new AxisValueFormatter() {
                     @Override
                     public String getFormattedValue(float value, AxisBase axis) {
-                        String date = "";
-                        Transaction tr = pastTransactionPeriods.get(Math.round(value));
+                        int index = Math.round(value);
+                        if (index < monthsBack) {
+                            Transaction tr = pastTransactionPeriods.get(index);
 
-                        if (tr != null){
-                            TimePeriod tp = tr.GetTimePeriod();
-                            if (tp != null){
-                                if (tp.GetDate() != null){
-                                    SimpleDateFormat formatter = new SimpleDateFormat(ProfileManager.simpleDateFormatShortNoDay, ProfileManager.locale);
-                                    return formatter.format(tp.GetDate().toDate());
+                            if (tr != null) {
+                                TimePeriod tp = tr.GetTimePeriod();
+                                if (tp != null) {
+                                    if (tp.GetDate() != null) {
+                                        SimpleDateFormat formatter = new SimpleDateFormat(ProfileManager.simpleDateFormatShortNoDay, ProfileManager.locale);
+                                        return formatter.format(tp.GetDate().toDate());
+                                        //return String.valueOf(value);
+                                    }
                                 }
                             }
                         }
 
-                        return "No Data";
+                        return "No Date";
                     }
                     @Override public int getDecimalDigits() {
                         return 0;
@@ -155,11 +190,13 @@ public class CardVersus extends Card
                 });
 
 
+
                 //Add data to chart
                 dataSet = new BarDataSet(entries, "");
                 dataSet.setColors(colors);
 
                 chart.getAxisLeft().setAxisMaxValue(dataSet.getYMax() * 1.2f);
+                chart.getAxisLeft().setAxisMinValue(dataSet.getYMin() * 1.2f);
 
                 dataSet.setValueTextSize(12);
                 dataSet.setValueFormatter(new CurrencyValueFormatter(2));

@@ -19,16 +19,20 @@
             android:background="@drawable/toolbar_dropshadow" />
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/FAB_dialogmpr_new"
+    <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/fab_margin"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:src="@drawable/ic_plus_white_24dp"
-        android:scaleType="center" />
+        android:text="@string/title_selectcurrentprofile"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_marginTop="8dp" />
+
+    <Spinner
+        android:id="@+id/spinner_profiles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView2"
+        android:layout_marginBottom="20dp" />
 
 
     <LinearLayout
@@ -36,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/linearLayout_dialogmpr_editprofile"
-        android:layout_below="@+id/linearLayout2"
+        android:layout_below="@+id/spinner_profiles"
         android:visibility="visible">
 
         <android.support.v7.widget.RecyclerView
@@ -142,5 +146,15 @@
 
 
     <!--Add new -->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/FAB_dialogmpr_new"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:src="@drawable/ic_plus_white_24dp"
+        android:scaleType="center" />
 
 </RelativeLayout>

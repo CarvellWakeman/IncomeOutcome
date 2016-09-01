@@ -4,9 +4,11 @@ package carvellwakeman.incomeoutcome;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,12 +110,25 @@ public class ActivitySettings extends AppCompatActivity
                     }}
             ));
 
+        CardSettings debug = new CardSettings(this, inflater, R.layout.row_layout_setting_card, "Debug");
+            //View Database
+                debug.AddSetting(new Setting(inflater, R.drawable.ic_database_white_24dp, "View Database", "View and edit current database details", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent dbmanager = new Intent(ActivitySettings.this, AndroidDatabaseManager.class);
+                        startActivity(dbmanager);
+                    }
+                }));
+        CardView c = (CardView) debug.getView().findViewById(R.id.row_layout_settingscard);
+        if (c != null) { c.setBackgroundColor(Color.YELLOW); }
+
 
 
 
         //Insert categories
         profilesPeopleCategories.insert(insertPoint, 0);
         database.insert(insertPoint, 1);
+        debug.insert(insertPoint, 2);
     }
 
 

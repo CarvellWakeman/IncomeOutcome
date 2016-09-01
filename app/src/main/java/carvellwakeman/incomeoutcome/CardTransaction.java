@@ -2,6 +2,7 @@ package carvellwakeman.incomeoutcome;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
@@ -27,6 +28,7 @@ import java.util.Map;
 
 public class CardTransaction extends Card
 {
+    Context _context;
     int _profileID;
 
     int keyType;
@@ -43,6 +45,8 @@ public class CardTransaction extends Card
     Spinner spinner_keyType;
     Switch switch_showMore;
 
+    Button button_viewDetails;
+
     PieChart chart;
     PieDataSet dataSet;
 
@@ -51,6 +55,7 @@ public class CardTransaction extends Card
 
     public CardTransaction(int profileID, int defaultActivityType, int defaultKeyType, String title, Context context, LayoutInflater inflater, int layout){
         super(context, inflater, layout);
+        this._context = context;
         _profileID = profileID;
         this.defaultActivityType = defaultActivityType;
         this.activityType = defaultActivityType;
@@ -100,6 +105,29 @@ public class CardTransaction extends Card
         }
         else { spinner_keyType.setVisibility(View.GONE); }
 
+        //View details button
+        button_viewDetails = (Button) v.findViewById(R.id.button_cardTransaction_viewdetails);
+
+        button_viewDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Profile _profile = ProfileManager.GetProfileByID(_profileID);
+                if (_profile != null) {
+                    _profile.CalculateTimeFrame(activityType);
+                    _profile.CalculateTotalsInTimeFrame(activityType, activityType);
+
+                    //Start income (details) activity and send it the profile we clicked on
+                    Intent intent = new Intent(_context, ActivityDetailsTransaction.class);
+                    intent.putExtra("activitytype", activityType);
+                    intent.putExtra("keytype", activityType);
+                    intent.putExtra("profile",_profileID);
+                    ((ActivityMain)_context).startActivityForResult(intent, 0);
+                }
+                else {
+                    ProfileManager.Print("ERROR: Profile not found, could not start transaction details activity");
+                }
+            }
+        });
 
         //Parent layout
         cardView = (CardView) v.findViewById(R.id.cardTransaction);
@@ -139,6 +167,8 @@ public class CardTransaction extends Card
         //Contract the card view
         SetExpanded(false);
     }
+
+    public void SetProfileID(int profileID){ _profileID = profileID; }
 
     public void SetData(){
         Profile _profile = ProfileManager.GetProfileByID(_profileID);

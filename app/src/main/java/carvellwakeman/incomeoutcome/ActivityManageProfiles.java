@@ -26,6 +26,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
     Period period;
 
     AdapterManageProfiles adapter;
+    AdapterProfilesSpinner profile_adapter;
 
     Toolbar toolbar;
     MenuItem button_save;
@@ -38,6 +39,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
     EditText editText_profilename;
     EditText editText_period;
 
+    Spinner spinner_profiles;
     Spinner spinner_period;
 
     LinearLayout layout_edit;
@@ -95,6 +97,30 @@ public class ActivityManageProfiles extends AppCompatActivity {
             }
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
+
+
+        //Current profile selection
+        spinner_profiles = (Spinner) findViewById(R.id.spinner_profiles);
+        profile_adapter = new AdapterProfilesSpinner(this, R.layout.spinner_dropdown_title, ProfileManager.GetProfileNames());
+        profile_adapter.setDropDownViewResource(R.layout.spinner_dropdown_list_primary);
+        spinner_profiles.setAdapter(profile_adapter);
+        spinner_profiles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Object si = spinner_profiles.getSelectedItem();
+                if (si != null) {
+                    if (ProfileManager.SelectProfile(si.toString())){
+                        //profile_adapter.notifyDataSetChanged();
+                    }
+                    else{
+                        ProfileManager.Print("Selected Profile could not be found.");
+                    }
+                }
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
+        //Select current profile
+        spinner_profiles.setSelection(ProfileManager.GetProfileIndex(ProfileManager.GetCurrentProfile()));
 
 
         //Title input

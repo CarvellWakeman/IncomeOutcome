@@ -1,49 +1,28 @@
 package carvellwakeman.incomeoutcome;
 
-
-import android.app.DatePickerDialog;
-//import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-//import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
-import android.view.animation.*;
-import android.widget.*;
-import org.joda.time.LocalDate;
+import android.widget.Toast;
 
-//import org.joda.time.LocalDate;
+import java.util.ArrayList;
 
-
-
-public class ActivityMain extends AppCompatActivity
+public class ActivityMain extends AppCompatActivity implements GestureDetector.OnGestureListener
 {
-
-
     Toolbar toolbar;
 
-    private AdapterProfilesSpinner profile_adapter;
+    int _profileID;
+    Profile _profile;
 
-    boolean FABMenuOpen = false;
-    FloatingActionButton addNew;
-    FloatingActionButton fab_newExpense;
-    FloatingActionButton fab_newIncome;
-    FloatingActionButton fab_newPerson;
-    TextView textView_newExpense;
-    TextView textView_newIncome;
-    TextView textView_newPerson;
+    CardVersus versusCard;
+    CardTransaction expensesCard;
+    CardTransaction incomeCard;
 
-    Spinner spinner_profiles;
-
-    Button button_setStartDate;
-    Button button_setEndDate;
-
-    TextView textView_startDate;
-    TextView textView_endDate;
+    private GestureDetector gestureDetector;
+    View.OnTouchListener gestureListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,214 +32,52 @@ public class ActivityMain extends AppCompatActivity
         //Initialize the profile manager
         ProfileManager.initialize(this);
 
-        //Find views
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //income = (LinearLayout) findViewById(R.id.main_income);
-        //recyclerView = (RecyclerView) findViewById(R.id.recyclerView_Tabs);
-        addNew = (FloatingActionButton) findViewById(R.id.FAB_main_new);
-        fab_newExpense = (FloatingActionButton) findViewById(R.id.FAB_main_newExpense);
-        fab_newIncome = (FloatingActionButton) findViewById(R.id.FAB_main_newIncome);
-        fab_newPerson = (FloatingActionButton) findViewById(R.id.FAB_main_manageProfile);
-
-        textView_newExpense = (TextView) findViewById(R.id.textView_newExpense);
-        textView_newIncome = (TextView) findViewById(R.id.textView_newIncome);
-        textView_newPerson = (TextView) findViewById(R.id.textView_manageProfile);
-
-        spinner_profiles = (Spinner) findViewById(R.id.spinner_profiles);
-
-        button_setStartDate = (Button) findViewById(R.id.button_timeframe_startDate);
-        button_setEndDate = (Button) findViewById(R.id.button_timeframe_endDate);
-
-        textView_startDate = (TextView) findViewById(R.id.textView_startDate);
-        textView_endDate = (TextView) findViewById(R.id.textView_endDate);
-
-        //Toolbar setup (action menu)
-        toolbar.inflateMenu(R.menu.toolbar_menu_main);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
-        //setActionBar(toolbar);
+        //Set our activity's data
+        _profile = ProfileManager.GetCurrentProfile();
+        if (_profile != null) {
+            _profileID = _profile.GetID();
 
 
-        //Floating action button setup
-        //addNew.setShadowRadius(4);
-        //addNew.setHideAnimation(ActionButton.Animations.JUMP_TO_DOWN);
-        //addNew.setShowAnimation(ActionButton.Animations.JUMP_FROM_DOWN);
-        addNew.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!FABMenuOpen) {
-                    OpenFABMenu();
-                } else {
-                    CloseFABMenu();
+            //Find Views
+            toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+            //Swiping gesture setup
+            gestureDetector = new GestureDetector(this, this);
+            gestureListener = new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    return gestureDetector.onTouchEvent(event);
                 }
-            }
-        });
+            };
 
-        fab_newExpense.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
-        fab_newExpense.setRippleColor(Color.GRAY);
-        fab_newIncome.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
-        fab_newIncome.setRippleColor(Color.GRAY);
-        fab_newPerson.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
-        fab_newPerson.setRippleColor(Color.GRAY);
+            toolbar.setOnTouchListener(gestureListener);
 
 
-        //Profiles Spinner Setup
-        profile_adapter = new AdapterProfilesSpinner(this, R.layout.spinner_dropdown_title_white, ProfileManager.GetProfileNames());
-        //profile_adapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_title_white, ProfileManager.GetProfileNames());
-        profile_adapter.setDropDownViewResource(R.layout.spinner_dropdown_list_primary);
-        spinner_profiles.setAdapter(profile_adapter);
-        //OnClick Listener
-        spinner_profiles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Object si = spinner_profiles.getSelectedItem();
-                if (si != null) {
-                    if (ProfileManager.SelectProfile(si.toString())){
-                        UpdateStartEndDate();
-                        //profile_adapter.notifyDataSetChanged();
-                    }
-                    else{
-                        Toast.makeText(ActivityMain.this, "Selected Profile could not be found.", Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        //Select current profile
-        spinner_profiles.setSelection(ProfileManager.GetProfileIndex(ProfileManager.GetCurrentProfile()));
+            //Configure toolbar
+            //toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+            //toolbar.setNavigationOnClickListener(new View.OnClickListener() { @Override public void onClick(View v) { onBackPressed(); } });
+            toolbar.inflateMenu(R.menu.toolbar_menu_main);
+            setSupportActionBar(toolbar);
+            ToolbarTitleUpdate();
 
 
-        final Profile pr = ProfileManager.GetCurrentProfile();
-
-        //UpdateStartEndDate();
-
-        button_setStartDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Open date picker dialog
-                LocalDate c = null;
-                if (pr != null) { c = pr.GetStartTime(); }
-                if (c == null) { c = new LocalDate(); }
-
-                DatePickerDialog d = new DatePickerDialog(ActivityMain.this, datePicker, c.getYear(), c.getMonthOfYear() - 1, c.getDayOfMonth());
-                d.show();
-            }
-        });
-
-        button_setEndDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Open date picker dialog
-                LocalDate c = null;
-                if (pr != null) { c = pr.GetEndTime(); }
-                if (c == null) { c = new LocalDate(); }
-
-                DatePickerDialog d = new DatePickerDialog(ActivityMain.this, datePicker2, c.getYear(), c.getMonthOfYear() - 1, c.getDayOfMonth());
-                d.show();
-            }
-        });
+            //Card inflater
+            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            ViewGroup insertPoint = (ViewGroup) findViewById(R.id.overview_layout);
 
 
+            //Cards
+            versusCard = new CardVersus(_profileID, this, inflater, R.layout.card_versus);
 
-        Button button_db = (Button)findViewById(R.id.button_db);
-        if (button_db != null) {
-            button_db.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Intent dbmanager = new Intent(ActivityMain.this, AndroidDatabaseManager.class);
-                    startActivity(dbmanager);
-                }
-            });
+            expensesCard = new CardTransaction(_profileID, 0, 1, ProfileManager.getString(R.string.header_expenses_summary), this, inflater, R.layout.card_transaction);
+            incomeCard = new CardTransaction(_profileID, 1, 1, ProfileManager.getString(R.string.header_income_summary), this, inflater, R.layout.card_transaction);
+
+
+            versusCard.insert(insertPoint, 0);
+            expensesCard.insert(insertPoint, 1);
+            incomeCard.insert(insertPoint, 2);
         }
-
-        //Hide floating action button when recyclerView is scrolled
-        //recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-        //    @Override
-        //    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        //        super.onScrolled(recyclerView, dx, dy);
-        //        if (dy > 10 && addNew.isShown()) { addNew.hide(); }
-        //        else if (dy < 0 && addNew.isHidden()){addNew.show(); }
-        //    }
-        //});
-
-
-        //Sort
-        //Manager.Sort(Manager.SORT_METHODS.DATE_UP);
-
-        //Permissions
-        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
     }
 
-
-    //Temp
-    //public void deleteDB(View v){
-    //    ProfileManager.DeleteDatabase();
-    //    ProfileManager.ClearAllObjects();
-    //    UpdateProfileList(true);
-    //}
-
-    //Context menu
-    public void showContextMenu(final View itemView)
-    {
-        //String items[] = {"Edit", "Delete"};
-
-/*
-        new AlertDialog.Builder(MainActivity.this)
-                .setItems(items, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        switch (item)
-                        {
-                            case 0: //Edit
-                                Intent intent = new Intent(MainActivity.this, NewTabActivity.class);
-                                intent.putExtra("tab", TabManager.GetTab(recyclerView.getChildAdapterPosition(itemView)).toString());
-                                startActivityForResult(intent, 1);
-                                break;
-                            case 1: //Delete
-                                //Discard dialog
-                                final Dialog discardDialog = new Dialog(MainActivity.this);
-                                discardDialog.setContentView(R.layout.dialog_discard);
-                                discardDialog.setTitle("Discard Tab?");
-
-                                //Find components
-                                final Button DiscardButton = (Button) discardDialog.findViewById(R.id.discard_button_discard);
-                                final Button cancelButton = (Button) discardDialog.findViewById(R.id.discard_button_cancel);
-
-                                //DiscardButton action
-                                DiscardButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        //Dimiss dialog
-                                        discardDialog.dismiss();
-
-                                        TabManager.DeleteTabByID(TabManager.GetTab(recyclerView.getChildAdapterPosition(itemView)).toString()); //Delete tab
-                                        adapter.notifyItemRemoved(recyclerView.getChildAdapterPosition(itemView));
-                                        TabManager.Sort(TabManager.SORT_METHODS.DATE_UP);
-                                    }
-                                });
-
-                                //CancelButton action
-                                cancelButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        discardDialog.dismiss();
-                                    }
-                                });
-
-
-                                //Show the discard dialog
-                                discardDialog.show();
-                                break;
-                            default:
-                                dialog.cancel();
-                                break;
-                        }
-                    }
-                }).create().show();
-                */
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -269,367 +86,117 @@ public class ActivityMain extends AppCompatActivity
         return true;
     }
 
+
     //Toolbar button handling
+    Intent intent;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        //super.onOptionsItemSelected(item);
-        Boolean mIsLargeLayout = true; //TODO Handle this in values
-
         switch (item.getItemId())
         {
+
+            case android.R.id.home:
+                intent = new Intent();
+                setResult(RESULT_OK, intent);
+                finish();
+                return true;
             case R.id.toolbar_action_settings: //Start settings activity
-                Intent intent = new Intent(ActivityMain.this, ActivitySettings.class);
-                //intent.putExtra("profile", pr.GetID());
-                startActivityForResult(intent, 3);
-                return true;
-            /*
-            case R.id.toolbar_action_manageprofiles:
-                ProfileManager.OpenDialogFragment(this, new DialogFragmentManageProfiles(), mIsLargeLayout);
+                intent = new Intent(ActivityMain.this, ActivitySettings.class);
+                startActivityForResult(intent, 0);
                 return true;
 
-            case R.id.toolbar_action_managepeople:
-                ProfileManager.OpenDialogFragment(this, new DialogFragmentManagePeople(), mIsLargeLayout);
-                return true;
-
-            case R.id.toolbar_action_managecategories:
-                ProfileManager.OpenDialogFragment(this, new DialogFragmentManageCategories(), mIsLargeLayout);
-
-                return true;
-            case R.id.toolbar_action_exportdatabase:
-                ProfileManager.OpenDialogFragment(this, new DialogFragmentDatabaseExport(), mIsLargeLayout);
-                return true;
-            case R.id.toolbar_action_importdatabase:
-                ProfileManager.OpenDialogFragment(this, new DialogFragmentDatabaseImport(), mIsLargeLayout);
-                return true;
-            */
             default:
                 return false;
         }
     }
 
 
-    //Return results from child activities
+    //Send back a RESULT_OK to MainActivity when back is pressed
+    @Override
+    public void onBackPressed()
+    {
+        //Send back a RESULT_OK to MainActivity
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+
+        super.onBackPressed();
+    }
+
+
+    //Gestures
+    @Override
+    public boolean onTouchEvent(MotionEvent me) { return gestureDetector.onTouchEvent(me); }
+    @Override
+    public boolean onDown(MotionEvent e) {return true;}
+    @Override
+    public void onLongPress(MotionEvent e) {}
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {return true;}
+    @Override
+    public void onShowPress(MotionEvent e) {}
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) { return true; }
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
+    {
+        final int SWIPE_MIN_DISTANCE = 120;
+        final int SWIPE_MAX_OFF_PATH = 250;
+        final int SWIPE_THRESHOLD_VELOCITY = 200;
+
+        if (e1 != null && e2 != null) {
+            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) { return false; }
+
+            if (_profile != null) {
+                //Right to Left
+                if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    _profile.TimePeriodPlus(1);
+                }
+                else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    _profile.TimePeriodMinus(1);
+                }
+
+                this.recreate();
+                //_profile.CalculateTimeFrame(activityType);
+                //_profile.CalculateTotalsInTimeFrame(activityType, keyType);
+            }
+        }
+        return true;
+    }
+
+
+    //Get return results from activities
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Profile pr = null;
-        if (data != null) {
-            pr = ProfileManager.GetProfileByID(data.getIntExtra("profile", -1));
-        }
+        if (data != null) {}
 
-        switch (requestCode) {
-            /*
-            case 0: //New expense
-                if (resultCode == RESULT_OK) {
-                    if (pr != null && data != null) {
-                        Expense newExp = (Expense) data.getSerializableExtra("newExpense");
-
-                        if (newExp != null) {
-                            pr.AddExpense(newExp);
-                        }
-                    }
-                }
-                break;
-            case 1: //New Income
-                if (resultCode == RESULT_OK) {
-                    if (pr != null && data != null) {
-                        Income newInc = (Income) data.getSerializableExtra("newIncome");
-
-                        if (newInc != null) {
-                            pr.AddIncome(newInc);
-                        }
-                    }
-                }
-                break;
-                */
-            case 3: //Refresh info
-                UpdateStartEndDate();
-                break;
-        }
+        //Refresh graphs if we return to this page. Not the most efficient, but simple
+        RefreshOverview();
     }
 
 
-    //Date picker dialog listener [DEBUG] Temporary for testing
-    final DatePickerDialog.OnDateSetListener datePicker = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
-        {
-            Profile pr = ProfileManager.GetCurrentProfile();
-            if (pr != null) {
-                //Set date
-                pr.SetStartTime(new LocalDate(year, monthOfYear + 1, dayOfMonth));
+    //Refresh overview
+    public void RefreshOverview(){
+        _profile = ProfileManager.GetCurrentProfile();
+        if (_profile != null) {
+            _profileID = _profile.GetID();
 
-                UpdateStartEndDate();
+            ToolbarTitleUpdate();
 
-                //Update profile
-                //ProfileManager.UpdateProfile(pr);
-            }
-        }
-    };
-    final DatePickerDialog.OnDateSetListener datePicker2 = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
-        {
-            Profile pr = ProfileManager.GetCurrentProfile();
-            if (pr != null) {
-                //Set date
-                pr.SetEndTime(new LocalDate(year, monthOfYear + 1, dayOfMonth));
+            versusCard.SetProfileID(_profileID);
+            expensesCard.SetProfileID(_profileID);
+            incomeCard.SetProfileID(_profileID);
 
-                UpdateStartEndDate();
-
-                //Update profile
-                //ProfileManager.UpdateProfile(pr);
-            }
-        }
-    };
-
-    public void UpdateStartEndDate(){
-        Profile pr = ProfileManager.GetCurrentProfile();
-        if (pr != null) {
-            //Format button text
-            if(textView_startDate != null) {
-                if (pr.GetStartTime() != null) {
-                    textView_startDate.setText(getString(R.string.time_start_format, pr.GetStartTime().toString(ProfileManager.simpleDateFormat)));
-                }
-                else {
-                    textView_startDate.setText(R.string.time_start);
-                }
-            }
-            if(textView_endDate != null) {
-                if (pr.GetEndTime() != null) {
-                    textView_endDate.setText(getString(R.string.time_end_format, pr.GetEndTime().toString(ProfileManager.simpleDateFormat)));
-                }
-                else {
-                    textView_endDate.setText(R.string.time_end);
-                }
-            }
+            versusCard.SetData();
+            expensesCard.SetData();
+            incomeCard.SetData();
         }
     }
 
-    public void UpdateProfileList(boolean selectCurrentProfile){
-        if (spinner_profiles != null) {
-            //Profile selected = ProfileManager.GetProfileByIndex(spinner_profiles.getSelectedItemPosition());
+    //Toolbar title update
+    public void ToolbarTitleUpdate(){
+        //Title
+        toolbar.setTitle(_profile.GetName() + " " + ProfileManager.getString(R.string.title_overview));
 
-            //Profiles Spinner Setup
-            //profile_adapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_title_white, ProfileManager.GetProfileNames());
-            //profile_adapter.setDropDownViewResource(R.layout.spinner_dropdown_list_primary);
-            //spinner_profiles.setAdapter(profile_adapter);
-            profile_adapter.notifyDataSetChanged();
-
-            //Select current profile
-            //if (selectCurrentProfile) { spinner_profiles.setSelection(ProfileManager.GetProfileIndex(ProfileManager.GetCurrentProfile())); }
-        }
+        //Subtitle
+        toolbar.setSubtitle(_profile.GetDateFormatted());
     }
-    public void SetSelection(int index){
-        if (spinner_profiles != null){
-            profile_adapter.notifyDataSetChanged();
-
-            spinner_profiles.setSelection(index);
-        }
-    }
-
-
-
-    public void NextMonth(View v){
-        Profile pr = ProfileManager.GetCurrentProfile();
-        if (pr != null){
-            pr.TimePeriodPlus(1);
-            UpdateStartEndDate();
-        }
-
-    }
-    public void PrevMonth(View v){
-        Profile pr = ProfileManager.GetCurrentProfile();
-        if (pr != null) {
-            pr.TimePeriodMinus(1);
-            UpdateStartEndDate();
-        }
-    }
-    public void ShowAll(View v){
-        Profile pr = ProfileManager.GetCurrentProfile();
-        if (pr != null) {
-            pr.SetStartTime(null);
-            pr.SetEndTime(null);
-            UpdateStartEndDate();
-        }
-    }
-
-    public int dptopx(int dp)
-    {
-        final float scale = ActivityMain.this.getResources().getDisplayMetrics().density;
-        return (int) (dp * scale + 0.5f);
-    }
-
-
-    //FAB Menu
-    public void OpenFABMenu()
-    {
-        //ProfileManager.scheduleNotification(ProfileManager.getNotification("Test Notification"), 1000);
-
-        FABMenuOpen = true;
-        RotateAnimation rot = new RotateAnimation(0, 45, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rot.setDuration(200);
-        rot.setFillAfter(true);
-        addNew.startAnimation(rot);
-
-        Animation FABEntry = AnimationUtils.loadAnimation(ActivityMain.this, R.anim.fab_entry);
-
-        fab_newExpense.startAnimation(FABEntry);
-        fab_newExpense.setVisibility(View.VISIBLE);
-        fab_newIncome.startAnimation(FABEntry);
-        fab_newIncome.setVisibility(View.VISIBLE);
-        fab_newPerson.startAnimation(FABEntry);
-        //fab_newPerson.setVisibility(View.VISIBLE);
-
-        textView_newExpense.setVisibility(View.VISIBLE);
-        textView_newExpense.startAnimation(FABEntry);
-        textView_newIncome.setVisibility(View.VISIBLE);
-        textView_newIncome.startAnimation(FABEntry);
-        //textView_newPerson.setVisibility(View.VISIBLE);
-        //textView_newPerson.startAnimation(FABEntry);
-    }
-    public void CloseFABMenu()
-    {
-        FABMenuOpen = false;
-        RotateAnimation rot = new RotateAnimation(45, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rot.setDuration(200);
-        rot.setFillAfter(true);
-        addNew.startAnimation(rot);
-
-        Animation FABExit = AnimationUtils.loadAnimation(ActivityMain.this, R.anim.fab_exit);
-
-        fab_newExpense.startAnimation(FABExit);
-        fab_newExpense.setVisibility(View.INVISIBLE);
-        fab_newIncome.startAnimation(FABExit);
-        fab_newIncome.setVisibility(View.INVISIBLE);
-        fab_newPerson.startAnimation(FABExit);
-        //fab_newPerson.setVisibility(View.INVISIBLE);
-
-        textView_newExpense.setVisibility(View.INVISIBLE);
-        textView_newExpense.startAnimation(FABExit);
-        textView_newIncome.setVisibility(View.INVISIBLE);
-        textView_newIncome.startAnimation(FABExit);
-        //textView_newPerson.setVisibility(View.INVISIBLE);
-        //textView_newPerson.startAnimation(FABExit);
-    }
-
-
-    //Buttons
-    //public void MainDefaultSettings(View v){
-    //    ProfileManager.LoadDefaultSettings();
-    //}
-    public void MainIncomeClick(View v)
-    {
-        /*
-        total += 1;
-        income.setWeightSum(total);
-
-        ImageButton b = new ImageButton(MainActivity.this);
-        b.setBackgroundResource(R.drawable.white_background);
-        b.setBackgroundColor(Color.BLUE);
-
-
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(dptopx(20), LinearLayout.LayoutParams.WRAP_CONTENT);
-        p.weight = 1;
-        p.setMargins(dptopx(10), dptopx(3), dptopx(10), dptopx(3));
-
-        b.setLayoutParams(p);
-
-
-        income.addView(b);
-        */
-        Profile pr = ProfileManager.GetCurrentProfile();
-        if (pr != null) {
-            int activityType = 1;
-            int keyType = 1;
-            pr.CalculateTimeFrame(activityType);
-            pr.CalculateTotalsInTimeFrame(activityType,keyType);
-
-            //Start income (details) activity and send it the profile we clicked on
-            Intent intent = new Intent(ActivityMain.this, ActivityDetailsTransaction.class);
-            intent.putExtra("activitytype", activityType);
-            intent.putExtra("keytype", keyType);
-            intent.putExtra("profile", pr.GetID());
-            startActivityForResult(intent, 3);
-        }
-        else {
-            ProfileManager.Print("ERROR: Profile not found, could not start IncomeActivity");
-        }
-    }
-    public void MainExpenseClick(View v)
-    {
-        Profile pr = ProfileManager.GetCurrentProfile();
-        if (pr != null) {
-            int activityType = 0;
-            int keyType = 0;
-            pr.CalculateTimeFrame(activityType);
-            pr.CalculateTotalsInTimeFrame(activityType,keyType);
-
-            //Start expense (details) activity and send it the profile we clicked on
-            Intent intent = new Intent(ActivityMain.this, ActivityDetailsTransaction.class);
-            intent.putExtra("activitytype", activityType);
-            intent.putExtra("keytype", keyType);
-            intent.putExtra("profile", pr.GetID());
-            startActivityForResult(intent, 3);
-        }
-        else {
-            ProfileManager.Print("ERROR: Profile not found, could not start ExpenseActivity");
-        }
-    }
-
-
-    public void MainNewExpenseClick(View v){
-        Profile pr = ProfileManager.GetCurrentProfile();
-        if (pr != null) {
-            Intent intent = new Intent(ActivityMain.this, ActivityNewTransaction.class);
-            intent.putExtra("activitytype", 0);
-            intent.putExtra("profile", pr.GetID());
-            startActivityForResult(intent, 0);
-            CloseFABMenu();
-        }
-        else {
-            ProfileManager.Print("ERROR: Profile not found, could not start New Transaction Activity");
-        }
-    }
-
-    public void MainNewIncomeClick(View v){
-        Profile pr = ProfileManager.GetCurrentProfile();
-        if (pr != null) {
-            Intent intent = new Intent(ActivityMain.this, ActivityNewTransaction.class);
-            intent.putExtra("activitytype", 1);
-            intent.putExtra("profile", pr.GetID());
-            startActivityForResult(intent, 1);
-            CloseFABMenu();
-        }
-        else {
-            ProfileManager.Print("ERROR: Profile not found, could not start New Transaction Activity");
-        }
-    }
-
-    public void MainOverviewClick(View v){
-        Profile pr = ProfileManager.GetCurrentProfile();
-        if (pr != null) {
-            //pr.CalculateTimeFrame(1);
-            //pr.CalculateTotalsInTimeFrame(1);
-
-            Intent intent = new Intent(ActivityMain.this, ActivityOverview.class);
-            intent.putExtra("profile", pr.GetID());
-            startActivityForResult(intent, 1);
-        }
-        else {
-            ProfileManager.Print("ERROR: Profile not found, could not start Overview Activity");
-        }
-    }
-    /*
-    public void MainImportBackup(View v){
-        new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deleteall)
-            .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    ProfileManager.ImportDatabaseBackup();
-                }})
-            .setNegativeButton(R.string.confirm_no, null)
-            .create().show();
-    }
-    */
-
 
 }

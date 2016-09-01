@@ -7,9 +7,10 @@
 
     <!-- Settings -->
     <item android:id="@+id/toolbar_action_settings"
-    android:title="@string/title_settings"
+        android:title="@string/title_settings"
         android:icon="@drawable/ic_settings_white_24dp"
-    app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" />
+
 
     <!--
     <item android:id="@+id/toolbar_action_manageprofiles"

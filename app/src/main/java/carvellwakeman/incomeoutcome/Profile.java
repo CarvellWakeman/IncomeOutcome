@@ -353,10 +353,8 @@ public class Profile implements java.io.Serializable
             else if (tr.GetType() == Transaction.TRANSACTION_TYPE.Income){
                 nt.SetValue(nt.GetValue() + tr.GetValue());
             }
-
-            nt.SetTimePeriod(new TimePeriod(GetStartTime()));
         }
-
+        nt.SetTimePeriod(new TimePeriod(GetStartTime()));
 
         return nt;
     }

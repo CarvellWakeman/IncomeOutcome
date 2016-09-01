@@ -12,6 +12,7 @@
     <item name="colorAccentDark" type="color">#d50000</item>
     <!-- You can also set colorControlNormal, colorControlActivated
          colorControlHighlight and colorSwitchThumbNormal. -->
+    <item name="colorControlHighlight" type="color">#fffea50b</item>
     <item name="colorControlActivated" type="color">@color/colorAccent</item>
 
     <item name="red" type="color">#FF0000</item>
@@ -21,6 +22,7 @@
     <item name="white" type="color">#FFFFFF</item>
     <item name="black" type="color">#212121</item>
     <item name="gray" type="color">#757575</item>
+    <item name="ltgray" type="color">#FFCCCCCC</item>
     <item name="turquoise" type="color">#009688</item>
 
     <item name="halfTransparent" type="color">#fdffffff</item>

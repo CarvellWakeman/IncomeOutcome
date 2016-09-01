@@ -1,237 +1,29 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true">
+    android:orientation="vertical">
 
     <include android:id="@+id/toolbar"
-        layout="@layout/toolbar_spinner" />
+        layout="@layout/toolbar" />
 
-    <!-- Floating action button menu -->
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/FAB_main_new"
-        android:layout_width="wrap_content"
-        app:borderWidth="0dp"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/fab_margin"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:src="@drawable/ic_plus_white_24dp"
-        android:scaleType="center" />
+        android:orientation="vertical"
+        android:fillViewport="false"
+        android:theme="@style/Base.Theme.AppCompat.Light">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/FAB_main_newExpense"
-        android:layout_width="@dimen/fab_size_mini"
-        android:layout_height="@dimen/fab_size_mini"
-        android:layout_marginRight="24dp"
-        android:layout_above="@+id/FAB_main_new"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:src="@drawable/ic_database_minus_white_24dp"
-        android:scaleType="center"
-        android:tint="#757575"
-        android:onClick="MainNewExpenseClick"
-        android:visibility="invisible" />
+        <LinearLayout
+            android:id="@+id/overview_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp">
+        </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/FAB_main_newIncome"
-        android:layout_width="@dimen/fab_size_mini"
-        android:layout_height="@dimen/fab_size_mini"
-        android:layout_alignParentBottom="false"
-        android:layout_alignParentRight="false"
-        android:layout_marginRight="24dp"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:src="@drawable/ic_database_plus_white_24dp"
-        android:layout_above="@+id/FAB_main_newExpense"
-        android:layout_alignParentEnd="true"
-        android:scaleType="center"
-        android:tint="#757575"
-        android:adjustViewBounds="false"
-        android:visibility="invisible"
-        android:onClick="MainNewIncomeClick" />
+    </ScrollView>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/FAB_main_manageProfile"
-        android:layout_width="@dimen/fab_size_mini"
-        android:layout_height="@dimen/fab_size_mini"
-        android:layout_alignParentBottom="false"
-        android:layout_alignParentRight="false"
-        android:layout_marginRight="24dp"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:src="@drawable/ic_account_multiple_white_24dp"
-        android:layout_above="@+id/FAB_main_newIncome"
-        android:layout_alignParentEnd="true"
-        android:scaleType="center"
-        android:tint="#757575"
-        android:visibility="gone" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="New Expense"
-        android:id="@+id/textView_newExpense"
-        android:layout_alignBottom="@+id/FAB_main_newExpense"
-        android:layout_toStartOf="@+id/FAB_main_newExpense"
-        android:layout_alignTop="@+id/FAB_main_newExpense"
-        android:gravity="center_vertical"
-        android:layout_marginRight="5dp"
-        android:visibility="invisible" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="New Income"
-        android:id="@+id/textView_newIncome"
-        android:layout_alignBottom="@+id/FAB_main_newIncome"
-        android:layout_toStartOf="@+id/FAB_main_newIncome"
-        android:layout_alignTop="@+id/FAB_main_newIncome"
-        android:gravity="center_vertical"
-        android:layout_marginRight="5dp"
-        android:visibility="invisible" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Manage Profiles"
-        android:id="@+id/textView_manageProfile"
-        android:layout_alignBottom="@+id/FAB_main_manageProfile"
-        android:layout_toStartOf="@+id/FAB_main_manageProfile"
-        android:layout_alignTop="@+id/FAB_main_manageProfile"
-        android:gravity="center_vertical"
-        android:layout_marginRight="5dp"
-        android:visibility="gone" />
-
-
-
-    <!-- Other Views -->
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Income"
-        android:id="@+id/button_income"
-        android:layout_alignParentStart="true"
-        android:onClick="MainIncomeClick"
-        android:layout_below="@+id/toolbar" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Expenses"
-        android:id="@+id/button_expenses"
-        android:layout_alignParentEnd="true"
-        android:onClick="MainExpenseClick"
-        android:layout_below="@+id/toolbar" />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_timeframe_startDate"
-        style="@style/RaisedButtonTheme"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:text="@string/time_start"
-
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:theme="@style/Base.Theme.AppCompat.Light"
-        android:layout_below="@+id/textView_endDate" />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_timeframe_endDate"
-        style="@style/RaisedButtonTheme"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:text="@string/time_end"
-
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:theme="@style/Base.Theme.AppCompat.Light"
-        android:layout_below="@+id/button_timeframe_startDate" />
-
-    <Button
-        style="@style/RaisedButtonTheme"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button"
-        android:text="Next Month"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:theme="@style/Base.Theme.AppCompat.Light"
-        android:layout_alignParentEnd="true"
-        android:onClick="NextMonth"
-        android:layout_below="@+id/button_timeframe_endDate"
-        android:layout_marginTop="5dp" />
-
-    <Button
-        style="@style/RaisedButtonTheme"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button2"
-        android:text="Prev Month"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:theme="@style/Base.Theme.AppCompat.Light"
-        android:layout_alignParentStart="true"
-        android:onClick="PrevMonth"
-        android:layout_below="@+id/button_timeframe_endDate"
-        android:layout_marginTop="5dp" />
-
-    <Button
-        style="@style/RaisedButtonTheme"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button3"
-        android:text="Show All"
-        android:theme="@style/Base.Theme.AppCompat.Light"
-        android:onClick="ShowAll"
-        android:layout_below="@+id/button_timeframe_endDate"
-        android:layout_marginTop="5dp"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Start Date"
-        android:id="@+id/textView_startDate"
-        android:layout_below="@+id/button_income"
-        android:layout_alignStart="@+id/button_timeframe_startDate" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="End Date"
-        android:id="@+id/textView_endDate"
-        android:layout_below="@+id/textView_startDate"
-        android:layout_alignStart="@+id/button_timeframe_startDate" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="View Database"
-        android:id="@+id/button_db"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/button2" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button4"
-        android:text="Overview"
-        android:theme="@style/Base.Theme.AppCompat.Light"
-        android:onClick="MainOverviewClick"
-        android:layout_below="@+id/toolbar"
-        android:layout_centerHorizontal="true" />
-
-</RelativeLayout>
+</LinearLayout>

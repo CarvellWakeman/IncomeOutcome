@@ -219,8 +219,8 @@ public class ProfileManager
 
         AddCategory("Other", Color.argb(255, 140, 140, 140));
 
-        MainActivityInstance.UpdateProfileList(false);
-        MainActivityInstance.SetSelection(GetProfileIndex(GetCurrentProfile()));
+        //MainActivityInstance.UpdateProfileList(false);
+        //MainActivityInstance.SetSelection(GetProfileIndex(GetCurrentProfile()));
 
         //Success
         Print("Default settings loaded");
@@ -271,14 +271,14 @@ public class ProfileManager
     public static void AddProfile(Profile profile, Boolean dontsave) {
         if (profile != null) {
             _profiles.add(profile);
-            MainActivityInstance.UpdateProfileList(false);
+            //MainActivityInstance.UpdateProfileList(false);
         }
     }
     public static void AddProfile(Profile profile) { if (profile != null) { AddProfile(profile, true); InsertSettingDatabase(profile, true); } }
 
     public static void UpdateProfile(Profile profile) {
         InsertSettingDatabase(profile, true);
-        MainActivityInstance.UpdateProfileList(false); //INFINITE LOOP
+        //MainActivityInstance.UpdateProfileList(false); //INFINITE LOOP
     }
 
     //Delete profile
@@ -295,8 +295,8 @@ public class ProfileManager
         }
         if (reselect) { SelectProfile(GetProfileByIndex(0)); }
 
-        MainActivityInstance.UpdateProfileList(false);
-        MainActivityInstance.SetSelection(GetProfileIndex(GetCurrentProfile()));
+        //MainActivityInstance.UpdateProfileList(false);
+        //MainActivityInstance.SetSelection(GetProfileIndex(GetCurrentProfile()));
     }
     public static void DeleteProfileByID(String id)
     {
@@ -358,8 +358,8 @@ public class ProfileManager
             //Update new profile to be active
             _currentProfileID = profile.GetID();
             InsertSettingDatabase(profile, true);
-            MainActivityInstance.SetSelection(GetProfileIndex(profile));
-            MainActivityInstance.UpdateStartEndDate();
+            //MainActivityInstance.SetSelection(GetProfileIndex(profile));
+            //MainActivityInstance.UpdateStartEndDate();
 
             //Update old profile to be unselected
             if (_profiles.size() > 0 && old != null) {

@@ -2,11 +2,13 @@ package carvellwakeman.incomeoutcome;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
+import android.widget.TextView;
 import android.widget.Toast;
 import org.joda.time.LocalDate;
 
@@ -33,6 +35,10 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
 
     RecyclerView totalsView;
     RecyclerView elementsView;
+
+    FloatingActionButton button_new;
+
+    TextView textView_nodata;
 
 
     int _profileID;
@@ -89,6 +95,33 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
             totalsView = (RecyclerView) findViewById(R.id.recyclerView_transaction_totals);
             elementsView = (RecyclerView) findViewById(R.id.recyclerView_transaction_elements);
 
+            textView_nodata = (TextView) findViewById(R.id.textView_transaction_nodata);
+
+            button_new = (FloatingActionButton) findViewById(R.id.FAB_transaction_new);
+            button_new.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Profile pr = ProfileManager.GetCurrentProfile();
+                    if (pr != null) {
+                        Intent intent = new Intent(ActivityDetailsTransaction.this, ActivityNewTransaction.class);
+                        intent.putExtra("activitytype", activityType);
+                        intent.putExtra("profile", _profileID);
+                        startActivity(intent);
+                    }
+                    else {
+                        ProfileManager.Print("ERROR: Profile not found, could not start New Transaction Activity");
+                    }
+                }
+            });
+            //Hide floating action button when recyclerView is scrolled
+            elementsView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (dy > 10 && button_new.isShown()) { button_new.hide(); }
+                    else if (dy < 0 && !button_new.isShown()){button_new.show(); }
+                }
+            });
 
             //Swiping gesture setup
             gestureDetector = new GestureDetector(this, this);
@@ -114,12 +147,9 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
             setSupportActionBar(toolbar);
 
             //Title
-            if (activityType == 0) { //Expense
-                toolbar.setTitle(R.string.title_expenses);
-            }
-            else if (activityType == 1) { //Income
-                toolbar.setTitle(R.string.title_income);
-            }
+            if (activityType == 0) { toolbar.setTitle(R.string.title_expenses); }
+            else if (activityType == 1) { toolbar.setTitle(R.string.title_income); }
+
             //Subtitle
             toolbar.setSubtitle(_profile.GetDateFormatted());
 
@@ -145,6 +175,9 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Ges
             linearLayoutManager.setOrientation(NpaLinearLayoutManager.VERTICAL);
             linearLayoutManager.scrollToPosition(0);
             elementsView.setLayoutManager(linearLayoutManager);
+
+            //No data, display message
+            if (elementsAdapter.getItemCount()==0) { textView_nodata.setVisibility(View.VISIBLE); }
         }
     }
 
