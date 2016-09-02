@@ -47,8 +47,8 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
     LocalDate storedStartTime;
     LocalDate storedEndTime;
-    Button button_nextPeriod;
-    Button button_prevPeriod;
+    ImageView button_nextPeriod;
+    ImageView button_prevPeriod;
     CheckBox checkbox_showall;
 
 
@@ -98,8 +98,8 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar) ;
 
             //Period management
-            button_nextPeriod = (Button) findViewById(R.id.button_nextPeriod);
-            button_prevPeriod = (Button) findViewById(R.id.button_prevPeriod);
+            button_nextPeriod = (ImageView) findViewById(R.id.button_nextPeriod);
+            button_prevPeriod = (ImageView) findViewById(R.id.button_prevPeriod);
             checkbox_showall = (CheckBox) findViewById(R.id.checkbox_showall);
 
             button_nextPeriod.setOnClickListener(new View.OnClickListener() {
@@ -202,10 +202,16 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             elementsView.setLayoutManager(linearLayoutManager);
 
             //No data, display message
-            if (elementsAdapter.getItemCount()==0) { textView_nodata.setVisibility(View.VISIBLE); }
+            CheckShowNoDataNotice();
         }
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        CheckShowNoDataNotice();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -293,6 +299,10 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         UpdateAdapters();
     }
 
+    public void CheckShowNoDataNotice(){
+        if (elementsAdapter.getItemCount()==0) { textView_nodata.setVisibility(View.VISIBLE); } else { textView_nodata.setVisibility(View.GONE); }
+    }
+
     public void SetToolbarTitle(){
         if (getSupportActionBar() != null) {
             if (activityType == 0) { getSupportActionBar().setTitle(R.string.title_expenses); }
@@ -307,6 +317,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         totalsAdapter.notifyDataSetChanged();
         elementsAdapter.notifyDataSetChanged();
         SetToolbarTitle();
+        CheckShowNoDataNotice();
     }
 
     public void UpdateAdapters(){
@@ -318,6 +329,8 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
         totalsAdapter = new AdapterTransactionTotals(this, _profileID, activityType, keyType);
         totalsView.setAdapter(totalsAdapter);
+
+        CheckShowNoDataNotice();
     }
 
 

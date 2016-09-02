@@ -2,31 +2,51 @@ package carvellwakeman.incomeoutcome;
 
 
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.*;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.*;
 import android.widget.*;
+import org.joda.time.LocalDate;
 
 import java.io.File;
+import java.util.ArrayList;
+
+import static carvellwakeman.incomeoutcome.ProfileManager.Print;
 
 public class ActivityDatabaseImport extends AppCompatActivity {
 
-    TextView textView_backupnotice;
+    boolean menustate = false;
+    boolean SaveButtonState = false;
+    boolean OverrideState = false;
 
     AdapterDatabaseImports adapter;
 
+    AppBarLayout appBarLayout;
     android.support.v7.widget.Toolbar toolbar;
-    //MenuItem button_save;
 
-    FloatingActionButton button_new;
     Button button_restorebackup;
+    Button button_exportOpen;
+    MenuItem button_export;
+
+    TextInputLayout TIL;
+    EditText editText_filename;
+
+    SwitchCompat switch_override;
 
     NpaLinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView_files;
+
+    ArrayList<String> existingDatabases;
 
     /** The system calls this to get the DialogFragment's layout, regardless
      of whether it's being displayed as a dialog or an embedded fragment. */
@@ -39,12 +59,22 @@ public class ActivityDatabaseImport extends AppCompatActivity {
         //view.setBackgroundColor(Color.WHITE);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        textView_backupnotice = (TextView) findViewById(R.id.textView_dialogin_backupnotice);
+        appBarLayout = (AppBarLayout) findViewById(R.id.appbarlayout);
+        AppBarLayoutExpanded(false);
 
         button_restorebackup = (Button) findViewById(R.id.button_dialogin_backup);
+        button_exportOpen = (Button) findViewById(R.id.button_dialogex_export);
+
+        existingDatabases = ProfileManager.GetImportDatabaseFilesString();
+
+        switch_override = (SwitchCompat) findViewById(R.id.switch_override_export);
 
         recyclerView_files = (RecyclerView) findViewById(R.id.dialog_recyclerView_files);
+
+
+        TIL = (TextInputLayout) findViewById(R.id.TIL_dialog_filename);
+        TIL.setErrorEnabled(true);
+        editText_filename = TIL.getEditText();
 
 
         //Set recyclerview adapter
@@ -59,26 +89,23 @@ public class ActivityDatabaseImport extends AppCompatActivity {
 
 
         //Configure toolbar
-        toolbar.setNavigationIcon(R.drawable.ic_clear_white_24dp);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        //toolbar.inflateMenu(R.menu.toolbar_menu_save);
+        toolbar.inflateMenu(R.menu.toolbar_menu_export);
         toolbar.setTitle(R.string.title_importdatabase);
         setSupportActionBar(toolbar);
 
-        //button_save = toolbar.getMenu().findItem(R.id.toolbar_save);
-        //button_save.setVisible(false);
 
 
         //Setup backup restore button if there is a backup
         if (ProfileManager.DoesBackupExist()){
-            textView_backupnotice.setVisibility(View.VISIBLE);
             button_restorebackup.setEnabled(true);
-            button_restorebackup.setText(R.string.info_restorebackup);
+            button_restorebackup.setText(R.string.info_backupnotice);
         }
 
         //Button listeners
@@ -97,54 +124,181 @@ public class ActivityDatabaseImport extends AppCompatActivity {
             }
         });
 
+        button_exportOpen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CheckCanExport();
+                ToggleMenu(true);
+            }
+        });
 
-        // Inflate the layout to use as dialog or embedded fragment
-        //return view;
+
+        editText_filename.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(Editable s) { CheckCanExport(); }
+        });
+
+        editText_filename.setText("data_export_" + (new LocalDate()).toString(ProfileManager.simpleDateFormatSaving));
+
+        switch_override.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SetSaveButtonEnabled(isChecked && OverrideState);
+            }
+        });
+
     }
 
 
-    //Toolbar button handling
+    @Override
+    public void onBackPressed() {
+        if (menustate){ ToggleMenu(false); }
+        else { super.onBackPressed(); }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu_export, menu);
+        button_export = menu.findItem(R.id.toolbar_export);
+        button_export.setVisible(false);
+        editText_filename.setText(editText_filename.getText()); //Refresh export button
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                if (menustate) { ToggleMenu(false); }
+                else { finish(); }
+                return true;
+            case R.id.toolbar_export: //EXPORT button
+                String str = editText_filename.getText().toString();
+                if (!str.equals("")) {
+                    ProfileManager.ExportDatabase(str);
+                    ToggleMenu(false);
+                    ProfileManager.hideSoftKeyboard(this, editText_filename);
+                    existingDatabases = ProfileManager.GetImportDatabaseFilesString();
+                    UpdateAdapter();
+                }
                 return true;
         }
         return false;
     }
 
+
     //Import Database
-    public void ImportDatabase(File file){
-        ProfileManager.ImportDatabase(file);
-    }
+    public void ImportDatabase(final String path, final DialogFragmentManagePPC dialogFragment){
 
+        final File file = ProfileManager.GetDatabaseByPath(path);
+        final int version = SQLiteDatabase.openDatabase(file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
+        final int currentVersion = ProfileManager.GetNewestDatabaseVersion();
 
-    /* The system calls this only when creating the layout in a dialog.
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // The only reason you might override this method when using onCreateView() is
-        // to modify any dialog characteristics. For example, the dialog includes a
-        // title by default, but your custom layout might not need it. So here you can
-        // remove the dialog title, but you must call the superclass to get the Dialog.
-
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //dialog.setCanceledOnTouchOutside(false); //Disable closing dialog by clicking outside of it
-        return dialog;
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Dialog dialog = getDialog();
-        if (dialog != null) {
-            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            //dialog.getWindow().setBackgroundDrawable(null);
+        if (version <= currentVersion) { //Version check
+            new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deleteall)
+                    .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ProfileManager.ImportDatabase(file);
+                            dialogFragment.dismiss();
+                            finish();
+                            dialog.dismiss();
+                        }})
+                    .setNegativeButton(R.string.confirm_no, null)
+                    .create().show();
+        }
+        else {
+            Print("ERROR: Selected database is a newer version than this app supports.");
         }
     }
-    */
+    public void DeleteDatabase(final String path, final DialogFragmentManagePPC dialogFragment){
+        new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle)
+                .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (path != null) {
+                            ProfileManager.DeleteDatabaseByPath(path);
+                            UpdateAdapter();
+
+                            Print("File Deleted");
+
+                            CheckCanExport();
+
+                            dialogFragment.dismiss();
+                            dialog.dismiss();
+                        }
+                    }})
+                .setNegativeButton(R.string.action_cancel, null)
+                .create().show();
+    }
+
+
+    //Update positive button text
+    public void SetSaveButtonEnabled(Boolean enabled){
+        SaveButtonState = enabled;
+
+        if (button_export != null) {
+            button_export.setEnabled(enabled);
+            if (button_export.getIcon() != null) button_export.getIcon().setAlpha((enabled ? 255 : 130));
+        }
+    }
+
+    public void SetOverrideState(boolean enabled){
+        OverrideState = enabled;
+
+        switch_override.setEnabled(enabled);
+        switch_override.setClickable(enabled);
+        switch_override.setChecked(false);
+    }
+
+
+    public void CheckCanExport(){
+        existingDatabases = ProfileManager.GetImportDatabaseFilesString();
+
+        String str = editText_filename.getText().toString();
+
+        if (!str.equals("")) {
+            if (existingDatabases != null && !existingDatabases.contains(str) || existingDatabases == null) {
+                SetSaveButtonEnabled(true);
+                SetOverrideState(false);
+                TIL.setError("");
+            } else {
+                SetSaveButtonEnabled(false);
+                SetOverrideState(true);
+                TIL.setError("File name already exists");
+            }
+        }
+        else{
+            SetSaveButtonEnabled(false);
+            SetOverrideState(false);
+            TIL.setError("You need to enter a file name");
+        }
+    }
+
+    public void ToggleMenu(boolean exportState){
+        menustate = exportState;
+
+        //Expand export menu
+        AppBarLayoutExpanded(exportState);
+
+        //Export button visibility
+        button_export.setVisible(exportState);
+
+        //Toolbar subtitle
+        toolbar.setSubtitle( (exportState ? ProfileManager.GetExportDirectory() : "") );
+
+        //Set title
+        toolbar.setTitle( (exportState ? R.string.title_exportdatabase : R.string.title_importdatabase) );
+    }
+
+    public void AppBarLayoutExpanded(boolean expanded){
+        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
+        lp.height = (expanded ? ViewGroup.LayoutParams.WRAP_CONTENT : (int) getResources().getDimension(R.dimen.toolbar_size));
+    }
+
+    public void UpdateAdapter(){ //WHY do I have to keep doing this? Recyclerview giving vague stack trace error when just using adapter.notifyDataSetChanged(). Involves index out of bounds exception, but no clear indication as to why.
+        adapter = new AdapterDatabaseImports(this);
+        recyclerView_files.setAdapter(adapter);
+    }
 }

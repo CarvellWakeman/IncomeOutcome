@@ -159,7 +159,14 @@ public class Profile implements java.io.Serializable
                 return _startTime.toString(ProfileManager.simpleDateFormat) + " to " + _endTime.toString(ProfileManager.simpleDateFormat);
             }
         }
-        else { return ""; }
+        else {
+            if (_endTime == null && _startTime != null){
+                return "Started " + _startTime.toString(ProfileManager.simpleDateFormat);
+            }
+            else {
+                return "No date";
+            }
+        }
     }
     //public int GetTotalsSize() { return _totals.size(); }
     //public Expense GetTotalValueAtKey(OtherPerson op){ return _totals.get(op); }
@@ -280,7 +287,7 @@ public class Profile implements java.io.Serializable
 
     public void UpdateOtherPerson(String old, String name) {
         for (Transaction tr : Transactions){
-            if (tr.GetSplitWith().equals(old)) {
+            if (tr.GetSplitWith() != null && tr.GetSplitWith().equals(old)) {
                 tr.SetSplitValue(name, tr.GetSplitValue());
                 UpdateTransaction(tr);
             }

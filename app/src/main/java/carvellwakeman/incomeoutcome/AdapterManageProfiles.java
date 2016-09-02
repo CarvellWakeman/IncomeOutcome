@@ -1,34 +1,28 @@
 package carvellwakeman.incomeoutcome;
 
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
+
 public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManageProfiles.ProfileViewHolder>
 {
     ActivityManageProfiles parent;
 
-    //Constructor
     public AdapterManageProfiles(ActivityManageProfiles _parent)
     {
         parent = _parent;
     }
 
-
-    //When creating a view holder
     @Override
     public ProfileViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout_text_wdelete, parent, false);
-
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout_text_underline, parent, false);
         return new ProfileViewHolder(itemView);
     }
 
-    //Bind view holder to the recyclerView
     @Override
     public void onBindViewHolder(final ProfileViewHolder holder, int position)
     {
@@ -36,90 +30,54 @@ public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManagePro
         Profile pr = ProfileManager.GetProfileByIndex(position);
         if (pr != null) {
             //Textview
-            holder.textView.setText(pr.GetName());
+            holder.title.setText(pr.GetName());
+            holder.subTitle.setText(pr.GetDateFormatted());
+
+            if (holder.subTitle.getText() != null) { holder.subTitle.setVisibility(View.VISIBLE); }
+
+            if (ProfileManager.GetCurrentProfile() == pr){
+                //holder.secondaryIcon.setImageDrawable(ProfileManager.getDrawable(R.drawable.ic_check_white_24dp));
+                holder.secondaryIcon.setVisibility(View.VISIBLE);
+                //holder.base.setBackgroundColor(ProfileManager.getColor(R.color.blue));
+            }
+            else {
+                holder.secondaryIcon.setVisibility(View.GONE);
+            }
         }
     }
 
-
-    //How many items are there
-    @Override
-    public int getItemCount()
+    @Override public int getItemCount()
     {
         return ProfileManager.GetProfileCount();
     }
 
-    //View Holder class
-    public class ProfileViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+
+    public class ProfileViewHolder extends ViewHolderTextUnderline implements View.OnClickListener, View.OnLongClickListener
     {
-        LinearLayout layout;
-        TextView textView;
-        ImageView delete;
-
-        public ProfileViewHolder(View itemView)
-        {
-            super(itemView);
-
-            layout = (LinearLayout) itemView.findViewById(R.id.linearLayout_dialog);
-            textView = (TextView) itemView.findViewById(R.id.textView_dialog);
-            delete = (ImageView) itemView.findViewById(R.id.imageView_dialog);
-
-            //Short and long click listeners for the expenses context menu
-            layout.setOnClickListener(this);
-
-            //Profile delete button
-            delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final Profile pr = ProfileManager.GetProfileByIndex(getAdapterPosition());
-                    if (pr != null) {
-                        if (pr.GetTransactionsSize() > 0) {
-                            ProfileManager.OpenDialogFragment(parent, DialogFragmentTransferTransaction.newInstance(parent, pr), true); //TODO: Handle mIsLargeDisplay
-                            //parent.dismiss();
-                        }
-                        else {
-                            new AlertDialog.Builder(parent).setTitle(R.string.confirm_areyousure_deletesingle)
-                                    .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            ProfileManager.DeleteProfile(pr);
-                                            notifyDataSetChanged();
-                                            parent.profile_adapter.notifyDataSetChanged();
-                                        }})
-                                    .setNegativeButton(R.string.action_cancel, null).create().show();
-
-                        }
-                    }
-
-                }
-            });
-        }
+        public ProfileViewHolder(View itemView) { super(itemView); }
 
         @Override
         public void onClick(View v) {
-            parent.EditProfile(ProfileManager.GetProfileByIndex(getAdapterPosition()));
+            ProfileManager.SelectProfile(ProfileManager.GetProfileByIndex(getAdapterPosition()));
+            notifyDataSetChanged();
+        }
 
-            /*
-            //De-select last view if it's not v
-            if (selectedView != null && selectedView != v){
-                selectedView.setSelected(false);
-                selectedViewPosition = -1;
-            }
+        @Override
+        public boolean onLongClick(View v){
+            Profile pr = ProfileManager.GetProfileByIndex(getAdapterPosition());
+            if (pr != null) {
+                String descriptionString =
+                        pr.GetDateFormatted() + "\n" +
+                                pr.GetTransactionsSize() + " " + ProfileManager.getString(R.string.misc_transactoins);
 
-            //Select clicked view
-            if (v.isSelected()){
-                v.setSelected(false);
-                selectedView = null;
-                selectedViewPosition = -1;
+                ProfileManager.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, pr.GetName(), descriptionString, String.valueOf(pr.GetID()),
+                        new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.EditProfile(data, dialogFragment); } },
+                        new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.SelectProfile(data, dialogFragment); } },
+                        new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeleteProfile(data, dialogFragment); } }),
+                        true); //TODO: Handle mIsLargeDisplay
+                //parent.EditProfile(ProfileManager.GetProfileByIndex(getAdapterPosition()));
             }
-            else{
-                v.setSelected(true);
-                selectedView = v;
-                selectedViewPosition = getAdapterPosition();
-            }
-
-            //Set dialogfragment positive button text
-            parent.SetPositiveButtonEnabled(selectedView != null);
-            */
+            return true;
         }
     }
 }

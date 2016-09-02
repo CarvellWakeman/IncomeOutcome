@@ -219,12 +219,14 @@ public class CardTransaction extends Card
 
                 chart.setVisibility(View.VISIBLE);
                 //relativeLayout_controls.setVisibility(View.VISIBLE);
-                textView_nodata.setVisibility(View.GONE);
+                //textView_nodata.setVisibility(View.GONE);
+                button_viewDetails.setText(R.string.action_viewdetails);
             }
             else { //No data
                 chart.setVisibility(View.GONE);
                 //relativeLayout_controls.setVisibility(View.GONE);
-                textView_nodata.setVisibility(View.VISIBLE);
+                //textView_nodata.setVisibility(View.VISIBLE);
+                button_viewDetails.setText(R.string.tt_nodata_viewdetails);
             }
         }
 

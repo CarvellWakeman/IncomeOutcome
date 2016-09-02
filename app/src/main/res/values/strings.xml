@@ -16,8 +16,9 @@
 
     <string name="title_exportdatabase">Export Database</string>
     <string name="title_importdatabase">Import Database</string>
+    <string name="title_manageprofile">Manage Profile</string>
     <string name="title_manageprofiles">Manage Profiles</string>
-    <string name="title_manageotherpeople">Manage People</string>
+    <string name="title_managepeople">Manage People</string>
     <string name="title_managecategories">Manage Categories</string>
     <string name="title_newexpense">New Expense</string>
     <string name="title_newincome">New Income</string>
@@ -31,7 +32,9 @@
     <string name="title_edittransaction">Edit Transaction</string>
     <string name="title_edittransactionseries">Edit Transaction Series</string>
     <string name="title_editprofile">Edit Profile</string>
+    <string name="title_editprofiles">Edit Profiles</string>
     <string name="title_editpeople">Edit People</string>
+    <string name="title_editperson">Edit Person</string>
     <string name="title_editcategory">Edit Category</string>
     <string name="title_copytransaction">Copy Transaction</string>
     <string name="title_paidback">Paid Back</string>
@@ -47,11 +50,14 @@
     <string name="title_settings_database">Data</string>
     <string name="title_settings_import">Import Data</string>
     <string name="title_settings_export">Export Data</string>
+    <string name="title_settings_importexport">Import and Export Data</string>
     <string name="title_settings_deletealldata">Delete ALL Data</string>
     <string name="title_settings_importbackup">Import Secret Backup</string>
     <!-- Setting subtitles -->
     <string name="subtitle_settings_deletealldata">Erase all data permanently \n(excluding exported data)</string>
     <string name="subtitle_settings_import">Erase all current data and import new data</string>
+    <string name="subtitle_settings_export">Export all current data to an external file</string>
+    <string name="subtitle_settings_importexport">Erase all current data and import new data\nExport all current data to an external file</string>
 
 
 
@@ -64,13 +70,23 @@
     <string name="header_income_summary">Income Summary</string>
     <string name="header_split_summary">Split Summary</string>
 
+    <!-- Misc -->
+    <string name="misc_transactoins">Transactions</string>
+
     <!-- Tool Tip -->
     <string name="tt_showmore">Show More</string>
     <string name="tt_showall">Show All</string>
     <string name="tt_showlegend">Legend</string>
+    <string name="tt_personname">Person Name</string>
+    <string name="tt_profilename">Profile Name</string>
+    <string name="tt_categoryname">Category Name</string>
     <string name="tt_displaydata">Display Data </string>
     <string name="tt_nodata">No Data</string>
-    <string name="tt_nodata_viewdetails">No Data, click the button below to add a transaction</string>
+    <string name="tt_exportto">*Export to </string>
+    <string name="tt_nodata_viewdetails">No Data, click here to add a transaction</string>
+    <string name="tt_suggestaddprofile">Add a profile to begin</string>
+    <string name="tt_permission_writestorage1">Access files request</string>
+    <string name="tt_permission_writestorage2">In order for this app to export or import data from an external directory, you must grant it permission to access and modify external files.</string>
 
     <!-- Information -->
     <string name="info_title_value">%1$s %2$s</string>
@@ -81,7 +97,7 @@
     <string name="info_paidback_format">Paid Back %1$s</string>
     <string name="info_nobackup">No Backup Found</string>
     <string name="info_restorebackup">Restore Backup</string>
-    <string name="info_backupnotice">Restore backup created last time data was imported</string>
+    <string name="info_backupnotice">Restore data from before your last import</string>
     <string name="info_description">Description</string>
     <string name="info_nodescription"><i>No Description</i></string>
     <string name="info_source">Source</string>
@@ -90,6 +106,7 @@
     <string name="info_nocategory"><i>No Category</i></string>
     <string name="info_noname"><i>No Source Name</i></string>
     <string name="info_domwarning">* Some months are limited to 28/29/30 days. The last day of the month will be chosen in these cases.</string>
+    <string name="info_selected">Selected</string>
 
     <!-- Formatting -->
     <string name="item_delimiter">,</string>
@@ -99,7 +116,7 @@
     <string name="balance_even">Balance is even between You and </string>
     <string name="balance_uneven">owe</string>
     <string name="balance_uneven_plural">owes</string>
-    <string name="format_dbversion">(ver. %1$s)</string>
+    <string name="format_dbversion">Version %1$s</string>
 
     <!-- DEBUG -->
     <string name="debug_database">View Database</string>
@@ -123,6 +140,7 @@
     <string name="action_back">BACK</string>
     <string name="action_edititem">EDIT</string>
     <string name="action_cancel">CANCEL</string>
+    <string name="action_select">SELECT</string>
     <string name="action_continue">CONTINUE</string>
     <string name="action_save">SAVE</string>
     <string name="action_new">NEW</string>
@@ -141,8 +159,8 @@
     <string name="confirm_areyousure_deletesingle">Are you sure you want to delete this?</string>
     <string name="confirm_areyousure_deletetransactions">Are you sure you want to delete these transactions?</string>
     <string name="confirm_areyousure_deleteall">Are you sure? All current data will be erased.</string>
-    <string name="confirm_areyousure_nolongerexists">This Person is no longer in the database. This change cannot be undone. Proceed?</string>
-    <string name="confirm_areyousure_nolongerexists2">This Category is no longer in the database. This change cannot be undone. Proceed?</string>
+    <string name="confirm_areyousure_nolongerexists">This Person no longer exists. This change cannot be undone.</string>
+    <string name="confirm_areyousure_nolongerexists2">This Category no longer exists. This change cannot be undone.</string>
     <string name="confirm_areyousure_transferdelete">Take action for transactions in this profile</string>
 
     <!-- Time -->

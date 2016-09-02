@@ -27,6 +27,8 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import static carvellwakeman.incomeoutcome.ProfileManager.Print;
+
 public class DatabaseHelper extends SQLiteOpenHelper
 {
 
@@ -345,19 +347,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
             switch(oldVersion){
                 case 1: //To version 2
                     cv.clear();
-                    ProfileManager.Print("Version 1 Upgrade not supported");
+                    Print("Version 1 Upgrade not supported");
                 case 2: //To version 3 (Not neccessary upgrade)
                     //SQLExecuteMultiple(db, UPGRADE_2_3);
                     //ProfileManager.Print("Upgrade from Ver.2 to Ver.3");
                 case 3: //To version 4
                     SQLExecuteMultiple(db, UPGRADE_3_4);
-                    ProfileManager.Print("Upgrade from Ver.3 to Ver.4");
+                    Print("Upgrade from Ver.3 to Ver.4");
                 case 4: //To version 5
                     SQLExecuteMultiple(db, UPGRADE_4_5);
-                    ProfileManager.Print("Upgrade from Ver.4 to Ver.5");
+                    Print("Upgrade from Ver.4 to Ver.5");
                 case 5: //To version 6
                     SQLExecuteMultiple(db, UPGRADE_5_6);
-                    ProfileManager.Print("Upgrade from Ver.5 to Ver.6");
+                    Print("Upgrade from Ver.5 to Ver.6");
                 case 6: //To version 7
             }
             //OLD
@@ -385,7 +387,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
         catch(SQLException ex){
             ProfileManager.PrintLong(ex.getMessage());
-            ProfileManager.Print("Error upgrading database");
+            Print("Error upgrading database");
         }
     }
 
@@ -467,7 +469,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 }
                 //ProfileManager.Print("Settings tables created");
             } catch (SQLException ex){
-                ProfileManager.Print("Error creating Settings table");
+                Print("Error creating Settings table");
                 ex.printStackTrace();
             }
             //Try create transactions table
@@ -477,7 +479,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     //ProfileManager.Print("Transactions table created");
                 }
             } catch (SQLException ex){
-                ProfileManager.Print("Error creating transactions table");
+                Print("Error creating transactions table");
                 ex.printStackTrace();
             }
             //Try create income table
@@ -497,7 +499,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     //ProfileManager.Print("TimePeriod table created");
                 }
             } catch (SQLException ex){
-                ProfileManager.Print("Error creating TimePeriod table");
+                Print("Error creating TimePeriod table");
                 ex.printStackTrace();
             }
 
@@ -505,7 +507,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             //ProfileManager.Print("Database created");
         }
         catch(SQLException ex){
-            ProfileManager.Print("Error creating database");
+            Print("Error creating database");
             ex.printStackTrace();
         }
     }
@@ -584,7 +586,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 }
             }
             else {
-                ProfileManager.Print("Storage permission not granted, cannot export database");
+                Print("Storage permission not granted, cannot export database");
             }
 
 
@@ -595,13 +597,34 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     }
 
-    public ArrayList<File> getImportableDatabases(){
-        try {
+    public File getDatabaseByPath(String path){
+        if (ProfileManager.isStoragePermissionGranted()){
             File data = new File(Environment.getExternalStorageDirectory() + "/" + activityContext.getString(R.string.app_name_nospace) + "/");
 
+            if (data.canRead()) {
+                for (File file : data.listFiles()) {
+                    if(file.getName().endsWith(".db")){
+                        if (file.getAbsolutePath().equals(path)) { return file; }
+                    }
+                }
+            }
+            else {
+                Print("Cannot Read Database Import Directory");
+            }
+        }
+        else {
+            Print("Storage permission not granted, cannot import databases");
+        }
+
+        return null;
+    }
+    public ArrayList<File> getImportableDatabases(){
+        try {
             ArrayList<File> DatabaseFiles = new ArrayList<>();
 
             if (ProfileManager.isStoragePermissionGranted()){
+                File data = new File(Environment.getExternalStorageDirectory() + "/" + activityContext.getString(R.string.app_name_nospace) + "/");
+
                 if (data.canRead()) {
                     for (File file : data.listFiles()) {
                         if(file.getName().endsWith(".db")){
@@ -612,11 +635,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     return DatabaseFiles;
                 }
                 else {
-                    ProfileManager.Print("Cannot Read Database Import Directory");
+                    Print("Cannot Read Database Import Directory");
                 }
             }
             else {
-                ProfileManager.Print("Storage permission not granted, cannot import databases");
+                Print("Storage permission not granted, cannot import databases");
             }
 
         } catch (Exception e) {
@@ -641,11 +664,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     return DatabaseFiles;
                 }
                 else {
-                    ProfileManager.Print("Cannot Read Database Import Directory");
+                    Print("Cannot Read Database Import Directory");
                 }
             }
             else {
-                ProfileManager.Print("Storage permission not granted, cannot import databases");
+                Print("Storage permission not granted, cannot import databases");
             }
 
         } catch (Exception e) {
@@ -704,11 +727,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 }
             }
             else {
-                ProfileManager.Print("Storage permission not granted, cannot import database");
+                Print("Storage permission not granted, cannot import database");
             }
 
         } catch (Exception e) {
-            ProfileManager.Print("Error importing database");
+            Print("Error importing database");
             ProfileManager.PrintLong(e.getMessage());
         }
 
@@ -841,12 +864,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
                     return result;
                 }
-                ProfileManager.Print("Table Does Not Exist");
+                Print("Table Does Not Exist");
                 return -1;
             }
-            ProfileManager.Print("Database is null");
+            Print("Database is null");
             return -1;
-        } else { ProfileManager.Print("Profile is null"); return -1; }
+        } else { Print("Profile is null"); return -1; }
     }
 
     /*
@@ -1098,7 +1121,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         }
         catch (CursorIndexOutOfBoundsException ex){
-            ProfileManager.Print("ERROR: No settings found");
+            Print("ERROR: No settings found");
             ex.printStackTrace();
         } finally {
             if (c != null) { c.close(); }
@@ -1340,7 +1363,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             }
         }
         else {
-            ProfileManager.Print("TimePeriod not found");
+            Print("TimePeriod not found");
         }
     }
 }

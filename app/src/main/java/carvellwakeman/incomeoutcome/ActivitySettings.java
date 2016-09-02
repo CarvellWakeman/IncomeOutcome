@@ -1,11 +1,14 @@
 package carvellwakeman.incomeoutcome;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -14,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import java.util.Arrays;
 
 
 public class ActivitySettings extends AppCompatActivity
@@ -64,7 +69,7 @@ public class ActivitySettings extends AppCompatActivity
                     }}
             ));
         //Manage people
-            profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_face_white_24dp, getString(R.string.title_manageotherpeople), null,
+            profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_face_white_24dp, getString(R.string.title_managepeople), null,
                     new View.OnClickListener() { @Override public void onClick(View v) {
                         //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentManagePeople(), mIsLargeLayout);
                         startActivity(new Intent(ActivitySettings.this, ActivityManagePeople.class));
@@ -79,20 +84,21 @@ public class ActivitySettings extends AppCompatActivity
             ));
 
         CardSettings database = new CardSettings(this, inflater, R.layout.row_layout_setting_card, getString(R.string.title_settings_database));
-        //Import
-            database.AddSetting(new Setting(inflater, R.drawable.ic_input_white_24dp, getString(R.string.title_settings_import), getString(R.string.subtitle_settings_import),
+        //Import and Export
+            database.AddSetting(new Setting(inflater, R.drawable.ic_file_white_24dp, getString(R.string.title_settings_importexport), getString(R.string.subtitle_settings_importexport),
                     new View.OnClickListener() { @Override public void onClick(View v) {
-                        if (ProfileManager.isStoragePermissionGranted())
+                        if (ProfileManager.isStoragePermissionGranted()) {
                             //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentDatabaseImport(), mIsLargeLayout);
                             startActivity(new Intent(ActivitySettings.this, ActivityDatabaseImport.class));
-                    }}
-            ));
-        //Export
-            database.AddSetting(new Setting(inflater, R.drawable.ic_export_white_24dp, getString(R.string.title_settings_export), null,
-                    new View.OnClickListener() { @Override public void onClick(View v) {
-                        if (ProfileManager.isStoragePermissionGranted())
-                            //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentDatabaseExport(), mIsLargeLayout);
-                            startActivity(new Intent(ActivitySettings.this, ActivityDatabaseExport.class));
+                        }
+                        else {
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(ActivitySettings.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                                ProfileManager.OpenDialogFragment(ActivitySettings.this, DialogFragmentPermissionReasoning.newInstance(ActivitySettings.this, new int[]{ R.string.tt_permission_writestorage1 }, new int[]{ R.string.tt_permission_writestorage2 }, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }), true);
+                            } else {
+                                //Request permission
+                                ActivityCompat.requestPermissions(ActivitySettings.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                            }
+                        }
                     }}
             ));
         //Delete all data
@@ -136,6 +142,20 @@ public class ActivitySettings extends AppCompatActivity
     public void onBackPressed()
     {
         super.onBackPressed();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startActivity(new Intent(ActivitySettings.this, ActivityDatabaseImport.class));
+                }
+                return;
+            }
+        }
     }
 
 

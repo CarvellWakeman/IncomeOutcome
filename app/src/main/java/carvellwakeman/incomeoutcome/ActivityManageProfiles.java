@@ -2,10 +2,14 @@ package carvellwakeman.incomeoutcome;
 
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.*;
 import android.support.v7.widget.Toolbar;
@@ -26,8 +30,8 @@ public class ActivityManageProfiles extends AppCompatActivity {
     Period period;
 
     AdapterManageProfiles adapter;
-    AdapterProfilesSpinner profile_adapter;
 
+    AppBarLayout appBarLayout;
     Toolbar toolbar;
     MenuItem button_save;
 
@@ -39,11 +43,9 @@ public class ActivityManageProfiles extends AppCompatActivity {
     EditText editText_profilename;
     EditText editText_period;
 
-    Spinner spinner_profiles;
     Spinner spinner_period;
 
     LinearLayout layout_edit;
-    LinearLayout layout_add;
 
     NpaLinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView_profiles;
@@ -57,13 +59,15 @@ public class ActivityManageProfiles extends AppCompatActivity {
         //view.setBackgroundColor(Color.WHITE);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        appBarLayout = (AppBarLayout) findViewById(R.id.appbarlayout);
+        AppBarLayoutExpanded(false);
+
 
         button_new = (FloatingActionButton) findViewById(R.id.FAB_dialogmpr_new);
         button_startdate = (Button) findViewById(R.id.button_dialogmpr_startdate);
         button_enddate = (Button) findViewById(R.id.button_dialogmpr_enddate);
 
         layout_edit = (LinearLayout) findViewById(R.id.linearLayout_dialogmpr_editprofile);
-        layout_add = (LinearLayout) findViewById(R.id.linearLayout_dialogmpr_newprofile);
 
         editText_period = (EditText) findViewById(R.id.editText_profile_period);
 
@@ -80,14 +84,13 @@ public class ActivityManageProfiles extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 CalculatePeriod();
-
                 CheckCanSave();
             }
             @Override public void afterTextChanged(Editable s) {}
         });
 
         //Period type input
-        ArrayAdapter arrAd = ArrayAdapter.createFromResource(this, R.array.period_array, R.layout.spinner_dropdown_title);
+        ArrayAdapter arrAd = ArrayAdapter.createFromResource(this, R.array.period_array, R.layout.spinner_dropdown_title_white);
         arrAd.setDropDownViewResource(R.layout.spinner_dropdown_list_primary);
         spinner_period.setAdapter(arrAd);
 
@@ -102,30 +105,6 @@ public class ActivityManageProfiles extends AppCompatActivity {
         });
 
 
-        //Current profile selection
-        spinner_profiles = (Spinner) findViewById(R.id.spinner_profiles);
-        profile_adapter = new AdapterProfilesSpinner(this, R.layout.spinner_dropdown_title, ProfileManager.GetProfileNames());
-        profile_adapter.setDropDownViewResource(R.layout.spinner_dropdown_list_primary);
-        spinner_profiles.setAdapter(profile_adapter);
-        spinner_profiles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Object si = spinner_profiles.getSelectedItem();
-                if (si != null) {
-                    if (ProfileManager.SelectProfile(si.toString())){
-                        //profile_adapter.notifyDataSetChanged();
-                    }
-                    else{
-                        ProfileManager.Print("Selected Profile could not be found.");
-                    }
-                }
-            }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
-        });
-        //Select current profile
-        spinner_profiles.setSelection(ProfileManager.GetProfileIndex(ProfileManager.GetCurrentProfile()));
-
-
         //Title input
         TIL = (TextInputLayout)findViewById(R.id.TIL_dialogmpr_profilename);
         if (TIL != null) {
@@ -134,9 +113,9 @@ public class ActivityManageProfiles extends AppCompatActivity {
         }
 
         //Configure toolbar
-        toolbar.setNavigationIcon(R.drawable.ic_clear_white_24dp);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.inflateMenu(R.menu.toolbar_menu_save);
-        toolbar.setTitle(R.string.title_editprofile);
+        toolbar.setTitle(R.string.title_manageprofiles);
         setSupportActionBar(toolbar);
         //button_save = toolbar.getMenu().findItem(R.id.toolbar_save);
         //button_save.setVisible(false);
@@ -186,6 +165,16 @@ public class ActivityManageProfiles extends AppCompatActivity {
                 ToggleMenus(false);
                 //Visibility
                 button_enddate.setVisibility(View.GONE);
+            }
+        });
+
+        //Hide floating action button when recyclerView is scrolled
+        recyclerView_profiles.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 10 && button_new.isShown()) { button_new.hide(); }
+                else if (dy < 0 && !button_new.isShown()){button_new.show(); }
             }
         });
 
@@ -253,9 +242,13 @@ public class ActivityManageProfiles extends AppCompatActivity {
                             if (end_date!= null) { editingprofile.SetEndTime(end_date); }
 
                             ProfileManager.UpdateProfile(editingprofile);
-                            profile_adapter.notifyDataSetChanged();
 
-                            finish();
+                            adapter.notifyDataSetChanged();
+
+                            ProfileManager.hideSoftKeyboard(this, editText_profilename);
+                            ClearAddMenu();
+                            ToggleMenus(true);
+                            //finish();
                         }
                     }
                 }
@@ -268,13 +261,13 @@ public class ActivityManageProfiles extends AppCompatActivity {
                         if (end_date!= null) { pr.SetEndTime(end_date); }
 
                         ProfileManager.AddProfile(pr);
-
                         ProfileManager.SelectProfile(pr);
 
                         adapter.notifyDataSetChanged();
-                        profile_adapter.notifyDataSetChanged();
 
-                        finish();
+                        ClearAddMenu();
+                        ToggleMenus(true);
+                        //finish();
                     }
                 }
                 return true;
@@ -285,30 +278,74 @@ public class ActivityManageProfiles extends AppCompatActivity {
 
     //Update positive button text
     public void SetSaveButtonEnabled(Boolean enabled){
-        button_save.setEnabled(enabled);
-        if (button_save.getIcon() != null) button_save.getIcon().setAlpha( (enabled ? 255 : 130) );
+        if (button_save != null) {
+            button_save.setEnabled(enabled);
+            if (button_save.getIcon() != null) button_save.getIcon().setAlpha((enabled ? 255 : 130));
+        }
     }
 
     //Edit profile
-    public void EditProfile(Profile pr){
-        editingprofile = pr;
-        //Open add new layout
-        ToggleMenus(false);
-        //Set title to edit
-        toolbar.setTitle(R.string.title_editprofile);
-        //Set edit state to true
-        editstate = true;
-        //Load profile information into add new profile settings
+    public void EditProfile(final String id, DialogFragmentManagePPC dialogFragment){
+        Profile pr = ProfileManager.GetProfileByID(Integer.valueOf(id));
         if (pr != null) {
+            editingprofile = pr;
+
+            //Open add new layout
+            ToggleMenus(false);
+
+            //Set title to edit
+            toolbar.setTitle(R.string.title_editprofile);
+
+            //Set edit state to true
+            editstate = true;
+
+            //Load profile information into add new profile settings
             editText_profilename.setText(pr.GetName());
             start_date = pr.GetStartTime();
             end_date = pr.GetEndTime();
             period = pr.GetPeriod();
             UpdateDates();
             UpdatePeriod();
+
+            //Visibility
+            button_enddate.setVisibility(View.VISIBLE);
+
+            //Dismiss dialogfragment
+            dialogFragment.dismiss();
         }
-        //Visibility
-        button_enddate.setVisibility(View.VISIBLE);
+    }
+
+    //Select profile
+    public void SelectProfile(String id, final DialogFragmentManagePPC dialogFragment){
+        Profile pr = ProfileManager.GetProfileByID(Integer.valueOf(id));
+        if (pr != null) {
+            if (!ProfileManager.SelectProfile(pr)) {ProfileManager.Print("Selected Profile could not be found.");}
+            adapter.notifyDataSetChanged();
+            dialogFragment.dismiss();
+        }
+    }
+
+    //Delete profile
+    public void DeleteProfile(String id, final DialogFragmentManagePPC dialogFragment){
+        final Profile pr = ProfileManager.GetProfileByID(Integer.valueOf(id));
+        if (pr != null) {
+            if (pr.GetTransactionsSize() > 0) {
+                ProfileManager.OpenDialogFragment(this, DialogFragmentTransferTransaction.newInstance(this, pr), true); //TODO: Handle mIsLargeDisplay
+            }
+            else {
+                new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle)
+                        .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ProfileManager.DeleteProfile(pr);
+                                adapter.notifyDataSetChanged();
+                                dialogFragment.dismiss();
+                                dialog.dismiss();
+                            }})
+                        .setNegativeButton(R.string.action_cancel, null).create().show();
+
+            }
+        }
     }
 
     //Check if the user is allowed to save
@@ -405,23 +442,25 @@ public class ActivityManageProfiles extends AppCompatActivity {
 
 
     //Expand and retract sub menus
-    public void ToggleMenus(Boolean edit){
-        menustate = !menustate;
+    public void ToggleMenus(boolean editList){
+        menustate = editList;
 
         ClearAddMenu();
 
         //Enable edit layout
-        layout_edit.setVisibility( (edit ? View.VISIBLE : View.GONE) );
+        //layout_edit.setVisibility( (edit ? View.VISIBLE : View.GONE) );
         //Disable add layout
-        layout_add.setVisibility( (edit ? View.GONE : View.VISIBLE) );
+        //layout_add.setVisibility( (edit ? View.GONE : View.VISIBLE) );
+        AppBarLayoutExpanded(!editList);
+
         //Enable add new button
-        button_new.setVisibility( (edit ? View.VISIBLE : View.GONE) );
+        button_new.setVisibility( (editList ? View.VISIBLE : View.GONE) );
         //Disable save button
-        button_save.setVisible(!edit);
+        button_save.setVisible(!editList);
         //Set title
-        toolbar.setTitle( (edit ? R.string.title_editprofile : R.string.title_addnewprofile) );
+        toolbar.setTitle( (editList ? R.string.title_manageprofiles : R.string.title_addnewprofile) );
         //Set back button
-        toolbar.setNavigationIcon( (edit ? R.drawable.ic_clear_white_24dp : R.drawable.ic_arrow_back_white_24dp) );
+        //toolbar.setNavigationIcon( (edit ? R.drawable.ic_clear_white_24dp : R.drawable.ic_arrow_back_white_24dp) );
     }
 
     //Clear add profile menu
@@ -437,6 +476,10 @@ public class ActivityManageProfiles extends AppCompatActivity {
         spinner_period.setSelection(2);
     }
 
+    public void AppBarLayoutExpanded(boolean expanded){
+        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
+        lp.height = (expanded ? ViewGroup.LayoutParams.WRAP_CONTENT : (int) getResources().getDimension(R.dimen.toolbar_size));
+    }
 
     /*
     // The system calls this only when creating the layout in a dialog.

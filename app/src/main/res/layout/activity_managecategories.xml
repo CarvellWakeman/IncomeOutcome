@@ -1,126 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <LinearLayout
-        android:orientation="vertical"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout_managepeople"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:id="@+id/linearLayout2">
+        android:layout_height="match_parent">
 
-        <include android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
+        <include layout="@layout/toolbar_editcategory" />
 
-        <View
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:background="@drawable/toolbar_dropshadow" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout_dialog_editcategory"
+            android:layout_below="@+id/toolbar_top"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/dialog_recyclerView_categories"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/FAB_dialogmc_new"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
         android:src="@drawable/ic_plus_white_24dp"
         android:scaleType="center" />
-
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearLayout_dialog_editcategory"
-        android:layout_below="@+id/linearLayout2">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/dialog_recyclerView_categories"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout_dialog_editcategory"
-        android:layout_marginRight="24dp"
-        android:layout_marginLeft="24dp"
-        android:id="@+id/linearLayout_dialog_newcategory"
-        android:visibility="gone">
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/TIL_dialog_categoryname"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/Base.Theme.AppCompat.Light"
-            android:layout_marginTop="8dp">
-
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:hint="Category Title"
-                android:maxLines="1"
-                android:inputType="textCapWords" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:id="@+id/imageView_dialogcat"
-            android:layout_gravity="right"
-            android:src="@drawable/square" />
-
-        <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/seekBar_dialogcat_red"
-            app:dsb_progressColor="@color/red"
-            app:dsb_indicatorColor="@color/red"
-            app:dsb_rippleColor="@color/red"
-            app:dsb_value="50"
-            app:dsb_min="0"
-            app:dsb_max="100"
-            app:dsb_indicatorFormatter="%s%%"
-            android:layout_marginTop="20dp" />
-
-        <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/seekBar_dialogcat_green"
-            app:dsb_progressColor="@color/green"
-            app:dsb_indicatorColor="@color/green"
-            app:dsb_rippleColor="@color/green"
-            app:dsb_value="50"
-            app:dsb_min="0"
-            app:dsb_max="100"
-            app:dsb_indicatorFormatter="%s%%"/>
-
-        <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/seekBar_dialogcat_blue"
-            app:dsb_progressColor="@color/blue"
-            app:dsb_indicatorColor="@color/blue"
-            app:dsb_rippleColor="@color/blue"
-            app:dsb_value="50"
-            app:dsb_min="0"
-            app:dsb_max="100"
-            app:dsb_indicatorFormatter="%s%%" />
-
-
-    </LinearLayout>
-
-
-    <!--Add new -->
 
 </RelativeLayout>

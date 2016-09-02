@@ -18,19 +18,11 @@ import java.util.ArrayList;
 public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabaseImports.FileViewHolder>
 {
     ActivityDatabaseImport parent;
-
-    View selectedView;
-    int selectedViewPosition;
-
     ArrayList<File> database_import_files;
 
-    //Constructor
     public AdapterDatabaseImports(ActivityDatabaseImport _parent)
     {
-        selectedViewPosition = -1;
-
         parent = _parent;
-
         database_import_files = ProfileManager.GetImportDatabaseFiles();
     }
 
@@ -39,8 +31,7 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
     @Override
     public FileViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout_text2_wdelete, parent, false);
-
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout_text_underline, parent, false);
         return new FileViewHolder(itemView);
     }
 
@@ -48,19 +39,23 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
     @Override
     public void onBindViewHolder(final FileViewHolder holder, int position)
     {
-        if (database_import_files != null) {
-            //File
+        database_import_files = ProfileManager.GetImportDatabaseFiles();
+
+        if (database_import_files != null && position < database_import_files.size()) {
             File file = database_import_files.get(position);
-            if (file != null) {
+            if (file != null && file.exists()) {
                 int version = SQLiteDatabase.openDatabase(file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
                 int currentVersion = ProfileManager.GetNewestDatabaseVersion();
 
-                //Textview1
-                holder.textView1.setText(file.getName());
-                //Textview2
-                holder.textView2.setText(parent.getString(R.string.format_dbversion, String.valueOf(version)));
-                if (version == currentVersion){ holder.textView2.setTextColor(Color.GREEN); }
-                else { holder.textView2.setTextColor(Color.RED); }
+                holder.title.setText(file.getName());
+                holder.subTitle.setText(parent.getString(R.string.format_dbversion, String.valueOf(version)));
+                holder.subTitle.setVisibility(View.VISIBLE);
+
+                holder.icon.setImageDrawable(ProfileManager.getDrawable(R.drawable.ic_file_white_24dp));
+                holder.secondaryIcon.setVisibility(View.GONE);
+
+                if (version == currentVersion){ holder.subTitle.setTextColor(Color.GREEN); }
+                else { holder.subTitle.setTextColor(Color.RED); }
             }
         }
     }
@@ -76,67 +71,27 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
 
 
     //View Holder class
-    public class FileViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+    public class FileViewHolder extends ViewHolderTextUnderline implements View.OnClickListener
     {
-        LinearLayout layout;
-        TextView textView1;
-        TextView textView2;
-        ImageView delete;
-
-        public FileViewHolder(View itemView)
-        {
-            super(itemView);
-
-            layout = (LinearLayout) itemView.findViewById(R.id.linearLayout_dialog);
-            textView1 = (TextView) itemView.findViewById(R.id.textView1_dialog);
-            textView2 = (TextView) itemView.findViewById(R.id.textView2_dialog);
-            delete = (ImageView) itemView.findViewById(R.id.imageView_dialog);
-
-            //Short and long click listeners for the expenses context menu
-            layout.setOnClickListener(this);
-
-            //Profile delete button
-            delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new AlertDialog.Builder(parent).setTitle(R.string.confirm_areyousure_deletesingle)
-                            .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (database_import_files != null) {
-                                database_import_files.get(getAdapterPosition()).delete();
-                                database_import_files = ProfileManager.GetImportDatabaseFiles();
-                                notifyDataSetChanged();
-
-                                ProfileManager.Print("File Deleted");
-                            }
-                        }})
-                    .setNegativeButton(R.string.action_cancel, null)
-                            .create().show();
-                }
-            });
-        }
+        public FileViewHolder(View itemView) { super(itemView); }
 
         @Override
         public void onClick(View v) {
-            final File file = database_import_files.get(getAdapterPosition());
-            final int version = SQLiteDatabase.openDatabase(file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
-            final int currentVersion = ProfileManager.GetNewestDatabaseVersion();
-            if (version <= currentVersion) { //Version check
-                new AlertDialog.Builder(parent).setTitle(R.string.confirm_areyousure_deleteall)
-                        .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                parent.ImportDatabase(file);
-                                parent.finish();
-                            }})
-                        .setNegativeButton(R.string.confirm_no, null)
-                        .create().show();
-            }
-            else {
-                ProfileManager.Print("ERROR: Selected database is newer than this app version supports.");
-            }
+            database_import_files = ProfileManager.GetImportDatabaseFiles();
+            if (getAdapterPosition() < getItemCount()) {
+                File file = database_import_files.get(getAdapterPosition());
+                if (file != null && file.exists()) {
+                    int version = SQLiteDatabase.openDatabase(file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
 
+                    ProfileManager.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, file.getName(), parent.getString(R.string.format_dbversion, String.valueOf(version)), file.getAbsolutePath(), null, new ProfileManager.ParentCallback() {
+                        @Override
+                        public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.ImportDatabase(data, dialogFragment); }
+                    }, new ProfileManager.ParentCallback() {
+                        @Override
+                        public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeleteDatabase(data, dialogFragment); }
+                    }), true); //TODO: Handle mIsLargeDisplay
+                }
+            }
 
         }
     }

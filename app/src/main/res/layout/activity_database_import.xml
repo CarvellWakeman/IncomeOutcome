@@ -1,71 +1,52 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <LinearLayout
-        android:orientation="vertical"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout_export"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:id="@+id/linearLayout2">
+        android:layout_height="match_parent">
 
-        <include android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
+        <include layout="@layout/toolbar_export" />
 
-        <View
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:background="@drawable/toolbar_dropshadow" />
-    </LinearLayout>
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/info_nobackup"
+                android:id="@+id/button_dialogin_backup"
+                style="@style/RaisedButtonTheme"
+                android:enabled="false"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"/>
 
-    <!--
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginRight="24dp"
-        android:layout_marginLeft="24dp"
-        android:id="@+id/linearLayout_dialogin_files"
-        android:layout_below="@+id/textView"
-        android:layout_marginBottom="24dp"
-        android:layout_above="@+id/button_dialogin_positive">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_exportdatabase"
+                android:id="@+id/button_dialogex_export"
+                style="@style/RaisedButtonTheme"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"/>
 
-    </LinearLayout>
-    -->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/dialog_recyclerView_files"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/button_dialogin_backup"
+                android:layout_below="@id/button_dialogex_export" />
+        </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/info_backupnotice"
-        android:id="@+id/textView_dialogin_backupnotice"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:visibility="gone"
-        android:layout_below="@+id/linearLayout2" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/info_nobackup"
-        android:id="@+id/button_dialogin_backup"
-        android:layout_marginLeft="24dp"
-        android:layout_below="@+id/textView_dialogin_backupnotice"
-        style="@style/RaisedButtonTheme"
-        android:layout_marginRight="24dp"
-        android:layout_marginBottom="20dp"
-        android:enabled="false" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/dialog_recyclerView_files"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/button_dialogin_backup" />
-
-
-    <!--Add new -->
+    </android.support.design.widget.CoordinatorLayout>
 
 </RelativeLayout>

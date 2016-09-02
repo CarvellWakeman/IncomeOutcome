@@ -179,7 +179,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                     if (tr != null) {
                         if (tr.GetSplitWith() != null && !ProfileManager.HasOtherPerson(tr.GetSplitWith()) && !OtherPersonDoesNotExistBypass) {
                             new AlertDialog.Builder(ActivityNewTransaction.this).setTitle(R.string.confirm_areyousure_nolongerexists)
-                                    .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
+                                    .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             spinner_otherPeople.setAdapter(otherPeopleAdapter);
@@ -187,7 +187,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                                             UpdateSplitClick();
                                             OtherPersonDoesNotExistBypass = true;
                                         }})
-                                    .setNegativeButton(R.string.confirm_no, new DialogInterface.OnClickListener() {
+                                    .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             checkBox_split.setChecked(true);
@@ -245,14 +245,14 @@ public class ActivityNewTransaction extends AppCompatActivity
                         if (tr != null) {
                             if (!ProfileManager.HasCategory(tr.GetCategory()) && !CategoryDoesNotExistBypass) {
                                 new AlertDialog.Builder(ActivityNewTransaction.this).setTitle(R.string.confirm_areyousure_nolongerexists2)
-                                        .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
+                                        .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 spinner_categories.setAdapter(categoryAdapter);
                                                 spinner_categories.performClick();
                                                 CategoryDoesNotExistBypass = true;
                                             }})
-                                        .setNegativeButton(R.string.confirm_no, new DialogInterface.OnClickListener() {
+                                        .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 spinner_categories.onDetachedFromWindow(); //Close spinner

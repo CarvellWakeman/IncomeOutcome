@@ -2,11 +2,15 @@ package carvellwakeman.incomeoutcome;
 
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.*;
 import android.support.v7.widget.Toolbar;
@@ -15,13 +19,15 @@ import android.text.TextWatcher;
 import android.view.*;
 import android.widget.*;
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
+import org.joda.time.Period;
 
 public class ActivityManageCategories extends AppCompatActivity {
     Boolean menustate = true;
-    Category old_category;
+    Category editingCategory;
 
     AdapterManageCategories adapter;
 
+    AppBarLayout appBarLayout;
     android.support.v7.widget.Toolbar toolbar;
     MenuItem button_save;
 
@@ -37,7 +43,7 @@ public class ActivityManageCategories extends AppCompatActivity {
     EditText editText_categoryname;
 
     LinearLayout layout_edit;
-    LinearLayout layout_add;
+    //LinearLayout layout_add;
 
     NpaLinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
@@ -57,6 +63,8 @@ public class ActivityManageCategories extends AppCompatActivity {
         //view.setBackgroundColor(Color.WHITE);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        appBarLayout = (AppBarLayout) findViewById(R.id.appbarlayout);
+        AppBarLayoutExpanded(false);
 
         button_new = (FloatingActionButton) findViewById(R.id.FAB_dialogmc_new);
 
@@ -67,7 +75,7 @@ public class ActivityManageCategories extends AppCompatActivity {
         imageView_colorindicator = (ImageView) findViewById(R.id.imageView_dialogcat);
 
         layout_edit = (LinearLayout) findViewById(R.id.linearLayout_dialog_editcategory);
-        layout_add = (LinearLayout) findViewById(R.id.linearLayout_dialog_newcategory);
+        //layout_add = (LinearLayout) findViewById(R.id.linearLayout_dialog_newcategory);
 
         recyclerView = (RecyclerView) findViewById(R.id.dialog_recyclerView_categories);
 
@@ -75,7 +83,7 @@ public class ActivityManageCategories extends AppCompatActivity {
 
 
         //Configure toolbar
-        toolbar.setNavigationIcon(R.drawable.ic_clear_white_24dp);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,9 +94,6 @@ public class ActivityManageCategories extends AppCompatActivity {
         toolbar.inflateMenu(R.menu.toolbar_menu_save);
         toolbar.setTitle(R.string.title_editcategory);
         setSupportActionBar(toolbar);
-        //button_save = toolbar.getMenu().findItem(R.id.toolbar_save);
-        //button_save.setVisible(false);
-        //SetSaveButtonEnabled(false);
 
 
         TIL.setErrorEnabled(true);
@@ -104,12 +109,12 @@ public class ActivityManageCategories extends AppCompatActivity {
 
                 if (!str.equals("")) {
                     if (!ProfileManager.HasCategory(str)) {
-                        SetSaveButtonEnabled(true);
+                        CheckCanSave();
                         TIL.setError("");
                     }
-                    else{ SetSaveButtonEnabled(false); TIL.setError("Category already exists"); }
+                    else{ CheckCanSave(); TIL.setError("Category already exists"); }
                 }
-                else{ SetSaveButtonEnabled(false); TIL.setError("Enter a title"); }
+                else{ CheckCanSave(); TIL.setError("Enter a title"); }
             }
 
             @Override
@@ -121,37 +126,37 @@ public class ActivityManageCategories extends AppCompatActivity {
         seekBar_red.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-                SetIndicatorColor(Color.argb(255, (int)(((double)seekBar_red.getProgress()/100.0)*255), (int)(((double)seekBar_green.getProgress()/100.0)*255), (int)(((double)seekBar_blue.getProgress()/100.0)*255)));
+                SetIndicatorColor(GetSeekbarColor());
             }
             @Override
             public void onStartTrackingTouch(DiscreteSeekBar seekBar) {}
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-                SetSaveButtonEnabled(true);
+                CheckCanSave();
             }
         });
         seekBar_green.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-                SetIndicatorColor(Color.argb(255, (int)(((double)seekBar_red.getProgress()/100.0)*255), (int)(((double)seekBar_green.getProgress()/100.0)*255), (int)(((double)seekBar_blue.getProgress()/100.0)*255)));
+                SetIndicatorColor(GetSeekbarColor());
             }
             @Override
             public void onStartTrackingTouch(DiscreteSeekBar seekBar) {}
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-                SetSaveButtonEnabled(true);
+                CheckCanSave();
             }
         });
         seekBar_blue.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-                SetIndicatorColor(Color.argb(255, (int)(((double)seekBar_red.getProgress()/100.0)*255), (int)(((double)seekBar_green.getProgress()/100.0)*255), (int)(((double)seekBar_blue.getProgress()/100.0)*255)));
+                SetIndicatorColor(GetSeekbarColor());
             }
             @Override
             public void onStartTrackingTouch(DiscreteSeekBar seekBar) {}
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-                SetSaveButtonEnabled(true);
+                CheckCanSave();
             }
         });
 
@@ -174,9 +179,16 @@ public class ActivityManageCategories extends AppCompatActivity {
                 ToggleMenus(false);
             }
         });
+        //Hide floating action button when recyclerView is scrolled
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 10 && button_new.isShown()) { button_new.hide(); }
+                else if (dy < 0 && !button_new.isShown()){button_new.show(); }
+            }
+        });
 
-        // Inflate the layout to use as dialog or embedded fragment
-        //return view;
     }
 
 
@@ -208,21 +220,20 @@ public class ActivityManageCategories extends AppCompatActivity {
             case R.id.toolbar_save: //SAVE button
                 String str = editText_categoryname.getText().toString();
 
-                if (old_category != null) {
-                    String old = old_category.GetTitle();
+                if (editingCategory != null) {
+                    String old = editingCategory.GetTitle();
 
-                    old_category.SetTitle(str);
-                    old_category.SetColor(GetColor());
+                    editingCategory.SetTitle(str);
+                    editingCategory.SetColor(GetColor());
 
                     //Update old category
-                    ProfileManager.UpdateCategory(old, old_category);
+                    ProfileManager.UpdateCategory(old, editingCategory);
                 }
                 else {
                     //Add new category
                     ProfileManager.AddCategory(str, GetColor());
                 }
 
-                //finish dialog
                 finish();
                 return true;
             default:
@@ -230,33 +241,90 @@ public class ActivityManageCategories extends AppCompatActivity {
         }
     }
 
+    //Get color from the three seekbars
+    public int GetSeekbarColor(){
+        return Color.argb(255, (int)(((double)seekBar_red.getProgress()/100.0)*255), (int)(((double)seekBar_green.getProgress()/100.0)*255), (int)(((double)seekBar_blue.getProgress()/100.0)*255));
+    }
+
+    //Check if the user is allowed to save
+    public void CheckCanSave()
+    {
+        String name = editText_categoryname.getText().toString();
+
+        if (ProfileManager.HasCategory(name)){
+            editingCategory = ProfileManager.GetCategory(name);
+        }
+
+        if (editingCategory != null) {
+            if (editingCategory.GetColor() == GetSeekbarColor() && //Check color
+                    (name.equals("") || (!name.equals("") && editingCategory.GetTitle().equals(name))) //Check if name is the same
+            ) { SetSaveButtonEnabled(false); }
+            else { SetSaveButtonEnabled(true); }
+        }
+        else {
+            if (name.equals("")) { SetSaveButtonEnabled(false); }
+            else { SetSaveButtonEnabled(true); }
+        }
+    }
+
+
     //Update positive button text
     public void SetSaveButtonEnabled(Boolean enabled){
-        button_save.setEnabled(enabled);
-        if (button_save.getIcon() != null) button_save.getIcon().setAlpha( (enabled ? 255 : 130) );
+        if (button_save != null) {
+            button_save.setEnabled(enabled);
+            if (button_save.getIcon() != null) button_save.getIcon().setAlpha((enabled ? 255 : 130));
+        }
     }
 
     //Edit category
-    public void EditCategory(Category category){
-        old_category = category;
+    public void EditCategory(final String id, DialogFragmentManagePPC dialogFragment){
+        Category cr = ProfileManager.GetCategory(id);
+        if (cr != null) {
+            editingCategory = cr;
 
-        //Open add new layout
-        ToggleMenus(false);
-        //Set title to edit
-        toolbar.setTitle(R.string.title_editcategory);
+            //Open add new layout
+            ToggleMenus(false);
+            //Set title to edit
+            toolbar.setTitle(R.string.title_editcategory);
 
-        //Load information
-        editText_categoryname.setText(category.GetTitle());
+            //Load information
+            editText_categoryname.setText(cr.GetTitle());
 
-        int red = Color.red(category.GetColor());
-        int green = Color.green(category.GetColor());
-        int blue = Color.blue(category.GetColor());
+            int red = Color.red(cr.GetColor());
+            int green = Color.green(cr.GetColor());
+            int blue = Color.blue(cr.GetColor());
 
-        seekBar_red.setProgress( (int)((red / 255.0)*100) );
-        seekBar_green.setProgress( (int)((green / 255.0)*100) );
-        seekBar_blue.setProgress( (int)((blue / 255.0)*100) );
+            seekBar_red.setProgress((int) ((red / 255.0) * 100));
+            seekBar_green.setProgress((int) ((green / 255.0) * 100));
+            seekBar_blue.setProgress((int) ((blue / 255.0) * 100));
 
-        SetIndicatorColor(category.GetColor());
+            SetIndicatorColor(cr.GetColor());
+
+            CheckCanSave();
+
+            //Dismiss dialogfragment
+            dialogFragment.dismiss();
+        }
+    }
+
+    //Delete category
+    public void DeleteCategory(final String id, final DialogFragmentManagePPC dialogFragment)
+    {
+        final Category cr = ProfileManager.GetCategory(id);
+        if (cr != null) {
+            new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle).setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    ProfileManager.RemoveCategory(cr);
+                    adapter.notifyDataSetChanged();
+                    dialogFragment.dismiss();
+                    dialog.dismiss();
+                }
+            }).setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {}
+            }).create().show();
+        }
     }
 
     public int GetColor(){
@@ -265,8 +333,8 @@ public class ActivityManageCategories extends AppCompatActivity {
 
 
     //Expand and retract sub menus
-    public void ToggleMenus(Boolean edit){
-        menustate = !menustate;
+    public void ToggleMenus(Boolean editList){
+        menustate = editList;
 
         //Reset old state
         editText_categoryname.setText("");
@@ -277,50 +345,27 @@ public class ActivityManageCategories extends AppCompatActivity {
         //Color preview button
         //imageView_colorindicator.setVisibility( (edit ? View.GONE : View.VISIBLE) );
         //Enable edit layout
-        layout_edit.setVisibility( (edit ? View.VISIBLE : View.GONE) );
+        //layout_edit.setVisibility( (editList ? View.VISIBLE : View.GONE) );
         //Disable add layout
-        layout_add.setVisibility( (edit ? View.GONE : View.VISIBLE) );
+        //layout_add.setVisibility( (edit ? View.GONE : View.VISIBLE) );
+        AppBarLayoutExpanded(!editList);
+
         //Enable add new button
-        button_new.setVisibility( (edit ? View.VISIBLE : View.GONE) );
+        button_new.setVisibility( (editList ? View.VISIBLE : View.GONE) );
         //Disable save button
-        button_save.setVisible(!edit);
+        button_save.setVisible(!editList);
         //Set title
-        toolbar.setTitle( (edit ? R.string.title_editcategory : R.string.title_addnewcategory) );
+        toolbar.setTitle( (editList ? R.string.title_managecategories : R.string.title_addnewcategory) );
         //Set back button
-        toolbar.setNavigationIcon( (edit ? R.drawable.ic_clear_white_24dp : R.drawable.ic_arrow_back_white_24dp) );
+        //toolbar.setNavigationIcon( (edit ? R.drawable.ic_clear_white_24dp : R.drawable.ic_arrow_back_white_24dp) );
     }
 
 
-    public void SetIndicatorColor(int color){
-        imageView_colorindicator.setColorFilter(color);
+    public void SetIndicatorColor(int color){ imageView_colorindicator.setColorFilter(color); }
+
+    public void AppBarLayoutExpanded(boolean expanded){
+        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
+        lp.height = (expanded ? ViewGroup.LayoutParams.WRAP_CONTENT : (int) getResources().getDimension(R.dimen.toolbar_size));
     }
 
-
-
-    /* The system calls this only when creating the layout in a dialog.
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // The only reason you might override this method when using onCreateView() is
-        // to modify any dialog characteristics. For example, the dialog includes a
-        // title by default, but your custom layout might not need it. So here you can
-        // remove the dialog title, but you must call the superclass to get the Dialog.
-
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //dialog.setCanceledOnTouchOutside(false); //Disable closing dialog by clicking outside of it
-        return dialog;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Dialog dialog = getDialog();
-        if (dialog != null) {
-            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            //dialog.getWindow().setBackgroundDrawable(null);
-        }
-    }
-    */
 }

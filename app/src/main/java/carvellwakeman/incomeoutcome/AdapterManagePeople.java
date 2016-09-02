@@ -14,106 +14,50 @@ public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeopl
 {
     ActivityManagePeople parent;
 
-
-    //Constructor
     public AdapterManagePeople(ActivityManagePeople _parent)
     {
         parent = _parent;
     }
 
-
-    //When creating a view holder
     @Override
     public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout_text_wdelete, parent, false);
-
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout_text_underline, parent, false);
         return new PersonViewHolder(itemView);
     }
 
-    //Bind view holder to the recyclerView
     @Override
     public void onBindViewHolder(final PersonViewHolder holder, int position)
     {
-        String person = ProfileManager.GetOtherPersonByIndex(position);
-        if (person != null) {
+        //Person
+        String pr = ProfileManager.GetOtherPersonByIndex(position);
+        if (pr != null) {
             //Textview
-            holder.textView.setText(person);
+            holder.title.setText(pr);
+            holder.icon.setImageDrawable(ProfileManager.getDrawable(R.drawable.ic_face_white_24dp));
+            holder.secondaryIcon.setVisibility(View.GONE);
         }
     }
 
-
-    //How many items are there
-    @Override
-    public int getItemCount()
+    @Override public int getItemCount()
     {
         return ProfileManager.GetOtherPeopleCount();
     }
 
 
-    //View Holder class
-    public class PersonViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+    public class PersonViewHolder extends ViewHolderTextUnderline implements View.OnClickListener
     {
-        LinearLayout layout;
-        TextView textView;
-        ImageView delete;
-
-        public PersonViewHolder(View itemView)
-        {
-            super(itemView);
-
-            layout = (LinearLayout) itemView.findViewById(R.id.linearLayout_dialog);
-            textView = (TextView) itemView.findViewById(R.id.textView_dialog);
-            delete = (ImageView) itemView.findViewById(R.id.imageView_dialog);
-
-            //Short and long click listeners for the expenses context menu
-            layout.setOnClickListener(this);
-
-            //Profile delete button
-            delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new AlertDialog.Builder(parent).setTitle(R.string.confirm_areyousure_deletesingle)
-                            .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ProfileManager.RemoveOtherPerson(ProfileManager.GetOtherPersonByIndex(getAdapterPosition()));
-                            notifyDataSetChanged();
-                        }})
-                    .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {}
-                    }).create().show();
-                }
-            });
-        }
+        public PersonViewHolder(View itemView) { super(itemView); }
 
         @Override
         public void onClick(View v) {
-            parent.EditPerson(ProfileManager.GetOtherPersonByIndex(getAdapterPosition()));
-
-            /*
-            //De-select last view if it's not v
-            if (selectedView != null && selectedView != v){
-                selectedView.setSelected(false);
-                selectedViewPosition = -1;
-            }
-
-            //Select clicked view
-            if (v.isSelected()){
-                v.setSelected(false);
-                selectedView = null;
-                selectedViewPosition = -1;
-            }
-            else{
-                v.setSelected(true);
-                selectedView = v;
-                selectedViewPosition = getAdapterPosition();
-            }
-
-            //Set dialogfragment positive button text
-            parent.SetPositiveButtonEnabled(selectedView != null);
-            */
+            ProfileManager.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, ProfileManager.GetOtherPersonByIndex(getAdapterPosition()), "", ProfileManager.GetOtherPersonByIndex(getAdapterPosition()),
+                    new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.EditPerson(data, dialogFragment); } },
+                    null,
+                    new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeletePerson(data, dialogFragment); } }
+            ), true); //TODO: Handle mIsLargeDisplay
+            //ProfileManager.OpenDialogFragment(parent, DialogFragmentManageProfile.newInstance(parent, ProfileManager.GetProfileByIndex(getAdapterPosition())), true); //TODO: Handle mIsLargeDisplay
+            //parent.EditPerson(ProfileManager.GetOtherPersonByIndex(getAdapterPosition()));
         }
     }
 }

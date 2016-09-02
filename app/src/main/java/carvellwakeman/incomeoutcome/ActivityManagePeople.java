@@ -2,11 +2,13 @@ package carvellwakeman.incomeoutcome;
 
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
+import android.support.design.widget.*;
 import android.app.DialogFragment;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.*;
 import android.support.v7.widget.Toolbar;
@@ -15,13 +17,17 @@ import android.text.TextWatcher;
 import android.view.*;
 import android.widget.*;
 
+import static carvellwakeman.incomeoutcome.R.id.frameLayout;
+
 public class ActivityManagePeople extends AppCompatActivity {
     Boolean menustate = true;
     String old_otherperson;
 
     AdapterManagePeople adapter;
 
+    AppBarLayout appBarLayout;
     Toolbar toolbar;
+
     MenuItem button_save;
 
     FloatingActionButton button_new;
@@ -30,7 +36,6 @@ public class ActivityManagePeople extends AppCompatActivity {
     EditText editText_personname;
 
     LinearLayout layout_edit;
-    LinearLayout layout_add;
 
     NpaLinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
@@ -45,12 +50,20 @@ public class ActivityManagePeople extends AppCompatActivity {
         //View view = inflater.inflate(R.layout.dialog_managepeople, container, false);
         //view.setBackgroundColor(Color.WHITE);
 
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        appBarLayout = (AppBarLayout) findViewById(R.id.appbarlayout);
+        AppBarLayoutExpanded(false);
+
+        //appBarLayout.setExpanded(false, false);
+        //appBarLayout.setActivated(false);
+        //CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
+        //lp.height = (int) getResources().getDimension(R.dimen.toolbar_size);
 
         button_new = (FloatingActionButton) findViewById(R.id.FAB_dialogmp_new);
 
         layout_edit = (LinearLayout) findViewById(R.id.linearLayout_dialog_editperson);
-        layout_add = (LinearLayout) findViewById(R.id.linearLayout_dialog_newperson);
 
         recyclerView = (RecyclerView) findViewById(R.id.dialog_recyclerView_people);
 
@@ -58,7 +71,7 @@ public class ActivityManagePeople extends AppCompatActivity {
 
 
         //Configure toolbar
-        toolbar.setNavigationIcon(R.drawable.ic_clear_white_24dp);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,7 +80,7 @@ public class ActivityManagePeople extends AppCompatActivity {
             }
         });
         toolbar.inflateMenu(R.menu.toolbar_menu_save);
-        toolbar.setTitle(R.string.title_editpeople);
+        toolbar.setTitle(R.string.title_managepeople);
         setSupportActionBar(toolbar);
         //button_save = toolbar.getMenu().findItem(R.id.toolbar_save);
         //button_save.setVisible(false);
@@ -118,9 +131,16 @@ public class ActivityManagePeople extends AppCompatActivity {
             }
         });
 
+        //Hide floating action button when recyclerView is scrolled
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 10 && button_new.isShown()) { button_new.hide(); }
+                else if (dy < 0 && !button_new.isShown()){button_new.show(); }
+            }
+        });
 
-        // Inflate the layout to use as dialog or embedded fragment
-        //return view;
     }
 
     @Override
@@ -171,45 +191,73 @@ public class ActivityManagePeople extends AppCompatActivity {
 
 
     //Edit profile
-    public void EditPerson(String name){
+    public void EditPerson(String name, final DialogFragmentManagePPC dialogFragment){
         old_otherperson = name;
 
         //Open add new layout
         ToggleMenus(false);
         //Set title to edit
-        toolbar.setTitle(R.string.title_editpeople);
+        toolbar.setTitle(R.string.title_editperson);
 
         //Load information
         editText_personname.setText(name);
+
+        //Dismiss fragment
+        dialogFragment.dismiss();
+    }
+
+    public void DeletePerson(final String name, final DialogFragmentManagePPC dialogFragment){
+        if (name != null) {
+            new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle)
+                    .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ProfileManager.RemoveOtherPerson(name);
+                            adapter.notifyDataSetChanged();
+                            dialogFragment.dismiss();
+                            dialog.dismiss();
+                        }})
+                    .setNegativeButton(R.string.action_cancel, null).create().show();
+
+        }
     }
 
     //Update positive button text
     public void SetSaveButtonEnabled(Boolean enabled){
-        button_save.setEnabled(enabled);
-        if (button_save.getIcon() != null) button_save.getIcon().setAlpha( (enabled ? 255 : 130) );
+        if (button_save != null) {
+            button_save.setEnabled(enabled);
+            if (button_save.getIcon() != null) button_save.getIcon().setAlpha((enabled ? 255 : 130));
+        }
     }
 
 
     //Expand and retract sub menus
     public void ToggleMenus(Boolean edit){
-        menustate = !menustate;
+        menustate = edit;
 
         editText_personname.setText("");
 
         //Enable edit layout
-        layout_edit.setVisibility( (edit ? View.VISIBLE : View.GONE) );
+        //layout_edit.setVisibility( (edit ? View.VISIBLE : View.GONE) );
         //Disable add layout
-        layout_add.setVisibility( (edit ? View.GONE : View.VISIBLE) );
+        //TIL.setVisibility( (edit ? View.GONE : View.VISIBLE) );
+        AppBarLayoutExpanded(!edit);
+
         //Enable add new button
         button_new.setVisibility( (edit ? View.VISIBLE : View.GONE) );
         //Disable save button
         button_save.setVisible(!edit);
         //Set title
-        toolbar.setTitle( (edit ? R.string.title_editpeople : R.string.title_addnewperson) );
+        toolbar.setTitle( (edit ? R.string.title_managepeople : R.string.title_addnewperson) );
         //Set back button
-        toolbar.setNavigationIcon( (edit ? R.drawable.ic_clear_white_24dp : R.drawable.ic_arrow_back_white_24dp) );
+        //toolbar.setNavigationIcon( (edit ? R.drawable.ic_clear_white_24dp : R.drawable.ic_arrow_back_white_24dp) );
     }
 
+
+    public void AppBarLayoutExpanded(boolean expanded){
+        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
+        lp.height = (expanded ? ViewGroup.LayoutParams.WRAP_CONTENT : (int) getResources().getDimension(R.dimen.toolbar_size));
+    }
 
 
     /* The system calls this only when creating the layout in a dialog.

@@ -12,8 +12,8 @@
         card_view:cardUseCompatPadding="true"
         card_view:cardElevation="@dimen/cardview_default_elevation"
         card_view:contentPadding="@dimen/cardview_default_padding"
-        android:layout_marginLeft="@dimen/cardview_default_margin"
-        android:layout_marginRight="@dimen/cardview_default_margin"
+        android:layout_marginStart="@dimen/cardview_default_margin"
+        android:layout_marginEnd="@dimen/cardview_default_margin"
         android:layout_marginTop="4dp">
 
         <RelativeLayout
@@ -36,10 +36,10 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/balance_uneven"
                 android:id="@+id/transaction_who_owes_who"
-                android:layout_marginRight="4dp"
+                android:layout_marginEnd="4dp"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/transaction_objectA"
-                android:layout_marginLeft="4dp" />
+                android:layout_marginStart="4dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -50,8 +50,8 @@
                 android:gravity="center_vertical"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/transaction_who_owes_who"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp" />
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -60,9 +60,9 @@
                 android:text="$0.00"
                 android:layout_centerVertical="true"
                 android:id="@+id/transaction_total_cost"
-                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
                 android:layout_toEndOf="@+id/transaction_objectB"
-                android:layout_marginRight="4dp" />
+                android:layout_marginEnd="4dp" />
 
             <CheckBox
                 android:layout_width="wrap_content"

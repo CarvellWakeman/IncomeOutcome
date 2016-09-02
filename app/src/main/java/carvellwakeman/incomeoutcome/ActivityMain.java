@@ -1,15 +1,13 @@
 package carvellwakeman.incomeoutcome;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.Toast;
+import android.widget.*;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
@@ -25,10 +23,12 @@ public class ActivityMain extends AppCompatActivity
     CardTransaction expensesCard;
     CardTransaction incomeCard;
 
+    Button button_suggestaddprofile;
+
     LocalDate storedStartTime;
     LocalDate storedEndTime;
-    Button button_nextPeriod;
-    Button button_prevPeriod;
+    ImageView button_nextPeriod;
+    ImageView button_prevPeriod;
     CheckBox checkbox_showall;
 
 
@@ -49,9 +49,18 @@ public class ActivityMain extends AppCompatActivity
         //Find Views
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
+        button_suggestaddprofile = (Button) findViewById(R.id.button_suggest_addprofile);
+
+        button_suggestaddprofile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ActivityMain.this, ActivityManageProfiles.class));
+            }
+        });
+
         //Period management
-        button_nextPeriod = (Button) findViewById(R.id.button_nextPeriod);
-        button_prevPeriod = (Button) findViewById(R.id.button_prevPeriod);
+        button_nextPeriod = (ImageView) findViewById(R.id.button_nextPeriod);
+        button_prevPeriod = (ImageView) findViewById(R.id.button_prevPeriod);
         checkbox_showall = (CheckBox) findViewById(R.id.checkbox_showall);
 
         button_nextPeriod.setOnClickListener(new View.OnClickListener() {
@@ -109,8 +118,39 @@ public class ActivityMain extends AppCompatActivity
         expensesCard.insert(insertPoint, 1);
         incomeCard.insert(insertPoint, 2);
 
+        //Suggest the user add a profile if none exist
+        if (ProfileManager.GetProfileCount()==0){
+            versusCard.getView().setVisibility(View.GONE);
+            expensesCard.getView().setVisibility(View.GONE);
+            incomeCard.getView().setVisibility(View.GONE);
+            button_suggestaddprofile.setVisibility(View.VISIBLE);
+        }
+
+        //Ask for permissions
+        //ProfileManager.OpenDialogFragment(this, DialogFragmentPermissionReasoning.newInstance(this, new int[]{ R.string.tt_permission_writestorage1 }, new int[]{ R.string.tt_permission_writestorage2 }, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }), true);
+
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        RefreshOverview();
+
+        //Suggest the user add a profile if none exist
+        if (ProfileManager.GetProfileCount()==0){
+            versusCard.getView().setVisibility(View.GONE);
+            expensesCard.getView().setVisibility(View.GONE);
+            incomeCard.getView().setVisibility(View.GONE);
+            button_suggestaddprofile.setVisibility(View.VISIBLE);
+        }
+        else {
+            versusCard.getView().setVisibility(View.VISIBLE);
+            expensesCard.getView().setVisibility(View.VISIBLE);
+            incomeCard.getView().setVisibility(View.VISIBLE);
+            button_suggestaddprofile.setVisibility(View.GONE);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -169,8 +209,6 @@ public class ActivityMain extends AppCompatActivity
         if (_profile != null) {
             _profileID = _profile.GetID();
 
-            ToolbarTitleUpdate();
-
             versusCard.SetProfileID(_profileID);
             expensesCard.SetProfileID(_profileID);
             incomeCard.SetProfileID(_profileID);
@@ -179,6 +217,8 @@ public class ActivityMain extends AppCompatActivity
             expensesCard.SetData();
             incomeCard.SetData();
         }
+
+        ToolbarTitleUpdate();
     }
 
     //Toolbar title update

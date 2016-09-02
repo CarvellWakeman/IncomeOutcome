@@ -602,6 +602,7 @@ public class ProfileManager
     public static String getString(int resourceID){ return MainActivityInstance.getString(resourceID); }
     public static int getColor(int resourceID){ return MainActivityInstance.getResources().getColor(resourceID); }
     public static int getDrawbleResourceID(String title) { return MainActivityInstance.getResources().getIdentifier(title, "drawable", MainActivityInstance.getPackageName()); }
+    public static Drawable getDrawable(int resourceID) { return MainActivityInstance.getResources().getDrawable(resourceID); }
     //public static Drawable getDrawable(int resourceID){ return MainActivityInstance.getResources().getDrawable(resourceID); }
 
     public static void setRefreshToolbarEnable(CollapsingToolbarLayout collapsingToolbarLayout,
@@ -660,17 +661,15 @@ public class ProfileManager
     public static boolean isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (MainActivityContext.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                Log.v("PERMISSIONS","External Write Storage permission is granted");
+                //Log.v("PERMISSIONS","External Write Storage permission is granted");
                 return true;
             } else {
-                Log.v("PERMISSIONS", "External Write Storage permission is not granted");
-                //Request permission
-                ActivityCompat.requestPermissions(MainActivityInstance, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                //Log.v("PERMISSIONS", "External Write Storage permission is not granted");
                 return false;
             }
         }
         else { //permission is automatically granted on sdk<23 upon installation
-            Log.v("PERMISSIONS","Permission is granted");
+            //Log.v("PERMISSIONS","Permission is granted");
             return true;
         }
 
@@ -760,8 +759,10 @@ public class ProfileManager
     }
     public static Boolean DoesBackupExist() { return databaseHelper.EXPORT_BACKUP.exists(); }
     public static void ImportDatabaseBackup() { ImportDatabase(databaseHelper.EXPORT_BACKUP, false);  }
+    public static File GetDatabaseByPath(String path) { return databaseHelper.getDatabaseByPath(path); }
+    public static void DeleteDatabaseByPath(String path) { GetDatabaseByPath(path).delete(); }
     public static ArrayList<File> GetImportDatabaseFiles() { return databaseHelper.getImportableDatabases(); }
-    public static ArrayList<String> GetImportDatabaseFilesString() { return databaseHelper.getImportableDatabasesString(); }
+    public static ArrayList<String> GetImportDatabaseFilesString() { return databaseHelper.getImportableDatabasesString();  }
 
     public static String GetExportDirectory() { return databaseHelper.GetExportDirectory(); }
     public static int GetNewestDatabaseVersion() { return databaseHelper.GetNewestVersion(); }
@@ -805,6 +806,11 @@ public class ProfileManager
         builder.setContentText(content);
         builder.setSmallIcon(R.drawable.ic_account_multiple_white_24dp);
         return builder.build();
+    }
+
+    //Define parent callback interface
+    public interface ParentCallback {
+        void call(String data, DialogFragmentManagePPC dialogFragment);
     }
 
 

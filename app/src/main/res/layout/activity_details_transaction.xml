@@ -1,51 +1,63 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:id="@+id/linearLayout_transactions">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <include android:id="@+id/toolbar_top" layout="@layout/toolbar_timeframe" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView_transaction_totals"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:layout_below="@+id/toolbar_top" />
+        android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView_transaction_elements"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="5dp"
-        android:layout_below="@+id/recyclerView_transaction_totals" />
+        <include android:id="@+id/toolbar_top" layout="@layout/toolbar_timeframe" />
 
-    <TextView
-        android:id="@+id/textView_transaction_nodata"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar_top"
-        android:layout_marginTop="20dp"
-        android:text="@string/tt_nodata_viewdetails"
-        android:textStyle="normal|italic"
-        android:textSize="20sp"
-        android:gravity="center_horizontal"
-        android:visibility="gone"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp" />
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/linearLayout_transactions"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_transaction_totals"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_transaction_elements"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@+id/recyclerView_transaction_totals" />
+
+            <TextView
+                android:id="@+id/textView_transaction_nodata"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/tt_nodata"
+                android:textStyle="normal|italic"
+                android:textSize="20sp"
+                android:gravity="center_horizontal"
+                android:visibility="gone"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
+
+        </RelativeLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/FAB_transaction_new"
-        android:layout_width="wrap_content"
-        app:borderWidth="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
+    android:id="@+id/FAB_transaction_new"
+    android:layout_width="wrap_content"
+    app:borderWidth="0dp"
+    android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:src="@drawable/ic_plus_white_24dp"
-        android:scaleType="center" />
-
+    android:layout_marginBottom="@dimen/fab_margin"
+    android:src="@drawable/ic_plus_white_24dp"
+    android:scaleType="center"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
