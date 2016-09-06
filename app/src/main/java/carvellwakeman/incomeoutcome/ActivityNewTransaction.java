@@ -825,7 +825,7 @@ public class ActivityNewTransaction extends AppCompatActivity
 
             }
         } else {
-            Toast.makeText(this, "Missing Category", Toast.LENGTH_LONG).show();
+            ProfileManager.Print("Missing Category");
         }
 
     }

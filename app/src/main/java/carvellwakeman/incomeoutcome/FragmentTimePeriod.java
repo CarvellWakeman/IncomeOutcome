@@ -122,7 +122,7 @@ public class FragmentTimePeriod extends Fragment {
                 case 2: //Repeat - Weekly
                     timePeriod.SetRepeatFrequency(Repeat.WEEKLY);
                     if (AllDaysOff()){
-                        Toast.makeText(getActivity(), "Check at least 1 day of the week to repeat on.", Toast.LENGTH_LONG).show();
+                        ProfileManager.Print("Check at least 1 day of the week to repeat on.");
                     }
                     else {
                         timePeriod.SetDayOfWeek(0, GetValMon());

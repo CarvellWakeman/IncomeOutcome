@@ -336,14 +336,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
             }
             return alc;
         } catch(SQLException sqlEx){
-            Log.d("printing exception", sqlEx.getMessage());
+            //Log.d("printing exception", sqlEx.getMessage());
             //if any exceptions are triggered save the error message to cursor an return the arraylist
             Cursor2.addRow(new Object[] { ""+sqlEx.getMessage() });
             alc.set(1,Cursor2);
             return alc;
         } catch(Exception ex){
 
-            Log.d("printing exception", ex.getMessage());
+            //Log.d("printing exception", ex.getMessage());
 
             //if any exceptions are triggered save the error message to cursor an return the arraylist
             Cursor2.addRow(new Object[] { ""+ex.getMessage() });

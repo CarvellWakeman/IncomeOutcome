@@ -633,10 +633,10 @@ public class NewExpenseActivity extends AppCompatActivity
                 finish();
             }
             else {
-                Toast.makeText(this, "Missing Expense Data", Toast.LENGTH_LONG).show();
+                ProfileManager.Print("Missing Expense Data");
             }
         } else {
-            Toast.makeText(this, "Missing Category", Toast.LENGTH_LONG).show();
+            ProfileManager.Print("Missing Category");
         }
 
     }

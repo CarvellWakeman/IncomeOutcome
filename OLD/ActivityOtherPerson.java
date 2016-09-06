@@ -111,11 +111,11 @@ public class ActivityOtherPerson extends AppCompatActivity
                         adapter.addAll(ProfileManager.GetOtherPeople());
                     }
                     else {
-                        Toast.makeText(ActivityOtherPerson.this, "Person already exists", Toast.LENGTH_SHORT).show();
+                        ProfileManager.Print("Person already exists");
                     }
                 }
                 else {
-                    Toast.makeText(ActivityOtherPerson.this, "Name field empty, try again", Toast.LENGTH_SHORT).show();
+                    ProfileManager.Print("Name field empty, try again");
                 }
             }
         });

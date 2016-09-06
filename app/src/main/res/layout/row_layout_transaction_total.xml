@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/checkBox_transaction_expand"
                 android:button="@drawable/ic_keyboard_arrow_down_white_24dp"
-                android:buttonTint="#000000"
+                android:theme="@style/BlackCheckboxTheme"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true" />
 

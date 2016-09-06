@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
 import org.joda.time.LocalDate;
 
 
@@ -47,7 +46,7 @@ public class ExpenseActivity extends AppCompatActivity
         _profile = ProfileManager.GetProfile(_profileID);
         if (_profile == null)
         {
-            Toast.makeText(this, "Invalid Profile Data, Cannot Open.", Toast.LENGTH_SHORT).show();
+            ProfileManager.Print("Invalid Profile Data, Cannot Open.");
             finish();
         }
         else {
@@ -183,7 +182,7 @@ public class ExpenseActivity extends AppCompatActivity
                         if (ex != null) { pr.AddExpense(ex); }
                     }
                     else {
-                        Toast.makeText(this, "Could not edit expense, profile not found", Toast.LENGTH_SHORT).show();
+                        ProfileManager.Print("Could not edit expense, profile not found");
                     }
 
                     // Blacklist old expense date since this was a clone
@@ -249,7 +248,7 @@ public class ExpenseActivity extends AppCompatActivity
             }
         }
         else{
-            Toast.makeText(this, "Could not edit expense, could not find profile.", Toast.LENGTH_LONG).show();
+            ProfileManager.Print("Could not edit expense, could not find profile.");
         }
     }
 

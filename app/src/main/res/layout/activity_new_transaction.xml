@@ -109,7 +109,7 @@
                             android:layout_height="match_parent"
                             android:text="Split Cost"
                             android:id="@+id/checkBox_newTransaction_splitEnabled"
-                            android:buttonTint="@color/gray"
+                            android:theme="@style/BlackCheckboxTheme"
                             android:textAppearance="?android:attr/textAppearanceSmall"
                             android:layout_weight="3"
                             android:layout_gravity="bottom"
@@ -297,7 +297,6 @@
                             android:spinnerMode="dropdown"
                             android:layout_weight="3"
                             android:theme="@style/MaterialTheme"
-                            android:backgroundTint="#000000"
                             android:visibility="gone" />
 
                         <android.support.design.widget.TextInputLayout

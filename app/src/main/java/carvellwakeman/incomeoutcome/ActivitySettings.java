@@ -134,7 +134,7 @@ public class ActivitySettings extends AppCompatActivity
         //Insert categories
         profilesPeopleCategories.insert(insertPoint, 0);
         database.insert(insertPoint, 1);
-        debug.insert(insertPoint, 2);
+        if (ProfileManager.isDebugMode()){ debug.insert(insertPoint, 2); }
     }
 
 

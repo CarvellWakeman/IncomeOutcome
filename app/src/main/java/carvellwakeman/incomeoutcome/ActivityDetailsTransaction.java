@@ -89,7 +89,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         _profile = ProfileManager.GetProfileByID(_profileID);
         if (_profile == null)
         {
-            Toast.makeText(this, "Invalid Profile Data, Cannot Open details activity.", Toast.LENGTH_SHORT).show();
+            ProfileManager.Print("Invalid Profile Data, Cannot Open details activity.");
             finish();
         }
         else {
@@ -361,7 +361,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             }
         }
         else{
-            Toast.makeText(this, "Could not edit expense, could not find profile.", Toast.LENGTH_LONG).show();
+            ProfileManager.Print("Could not edit expense, could not find profile.");
         }
     }
     */
@@ -375,7 +375,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             startActivityForResult(intent, 0);
         }
         else{
-            Toast.makeText(this, "Could not duplicate transaction - profile not found.", Toast.LENGTH_LONG).show();
+            ProfileManager.Print("Could not duplicate transaction - profile not found.");
         }
     }
     public void editTransaction(Transaction tran, int profileID){
@@ -388,7 +388,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             startActivityForResult(intent, 1);
         }
         else{
-            Toast.makeText(this, "Could not edit transaction - profile not found.", Toast.LENGTH_LONG).show();
+            ProfileManager.Print("Could not edit transaction - profile not found.");
         }
     }
     public void cloneTransaction(Transaction tran, int profileID, LocalDate date){
@@ -402,7 +402,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             startActivityForResult(intent, 2);
         }
         else{
-            Toast.makeText(this, "Could not clone transaction - profile not found.", Toast.LENGTH_LONG).show();
+            ProfileManager.Print("Could not clone transaction - profile not found.");
         }
     }
 

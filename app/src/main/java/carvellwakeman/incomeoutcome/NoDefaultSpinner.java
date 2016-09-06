@@ -25,7 +25,7 @@ public class NoDefaultSpinner extends Spinner {
             }
 
         } catch( Exception e ) {
-            Log.e("spinner reflection bug:", e.getMessage());
+            //Log.e("spinner reflection bug:", e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -47,7 +47,7 @@ public class NoDefaultSpinner extends Spinner {
             Class noparams[] = {};
             s_pSelectionChangedMethod.invoke(this, noparams);
         } catch (Exception e) {
-            Log.e("spinner reflection bug:", e.getMessage());
+            //Log.e("spinner reflection bug:", e.getMessage());
             e.printStackTrace();
         }
     }

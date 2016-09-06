@@ -8,6 +8,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -15,9 +16,7 @@ import android.os.Build;
 import android.os.SystemClock;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.*;
-import android.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -229,8 +228,8 @@ public class ProfileManager
 
 
     //Universal print
-    public static void Print(String msg){ Toast.makeText(MainActivityContext, msg, Toast.LENGTH_SHORT).show(); }
-    public static void PrintLong(String msg){ Toast.makeText(MainActivityContext, msg, Toast.LENGTH_LONG).show(); }
+    public static void Print(String msg){ if (isDebugMode()) { Toast.makeText(MainActivityContext, msg, Toast.LENGTH_SHORT).show(); } }
+    public static void PrintLong(String msg){ if (isDebugMode()) { Toast.makeText(MainActivityContext, msg, Toast.LENGTH_LONG).show(); } }
     static int ret = 0;
     public static int AlertDialog(String title, String positive, String negative){
         AlertDialog.Builder b = new AlertDialog.Builder(MainActivityInstance);
@@ -661,19 +660,22 @@ public class ProfileManager
     public static boolean isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (MainActivityContext.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                //Log.v("PERMISSIONS","External Write Storage permission is granted");
+                ////Log.v("PERMISSIONS","External Write Storage permission is granted");
                 return true;
             } else {
-                //Log.v("PERMISSIONS", "External Write Storage permission is not granted");
+                ////Log.v("PERMISSIONS", "External Write Storage permission is not granted");
                 return false;
             }
         }
         else { //permission is automatically granted on sdk<23 upon installation
-            //Log.v("PERMISSIONS","Permission is granted");
+            ////Log.v("PERMISSIONS","Permission is granted");
             return true;
         }
+    }
 
-
+    //DEBUG
+    public static boolean isDebugMode(){
+        return (0 != (MainActivityInstance.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
     }
 
 

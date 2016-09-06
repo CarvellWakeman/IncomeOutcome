@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/tt_showall"
                 android:layout_centerVertical="true"
-                android:buttonTint="@color/white"
+                android:theme="@style/WhiteCheckboxTheme"
                 android:textColor="@color/white"/>
 
             <ImageView
