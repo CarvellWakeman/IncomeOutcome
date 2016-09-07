@@ -76,7 +76,7 @@ public class DialogFragmentTransferTransaction extends DialogFragment
                         .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ProfileManager.DeleteProfile(current);
+                                ProfileManager.getInstance().DeleteProfile(current);
                                 _parent.finish();
                                 dismiss();
                             }})
@@ -104,7 +104,7 @@ public class DialogFragmentTransferTransaction extends DialogFragment
     //Transfer Transaction
     public void TransferTransaction(Profile pr){
         current.TransferAllTransactions(pr);
-        ProfileManager.DeleteProfile(current);
+        ProfileManager.getInstance().DeleteProfile(current);
         dismiss();
 
         //Update adapter from ActivityManageProfiles

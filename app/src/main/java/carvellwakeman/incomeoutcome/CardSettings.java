@@ -13,8 +13,8 @@ public class CardSettings extends Card
 
     int settingsCount;
 
-    public CardSettings(Context context, LayoutInflater inflater, int layout, String title){
-        super(context, inflater, layout);
+    public CardSettings(Context context, LayoutInflater inflater, ViewGroup insertPoint, int index, int layout, String title){
+        super(context, inflater, layout, insertPoint, index);
 
         //Settings count
         settingsCount = 0;
@@ -32,8 +32,8 @@ public class CardSettings extends Card
         settingsCount++;
     }
 
-    public void insert(ViewGroup insertPoint, int index){
-        insertPoint.addView(v, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-    }
+    //public void insert(ViewGroup insertPoint, int index){
+        //insertPoint.addView(v, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    //}
 
 }

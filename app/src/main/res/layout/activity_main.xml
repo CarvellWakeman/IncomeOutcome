@@ -29,7 +29,6 @@ android:layout_height="match_parent">
                 android:id="@+id/button_suggest_addprofile"
                 style="@style/RaisedButtonTheme"
                 android:visibility="gone"
-                android:layout_alignParentTop="true"
                 android:layout_marginBottom="16dp" />
 
         </LinearLayout>

@@ -30,7 +30,7 @@ public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeopl
     public void onBindViewHolder(final PersonViewHolder holder, int position)
     {
         //Person
-        String pr = ProfileManager.GetOtherPersonByIndex(position);
+        String pr = ProfileManager.getInstance().GetOtherPersonByIndex(position);
         if (pr != null) {
             //Textview
             holder.title.setText(pr);
@@ -41,7 +41,7 @@ public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeopl
 
     @Override public int getItemCount()
     {
-        return ProfileManager.GetOtherPeopleCount();
+        return ProfileManager.getInstance().GetOtherPeopleCount();
     }
 
 
@@ -51,12 +51,12 @@ public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeopl
 
         @Override
         public void onClick(View v) {
-            ProfileManager.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, ProfileManager.GetOtherPersonByIndex(getAdapterPosition()), "", ProfileManager.GetOtherPersonByIndex(getAdapterPosition()),
+            ProfileManager.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, ProfileManager.getInstance().GetOtherPersonByIndex(getAdapterPosition()), "", ProfileManager.getInstance().GetOtherPersonByIndex(getAdapterPosition()),
                     new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.EditPerson(data, dialogFragment); } },
                     null,
                     new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeletePerson(data, dialogFragment); } }
             ), true); //TODO: Handle mIsLargeDisplay
-            //ProfileManager.OpenDialogFragment(parent, DialogFragmentManageProfile.newInstance(parent, ProfileManager.GetProfileByIndex(getAdapterPosition())), true); //TODO: Handle mIsLargeDisplay
+            //ProfileManager.OpenDialogFragment(parent, DialogFragmentManageProfile.newInstance(parent, ProfileManager.getInstance().GetProfileByIndex(getAdapterPosition())), true); //TODO: Handle mIsLargeDisplay
             //parent.EditPerson(ProfileManager.GetOtherPersonByIndex(getAdapterPosition()));
         }
     }

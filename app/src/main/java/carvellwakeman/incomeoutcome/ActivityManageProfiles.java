@@ -15,6 +15,7 @@ import android.support.v7.widget.*;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import org.joda.time.LocalDate;
@@ -142,7 +143,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String str = editText_profilename.getText().toString();
                 if (!str.equals("")) {
-                    if (!ProfileManager.HasProfile(str)) {
+                    if (!ProfileManager.getInstance().HasProfile(str)) {
                         TIL.setError("");
                     }
                     else{ TIL.setError("Profile already exists"); }
@@ -237,11 +238,11 @@ public class ActivityManageProfiles extends AppCompatActivity {
                         if (!editText_profilename.getText().toString().equals("")){
                             editingprofile.SetName(editText_profilename.getText().toString());
 
-                            editingprofile.SetPeriod(period);
-                            editingprofile.SetStartTime(start_date);
-                            if (end_date!= null) { editingprofile.SetEndTime(end_date); }
+                            editingprofile.SetPeriodDontSave(period);
+                            editingprofile.SetStartTimeDontSave(start_date);
+                            if (end_date!= null) { editingprofile.SetEndTimeDontSave(end_date); }
 
-                            ProfileManager.UpdateProfile(editingprofile);
+                            ProfileManager.getInstance().UpdateProfile(editingprofile);
 
                             adapter.notifyDataSetChanged();
 
@@ -256,12 +257,12 @@ public class ActivityManageProfiles extends AppCompatActivity {
                     if (!editText_profilename.getText().toString().equals("")){
                         Profile pr = new Profile(editText_profilename.getText().toString());
 
-                        pr.SetPeriod(period);
-                        pr.SetStartTime(start_date);
-                        if (end_date!= null) { pr.SetEndTime(end_date); }
+                        pr.SetPeriodDontSave(period);
+                        pr.SetStartTimeDontSave(start_date);
+                        if (end_date!= null) { pr.SetEndTimeDontSave(end_date); }
 
-                        ProfileManager.AddProfile(pr);
-                        ProfileManager.SelectProfile(pr);
+                        ProfileManager.getInstance().AddProfile(pr);
+                        ProfileManager.getInstance().SelectProfile(pr);
 
                         adapter.notifyDataSetChanged();
 
@@ -270,6 +271,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
                         //finish();
                     }
                 }
+                ProfileManager.hideSoftKeyboard(this, toolbar);
                 return true;
             default:
                 return false;
@@ -286,7 +288,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
 
     //Edit profile
     public void EditProfile(final String id, DialogFragmentManagePPC dialogFragment){
-        Profile pr = ProfileManager.GetProfileByID(Integer.valueOf(id));
+        Profile pr = ProfileManager.getInstance().GetProfileByID(Integer.valueOf(id));
         if (pr != null) {
             editingprofile = pr;
 
@@ -317,9 +319,9 @@ public class ActivityManageProfiles extends AppCompatActivity {
 
     //Select profile
     public void SelectProfile(String id, final DialogFragmentManagePPC dialogFragment){
-        Profile pr = ProfileManager.GetProfileByID(Integer.valueOf(id));
+        Profile pr = ProfileManager.getInstance().GetProfileByID(Integer.valueOf(id));
         if (pr != null) {
-            if (!ProfileManager.SelectProfile(pr)) {ProfileManager.Print("Selected Profile could not be found.");}
+            if (!ProfileManager.getInstance().SelectProfile(pr)) {ProfileManager.Print(this, "Selected Profile could not be found.");}
             adapter.notifyDataSetChanged();
             dialogFragment.dismiss();
         }
@@ -327,7 +329,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
 
     //Delete profile
     public void DeleteProfile(String id, final DialogFragmentManagePPC dialogFragment){
-        final Profile pr = ProfileManager.GetProfileByID(Integer.valueOf(id));
+        final Profile pr = ProfileManager.getInstance().GetProfileByID(Integer.valueOf(id));
         if (pr != null) {
             if (pr.GetTransactionsSize() > 0) {
                 ProfileManager.OpenDialogFragment(this, DialogFragmentTransferTransaction.newInstance(this, pr), true); //TODO: Handle mIsLargeDisplay
@@ -337,7 +339,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
                         .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ProfileManager.DeleteProfile(pr);
+                                ProfileManager.getInstance().DeleteProfile(pr);
                                 adapter.notifyDataSetChanged();
                                 dialogFragment.dismiss();
                                 dialog.dismiss();
@@ -365,7 +367,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
             else { SetSaveButtonEnabled(true); }
         }
         else {
-            if ( (name.equals("")) || (!name.equals("") && ProfileManager.HasProfile(name))) {
+            if ( (name.equals("")) || (!name.equals("") && ProfileManager.getInstance().HasProfile(name))) {
                 SetSaveButtonEnabled(false);
             }
             else { SetSaveButtonEnabled(true); }

@@ -29,7 +29,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
     public AdapterDetailsTransaction(ActivityDetailsTransaction activity, int profileID, int activityType)
     {
         _profileID = profileID;
-        _profile = ProfileManager.GetProfileByID(profileID);
+        _profile = ProfileManager.getInstance().GetProfileByID(profileID);
 
         this.activity = activity;
 
@@ -141,7 +141,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     else { holder.sourceName.setText(transaction.GetSourceName()); }
 
                     //Color Bar
-                    Category cat = ProfileManager.GetCategory(transaction.GetCategory());
+                    Category cat = ProfileManager.getInstance().GetCategory(transaction.GetCategory());
                     if (cat != null && cat.GetColor() != 0) {
                         holder.colorbar.setColorFilter(cat.GetColor());
                     } else {

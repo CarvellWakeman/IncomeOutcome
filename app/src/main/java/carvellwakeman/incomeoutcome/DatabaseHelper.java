@@ -1,33 +1,25 @@
 package carvellwakeman.incomeoutcome;
 
 
-import android.Manifest;
+import android.os.AsyncTask;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.database.*;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import org.apache.commons.io.FileUtils;
-import org.joda.time.LocalDate;
 import org.joda.time.Period;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-import static carvellwakeman.incomeoutcome.ProfileManager.Print;
 
 public class DatabaseHelper extends SQLiteOpenHelper
 {
@@ -35,8 +27,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     SQLiteDatabase database;
     private Context activityContext;
 
-    ContentValues contentValues_tr;
-    ContentValues contentValues_tp;
+    private ContentValues contentValues_tr;
+    private ContentValues contentValues_tp;
 
     //DATABASE_VERSION
     private static final int DATABASE_VERSION = 6;
@@ -337,7 +329,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public void onCreate(SQLiteDatabase db) {
         TryCreateDatabase(db);
     }
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //ProfileManager.Print("OnUpgrade (" + oldVersion + "->" + newVersion + ")");
@@ -347,19 +338,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
             switch(oldVersion){
                 case 1: //To version 2
                     cv.clear();
-                    Print("Version 1 Upgrade not supported");
+                    //ProfileManager.Print(activityContext, "Version 1 Upgrade not supported");
                 case 2: //To version 3 (Not neccessary upgrade)
                     //SQLExecuteMultiple(db, UPGRADE_2_3);
                     //ProfileManager.Print("Upgrade from Ver.2 to Ver.3");
                 case 3: //To version 4
                     SQLExecuteMultiple(db, UPGRADE_3_4);
-                    Print("Upgrade from Ver.3 to Ver.4");
+                    //ProfileManager.Print(activityContext, "Upgrade from Ver.3 to Ver.4");
                 case 4: //To version 5
                     SQLExecuteMultiple(db, UPGRADE_4_5);
-                    Print("Upgrade from Ver.4 to Ver.5");
+                    //ProfileManager.Print(activityContext, "Upgrade from Ver.4 to Ver.5");
                 case 5: //To version 6
                     SQLExecuteMultiple(db, UPGRADE_5_6);
-                    Print("Upgrade from Ver.5 to Ver.6");
+                    //ProfileManager.Print(activityContext, "Upgrade from Ver.5 to Ver.6");
                 case 6: //To version 7
             }
             //OLD
@@ -386,8 +377,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         }
         catch(SQLException ex){
-            ProfileManager.PrintLong(ex.getMessage());
-            Print("Error upgrading database");
+            //ProfileManager.PrintLong(activityContext, ex.getMessage());
+            //ProfileManager.Print(activityContext, "Error upgrading database");
         }
     }
 
@@ -400,9 +391,94 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
     }
 
+
+    //Database directories & Version
     public String GetExportDirectory(){ return EXPORT_DIRECTORY.getAbsolutePath(); }
+    public ArrayList<File> getImportableDatabases(){
+        try {
+            ArrayList<File> DatabaseFiles = new ArrayList<>();
+
+            if (ProfileManager.isStoragePermissionGranted(activityContext)){
+                File data = new File(Environment.getExternalStorageDirectory() + "/" + activityContext.getString(R.string.app_name_nospace) + "/");
+
+                if (data.canRead()) {
+                    for (File file : data.listFiles()) {
+                        if(file.getName().endsWith(".db")){
+                            DatabaseFiles.add(file);
+                        }
+                    }
+
+                    return DatabaseFiles;
+                }
+                else {
+                    //ProfileManager.Print(activityContext, "Cannot Read Database Import Directory");
+                }
+            }
+            else {
+                //ProfileManager.Print(activityContext, "Storage permission not granted, cannot import databases");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+    public ArrayList<String> getImportableDatabasesString(){
+        try {
+            File data = new File(Environment.getExternalStorageDirectory() + "/" + activityContext.getString(R.string.app_name_nospace) + "/");
+            ArrayList<String> DatabaseFiles = new ArrayList<>();
+
+            if (ProfileManager.isStoragePermissionGranted(activityContext)){
+                if (data.canRead()) {
+                    for (File file : data.listFiles()) {
+                        if(file.getName().endsWith(".db")){
+                            DatabaseFiles.add(file.getName().replace(".db", ""));
+                        }
+                    }
+
+                    return DatabaseFiles;
+                }
+                else {
+                    //ProfileManager.Print(activityContext, "Cannot Read Database Import Directory");
+                }
+            }
+            else {
+                //ProfileManager.Print(activityContext, "Storage permission not granted, cannot import databases");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+    public File getDatabaseByPath(String path){
+        if (ProfileManager.isStoragePermissionGranted(activityContext)){
+            File data = new File(Environment.getExternalStorageDirectory() + "/" + activityContext.getString(R.string.app_name_nospace) + "/");
+
+            if (data.canRead()) {
+                for (File file : data.listFiles()) {
+                    if(file.getName().endsWith(".db")){
+                        if (file.getAbsolutePath().equals(path)) { return file; }
+                    }
+                }
+            }
+            else {
+                //ProfileManager.Print(activityContext, "Cannot Read Database Import Directory");
+            }
+        }
+        else {
+            //ProfileManager.Print(activityContext, "Storage permission not granted, cannot import databases");
+        }
+
+        return null;
+    }
+
     public int GetNewestVersion() { return DATABASE_VERSION; }
 
+
+    //Database properties
     public boolean isDatabaseEmpty(){
 
         return (!isTableExists(TABLE_SETTINGS_PROFILES, false) ||
@@ -417,18 +493,20 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 !isTableEmpty(TABLE_TRANSACTIONS) ||
                 !isTableEmpty(TABLE_TIMEPERIODS));
     }
-
     public boolean isTableExists(String tableName, boolean openDb) {
+        /*
         if(openDb) {
             if(database == null || !database.isOpen()) {
                 database = getReadableDatabase();
             }
 
             if(!database.isReadOnly()) {
-                database.close();
+                //database.close();
                 database = getReadableDatabase();
             }
         }
+
+        database = getReadableDatabase();
 
         if (database != null) {
             Cursor cursor = database.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '" + tableName + "'", null);
@@ -437,8 +515,20 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     cursor.close();
                     return true;
                 }
-                cursor.close();
+                else { cursor.close(); }
             }
+        }
+        return false;
+        */
+        if (database != null){
+            Cursor c = database.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + tableName + "'", null);
+            if (c != null){
+                if (c.getCount() > 0){
+                    c.close();
+                    return true;
+                }
+            }
+            return false;
         }
         return false;
     }
@@ -452,34 +542,42 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return true;
     }
 
+
+    //Creating and deleting database
     public void TryCreateDatabase(){ TryCreateDatabase(getWritableDatabase()); }
     public void TryCreateDatabase(SQLiteDatabase db){
         //Try to create database
         try {
             //Try create settings tables
             try {
-                if (!isTableExists(TABLE_SETTINGS_CATEGORIES, false)) {
+                //if (!isTableExists(TABLE_SETTINGS_CATEGORIES, false)) {
                     db.execSQL(CREATE_TABLE_SETTINGS_CATEGORIES);
-                }
-                if (!isTableExists(TABLE_SETTINGS_OTHERPEOPLE, false)) {
+                    //Log.e("DATABASE", "TryCreateDatabase:Categories Table");
+                //}
+                //else { Log.e("DATABASE", "Categories Table Exists"); }
+                //if (!isTableExists(TABLE_SETTINGS_OTHERPEOPLE, false)) {
                     db.execSQL(CREATE_TABLE_SETTINGS_OTHERPEOPLE);
-                }
-                if (!isTableExists(TABLE_SETTINGS_PROFILES, false)) {
+                //    Log.e("DATABASE", "TryCreateDatabase:people Table");
+                //}
+                //else { Log.e("DATABASE", "People Table Exists"); }
+                //if (!isTableExists(TABLE_SETTINGS_PROFILES, false)) {
                     db.execSQL(CREATE_TABLE_SETTINGS_PROFILES);
-                }
+                //    Log.e("DATABASE", "TryCreateDatabase:profiles Table");
+                //}
+                //else { Log.e("DATABASE", "Profiles Table Exists"); }
                 //ProfileManager.Print("Settings tables created");
             } catch (SQLException ex){
-                Print("Error creating Settings table");
+                //ProfileManager.Print(activityContext, "Error creating Settings table");
                 ex.printStackTrace();
             }
             //Try create transactions table
             try {
-                if (!isTableExists(TABLE_TRANSACTIONS, false)) {
+                //if (!isTableExists(TABLE_TRANSACTIONS, false)) {
                     db.execSQL(CREATE_TABLE_TRANSACTIONS);
                     //ProfileManager.Print("Transactions table created");
-                }
+                //}
             } catch (SQLException ex){
-                Print("Error creating transactions table");
+                //ProfileManager.Print(activityContext, "Error creating transactions table");
                 ex.printStackTrace();
             }
             //Try create income table
@@ -494,12 +592,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
             //}
             //Try create timeperiod table
             try {
-                if (!isTableExists(TABLE_TIMEPERIODS, false)) {
+                //if (!isTableExists(TABLE_TIMEPERIODS, false)) {
                     db.execSQL(CREATE_TABLE_TIMEPERIOD);
                     //ProfileManager.Print("TimePeriod table created");
-                }
+                //}
             } catch (SQLException ex){
-                Print("Error creating TimePeriod table");
+                //ProfileManager.Print(activityContext, "Error creating TimePeriod table");
                 ex.printStackTrace();
             }
 
@@ -507,50 +605,51 @@ public class DatabaseHelper extends SQLiteOpenHelper
             //ProfileManager.Print("Database created");
         }
         catch(SQLException ex){
-            Print("Error creating database");
+            //ProfileManager.Print(activityContext, "Error creating database");
             ex.printStackTrace();
         }
     }
 
     public void DeleteDB(){
 
-        if (isTableExists(TABLE_SETTINGS_CATEGORIES, true)){
+        if (isTableExists(TABLE_SETTINGS_CATEGORIES, false)){
             database.delete(TABLE_SETTINGS_CATEGORIES, null, null);
-            database.execSQL(DROP_TABLE_SETTINGS_CATEGORIES);
+            //database.execSQL(DROP_TABLE_SETTINGS_CATEGORIES);
         } //else { ProfileManager.Print(TABLE_SETTINGS_CATEGORIES + " not found"); }
 
-        if (isTableExists(TABLE_SETTINGS_OTHERPEOPLE, true)){
+        if (isTableExists(TABLE_SETTINGS_OTHERPEOPLE, false)){
             database.delete(TABLE_SETTINGS_OTHERPEOPLE, null, null);
-            database.execSQL(DROP_TABLE_SETTINGS_OTHERPEOPLE);
+            //database.execSQL(DROP_TABLE_SETTINGS_OTHERPEOPLE);
         } //else { ProfileManager.Print(TABLE_SETTINGS_OTHERPEOPLE + " not found"); }
 
-        if (isTableExists(TABLE_SETTINGS_PROFILES, true)){
+        if (isTableExists(TABLE_SETTINGS_PROFILES, false)){
             database.delete(TABLE_SETTINGS_PROFILES, null, null);
-            database.execSQL(DROP_TABLE_SETTINGS_PROFILES);
+            //database.execSQL(DROP_TABLE_SETTINGS_PROFILES);
         } //else { ProfileManager.Print(TABLE_SETTINGS_PROFILES + " not found"); }
 
 
-            if (isTableExists(TABLE_EXPENSES, true)){
+            if (isTableExists(TABLE_EXPENSES, false)){
                 database.delete(TABLE_EXPENSES, null, null);
-                database.execSQL(DROP_TABLE_EXPENSES);
+                //database.execSQL(DROP_TABLE_EXPENSES);
             } //else { ProfileManager.Print(TABLE_EXPENSES + " not found"); }
-            if (isTableExists(TABLE_INCOME, true)){
+            if (isTableExists(TABLE_INCOME, false)){
                 database.delete(TABLE_INCOME, null, null);
-                database.execSQL(DROP_TABLE_INCOME);
+                //database.execSQL(DROP_TABLE_INCOME);
             } //else { ProfileManager.Print(TABLE_INCOME + " not found"); }
-        if (isTableExists(TABLE_TRANSACTIONS, true)){
+        if (isTableExists(TABLE_TRANSACTIONS, false)){
             database.delete(TABLE_TRANSACTIONS, null, null);
-            database.execSQL(DROP_TABLE_TRANSACTIONS);
+            //database.execSQL(DROP_TABLE_TRANSACTIONS);
         }
-        if (isTableExists(TABLE_TIMEPERIODS, true)){
+        if (isTableExists(TABLE_TIMEPERIODS, false)){
             database.delete(TABLE_TIMEPERIODS, null, null);
-            database.execSQL(DROP_TABLE_TIMEPERIODS);
+            //database.execSQL(DROP_TABLE_TIMEPERIODS);
         } //else { ProfileManager.Print(TABLE_TIMEPERIODS + " not found"); }
 
         //onCreate(database);
     }
 
 
+    //Import and Export
     public void exportDatabase(String str) { exportDatabase(str, EXPORT_DIRECTORY); }
     public void exportDatabase(String str, File destination) {
 
@@ -561,7 +660,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             String[] sp1 = FILE_NAME.split("\\.");
             String filename = sp1[0];
 
-            if (ProfileManager.isStoragePermissionGranted()){
+            if (ProfileManager.isStoragePermissionGranted(activityContext)){
                 //Create backup directory if it does not exist
                 destination.mkdirs();
 
@@ -586,7 +685,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 }
             }
             else {
-                Print("Storage permission not granted, cannot export database");
+                //ProfileManager.Print(activityContext, "Storage permission not granted, cannot export database");
             }
 
 
@@ -595,87 +694,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
             e.printStackTrace();
         }
 
-    }
-
-    public File getDatabaseByPath(String path){
-        if (ProfileManager.isStoragePermissionGranted()){
-            File data = new File(Environment.getExternalStorageDirectory() + "/" + activityContext.getString(R.string.app_name_nospace) + "/");
-
-            if (data.canRead()) {
-                for (File file : data.listFiles()) {
-                    if(file.getName().endsWith(".db")){
-                        if (file.getAbsolutePath().equals(path)) { return file; }
-                    }
-                }
-            }
-            else {
-                Print("Cannot Read Database Import Directory");
-            }
-        }
-        else {
-            Print("Storage permission not granted, cannot import databases");
-        }
-
-        return null;
-    }
-    public ArrayList<File> getImportableDatabases(){
-        try {
-            ArrayList<File> DatabaseFiles = new ArrayList<>();
-
-            if (ProfileManager.isStoragePermissionGranted()){
-                File data = new File(Environment.getExternalStorageDirectory() + "/" + activityContext.getString(R.string.app_name_nospace) + "/");
-
-                if (data.canRead()) {
-                    for (File file : data.listFiles()) {
-                        if(file.getName().endsWith(".db")){
-                            DatabaseFiles.add(file);
-                        }
-                    }
-
-                    return DatabaseFiles;
-                }
-                else {
-                    Print("Cannot Read Database Import Directory");
-                }
-            }
-            else {
-                Print("Storage permission not granted, cannot import databases");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-    public ArrayList<String> getImportableDatabasesString(){
-        try {
-            File data = new File(Environment.getExternalStorageDirectory() + "/" + activityContext.getString(R.string.app_name_nospace) + "/");
-            ArrayList<String> DatabaseFiles = new ArrayList<>();
-
-            if (ProfileManager.isStoragePermissionGranted()){
-                if (data.canRead()) {
-                    for (File file : data.listFiles()) {
-                        if(file.getName().endsWith(".db")){
-                            DatabaseFiles.add(file.getName().replace(".db", ""));
-                        }
-                    }
-
-                    return DatabaseFiles;
-                }
-                else {
-                    Print("Cannot Read Database Import Directory");
-                }
-            }
-            else {
-                Print("Storage permission not granted, cannot import databases");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     public void importDatabase(File importFile){ importDatabase(importFile, false); }
@@ -687,7 +705,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             File currentDB = new File(Environment.getDataDirectory(), currentDBPath + FILE_NAME);
 
 
-            if (ProfileManager.isStoragePermissionGranted()){
+            if (ProfileManager.isStoragePermissionGranted(activityContext)){
                 if (currentDB.canWrite() || importFile.canRead()) {
                     if (currentDB.exists()) {
 
@@ -713,84 +731,34 @@ public class DatabaseHelper extends SQLiteOpenHelper
                         //Force call onUpgrade
                         //final int oldVersion = SQLiteDatabase.openDatabase(importFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
                         //onUpgrade(getWritableDatabase(), oldVersion, DATABASE_VERSION);
-                        getWritableDatabase().close();
+                        //getWritableDatabase().close();
 
 
                         //Load new database
+                        //(new DatabaseBackgroundHelper()).execute(8); //loadSettings();
+                        //(new DatabaseBackgroundHelper()).execute(9); //loadTransactions();
                         loadSettings();
                         loadTransactions();
-                        //loadIncome();
 
 
-                        ProfileManager.PrintLong(importFile.getName() + " imported");
+                        //ProfileManager.PrintLong(activityContext, importFile.getName() + " imported");
                     }
                 }
             }
             else {
-                Print("Storage permission not granted, cannot import database");
+                //ProfileManager.Print(activityContext, "Storage permission not granted, cannot import database");
             }
 
         } catch (Exception e) {
-            Print("Error importing database");
-            ProfileManager.PrintLong(e.getMessage());
+            //ProfileManager.Print(activityContext, "Error importing database");
+            //ProfileManager.PrintLong(activityContext, e.getMessage());
         }
 
     }
 
 
-
-    public ArrayList<Cursor> getData(String Query){
-        //get writable database
-        SQLiteDatabase sqlDB = this.getWritableDatabase();
-        String[] columns = new String[] { "message" };
-        //an array list of cursor to save two cursors one has results from the query
-        //other cursor stores error message if any errors are triggered
-        ArrayList<Cursor> alc = new ArrayList<Cursor>(2);
-        MatrixCursor Cursor2= new MatrixCursor(columns);
-        alc.add(null);
-        alc.add(null);
-
-
-        try{
-            //execute the query results will be save in Cursor c
-            Cursor c = sqlDB.rawQuery(Query, null);
-
-
-            //add value to cursor2
-            Cursor2.addRow(new Object[] { "Success" });
-
-            alc.set(1,Cursor2);
-            if (null != c && c.getCount() > 0) {
-
-
-                alc.set(0,c);
-                c.moveToFirst();
-
-                return alc ;
-            }
-            return alc;
-        } catch(SQLException sqlEx){
-            //Log.d("printing exception", sqlEx.getMessage());
-            //if any exceptions are triggered save the error message to cursor an return the arraylist
-            Cursor2.addRow(new Object[] { ""+sqlEx.getMessage() });
-            alc.set(1,Cursor2);
-            return alc;
-        } catch(Exception ex){
-
-            //Log.d("printing exception", ex.getMessage());
-
-            //if any exceptions are triggered save the error message to cursor an return the arraylist
-            Cursor2.addRow(new Object[] { ""+ex.getMessage() });
-            alc.set(1,Cursor2);
-            return alc;
-        }
-
-
-    }
-
-
-
-    public long insertSetting(Category category, Boolean tryUpdate)
+    //Insertion
+    public long insertSetting(Category category, boolean tryUpdate)
     {
         database = getWritableDatabase();
 
@@ -810,7 +778,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             return result;
         } else{ return -1; }
     }
-    public long insertSetting(String person, Boolean tryUpdate)
+    public long insertSetting(String person, boolean tryUpdate)
     {
         database = getWritableDatabase();
 
@@ -828,7 +796,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             return result;
         } else{ return -1; }
     }
-    public long insertSetting(Profile profile, Boolean tryUpdate)
+    public long insertSetting(Profile profile, boolean tryUpdate)
     {
         database = getWritableDatabase();
 
@@ -841,7 +809,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     contentValues_tr.put(COLUMN_uniqueID, profile.GetID());
                     contentValues_tr.put(COLUMN_profile, profile.GetName());
 
-                    Profile pr = ProfileManager.GetCurrentProfile();
+                    Profile pr = ProfileManager.getInstance().GetCurrentProfile();
                     if (pr != null) {
                         contentValues_tr.put(COLUMN_profileSelected, pr.GetID() == profile.GetID() ? 1 : 0);
                     }
@@ -864,89 +832,15 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
                     return result;
                 }
-                Print("Table Does Not Exist");
+                //ProfileManager.Print(activityContext, "Table Does Not Exist");
                 return -1;
             }
-            Print("Database is null");
+            //ProfileManager.Print(activityContext, "Database is null");
             return -1;
-        } else { Print("Profile is null"); return -1; }
+        } else { return -1; }//ProfileManager.Print(activityContext, "Profile is null"); return -1; }
     }
 
-    /*
-    public long insert(Profile profile, Expense expense, Boolean tryupdate)
-    {
-        database = getWritableDatabase();
-
-        if (database != null && isTableExists(TABLE_EXPENSES, false)) {
-            contentValues_tr = new ContentValues();
-
-            //Timeperiod
-            long tp_id = insert(expense.GetID(), expense.GetTimePeriod(), tryupdate);
-
-            //Fill out row
-            contentValues_tr.put(COLUMN_profile, profile.GetID());
-            contentValues_tr.put(COLUMN_uniqueID, expense.GetID());
-            contentValues_tr.put(COLUMN_parentID, expense.GetParentID());
-            contentValues_tr.put(COLUMN_category, expense.GetCategory());
-            contentValues_tr.put(COLUMN_sourcename, expense.GetSourceName());
-            contentValues_tr.put(COLUMN_description, expense.GetDescription());
-            contentValues_tr.put(COLUMN_value, expense.GetValue());
-            contentValues_tr.put(COLUMN_staticValue, expense.GetStatic());
-            if (!tryupdate) { contentValues_tr.put(COLUMN_when, tp_id); }
-
-            contentValues_tr.put(COLUMN_IPaid, expense.GetIPaid());
-            contentValues_tr.put(COLUMN_splitWith, (expense.GetSplitWith()!=null ? expense.GetSplitWith() : ""));
-            contentValues_tr.put(COLUMN_splitValue, expense.GetSplitValue());
-            contentValues_tr.put(COLUMN_paidBack, (expense.GetPaidBack() != null ? expense.GetPaidBack().toString(ProfileManager.simpleDateFormatSaving) : "") );
-            contentValues_tr.put(COLUMN_children, expense.GetChildrenFormatted());
-
-            //Insert/update row and return result
-            long result = 0;
-            if (tryupdate){ result = database.update(TABLE_EXPENSES, contentValues_tr, COLUMN_uniqueID + "=" + expense.GetID(), null); }
-            if (result == 0) { result = database.insert(TABLE_EXPENSES, null, contentValues_tr); }
-
-            return result;
-        }
-        else{
-            return -1;
-        }
-    }
-    public long insert(Profile profile, Income income, Boolean tryupdate)
-    {
-        database = getWritableDatabase();
-
-        if (database != null&& isTableExists(TABLE_INCOME, false)) {
-            contentValues_tr = new ContentValues();
-
-            //Timeperiod
-            long tp_id = insert(income.GetID(), income.GetTimePeriod(), tryupdate);
-
-            //Fill out row
-            contentValues_tr.put(COLUMN_profile, profile.GetID());
-            contentValues_tr.put(COLUMN_uniqueID, income.GetID());
-            contentValues_tr.put(COLUMN_parentID, income.GetParentID());
-            contentValues_tr.put(COLUMN_category, income.GetCategory());
-            contentValues_tr.put(COLUMN_sourcename, income.GetSourceName());
-            contentValues_tr.put(COLUMN_description, income.GetDescription());
-            contentValues_tr.put(COLUMN_value, income.GetValue());
-            contentValues_tr.put(COLUMN_staticValue, income.GetStatic());
-            if (!tryupdate) { contentValues_tr.put(COLUMN_when, tp_id); }
-            contentValues_tr.put(COLUMN_children, income.GetChildrenFormatted());
-
-
-            //Insert/update row and return result
-            long result = 0;
-            if (tryupdate){ result = database.update(TABLE_INCOME, contentValues_tr, COLUMN_uniqueID + "=" + income.GetID(), null); }
-            if (result == 0) { result = database.insert(TABLE_INCOME, null, contentValues_tr); }
-
-            return result;
-        }
-        else{
-            return -1;
-        }
-    }
-    */
-    public long insert(Profile profile, Transaction transaction, Boolean tryupdate)
+    public long insert(Profile profile, Transaction transaction, boolean tryupdate)
     {
         database = getWritableDatabase();
 
@@ -1067,6 +961,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
 
+    //Loading
     public void loadSettings()
     {
         database = getWritableDatabase();
@@ -1081,7 +976,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
                 //Fill out category
                 if (category != null){
-                    ProfileManager.AddCategory(new Category(category, catColor), true);
+                    ProfileManager.getInstance().AddCategory(new Category(category, catColor), true);
                 }
             }
 
@@ -1092,7 +987,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
                 //Fill out other people
                 if (person != null){
-                    ProfileManager.AddOtherPerson(person);
+                    ProfileManager.getInstance().AddOtherPerson(person);
                 }
             }
 
@@ -1113,15 +1008,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     if (start_date != null){ p.SetStartTime(ProfileManager.ConvertDateFromString(start_date)); }
                     if (end_date != null){ p.SetEndTime(ProfileManager.ConvertDateFromString(end_date)); }
                     if (period != null){ try { p.SetPeriod(Period.parse(period)); } catch (Exception e) { e.printStackTrace(); } }
-                    ProfileManager.AddProfile(p, true);
+                    ProfileManager.getInstance().AddProfile(p, true);
 
-                    if (profileSel == 1){ ProfileManager.SelectProfile(p); }
+                    if (profileSel == 1){ ProfileManager.getInstance().SelectProfile(p); }
                 }
             }
-
         }
         catch (CursorIndexOutOfBoundsException ex){
-            Print("ERROR: No settings found");
+            //ProfileManager.Print(activityContext, "ERROR: No settings found");
             ex.printStackTrace();
         } finally {
             if (c != null) { c.close(); }
@@ -1133,112 +1027,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
 
     }
-    /*
-    public void loadExpenses()
-    {
-        database = getWritableDatabase();
-
-        Cursor c = database.query(TABLE_EXPENSES, null, null, null, null, null, null);
-
-        while (c.moveToNext()) {
-            //Find profile
-            int _profileID = c.getInt(c.getColumnIndex(COLUMN_profile));
-            Profile pr = ProfileManager.GetProfileByID(_profileID);
-
-            if (pr != null) {
-                //Create new transaction
-                Expense ex = new Expense();
-
-                //Load and apply transaction properties
-
-                //COLUMN_uniqueID + TEXT_TYPE + "," +
-                ex.SetID(c.getInt(c.getColumnIndex(COLUMN_uniqueID)));
-                //COLUMN_parentID + TEXT_TYPE + "," +
-                ex.SetParentID(c.getInt(c.getColumnIndex(COLUMN_parentID)));
-                //COLUMN_category + TEXT_TYPE + "," +
-                ex.SetCategory(c.getString(c.getColumnIndex(COLUMN_category)));
-                //COLUMN_sourcename + TEXT_TYPE + "," +
-                ex.SetSourceName(c.getString(c.getColumnIndex(COLUMN_sourcename)));
-                //COLUMN_description + TEXT_TYPE  + "," +
-                ex.SetDescription(c.getString(c.getColumnIndex(COLUMN_description)));
-                //COLUMN_value + DOUBLE_TYPE  + "," +
-                ex.SetValue(c.getDouble(c.getColumnIndex(COLUMN_value)));
-                //COLUMN_staticValue + BOOLEAN_TYPE  + "," +
-                ex.SetStatic(c.getInt(c.getColumnIndex(COLUMN_staticValue)) == 1);
-                //COLUMN_IPaid + BOOLEAN_TYPE + "," +
-                ex.SetIPaid(c.getInt(c.getColumnIndex(COLUMN_IPaid)) == 1);
-                //COLUMN_splitWith + TEXT_TYPE + "," + //COLUMN_splitValue + DOUBLE_TYPE  + "," +
-                ex.SetSplitValue(c.getString(c.getColumnIndex(COLUMN_splitWith)), c.getDouble(c.getColumnIndex(COLUMN_splitValue)));
-                //COLUMN_paidBack + TEXT_TYPE + "," +
-                ex.SetPaidBack(ProfileManager.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_paidBack))));
-                //COLUMN_when + INT_TYPE //+ "," +
-                ex.SetTimePeriod(queryTimeperiod(c.getInt(c.getColumnIndex(COLUMN_when))));
-                //COLUMN_children
-                ex.AddChildrenFromFormattedString(c.getString(c.getColumnIndex(COLUMN_children)));
-
-
-                //ProfileManager.Print("Expense Loaded");
-                //Add loaded transaction to profile
-                pr.AddExpenseDontSave(ex);
-            }
-            else {
-                ProfileManager.Print("Expense could not be loaded, profile -" + _profileID + "- not found.");
-            }
-        }
-
-
-        c.close();
-    }
-    public void loadIncome()
-    {
-        database = getWritableDatabase();
-
-        Cursor c = database.query(TABLE_INCOME, null, null, null, null, null, null);
-
-        while (c.moveToNext()) {
-            //Find profile
-            int _profileID = c.getInt(c.getColumnIndex(COLUMN_profile));
-            Profile pr = ProfileManager.GetProfileByID(_profileID);
-
-
-            if (pr != null) {
-                //Create new transaction
-                Income in = new Income();
-
-                //Load and apply transaction properties
-
-                //COLUMN_uniqueID + TEXT_TYPE + "," +
-                in.SetID(c.getInt(c.getColumnIndex(COLUMN_uniqueID)));
-                //COLUMN_parentID + TEXT_TYPE + "," +
-                in.SetParentID(c.getInt(c.getColumnIndex(COLUMN_parentID)));
-                //COLUMN_category + TEXT_TYPE + "," +
-                in.SetCategory(c.getString(c.getColumnIndex(COLUMN_category)));
-                //COLUMN_sourcename + TEXT_TYPE + "," +
-                in.SetSourceName(c.getString(c.getColumnIndex(COLUMN_sourcename)));
-                //COLUMN_description + TEXT_TYPE  + "," +
-                in.SetDescription(c.getString(c.getColumnIndex(COLUMN_description)));
-                //COLUMN_value + DOUBLE_TYPE  + "," +
-                in.SetValue(c.getDouble(c.getColumnIndex(COLUMN_value)));
-                //COLUMN_staticValue + BOOLEAN_TYPE  + "," +
-                in.SetStatic(c.getInt(c.getColumnIndex(COLUMN_staticValue)) == 1);
-                //COLUMN_when + INT_TYPE //+ "," +
-                in.SetTimePeriod(queryTimeperiod(c.getInt(c.getColumnIndex(COLUMN_when))));
-                //COLUMN_children
-                in.AddChildrenFromFormattedString(c.getString(c.getColumnIndex(COLUMN_children)));
-
-                //Add loaded transaction to profile
-                pr.AddIncome(in, true);
-            }
-            else {
-                ProfileManager.Print("Income could not be loaded, profile -" + _profileID + "- not found.");
-            }
-        }
-
-
-
-        c.close();
-    }
-    */
     public void loadTransactions()
     {
         database = getWritableDatabase();
@@ -1248,7 +1036,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         while (c.moveToNext()) {
             //Find profile
             int _profileID = c.getInt(c.getColumnIndex(COLUMN_profile));
-            Profile pr = ProfileManager.GetProfileByID(_profileID);
+            Profile pr = ProfileManager.getInstance().GetProfileByID(_profileID);
 
             if (pr != null) {
                 //Create new transaction
@@ -1298,6 +1086,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
 
+    //Removal
     public boolean removeCategorySetting(String category){
         database = getWritableDatabase();
         return !category.equals("") && database.delete(TABLE_SETTINGS_CATEGORIES, COLUMN_category + "=?", new String[]{ category }) > 0;
@@ -1311,32 +1100,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return profile != null && database.delete(TABLE_SETTINGS_PROFILES, COLUMN_profile + "=?", new String[]{String.valueOf(profile.GetName())}) > 0;
     }
 
-    /*
-    public boolean remove(Expense expense){
-        database = getWritableDatabase();
-
-        if (expense != null) {
-            Cursor c = database.query(TABLE_EXPENSES, new String[]{COLUMN_when}, COLUMN_uniqueID + "=?", new String[]{String.valueOf(expense.GetID())}, null, null, null);
-            removeTimePeriod(c);
-            c.close();
-
-            return database.delete(TABLE_EXPENSES, COLUMN_uniqueID + "=?", new String[]{String.valueOf(expense.GetID())}) > 0;
-        }
-        return false;
-    }
-    public boolean remove(Income income){
-        database = getWritableDatabase();
-
-        if (income != null) {
-            Cursor c = database.query(TABLE_INCOME, new String[]{COLUMN_when}, COLUMN_uniqueID + "=?", new String[]{String.valueOf(income.GetID())}, null, null, null);
-            removeTimePeriod(c);
-            c.close();
-
-            return database.delete(TABLE_INCOME, COLUMN_uniqueID + "=?", new String[]{String.valueOf(income.GetID())}) > 0;
-        }
-        return false;
-    }
-    */
     public boolean remove(Transaction transaction){
         database = getWritableDatabase();
 
@@ -1363,7 +1126,58 @@ public class DatabaseHelper extends SQLiteOpenHelper
             }
         }
         else {
-            Print("TimePeriod not found");
+            //ProfileManager.Print(activityContext, "TimePeriod not found");
         }
+    }
+
+
+
+    //Debug
+    public ArrayList<Cursor> getData(String Query){
+        //get writable database
+        SQLiteDatabase sqlDB = this.getWritableDatabase();
+        String[] columns = new String[] { "message" };
+        //an array list of cursor to save two cursors one has results from the query
+        //other cursor stores error message if any errors are triggered
+        ArrayList<Cursor> alc = new ArrayList<Cursor>(2);
+        MatrixCursor Cursor2= new MatrixCursor(columns);
+        alc.add(null);
+        alc.add(null);
+
+
+        try{
+            //execute the query results will be save in Cursor c
+            Cursor c = sqlDB.rawQuery(Query, null);
+
+
+            //add value to cursor2
+            Cursor2.addRow(new Object[] { "Success" });
+
+            alc.set(1,Cursor2);
+            if (null != c && c.getCount() > 0) {
+
+
+                alc.set(0,c);
+                c.moveToFirst();
+
+                return alc ;
+            }
+            return alc;
+        } catch(SQLException sqlEx){
+            //Log.d("printing exception", sqlEx.getMessage());
+            //if any exceptions are triggered save the error message to cursor an return the arraylist
+            Cursor2.addRow(new Object[] { ""+sqlEx.getMessage() });
+            alc.set(1,Cursor2);
+            return alc;
+        } catch(Exception ex){
+
+            //Log.d("printing exception", ex.getMessage());
+
+            //if any exceptions are triggered save the error message to cursor an return the arraylist
+            Cursor2.addRow(new Object[] { ""+ex.getMessage() });
+            alc.set(1,Cursor2);
+            return alc;
+        }
+
     }
 }

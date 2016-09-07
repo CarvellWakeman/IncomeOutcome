@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
@@ -83,7 +84,9 @@ public class ActivityNewTransaction extends AppCompatActivity
 
     TextView textView_source;
     TextView textView_percentageSplit;
-    TextView textView_splitNotice;
+
+    Button button_splitNotice;
+    Button button_categoryNotice;
 
     CardView cardView_paidBack;
     CardView cardView_cost;
@@ -142,7 +145,7 @@ public class ActivityNewTransaction extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 if (checkBox_paidBack.isChecked()) {
-                    final Profile pr = ProfileManager.GetCurrentProfile();
+                    final Profile pr = ProfileManager.getInstance().GetCurrentProfile();
                     LocalDate c = null;
 
                     if (pr != null) {
@@ -172,11 +175,11 @@ public class ActivityNewTransaction extends AppCompatActivity
         checkBox_split.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Profile pr = ProfileManager.GetProfileByID(_profileID);
+                Profile pr = ProfileManager.getInstance().GetProfileByID(_profileID);
                 if (pr != null) {
                     Transaction tr = pr.GetTransaction(_transactionID);
                     if (tr != null) {
-                        if (tr.GetSplitWith() != null && !ProfileManager.HasOtherPerson(tr.GetSplitWith()) && !OtherPersonDoesNotExistBypass) {
+                        if (tr.GetSplitWith() != null && !ProfileManager.getInstance().HasOtherPerson(tr.GetSplitWith()) && !OtherPersonDoesNotExistBypass) {
                             new AlertDialog.Builder(ActivityNewTransaction.this).setTitle(R.string.confirm_areyousure_nolongerexists)
                                     .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
                                         @Override
@@ -220,17 +223,26 @@ public class ActivityNewTransaction extends AppCompatActivity
 
         textView_source = (TextView) findViewById(R.id.textView_newTransaction_source);
         textView_percentageSplit = (TextView) findViewById(R.id.textView_newTransaction_split);
-        textView_splitNotice = (TextView) findViewById(R.id.textView_newTransaction_splitNotice);
+        button_splitNotice = (Button) findViewById(R.id.button_newTransaction_splitNotice);
+        button_categoryNotice = (Button) findViewById(R.id.button_newTransaction_categorynotice);
+
+        button_splitNotice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { startActivityForResult(new Intent(ActivityNewTransaction.this, ActivityManagePeople.class), 0); }
+        });
+        button_categoryNotice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { startActivityForResult(new Intent(ActivityNewTransaction.this, ActivityManageCategories.class), 1); }
+        });
 
         discreteSeekBar_split = (DiscreteSeekBar) findViewById(R.id.seekBar_newTransaction);
 
         //Categories spinner
-        categoryAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_title,  ProfileManager.GetCategoryTitles()){
+        categoryAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_title,  ProfileManager.getInstance().GetCategoryTitles()){
             @Override
             public boolean isEnabled(int position){
                 return position != 0;
             }
-
         };
         categoryAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list_primary);
         spinner_categories.setAdapter(categoryAdapter);
@@ -238,11 +250,11 @@ public class ActivityNewTransaction extends AppCompatActivity
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN){
-                    Profile pr = ProfileManager.GetProfileByID(_profileID);
+                    Profile pr = ProfileManager.getInstance().GetProfileByID(_profileID);
                     if (pr != null) {
                         Transaction tr = pr.GetTransaction(_transactionID);
                         if (tr != null) {
-                            if (!ProfileManager.HasCategory(tr.GetCategory()) && !CategoryDoesNotExistBypass) {
+                            if (!ProfileManager.getInstance().HasCategory(tr.GetCategory()) && !CategoryDoesNotExistBypass) {
                                 new AlertDialog.Builder(ActivityNewTransaction.this).setTitle(R.string.confirm_areyousure_nolongerexists2)
                                         .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
                                             @Override
@@ -270,15 +282,17 @@ public class ActivityNewTransaction extends AppCompatActivity
         });
 
         //Other People spinner
-        otherPeopleAdapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_title, ProfileManager.GetOtherPeople());
+        otherPeopleAdapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_title, ProfileManager.getInstance().GetOtherPeople());
         otherPeopleAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list_primary);
         //otherPeopleAdapter.add(getBaseContext().getString(R.string.add_otherperson));
         spinner_otherPeople.setAdapter(otherPeopleAdapter);
         spinner_otherPeople.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if ( otherPeopleAdapter.getItem(position).equals(getBaseContext().getString(R.string.add_otherperson)) ){
-                    //newTransactionNewPersonClick(view);
+                if (otherPeopleAdapter.getItem(position) != null) {
+                    //if (otherPeopleAdapter.getItem(position).equals(getString(R.string.add_otherperson))) {
+                        //newTransactionNewPersonClick(view);
+                    //}
                 }
             }
             @Override
@@ -436,12 +450,8 @@ public class ActivityNewTransaction extends AppCompatActivity
             //Text
             TIL_cost.setHint(getString(R.string.header_cost));
 
-            //Configure the ability to split expense
-            if (ProfileManager.GetOtherPeopleCount() > 0){
-                checkBox_split.setVisibility(View.VISIBLE);
-                textView_splitNotice.setVisibility(View.GONE);
-                //button_newPerson.setVisibility(View.GONE);
-            }
+            CheckSplitPersonNotice();
+            CheckCategoryNotice();
         }
         else if (activityType == 1){ //Income
             //Text
@@ -462,7 +472,7 @@ public class ActivityNewTransaction extends AppCompatActivity
         }
 
         //Clear timeperiod blacklistdates queue
-        Profile pr = ProfileManager.GetProfileByID(_profileID);
+        Profile pr = ProfileManager.getInstance().GetProfileByID(_profileID);
         if (pr != null){
             Transaction tr = pr.GetTransaction(_transactionID);
             if (tr != null) {
@@ -521,25 +531,19 @@ public class ActivityNewTransaction extends AppCompatActivity
         super.onBackPressed();
     }
 
-    /*
-    //Get return results from activities
+    //Return results from child activities
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK){
-            //Configure the ability to split expense
-            if (ProfileManager.GetOtherPeopleCount() > 0){
-                checkBox_split.setVisibility(View.VISIBLE);
-                textView_splitNotice.setVisibility(View.GONE);
-                //button_newPerson.setVisibility(View.GONE);
-
-                //Reset adapter
-                otherPeopleAdapter.clear();
-                //otherPeopleAdapter.add(getBaseContext().getString(R.string.add_otherperson));
-                otherPeopleAdapter.addAll(ProfileManager.GetOtherPeople());
-            }
+        switch (requestCode) {
+            case 0: //Add split with person
+                CheckSplitPersonNotice();
+                break;
+            case 1: //Add category
+                CheckCategoryNotice();
+                break;
         }
     }
-    */
+
 
 
     //Edit Transaction
@@ -547,7 +551,7 @@ public class ActivityNewTransaction extends AppCompatActivity
     {
         if (_profileID != 0) {
             if (_transactionID != 0) {
-                Profile pr = ProfileManager.GetProfileByID(_profileID);
+                Profile pr = ProfileManager.getInstance().GetProfileByID(_profileID);
                 Transaction tr = (pr != null ? pr.GetTransaction(_transactionID) : null);
 
                 //If we were sent an expense
@@ -572,8 +576,8 @@ public class ActivityNewTransaction extends AppCompatActivity
                     else if (_editState == EDIT_STATE.Duplicate) { toolbar.setTitle(R.string.title_copytransaction); }
 
                     //Copy category
-                    if (ProfileManager.HasCategory(tr.GetCategory())) {
-                        spinner_categories.setSelection(ProfileManager.GetCategoryIndex(tr.GetCategory())+1, true); //+1 for "select a category.."
+                    if (ProfileManager.getInstance().HasCategory(tr.GetCategory())) {
+                        spinner_categories.setSelection(ProfileManager.getInstance().GetCategoryIndex(tr.GetCategory())+1, true); //+1 for "select a category.."
                     }
                     //Copy source
                     editText_source.setText(tr.GetSourceName());
@@ -617,7 +621,7 @@ public class ActivityNewTransaction extends AppCompatActivity
 
                         //textView_percentageSplit spinner
                         spinner_otherPeople.setVisibility(View.VISIBLE);
-                        if (ProfileManager.HasOtherPerson(tr.GetSplitWith())) {
+                        if (ProfileManager.getInstance().HasOtherPerson(tr.GetSplitWith())) {
                             spinner_otherPeople.setSelection(otherPeopleAdapter.getPosition(tr.GetSplitWith()), true);
                         }
                         else{
@@ -709,6 +713,37 @@ public class ActivityNewTransaction extends AppCompatActivity
 
 
     //Helpers
+    public void CheckSplitPersonNotice(){
+        //Configure the ability to split expense
+        if (ProfileManager.getInstance().GetOtherPeopleCount() > 0){
+            checkBox_split.setVisibility(View.VISIBLE);
+            button_splitNotice.setVisibility(View.GONE);
+        }
+        else {
+            checkBox_split.setVisibility(View.GONE);
+            button_splitNotice.setVisibility(View.VISIBLE);
+        }
+        otherPeopleAdapter.notifyDataSetChanged();
+    }
+    public void CheckCategoryNotice(){
+        //Category configuration
+        if (ProfileManager.getInstance().GetCategoriesCount() > 0) {
+            spinner_categories.setVisibility(View.VISIBLE);
+            button_categoryNotice.setVisibility(View.GONE);
+        }
+        else {
+            spinner_categories.setVisibility(View.GONE);
+            button_categoryNotice.setVisibility(View.VISIBLE);
+        }
+        categoryAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_title,  ProfileManager.getInstance().GetCategoryTitles()){
+            @Override
+            public boolean isEnabled(int position){
+                return position != 0;
+            }
+        };
+        categoryAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list_primary);
+        spinner_categories.setAdapter(categoryAdapter);
+    }
     public void SetChildrenEnabled(View v, boolean enabled){
         try {
             for (int i = 0; i < ((ViewGroup) v).getChildCount(); i++) {
@@ -740,7 +775,7 @@ public class ActivityNewTransaction extends AppCompatActivity
             UpdateCost(); //TODO Necessary?
 
             //Find profile
-            Profile pr = (_profileID != 0 ? ProfileManager.GetProfileByID(_profileID) : null);
+            Profile pr = (_profileID != 0 ? ProfileManager.getInstance().GetProfileByID(_profileID) : null);
 
 
             //If profile exists
@@ -771,7 +806,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                     newTr.SetSourceName(editText_source.getText().toString());
 
                     //Set Category
-                    if (ProfileManager.HasCategory((String) spinner_categories.getSelectedItem()) || CategoryDoesNotExistBypass && _transactionID != 0 || _transactionID == 0) {
+                    if (ProfileManager.getInstance().HasCategory((String) spinner_categories.getSelectedItem()) || CategoryDoesNotExistBypass && _transactionID != 0 || _transactionID == 0) {
                         if ( spinner_categories.getSelectedItemPosition() != 0) {
                             newTr.SetCategory((String) spinner_categories.getSelectedItem());
                         }
@@ -823,7 +858,7 @@ public class ActivityNewTransaction extends AppCompatActivity
 
             }
         } else {
-            ProfileManager.Print("Missing Category");
+            ProfileManager.Print(this, "Missing Category");
         }
 
     }

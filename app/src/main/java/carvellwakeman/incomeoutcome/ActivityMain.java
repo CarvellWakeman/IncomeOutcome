@@ -14,6 +14,8 @@ import java.util.ArrayList;
 
 public class ActivityMain extends AppCompatActivity
 {
+    ProfileManager profileManager;
+
     Toolbar toolbar;
 
     int _profileID;
@@ -38,11 +40,12 @@ public class ActivityMain extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         //Initialize the profile manager
-        ProfileManager.initialize(this);
+        profileManager = ProfileManager.getInstance();
+        profileManager.initialize(this);
 
 
         //Set our activity's data
-        _profile = ProfileManager.GetCurrentProfile();
+        _profile = profileManager.GetCurrentProfile();
         if (_profile != null) {
             _profileID = _profile.GetID();
         }
@@ -108,18 +111,18 @@ public class ActivityMain extends AppCompatActivity
 
 
         //Cards
-        versusCard = new CardVersus(_profileID, this, inflater, R.layout.card_versus);
+        versusCard = new CardVersus(insertPoint, 0, _profileID, this, inflater, R.layout.card_versus);
 
-        expensesCard = new CardTransaction(_profileID, 0, 2, ProfileManager.getString(R.string.header_expenses_summary), this, inflater, R.layout.card_transaction);
-        incomeCard = new CardTransaction(_profileID, 1, 1, ProfileManager.getString(R.string.header_income_summary), this, inflater, R.layout.card_transaction);
+        expensesCard = new CardTransaction(insertPoint, 1, _profileID, 0, 2, getString(R.string.header_expenses_summary), this, inflater, R.layout.card_transaction);
+        incomeCard = new CardTransaction(insertPoint, 2, _profileID, 1, 1, getString(R.string.header_income_summary), this, inflater, R.layout.card_transaction);
 
 
-        versusCard.insert(insertPoint, 0);
-        expensesCard.insert(insertPoint, 1);
-        incomeCard.insert(insertPoint, 2);
+        //versusCard.insert(insertPoint, 0);
+        //expensesCard.insert(insertPoint, 1);
+        //incomeCard.insert(insertPoint, 2);
 
         //Suggest the user add a profile if none exist
-        if (ProfileManager.GetProfileCount()==0){
+        if (profileManager.GetProfileCount()==0){
             versusCard.getView().setVisibility(View.GONE);
             expensesCard.getView().setVisibility(View.GONE);
             incomeCard.getView().setVisibility(View.GONE);
@@ -138,7 +141,7 @@ public class ActivityMain extends AppCompatActivity
         RefreshOverview();
 
         //Suggest the user add a profile if none exist
-        if (ProfileManager.GetProfileCount()==0){
+        if (profileManager.GetProfileCount()==0){
             versusCard.getView().setVisibility(View.GONE);
             expensesCard.getView().setVisibility(View.GONE);
             incomeCard.getView().setVisibility(View.GONE);
@@ -205,7 +208,7 @@ public class ActivityMain extends AppCompatActivity
 
     //Refresh overview
     public void RefreshOverview(){
-        _profile = ProfileManager.GetCurrentProfile();
+        _profile = profileManager.GetCurrentProfile();
         if (_profile != null) {
             _profileID = _profile.GetID();
 
@@ -225,7 +228,7 @@ public class ActivityMain extends AppCompatActivity
     public void ToolbarTitleUpdate(){
         if (getSupportActionBar() != null) {
             if (_profile != null) {
-                getSupportActionBar().setTitle(_profile.GetName() + " " + ProfileManager.getString(R.string.title_overview));
+                getSupportActionBar().setTitle(_profile.GetName() + " " + getString(R.string.title_overview));
                 getSupportActionBar().setSubtitle(_profile.GetDateFormatted());
             }
             else {

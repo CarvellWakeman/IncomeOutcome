@@ -108,7 +108,7 @@ public class ActivityManageCategories extends AppCompatActivity {
                 String str = editText_categoryname.getText().toString();
 
                 if (!str.equals("")) {
-                    if (!ProfileManager.HasCategory(str)) {
+                    if (!ProfileManager.getInstance().HasCategory(str)) {
                         CheckCanSave();
                         TIL.setError("");
                     }
@@ -221,17 +221,19 @@ public class ActivityManageCategories extends AppCompatActivity {
                 String str = editText_categoryname.getText().toString();
 
                 if (editingCategory != null) {
+                    ProfileManager.Print(this, "UpdateCategory");
                     String old = editingCategory.GetTitle();
 
                     editingCategory.SetTitle(str);
                     editingCategory.SetColor(GetColor());
 
                     //Update old category
-                    ProfileManager.UpdateCategory(old, editingCategory);
+                    ProfileManager.getInstance().UpdateCategory(old, editingCategory);
                 }
                 else {
                     //Add new category
-                    ProfileManager.AddCategory(str, GetColor());
+                    ProfileManager.Print(this, "AddCategory");
+                    ProfileManager.getInstance().AddCategory(str, GetColor());
                 }
 
                 finish();
@@ -251,8 +253,8 @@ public class ActivityManageCategories extends AppCompatActivity {
     {
         String name = editText_categoryname.getText().toString();
 
-        if (ProfileManager.HasCategory(name)){
-            editingCategory = ProfileManager.GetCategory(name);
+        if (ProfileManager.getInstance().HasCategory(name)){
+            editingCategory = ProfileManager.getInstance().GetCategory(name);
         }
 
         if (editingCategory != null) {
@@ -278,7 +280,7 @@ public class ActivityManageCategories extends AppCompatActivity {
 
     //Edit category
     public void EditCategory(final String id, DialogFragmentManagePPC dialogFragment){
-        Category cr = ProfileManager.GetCategory(id);
+        Category cr = ProfileManager.getInstance().GetCategory(id);
         if (cr != null) {
             editingCategory = cr;
 
@@ -310,12 +312,12 @@ public class ActivityManageCategories extends AppCompatActivity {
     //Delete category
     public void DeleteCategory(final String id, final DialogFragmentManagePPC dialogFragment)
     {
-        final Category cr = ProfileManager.GetCategory(id);
+        final Category cr = ProfileManager.getInstance().GetCategory(id);
         if (cr != null) {
             new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle).setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ProfileManager.RemoveCategory(cr);
+                    ProfileManager.getInstance().RemoveCategory(cr);
                     adapter.notifyDataSetChanged();
                     dialogFragment.dismiss();
                     dialog.dismiss();

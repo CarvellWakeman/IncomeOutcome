@@ -69,7 +69,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         keyType = intent.getIntExtra("keytype", -1);
 
         if (activityType == -1){ //None (error)
-            ProfileManager.Print("Error opening details activity, no type (expense/income) specified.");
+            ProfileManager.Print(this, "Error opening details activity, no type (expense/income) specified.");
             finish();
         }
         else if (activityType == 0) { //Expense
@@ -86,10 +86,10 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
         //Set our activity's data
         _profileID = intent.getIntExtra("profile", -1);
-        _profile = ProfileManager.GetProfileByID(_profileID);
+        _profile = ProfileManager.getInstance().GetProfileByID(_profileID);
         if (_profile == null)
         {
-            ProfileManager.Print("Invalid Profile Data, Cannot Open details activity.");
+            ProfileManager.Print(this, "Invalid Profile Data, Cannot Open details activity.");
             finish();
         }
         else {
@@ -141,7 +141,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             button_new.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Profile pr = ProfileManager.GetCurrentProfile();
+                    Profile pr = ProfileManager.getInstance().GetCurrentProfile();
                     if (pr != null) {
                         Intent intent = new Intent(ActivityDetailsTransaction.this, ActivityNewTransaction.class);
                         intent.putExtra("activitytype", activityType);
@@ -149,7 +149,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                         startActivityForResult(intent, 4);
                     }
                     else {
-                        ProfileManager.Print("ERROR: Profile not found, could not start New Transaction Activity");
+                        ProfileManager.Print(ActivityDetailsTransaction.this, "ERROR: Profile not found, could not start New Transaction Activity");
                     }
                 }
             });
@@ -314,8 +314,8 @@ public class ActivityDetailsTransaction extends AppCompatActivity
     public void RefreshActivity(){
         _profile.CalculateTimeFrame(activityType);
         _profile.CalculateTotalsInTimeFrame(activityType, keyType);
-        totalsAdapter.notifyDataSetChanged();
-        elementsAdapter.notifyDataSetChanged();
+        if (totalsAdapter != null) { totalsAdapter.notifyDataSetChanged(); }
+        if (elementsAdapter != null) { elementsAdapter.notifyDataSetChanged(); }
         SetToolbarTitle();
         CheckShowNoDataNotice();
     }
@@ -375,7 +375,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             startActivityForResult(intent, 0);
         }
         else{
-            ProfileManager.Print("Could not duplicate transaction - profile not found.");
+            ProfileManager.Print(this, "Could not duplicate transaction - profile not found.");
         }
     }
     public void editTransaction(Transaction tran, int profileID){
@@ -388,7 +388,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             startActivityForResult(intent, 1);
         }
         else{
-            ProfileManager.Print("Could not edit transaction - profile not found.");
+            ProfileManager.Print(this, "Could not edit transaction - profile not found.");
         }
     }
     public void cloneTransaction(Transaction tran, int profileID, LocalDate date){
@@ -402,7 +402,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             startActivityForResult(intent, 2);
         }
         else{
-            ProfileManager.Print("Could not clone transaction - profile not found.");
+            ProfileManager.Print(this, "Could not clone transaction - profile not found.");
         }
     }
 
@@ -435,7 +435,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         tr.GetTimePeriod().AddBlacklistDate(tran.GetTimePeriod().GetDate(), false);
 
         //Update database
-        ProfileManager.InsertTransactionDatabase(_profile, tr, true);
+        ProfileManager.getInstance().InsertTransactionDatabase(_profile, tr, true);
 
         //Update transaction list
         //_profile.CalculateTimeFrame(activityType);

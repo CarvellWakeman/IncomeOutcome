@@ -98,7 +98,7 @@ public class ActivityManagePeople extends AppCompatActivity {
                 String str = editText_personname.getText().toString();
 
                 if (!str.equals("")) {
-                    if (!ProfileManager.HasOtherPerson(str)) {
+                    if (!ProfileManager.getInstance().HasOtherPerson(str)) {
                         SetSaveButtonEnabled(true);
                         TIL.setError("");
                     }
@@ -172,13 +172,13 @@ public class ActivityManagePeople extends AppCompatActivity {
                 String str = editText_personname.getText().toString();
 
                 //Update other person
-                ProfileManager.UpdateOtherPerson(old_otherperson, str);
+                ProfileManager.getInstance().UpdateOtherPerson(old_otherperson, str);
 
                 //Delete old person if they exist (For editing)
-                ProfileManager.RemoveOtherPerson(old_otherperson);
+                ProfileManager.getInstance().RemoveOtherPerson(old_otherperson);
 
                 //Add new person (Edit or new)
-                ProfileManager.AddOtherPerson(str);
+                ProfileManager.getInstance().AddOtherPerson(str);
 
                 //Dismiss dialog
                 finish();
@@ -212,7 +212,7 @@ public class ActivityManagePeople extends AppCompatActivity {
                     .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ProfileManager.RemoveOtherPerson(name);
+                            ProfileManager.getInstance().RemoveOtherPerson(name);
                             adapter.notifyDataSetChanged();
                             dialogFragment.dismiss();
                             dialog.dismiss();

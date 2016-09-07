@@ -26,7 +26,7 @@ public class AdapterBasic extends RecyclerView.Adapter<AdapterBasic.TextLayoutVi
     public AdapterBasic(Context context, int profileID, HashMap<String, Transaction> data)
     {
         _profileID = profileID;
-        _profile = ProfileManager.GetProfileByID(profileID);
+        _profile = ProfileManager.getInstance().GetProfileByID(profileID);
 
         _data = data;
 

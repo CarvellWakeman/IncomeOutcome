@@ -1,22 +1,20 @@
 package carvellwakeman.incomeoutcome;
 
 
-import android.Manifest;
 import android.app.*;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
+
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.SystemClock;
+
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.*;
-import android.support.v7.app.AlertDialog;
+
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -33,43 +31,44 @@ import java.util.*;
 
 public class ProfileManager
 {
+    static ProfileManager instance = new ProfileManager();
+
     //Categories
-    private static ArrayList<Category> _categories;
+    private ArrayList<Category> _categories;
     //private static ArrayList<String> _categories;
     //private static HashMap<String, Integer> _categoryColors;
 
-    //Locale
-    public static Locale locale;
-
     //Profiles
-    private static int _currentProfileID;
-    private static ArrayList<Profile> _profiles;
+    private int _currentProfileID;
+    private ArrayList<Profile> _profiles;
 
     //Other people
-    private static ArrayList<String> _otherPeople;
+    private ArrayList<String> _otherPeople;
 
     //Prefs
     //private static String tabsFilename;
     //private static String tabsErrorFilename;
 
     //Formats
-    public static DecimalFormat decimalFormat;
-    public static NumberFormat currencyFormat;
+    static DecimalFormat decimalFormat = new DecimalFormat("#.###");
+    static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(); //new DecimalFormat("¤#.###");
     //public static DateFormat simpleDateFormat;
-    public static String simpleDateFormat;
-    public static String simpleDateFormatJustYear;
-    public static String simpleDateFormatNoYear;
-    public static String simpleDateFormatNoDay;
-    public static String simpleDateFormatShortNoDay;
-    public static String simpleDateFormatSaving;
+    //simpleDateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
+    static String simpleDateFormat = "MMMM dd, yyyy"; //May 12, 2016
+    //simpleDateFormatNoYear = new SimpleDateFormat("MMMM dd", Locale.US);
+    static String simpleDateFormatJustYear = "yyyy"; //2016
+    static String simpleDateFormatNoYear = "MMMM dd"; //May 12
+    static String simpleDateFormatNoDay = "MMMM, yyyy"; //May, 2016
+    static String simpleDateFormatShortNoDay = "MMM, yyyy"; //Apr, 2016
+    static String simpleDateFormatSaving = "MM-dd-yyyy"; //05-12-2016
 
 
     //Context
-    private static ActivityMain MainActivityInstance;
-    private static Context MainActivityContext;
+    //private ActivityMain MainActivityInstance;
+    //private Context MainActivityContext;
 
     //File I/O
-    private static DatabaseHelper databaseHelper;
+    private DatabaseHelper databaseHelper;
 
     //private static boolean LoadError = false;
 
@@ -100,13 +99,14 @@ public class ProfileManager
         SOURCE
     }
 
-    //Constructor
-    public static void initialize(ActivityMain ac)
-    {
-        MainActivityInstance = ac;
-        MainActivityContext = ac.getBaseContext();
+    //Constructor and Init
+    private ProfileManager(){}
+    static ProfileManager getInstance(){ return instance; }
 
-        locale = Locale.US;
+    public void initialize(ActivityMain ac)
+    {
+        //MainActivityInstance = ac;
+        //MainActivityContext = ac.getBaseContext();
 
         _currentProfileID = -1;
 
@@ -116,63 +116,56 @@ public class ProfileManager
         //_categoryColors = new HashMap<>();
         _otherPeople = new ArrayList<>();
 
-
-        decimalFormat = new DecimalFormat("#.###");
-        currencyFormat = NumberFormat.getCurrencyInstance(); //new DecimalFormat("¤#.###");
-        //simpleDateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
-        simpleDateFormat = "MMMM dd, yyyy"; //May 12, 2016
-        //simpleDateFormatNoYear = new SimpleDateFormat("MMMM dd", Locale.US);
-        simpleDateFormatJustYear = "yyyy"; //2016
-        simpleDateFormatNoYear = "MMMM dd"; //May 12
-        simpleDateFormatNoDay = "MMMM, yyyy"; //May, 2016
-        simpleDateFormatShortNoDay = "MMM, yyyy"; //Apr, 2016
-        simpleDateFormatSaving = "MM-dd-yyyy"; //05-12-2016
-
-
         //Initialize database helper
-        databaseHelper = new DatabaseHelper(MainActivityContext);
+        databaseHelper = new DatabaseHelper(ac);
 
         //Load from database
-        databaseHelper.loadSettings();
-        databaseHelper.loadTransactions();
+        //databaseHelper.loadSettings();
+        //databaseHelper.loadTransactions();
+        (new DatabaseBackgroundHelper()).execute(8); //databaseHelper.loadSettings();
+        (new DatabaseBackgroundHelper()).execute(9); //databaseHelper.loadTransactions();
         //databaseHelper.loadExpenses();
         //databaseHelper.loadIncome();
 
         //Load default categories if database is empty
-        if (databaseHelper.isTableEmpty(databaseHelper.TABLE_SETTINGS_CATEGORIES) && databaseHelper.isTableEmpty(databaseHelper.TABLE_TRANSACTIONS)){
-            LoadDefaultSettings();
-         }
+        if (databaseHelper.isTableEmpty(DatabaseHelper.TABLE_SETTINGS_CATEGORIES) && databaseHelper.isTableEmpty(DatabaseHelper.TABLE_TRANSACTIONS)){
+            LoadDefaultCategories(ac);
+        }
+
+        //Try to create the database
+        databaseHelper.TryCreateDatabase();
     }
 
 
-    public static void LoadDefaultSettings(){
+    public void LoadDefaultCategories(Context ac){
         //Try create database
-        ClearAllObjects();
-        if (databaseHelper != null){
-            databaseHelper.DeleteDB();
-            databaseHelper.TryCreateDatabase();
-        }
+        //ClearCategories();
+        //if (databaseHelper != null){
+            //databaseHelper.DeleteDB();
+            //(new DatabaseBackgroundHelper()).execute(15); //databaseHelper.DeleteDB()
+            //databaseHelper.TryCreateDatabase();
+        //}
 
 
         //[DEBUG] Testing structures
-        LocalDate c1 = LocalDate.now().withDayOfMonth(1);
-        LocalDate c2 = LocalDate.now().withDayOfMonth(LocalDate.now().dayOfMonth().getMaximumValue());
+        //LocalDate c1 = LocalDate.now().withDayOfMonth(1);
+        //LocalDate c2 = LocalDate.now().withDayOfMonth(LocalDate.now().dayOfMonth().getMaximumValue());
 
-        Profile p1 = new Profile("Monthly Budget");
-        p1.SetStartTimeDontSave(c1);
-        p1.SetEndTimeDontSave(c2);
-        p1.SetPeriodDontSave(new Period(0,1,0,0,0,0,0,0)); //Monthly default period
+        //Profile p1 = new Profile("Monthly Budget");
+        //p1.SetStartTimeDontSave(c1);
+        //p1.SetEndTimeDontSave(c2);
+        //p1.SetPeriodDontSave(new Period(0,1,0,0,0,0,0,0)); //Monthly default period
 
-        Profile p2 = new Profile("Empty Profile");
+        //Profile p2 = new Profile("Empty Profile");
 
         //AddProfile(p1);
         //AddProfile(p2);
         //SelectProfile(p1);
 
         //DEBUG other people
-        AddOtherPerson("Sabrina");
-        AddOtherPerson("Zach Homen");
-        AddOtherPerson("Mom");
+        //AddOtherPerson("Sabrina");
+        //AddOtherPerson("Zach Homen");
+        //AddOtherPerson("Mom");
 
 
 
@@ -224,13 +217,15 @@ public class ProfileManager
         //MainActivityInstance.SetSelection(GetProfileIndex(GetCurrentProfile()));
 
         //Success
-        Print("Default settings loaded");
+        Print(ac, "Default categories loaded");
     }
 
 
     //Universal print
-    public static void Print(String msg){ if (isDebugMode()) { Toast.makeText(MainActivityContext, msg, Toast.LENGTH_SHORT).show(); } }
-    public static void PrintLong(String msg){ if (isDebugMode()) { Toast.makeText(MainActivityContext, msg, Toast.LENGTH_LONG).show(); } }
+    public static void Print(Context c, String msg){ if (isDebugMode(c)) { Toast.makeText(c, msg, Toast.LENGTH_SHORT).show(); } }
+    public static void PrintLong(Context c, String msg){ if (isDebugMode(c)) { Toast.makeText(c, msg, Toast.LENGTH_LONG).show(); } }
+    public static void Log(Context c, String cat, String msg){ if (isDebugMode(c)) { Log.e(cat, msg); } }
+    /*
     static int ret = 0;
     public static int AlertDialog(String title, String positive, String negative){
         AlertDialog.Builder b = new AlertDialog.Builder(MainActivityInstance);
@@ -245,6 +240,7 @@ public class ProfileManager
 
         return ret;
     }
+    */
 
     //Dialog fragment manager
     public static void OpenDialogFragment(Activity caller, DialogFragment fragment, boolean openAsDialogFragment){
@@ -269,21 +265,21 @@ public class ProfileManager
     //Profile Management
 
     //Add profile
-    public static void AddProfile(Profile profile, Boolean dontsave) {
+    public void AddProfile(Profile profile, Boolean dontsave) {
         if (profile != null) {
             _profiles.add(profile);
             //MainActivityInstance.UpdateProfileList(false);
         }
     }
-    public static void AddProfile(Profile profile) { if (profile != null) { AddProfile(profile, true); InsertSettingDatabase(profile, true); } }
+    public void AddProfile(Profile profile) { if (profile != null) { AddProfile(profile, true); InsertSettingDatabase(profile, true); } }
 
-    public static void UpdateProfile(Profile profile) {
+    public void UpdateProfile(Profile profile) {
         InsertSettingDatabase(profile, true);
         //MainActivityInstance.UpdateProfileList(false); //INFINITE LOOP
     }
 
     //Delete profile
-    public static void DeleteProfile(Profile profile)
+    public void DeleteProfile(Profile profile)
     {
         boolean reselect = false;
         reselect = (profile == GetCurrentProfile());
@@ -292,14 +288,14 @@ public class ProfileManager
             profile.RemoveAll();
             _profiles.remove(profile);
             RemoveProfileSettingDatabase(profile);
-            Print("DeleteProfile");
+            //Print("DeleteProfile");
         }
         if (reselect) { SelectProfile(GetProfileByIndex(0)); }
 
         //MainActivityInstance.UpdateProfileList(false);
         //MainActivityInstance.SetSelection(GetProfileIndex(GetCurrentProfile()));
     }
-    public static void DeleteProfileByID(String id)
+    public void DeleteProfileByID(String id)
     {
         if (id != null && !id.equals("")) {
             for (int i = 0; i < _profiles.size(); i++) {
@@ -313,7 +309,7 @@ public class ProfileManager
 
 
     //Get Profile at index
-    public static Profile GetProfileByIndex(int index)
+    public Profile GetProfileByIndex(int index)
     {
         if (GetProfileCount() >= index+1 && index >= 0) {
             return _profiles.get(index);
@@ -322,7 +318,7 @@ public class ProfileManager
     }
 
     //Get Profile with ID
-    public static Profile GetProfileByID(int id)
+    public Profile GetProfileByID(int id)
     {
         if (_profiles != null) {
             for (int i = 0; i < _profiles.size(); i++) {
@@ -335,7 +331,7 @@ public class ProfileManager
     }
 
     //Get Profile with name
-    public static Profile GetProfileByName(String name){
+    public Profile GetProfileByName(String name){
         if (_profiles != null) {
             for (int i = 0; i < _profiles.size(); i++) {
                 if (_profiles.get(i).GetName().equals(name)) {
@@ -347,13 +343,13 @@ public class ProfileManager
     }
 
     //Get Profile Index
-    public static int GetProfileIndex(Profile profile) {
+    public int GetProfileIndex(Profile profile) {
         if (profile != null) { return _profiles.indexOf(profile); }
         else { return 0; }
     }
 
     //Select Profile
-    public static boolean SelectProfile(Profile profile){
+    public boolean SelectProfile(Profile profile){
         if (profile != null) {
             Profile old = GetCurrentProfile();
             //Update new profile to be active
@@ -370,7 +366,7 @@ public class ProfileManager
         }
         return false;
     }
-    public static boolean SelectProfile(String name){
+    public boolean SelectProfile(String name){
         for (int i = 0; i < _profiles.size(); i++) {
             if (_profiles.get(i).GetName().equals(name)) {
                 SelectProfile(_profiles.get(i));
@@ -381,7 +377,7 @@ public class ProfileManager
     }
 
     //Get Current Profile
-    public static Profile GetCurrentProfile(){
+    public Profile GetCurrentProfile(){
         if (GetProfileCount() > 0 && _currentProfileID != -1){
             return GetProfileByID(_currentProfileID);
         }
@@ -390,18 +386,18 @@ public class ProfileManager
     }
 
     //Get count
-    public static int GetProfileCount()
+    public int GetProfileCount()
     {
         return _profiles.size();
     }
 
     //Get profiles array
-    public static ArrayList<Profile> GetProfiles(){
+    public ArrayList<Profile> GetProfiles(){
         return _profiles;
     }
 
     //Get String array of profile names
-    public static ArrayList<String> GetProfileNames(){
+    public ArrayList<String> GetProfileNames(){
         ArrayList<String> ar = new ArrayList<>();
 
         for (int i = 0; i < _profiles.size(); i++){
@@ -411,7 +407,7 @@ public class ProfileManager
         return ar;
     }
 
-    public static Boolean HasProfile(String profile){
+    public Boolean HasProfile(String profile){
         for (int i = 0; i < _profiles.size(); i++){
             if (_profiles.get(i).GetName().equals(profile)){
                 return true;
@@ -421,7 +417,7 @@ public class ProfileManager
     }
 
     //Clear profiles
-    public static void ClearProfiles(){
+    public void ClearProfiles(){
         for (Profile pr : _profiles){
             pr.ClearAllObjects();
         }
@@ -434,18 +430,18 @@ public class ProfileManager
 
     //Other People
     //Add other person
-    public static void AddOtherPerson(String name, Boolean dontsave) {
+    public void AddOtherPerson(String name, Boolean dontsave) {
         if (!name.equals("")) {
             _otherPeople.add(name);
         }
     }
-    public static void AddOtherPerson(String name){
+    public void AddOtherPerson(String name){
         AddOtherPerson(name, true);
         InsertSettingDatabase(name, true);
     }
 
     //Remove other person
-    public static void RemoveOtherPerson(String name){
+    public void RemoveOtherPerson(String name){
         for (int i = 0; i < _otherPeople.size(); i++){
             if (_otherPeople.get(i).equals(name)){
                 _otherPeople.remove(i);
@@ -455,12 +451,12 @@ public class ProfileManager
     }
 
     //Get other person by index
-    public static String GetOtherPersonByIndex(int idx){
+    public String GetOtherPersonByIndex(int idx){
         return _otherPeople.get(idx);
     }
 
     //Get other person by name
-    public static boolean HasOtherPerson(String name){
+    public boolean HasOtherPerson(String name){
         for (int i = 0; i < _otherPeople.size(); i++){
             if (_otherPeople.get(i).equals(name)){
                 return true;
@@ -470,22 +466,22 @@ public class ProfileManager
     }
 
     //Get array of OtherPeople objects
-    public static ArrayList<String> GetOtherPeople(){
+    public ArrayList<String> GetOtherPeople(){
         return _otherPeople;
     }
 
     //Get count of other people
-    public static int GetOtherPeopleCount(){
+    public int GetOtherPeopleCount(){
         return _otherPeople.size();
     }
 
     //Clear other people
-    public static void ClearOtherPeople(){
+    public void ClearOtherPeople(){
         _otherPeople.clear();
     }
 
     //Update other person
-    public static void UpdateOtherPerson(String old, String name){
+    public void UpdateOtherPerson(String old, String name){
         for (Profile pr : _profiles){
             pr.UpdateOtherPerson(old, name);
         }
@@ -495,34 +491,39 @@ public class ProfileManager
 
     //Categories
     //Add category
-    public static void AddCategory(Category category, Boolean dontsave) {
+    public void AddCategory(Category category, Boolean dontsave) {
         if (category != null) {
             _categories.add(category);
         }
     }
-    public static void AddCategory(Category category){
+    public void AddCategory(Category category){
         AddCategory(category, true);
         InsertSettingDatabase(category, true);
     }
-    public static void AddCategory(String name, int color){
+    public void AddCategory(String name, int color){
         AddCategory(new Category(name, color));
     }
 
     //Remove category
-    public static void RemoveCategory(Category category) {
+    public void RemoveCategory(Category category) {
         _categories.remove(category);
         RemoveCategorySettingDatabase(category.GetTitle());
     }
-    public static void RemoveCategory(String title){
+    public void RemoveCategory(String title){
         for (int i = 0; i < _categories.size(); i++){
             if (_categories.get(i).GetTitle().equals(title)){
                 RemoveCategory(_categories.get(i));
             }
         }
     }
+    public void RemoveAllCategories(){
+        for (Category c : _categories){
+            RemoveCategory(c);
+        }
+    }
 
     //Get category by index
-    public static Boolean HasCategory(String category){
+    public Boolean HasCategory(String category){
         for (int i = 0; i < _categories.size(); i++){
             if (_categories.get(i).GetTitle().equals(category)){
                 return true;
@@ -530,7 +531,7 @@ public class ProfileManager
         }
         return false;
     }
-    public static Category GetCategory(String category)
+    public Category GetCategory(String category)
     {
         for (int i = 0; i < _categories.size(); i++){
             if (_categories.get(i).GetTitle().equals(category)){
@@ -539,17 +540,17 @@ public class ProfileManager
         }
         return null;
     }
-    public static Category GetCategoryByIndex(int idx){
+    public Category GetCategoryByIndex(int idx){
         return _categories.get(idx);
     }
 
-    public static int GetCategoryIndex(String title) { return _categories.indexOf(GetCategory(title)); }
+    public int GetCategoryIndex(String title) { return _categories.indexOf(GetCategory(title)); }
 
     //Get array of OtherPeople objects
-    public static ArrayList<Category> GetCategories(){
+    public ArrayList<Category> GetCategories(){
         return _categories;
     }
-    public static ArrayList<String> GetCategoriesString(){
+    public ArrayList<String> GetCategoriesString(){
         ArrayList<String> arr = new ArrayList<>();
         for(Category c : _categories){
             arr.add(c.GetTitle());
@@ -557,16 +558,16 @@ public class ProfileManager
         return arr;
     }
 
-    public static int GetCategoriesCount() { return _categories.size(); }
+    public int GetCategoriesCount() { return _categories.size(); }
 
 
     //Get ArrayList<String> of _categories
     //public static ArrayList<Category> GetCategories(){
     //    return _categories;
     //}
-    public static ArrayList<String> GetCategoryTitles(){
+    public ArrayList<String> GetCategoryTitles(){
         ArrayList<String> arr = new ArrayList<>();
-        arr.add(0,MainActivityContext.getString(R.string.select_category));
+        arr.add(0,getString(R.string.select_category));
 
         for (Category cat : _categories){
             arr.add(cat.GetTitle());
@@ -577,20 +578,20 @@ public class ProfileManager
     }
 
     //Clear _categories
-    public static void ClearCategories(){
+    public void ClearCategories(){
         _categories.clear();
     }
 
     //Update category
-    public static void UpdateCategory(String old, Category category){
+    public void UpdateCategory(String old, Category category){
         for (Profile pr : _profiles){
             pr.UpdateCategory(old, category.GetTitle());
         }
-        ProfileManager.InsertSettingDatabase(category, true);
+        InsertSettingDatabase(category, true);
     }
 
     //Clear All
-    public static void ClearAllObjects(){
+    public void ClearAllObjects(){
         ClearProfiles();
         ClearOtherPeople();
         ClearCategories();
@@ -599,10 +600,10 @@ public class ProfileManager
 
 
     //Getting string resources from static contexts
-    public static String getString(int resourceID){ return MainActivityInstance.getString(resourceID); }
-    public static int getColor(int resourceID){ return MainActivityInstance.getResources().getColor(resourceID); }
-    public static int getDrawbleResourceID(String title) { return MainActivityInstance.getResources().getIdentifier(title, "drawable", MainActivityInstance.getPackageName()); }
-    public static Drawable getDrawable(int resourceID) { return MainActivityInstance.getResources().getDrawable(resourceID); }
+    public static String getString(int resourceID){ return App.GetResources().getString(resourceID); }
+    public static int getColor(int resourceID){ return App.GetResources().getColor(resourceID); }
+    //public int getDrawbleResourceID(Context c, String title) { return App.GetResources().getIdentifier(title, "drawable", c.getPackageName()); }
+    public static Drawable getDrawable(int resourceID) { return App.GetResources().getDrawable(resourceID); }
     //public static Drawable getDrawable(int resourceID){ return MainActivityInstance.getResources().getDrawable(resourceID); }
 
     public static void setRefreshToolbarEnable(CollapsingToolbarLayout collapsingToolbarLayout,
@@ -626,7 +627,7 @@ public class ProfileManager
                 return dtf.parseLocalDate(str);
             }
             catch (IllegalArgumentException ex) {
-                ProfileManager.Print("Could not parse localdate (" + str + ")");
+                //Print("Could not parse localdate (" + str + ")");
                 ex.printStackTrace();
             }
         }
@@ -658,9 +659,9 @@ public class ProfileManager
 
 
     //Permissions
-    public static boolean isStoragePermissionGranted() {
+    public static boolean isStoragePermissionGranted(Context ac) {
         if (Build.VERSION.SDK_INT >= 23) {
-            if (MainActivityContext.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (ac.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 ////Log.v("PERMISSIONS","External Write Storage permission is granted");
                 return true;
             } else {
@@ -675,105 +676,104 @@ public class ProfileManager
     }
 
     //DEBUG
-    public static boolean isDebugMode(){
-        return (0 != (MainActivityInstance.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+    public static boolean isDebugMode(Context ac){
+        return (0 != (ac.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
     }
 
 
     //External Database Management
-    public static void InsertSettingDatabase(Category category, Boolean tryupdate){
-        if ( category == null || databaseHelper.insertSetting(category, tryupdate) == -1){
-            ProfileManager.Print("Error inserting category into database");
+    public DatabaseHelper GetDatabaseHelper() { return databaseHelper; }
+    public void InsertSettingDatabase(Category category, boolean tryupdate){
+        if ( category != null ){ //|| databaseHelper.insertSetting(category, tryupdate) == -1
+            //Print("Error inserting category into database");
+            (new DatabaseBackgroundHelper()).execute(2, category, tryupdate);
         }
     }
-    public static void InsertSettingDatabase(String name, Boolean tryupdate){
-        if (name.equals("") || databaseHelper.insertSetting(name, tryupdate) == -1) {
-            ProfileManager.Print("Error inserting person into database");
+    public void InsertSettingDatabase(String name, boolean tryupdate){
+        if (!name.equals("") ) { //|| databaseHelper.insertSetting(name, tryupdate) == -1
+            //Print("Error inserting person into database");
+            (new DatabaseBackgroundHelper()).execute(3, name, tryupdate);
         }
     }
-    public static void InsertSettingDatabase(Profile profile, Boolean tryupdate){
-        if (profile == null || databaseHelper.insertSetting(profile, tryupdate) == -1) {
-            ProfileManager.Print("Error inserting profile into database");
+    public void InsertSettingDatabase(Profile profile, boolean tryupdate){
+        if (profile != null ) { //|| databaseHelper.insertSetting(profile, tryupdate) == -1
+            //Print("Error inserting profile into database");
+            (new DatabaseBackgroundHelper()).execute(4, profile, tryupdate);
+        }
+
+    }
+
+    public void InsertTransactionDatabase(Profile pr, Transaction tr, boolean tryupdate){
+        if ( pr != null && tr != null){
+            //Print("Transaction " + (tryupdate ? "updated" : "inserted into database") );
+            (new DatabaseBackgroundHelper()).execute(5, pr, tr, tryupdate);
+        } else { }//Print("Error inserting transaction into database"); }
+    }
+
+
+
+    public void RemoveCategorySettingDatabase(String category){
+        if ( !category.equals("") ){ //databaseHelper.removeCategorySetting(category)
+            //Print("Category removed from database");
+            (new DatabaseBackgroundHelper()).execute(10, category);
+        } else { }//Print("Error removing category from database"); }
+    }
+    public void RemovePersonSettingDatabase(String person){
+        if ( !person.equals("") ){ //databaseHelper.removeSettingPerson(person)
+            //Print("Person removed from database");
+            (new DatabaseBackgroundHelper()).execute(11, person);
+        } else { }//Print("Error removing person from database"); }
+    }
+    public void RemoveProfileSettingDatabase(Profile pr){
+        if ( pr != null ){ //databaseHelper.removeProfileSetting(pr)
+            //Print("Profile removed from database");
+            (new DatabaseBackgroundHelper()).execute(12, pr);
+        } else { }//Print("Error removing profile from database"); }
+    }
+
+    public void RemoveTransactionDatabase(Transaction tr){
+        if ( tr != null ){ //databaseHelper.remove(tr)
+            //Print("Transaction removed from database");
+            (new DatabaseBackgroundHelper()).execute(13, tr);
+        } else { }//Print("Error removing transaction from database"); }
+    }
+    public void DeleteDatabase(){
+        //databaseHelper.DeleteDB();
+        (new DatabaseBackgroundHelper()).execute(15);
+    }
+
+    public void ExportDatabase(String str){
+        if (!str.equals("")) {
+            //databaseHelper.exportDatabase(str);
+            (new DatabaseBackgroundHelper()).execute(1, str);
         }
     }
-
-    //public static void InsertExpenseDatabase(Profile pr, Expense ex, Boolean tryupdate){
-    //    if ( databaseHelper.insert(pr, ex, tryupdate) != -1){
-    //        ProfileManager.Print("Expense " + (tryupdate ? "updated" : "inserted into database") );
-    //    } else { ProfileManager.Print("Error inserting expense into database"); }
-    //}
-    //public static void InsertIncomeDatabase(Profile pr, Income in, Boolean tryupdate){
-    //    if ( databaseHelper.insert(pr, in, tryupdate) != -1){
-    //        ProfileManager.Print("Income " + (tryupdate ? "updated" : "inserted into database") );
-    //    } else { ProfileManager.Print("Error inserting income into database"); }
-    //}
-    public static void InsertTransactionDatabase(Profile pr, Transaction tr, Boolean tryupdate){
-        if ( databaseHelper.insert(pr, tr, tryupdate) != -1){
-            ProfileManager.Print("Transaction " + (tryupdate ? "updated" : "inserted into database") );
-        } else { ProfileManager.Print("Error inserting transaction into database"); }
-    }
-
-
-    public static void RemoveProfileSettingDatabase(Profile pr){
-        if ( databaseHelper.removeProfileSetting(pr) ){
-            ProfileManager.Print("Profile removed from database");
-        } else { ProfileManager.Print("Error removing profile from database"); }
-    }
-    public static void RemoveCategorySettingDatabase(String category){
-        if ( databaseHelper.removeCategorySetting(category) ){
-            ProfileManager.Print("Category removed from database");
-        } else { ProfileManager.Print("Error removing category from database"); }
-    }
-    public static void RemovePersonSettingDatabase(String person){
-        if ( databaseHelper.removePersonSetting(person) ){
-            ProfileManager.Print("Person removed from database");
-        } else { ProfileManager.Print("Error removing person from database"); }
-    }
-
-    //public static void RemoveExpenseDatabase(Expense ex){
-    //    if ( databaseHelper.remove(ex) ){
-    //        ProfileManager.Print("Expense removed from database");
-    //    } else { ProfileManager.Print("Error removing expense from database"); }
-    //}
-    //public static void RemoveIncomeDatabase(Income in){
-    //    if ( databaseHelper.remove(in) ){
-    //        ProfileManager.Print("Income removed from database");
-    //    } else { ProfileManager.Print("Error removing income from database"); }
-    //}
-    public static void RemoveTransactionDatabase(Transaction tr){
-        if ( databaseHelper.remove(tr) ){
-            ProfileManager.Print("Transaction removed from database");
-        } else { ProfileManager.Print("Error removing transaction from database"); }
-    }
-    public static void DeleteDatabase(){
-        databaseHelper.DeleteDB();
-    }
-
-    public static void ExportDatabase(String str){ databaseHelper.exportDatabase(str); }
-    public static void ImportDatabase(File file) { ImportDatabase(file, true); }
-    public static void ImportDatabase(File file, boolean backup){
-        if (isStoragePermissionGranted()) {
+    public void ImportDatabase(Context c, File file) { ImportDatabase(c, file, true); }
+    public void ImportDatabase(Context c, File file, boolean backup){
+        if (isStoragePermissionGranted(c)) {
             //Clear all old data
             ClearAllObjects();
 
             //Import new database
-            databaseHelper.importDatabase(file, backup);
+            //databaseHelper.importDatabase(file, backup);
+            (new DatabaseBackgroundHelper()).execute(0, file, backup);
         }
     }
-    public static Boolean DoesBackupExist() { return databaseHelper.EXPORT_BACKUP.exists(); }
-    public static void ImportDatabaseBackup() { ImportDatabase(databaseHelper.EXPORT_BACKUP, false);  }
-    public static File GetDatabaseByPath(String path) { return databaseHelper.getDatabaseByPath(path); }
-    public static void DeleteDatabaseByPath(String path) { GetDatabaseByPath(path).delete(); }
-    public static ArrayList<File> GetImportDatabaseFiles() { return databaseHelper.getImportableDatabases(); }
-    public static ArrayList<String> GetImportDatabaseFilesString() { return databaseHelper.getImportableDatabasesString();  }
+    public Boolean DoesBackupExist() { return databaseHelper.EXPORT_BACKUP.exists(); }
+    public void ImportDatabaseBackup(Context c) { ImportDatabase(c, databaseHelper.EXPORT_BACKUP, false);  }
+    public File GetDatabaseByPath(String path) { return databaseHelper.getDatabaseByPath(path); }
+    public void DeleteDatabaseByPath(String path) { GetDatabaseByPath(path).delete(); }
+    public ArrayList<File> GetImportDatabaseFiles() { return databaseHelper.getImportableDatabases(); }
+    public ArrayList<String> GetImportDatabaseFilesString() { return databaseHelper.getImportableDatabasesString();  }
 
-    public static String GetExportDirectory() { return databaseHelper.GetExportDirectory(); }
-    public static int GetNewestDatabaseVersion() { return databaseHelper.GetNewestVersion(); }
+    public String GetExportDirectory() { return databaseHelper.GetExportDirectory(); }
+    public int GetNewestDatabaseVersion() { return databaseHelper.GetNewestVersion(); }
 
 
 
     //Notifications
-    public static void ShowNotification(){
+    /*
+    public void ShowNotification(){
         //build your notification here.
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(MainActivityInstance)
@@ -790,7 +790,7 @@ public class ProfileManager
     }
 
 
-    public static void scheduleNotification(Notification notification, int delay) {
+    public void scheduleNotification(Notification notification, int delay) {
         Print("Notification Scheduled");
 
         Intent notificationIntent = new Intent(MainActivityInstance, NotificationPublisher.class);
@@ -803,13 +803,14 @@ public class ProfileManager
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
 
-    public static Notification getNotification(String content) {
+    public Notification getNotification(String content) {
         Notification.Builder builder = new Notification.Builder(MainActivityContext);
         builder.setContentTitle("Scheduled Notification");
         builder.setContentText(content);
         builder.setSmallIcon(R.drawable.ic_account_multiple_white_24dp);
         return builder.build();
     }
+    */
 
     //Define parent callback interface
     public interface ParentCallback {

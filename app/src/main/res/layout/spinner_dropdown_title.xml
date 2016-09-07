@@ -4,6 +4,6 @@
     android:maxLines="1"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:textColor="@color/gray"
+    android:textColor="@color/black"
     android:ellipsize="marquee"
     android:layout_gravity="center_vertical" />

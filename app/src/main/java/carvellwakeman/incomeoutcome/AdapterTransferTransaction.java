@@ -22,7 +22,7 @@ public class AdapterTransferTransaction extends RecyclerView.Adapter<AdapterTran
     {
         parent = _parent;
 
-        _profiles = new ArrayList<>(ProfileManager.GetProfiles());
+        _profiles = new ArrayList<>(ProfileManager.getInstance().GetProfiles());
         _profiles.remove(parent.current);
     }
 

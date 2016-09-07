@@ -17,7 +17,7 @@ public abstract class Card implements View.OnClickListener {
 
     View v;
 
-    public Card(Context context, LayoutInflater inflater, int layout){
+    public Card(Context context, LayoutInflater inflater, int layout, ViewGroup insertPoint, int index){
         this.context = context;
         _inflater = inflater;
         _layout = layout;
@@ -27,17 +27,15 @@ public abstract class Card implements View.OnClickListener {
 
         //Set listener
         v.setOnClickListener(this);
+
+        //Inflate parent
+        insertPoint.addView(v, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     //Accessors
     public View getView()
     {
         return v;
-    }
-
-    //Mutators
-    public void insert(ViewGroup insertPoint, int index){
-        insertPoint.addView(v, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     //Click listener

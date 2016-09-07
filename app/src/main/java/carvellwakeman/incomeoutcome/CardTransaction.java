@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -52,8 +53,8 @@ public class CardTransaction extends Card
     boolean isExpanded = false;
 
 
-    public CardTransaction(int profileID, int defaultActivityType, int defaultKeyType, String title, Context context, LayoutInflater inflater, int layout){
-        super(context, inflater, layout);
+    public CardTransaction(ViewGroup insertPoint, int index, int profileID, int defaultActivityType, int defaultKeyType, String title, Context context, LayoutInflater inflater, int layout){
+        super(context, inflater, layout, insertPoint, index);
         this._context = context;
         _profileID = profileID;
         this.defaultActivityType = defaultActivityType;
@@ -107,7 +108,7 @@ public class CardTransaction extends Card
         button_viewDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Profile _profile = ProfileManager.GetProfileByID(_profileID);
+                Profile _profile = ProfileManager.getInstance().GetProfileByID(_profileID);
                 if (_profile != null) {
                     _profile.CalculateTimeFrame(activityType);
                     _profile.CalculateTotalsInTimeFrame(activityType, activityType);
@@ -120,7 +121,7 @@ public class CardTransaction extends Card
                     ((ActivityMain)_context).startActivityForResult(intent, 0);
                 }
                 else {
-                    ProfileManager.Print("ERROR: Profile not found, could not start transaction details activity");
+                    ProfileManager.Print(_context, "ERROR: Profile not found, could not start transaction details activity");
                 }
             }
         });
@@ -167,7 +168,7 @@ public class CardTransaction extends Card
     public void SetProfileID(int profileID){ _profileID = profileID; }
 
     public void SetData(){
-        Profile _profile = ProfileManager.GetProfileByID(_profileID);
+        Profile _profile = ProfileManager.getInstance().GetProfileByID(_profileID);
         if (_profile != null){
             _profile.CalculateTimeFrame(activityType);
 
@@ -188,7 +189,7 @@ public class CardTransaction extends Card
                         entries.add(new PieEntry(entry.getValue().GetValue().floatValue(), entry.getKey()));
 
                         //Special case if keytype is category
-                        Category cat = ProfileManager.GetCategory(entry.getValue().GetCategory());
+                        Category cat = ProfileManager.getInstance().GetCategory(entry.getValue().GetCategory());
                         if (cat != null && keyType == 2) { colors.add(cat.GetColor()); }
                         else { colors.add(ProfileManager.ColorFromString(entry.getKey())); }
                     }
@@ -214,7 +215,7 @@ public class CardTransaction extends Card
 
                 PieData data = new PieData(dataSet);
                 chart.setData(data);
-                chart.setCenterText("Total\n" + ProfileManager.currencyFormat.format(total));
+                chart.setCenterText(ProfileManager.getString(R.string.info_total_newline) + ProfileManager.currencyFormat.format(total));
                 chart.invalidate(); //Refresh
 
                 chart.setVisibility(View.VISIBLE);

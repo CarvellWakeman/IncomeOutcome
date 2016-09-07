@@ -27,7 +27,7 @@ public class AdapterManageCategories extends RecyclerView.Adapter<AdapterManageC
     public void onBindViewHolder(final CategoryViewHolder holder, int position)
     {
         //Category
-        Category cr = ProfileManager.GetCategoryByIndex(position);
+        Category cr = ProfileManager.getInstance().GetCategoryByIndex(position);
         if (cr != null) {
             //Textview
             holder.title.setText(cr.GetTitle());
@@ -39,7 +39,7 @@ public class AdapterManageCategories extends RecyclerView.Adapter<AdapterManageC
 
     @Override public int getItemCount()
     {
-        return ProfileManager.GetCategoriesCount();
+        return ProfileManager.getInstance().GetCategoriesCount();
     }
 
 
@@ -49,7 +49,7 @@ public class AdapterManageCategories extends RecyclerView.Adapter<AdapterManageC
 
         @Override
         public void onClick(View v) {
-            Category cr = ProfileManager.GetCategoryByIndex(getAdapterPosition());
+            Category cr = ProfileManager.getInstance().GetCategoryByIndex(getAdapterPosition());
             if (cr != null) {
 
                 ProfileManager.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, cr.GetTitle(), "", cr.GetTitle(),

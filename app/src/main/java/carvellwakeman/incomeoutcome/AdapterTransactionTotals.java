@@ -9,31 +9,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 public class AdapterTransactionTotals extends RecyclerView.Adapter<AdapterTransactionTotals.TransactionTotalsViewHolder>
 {
     //Activity type
-    int activityType;
+    private int activityType;
 
     //Calling activity context
     Context context;
 
     //ID strings
-    int _profileID;
-    Profile _profile;
+    private int _profileID;
+    private Profile _profile;
 
     // Data
     HashMap<String, Transaction> data;
 
     //Constructor
-    public AdapterTransactionTotals(Context context, int profileID, int activityType, int keyType)
+    AdapterTransactionTotals(Context context, int profileID, int activityType, int keyType)
     {
         _profileID = profileID;
-        _profile = ProfileManager.GetProfileByID(profileID);
+        _profile = ProfileManager.getInstance().GetProfileByID(profileID);
 
         if ( _profile != null ) {
-            data = _profile.CalculateTotalsInTimeFrame(activityType, keyType, false);
+            //data = _profile.CalculateTotalsInTimeFrame(activityType, keyType, false);
         }
 
         this.context = context;
@@ -56,8 +58,7 @@ public class AdapterTransactionTotals extends RecyclerView.Adapter<AdapterTransa
     public void onBindViewHolder(final TransactionTotalsViewHolder holder, int position)
     {
         if (_profile != null) {
-            //data = _profile.GetTotalCostPerPersonInTimeFrame();
-            //_profile.GetTotalCostPerPersonInTimeFrame();
+            data = _profile.GetTransactionTotals();
 
             String[] op = data.keySet().toArray(new String[data.keySet().size()]);
             if (position < op.length) {
@@ -107,7 +108,7 @@ public class AdapterTransactionTotals extends RecyclerView.Adapter<AdapterTransa
     public int getItemCount()
     {
         if (_profile != null) {
-            return data.size();
+            return _profile.GetTransactionTotals().size();
         }
         return -1;
     }

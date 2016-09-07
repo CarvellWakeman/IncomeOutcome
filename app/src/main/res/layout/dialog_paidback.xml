@@ -32,24 +32,19 @@
            android:layout_height="wrap_content"
            android:text="@string/time_today"
            android:id="@+id/radioButton_today"
-           android:layout_alignStart="@+id/textView_dialogpb_title"
            android:checked="true" />
 
        <RadioButton
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:text="@string/time_ondate"
-           android:id="@+id/radioButton_ondate"
-           android:layout_below="@+id/radioButton_today"
-           android:layout_alignStart="@+id/textView_dialogpb_title" />
+           android:id="@+id/radioButton_ondate" />
 
        <RadioButton
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:text="@string/time_never"
-           android:id="@+id/radiobutton_never"
-           android:layout_below="@+id/radioButton_ondate"
-           android:layout_alignStart="@+id/textView_dialogpb_title" />
+           android:id="@+id/radiobutton_never" />
 
    </RadioGroup>
 

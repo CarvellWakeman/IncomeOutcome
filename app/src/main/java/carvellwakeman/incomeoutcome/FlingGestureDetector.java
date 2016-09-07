@@ -13,7 +13,7 @@ class FlingGestureDetector extends GestureDetector.SimpleOnGestureListener {
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         try {
             if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) { return false; }
-            Profile pr = ProfileManager.GetCurrentProfile();
+            Profile pr = ProfileManager.getInstance().GetCurrentProfile();
             if (pr != null) {
                 LocalDate e;
                 // right to left swipe
@@ -24,7 +24,6 @@ class FlingGestureDetector extends GestureDetector.SimpleOnGestureListener {
 
                     pr.SetStartTime(e.withDayOfMonth(e.dayOfMonth().getMinimumValue()));
                     pr.SetEndTime(e);
-                    ProfileManager.Print("Next Month");
                 }
                 else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                     if (pr.GetEndTime() == null) { e = new LocalDate(); } else { e = pr.GetEndTime().minusMonths(1); }
@@ -32,7 +31,6 @@ class FlingGestureDetector extends GestureDetector.SimpleOnGestureListener {
 
                     pr.SetStartTime(e.withDayOfMonth(e.dayOfMonth().getMinimumValue()));
                     pr.SetEndTime(e);
-                    ProfileManager.Print("Prev Month");
                 }
 
                 //UpdateStartEndDate();

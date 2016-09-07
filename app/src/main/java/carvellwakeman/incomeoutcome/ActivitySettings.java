@@ -60,7 +60,7 @@ public class ActivitySettings extends AppCompatActivity
 
 
         //Setting Categories
-        CardSettings profilesPeopleCategories = new CardSettings(this, inflater, R.layout.row_layout_setting_card, getString(R.string.title_settings_profilespeoplecategories));
+        CardSettings profilesPeopleCategories = new CardSettings(this, inflater, insertPoint, 0, R.layout.row_layout_setting_card, getString(R.string.title_settings_profilespeoplecategories));
         //Manage profiles
             profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_account_white_24dp, getString(R.string.title_manageprofiles), null,
                     new View.OnClickListener() { @Override public void onClick(View v) {
@@ -83,11 +83,11 @@ public class ActivitySettings extends AppCompatActivity
                     }}
             ));
 
-        CardSettings database = new CardSettings(this, inflater, R.layout.row_layout_setting_card, getString(R.string.title_settings_database));
+        CardSettings database = new CardSettings(this, inflater, insertPoint, 1, R.layout.row_layout_setting_card, getString(R.string.title_settings_database));
         //Import and Export
             database.AddSetting(new Setting(inflater, R.drawable.ic_file_white_24dp, getString(R.string.title_settings_importexport), getString(R.string.subtitle_settings_importexport),
                     new View.OnClickListener() { @Override public void onClick(View v) {
-                        if (ProfileManager.isStoragePermissionGranted()) {
+                        if (ProfileManager.isStoragePermissionGranted(ActivitySettings.this)) {
                             //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentDatabaseImport(), mIsLargeLayout);
                             startActivity(new Intent(ActivitySettings.this, ActivityDatabaseImport.class));
                         }
@@ -107,34 +107,43 @@ public class ActivitySettings extends AppCompatActivity
                         new AlertDialog.Builder(ActivitySettings.this).setTitle(R.string.confirm_areyousure_deleteall)
                                 .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                                     @Override public void onClick(DialogInterface dialog, int which) {
-                                        ProfileManager.DeleteDatabase();
-                                        ProfileManager.ClearAllObjects();
-                                        //ProfileManager.LoadDefaultSettings();
+                                        ProfileManager.getInstance().DeleteDatabase();
+                                        ProfileManager.getInstance().ClearAllObjects();
+                                        ProfileManager.getInstance().GetDatabaseHelper().TryCreateDatabase();
                                     }})
                                 .setNegativeButton(R.string.action_cancel, null)
                                 .create().show();
                     }}
             ));
-
-        CardSettings debug = new CardSettings(this, inflater, R.layout.row_layout_setting_card, "Debug");
+        //Load default categories
+            database.AddSetting(new Setting(inflater, R.drawable.ic_database_plus_white_24dp, getString(R.string.title_settings_defaultcategories), getString(R.string.subtitle_settings_defaultcategories), new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ProfileManager.getInstance().RemoveAllCategories();
+                    ProfileManager.getInstance().LoadDefaultCategories(ActivitySettings.this);
+                }
+            }));
+        if (ProfileManager.isDebugMode(this)) {
+            CardSettings debug = new CardSettings(this, inflater, insertPoint, 2, R.layout.row_layout_setting_card, "Debug");
             //View Database
-                debug.AddSetting(new Setting(inflater, R.drawable.ic_database_white_24dp, "View Database", "View and edit current database details", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent dbmanager = new Intent(ActivitySettings.this, AndroidDatabaseManager.class);
-                        startActivity(dbmanager);
-                    }
-                }));
-        CardView c = (CardView) debug.getView().findViewById(R.id.row_layout_settingscard);
-        if (c != null) { c.setBackgroundColor(Color.YELLOW); }
+            debug.AddSetting(new Setting(inflater, R.drawable.ic_database_white_24dp, "View Database", "View and edit current database details", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent dbmanager = new Intent(ActivitySettings.this, AndroidDatabaseManager.class);
+                    startActivity(dbmanager);
+                }
+            }));
+            CardView c = (CardView) debug.getView().findViewById(R.id.row_layout_settingscard);
+            if (c != null) { c.setBackgroundColor(Color.YELLOW); }
+        }
 
 
 
 
         //Insert categories
-        profilesPeopleCategories.insert(insertPoint, 0);
-        database.insert(insertPoint, 1);
-        if (ProfileManager.isDebugMode()){ debug.insert(insertPoint, 2); }
+        //profilesPeopleCategories.insert(insertPoint, 0);
+        //database.insert(insertPoint, 1);
+         //debug.insert(insertPoint, 2);
     }
 
 

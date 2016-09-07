@@ -76,7 +76,7 @@ public class AdapterBlacklistDates extends RecyclerView.Adapter<AdapterBlacklist
                 public void onClick(DialogInterface dialog, int item) {
                     switch (item) {
                         case 0: //Remove
-                            ProfileManager.Print("BlacklistDate " + timePeriod.GetBlacklistDate(pos).date.toString(ProfileManager.simpleDateFormat) + " queued for removal on save");
+                            ProfileManager.Print(context, "BlacklistDate " + timePeriod.GetBlacklistDate(pos).date.toString(ProfileManager.simpleDateFormat) + " queued for removal on save");
                             timePeriod.QueueBlacklistDateRemoval(timePeriod.GetBlacklistDate(pos).date);
                             notifyItemRemoved(pos);
                             break;

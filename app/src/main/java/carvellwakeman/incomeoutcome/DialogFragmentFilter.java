@@ -66,7 +66,7 @@ public class DialogFragmentFilter extends DialogFragment
         ArrayAdapter<String> adapter = null;
         switch(filterMethod){
             case CATEGORY:
-                adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_title, ProfileManager.GetCategoriesString());
+                adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_title, ProfileManager.getInstance().GetCategoriesString());
                 break;
             case SOURCE:
                 ArrayList<String> sources = new ArrayList<>();
@@ -78,7 +78,7 @@ public class DialogFragmentFilter extends DialogFragment
                 adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_title, sources);
                 break;
             case PAIDBY:
-                adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_title, ProfileManager.GetOtherPeople());
+                adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_title, ProfileManager.getInstance().GetOtherPeople());
                 break;
         }
         if (adapter != null){

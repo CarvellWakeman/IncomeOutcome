@@ -47,14 +47,16 @@
 
 
     <!-- Setting titles -->
-    <string name="title_settings_profilespeoplecategories">Profiles, People &amp; Categories</string>
+    <string name="title_settings_profilespeoplecategories">Profiles, People and Categories</string>
     <string name="title_settings_database">Data</string>
     <string name="title_settings_import">Import Data</string>
     <string name="title_settings_export">Export Data</string>
     <string name="title_settings_importexport">Import and Export Data</string>
+    <string name="title_settings_defaultcategories">Load default categories</string>
     <string name="title_settings_deletealldata">Delete ALL Data</string>
     <string name="title_settings_importbackup">Import Secret Backup</string>
     <!-- Setting subtitles -->
+    <string name="subtitle_settings_defaultcategories">Erase all existing categories, load defaults</string>
     <string name="subtitle_settings_deletealldata">Erase all data permanently \n(excluding exported data)</string>
     <string name="subtitle_settings_import">Erase all current data and import new data</string>
     <string name="subtitle_settings_export">Export all current data to an external file</string>
@@ -102,7 +104,8 @@
     <string name="tt_suggestaddprofile">Add a profile to begin</string>
     <string name="tt_permission_writestorage1">Access files request</string>
     <string name="tt_permission_writestorage2">In order for this app to export or import data from an external directory, you must grant it permission to access and modify external files.</string>
-    <string name="tt_add_to_split">Add a person to split this transaction</string>
+    <string name="tt_add_to_split">Click here to add a person to split this transaction with</string>
+    <string name="tt_add_to_category">Add a category</string>
 
     <!-- Information -->
     <string name="info_title_value">%1$s %2$s</string>
@@ -123,6 +126,7 @@
     <string name="info_noname"><i>No Source Name</i></string>
     <string name="info_domwarning">* Some months are limited to 28/29/30 days. The last day of the month will be chosen in these cases.</string>
     <string name="info_selected">Selected</string>
+    <string name="info_total_newline">Total\n</string>
 
     <!-- Formatting -->
     <string name="item_delimiter">,</string>
@@ -142,7 +146,6 @@
 
     <!-- Spinner selection -->
     <string name="select_category">Select a Category&#8230;</string>
-    <string name="add_otherperson">Add New&#8230;</string>
 
     <!-- User actions -->
     <string name="action_edit">Edit</string>
@@ -198,6 +201,12 @@
     <string name="time_never">Never</string>
     <string name="time_nextperiod">Next</string>
     <string name="time_prevperiod">Prev</string>
+    <string name="time_nodate">No Date</string>
+    <string name="time_summer">Summer, </string>
+    <string name="time_winter">Winter, </string>
+    <string name="time_spring">Spring, </string>
+    <string name="time_fall">Autumn, </string>
+    <string name="time_started">Started </string>
 
     <!-- Sort & Filter -->
     <string name="sort">Sort</string>
@@ -227,13 +236,13 @@
 
     <string name="repeat_until">Repeat Until</string>
 
-    <string name="repeat_mon">Mon</string>
-    <string name="repeat_tue">Tue</string>
-    <string name="repeat_wed">Wed</string>
-    <string name="repeat_thur">Thur</string>
-    <string name="repeat_fri">Fri</string>
-    <string name="repeat_sat">Sat</string>
-    <string name="repeat_sun">Sun</string>
+    <string name="repeat_mon">Lun</string>
+    <string name="repeat_tue">Mar</string>
+    <string name="repeat_wed">Mer</string>
+    <string name="repeat_thur">Jeu</string>
+    <string name="repeat_fri">Ven</string>
+    <string name="repeat_sat">Sam</string>
+    <string name="repeat_sun">Dim</string>
 
     <!-- Key Type array -->
     <string-array name="keytype_array_ex">

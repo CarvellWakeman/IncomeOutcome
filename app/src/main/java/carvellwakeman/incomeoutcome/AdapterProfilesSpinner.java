@@ -24,18 +24,18 @@ public class AdapterProfilesSpinner extends ArrayAdapter<String> {
 
     @Override
     public String getItem(int position) {
-        Profile pr = ProfileManager.GetProfileByIndex(position);
+        Profile pr = ProfileManager.getInstance().GetProfileByIndex(position);
         return pr != null ? pr.GetName() : "";
     }
 
     @Override
     public int getPosition(String item) {
-        return ProfileManager.GetProfileIndex(ProfileManager.GetProfileByName(item));
+        return ProfileManager.getInstance().GetProfileIndex(ProfileManager.getInstance().GetProfileByName(item));
     }
 
     @Override
     public int getCount() {
-        return ProfileManager.GetProfileCount();
+        return ProfileManager.getInstance().GetProfileCount();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class AdapterProfilesSpinner extends ArrayAdapter<String> {
             v = inf.inflate(_layoutResourceId, null);
         }
 
-        Profile pr = ProfileManager.GetProfileByIndex(position);
+        Profile pr = ProfileManager.getInstance().GetProfileByIndex(position);
         if (pr != null){
             TextView title = (TextView) v;
 

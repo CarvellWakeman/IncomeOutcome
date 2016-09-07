@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.github.mikephil.charting.animation.Easing;
@@ -46,8 +47,8 @@ public class CardVersus extends Card
     HorizontalBarChart chart;
     BarDataSet dataSet;
 
-    public CardVersus(int profileID, Context context, LayoutInflater inflater, int layout){
-        super(context, inflater, layout);
+    public CardVersus(ViewGroup insertPoint, int index, int profileID, Context context, LayoutInflater inflater, int layout){
+        super(context, inflater, layout, insertPoint, index);
         _profileID = profileID;
 
         //Title
@@ -121,7 +122,7 @@ public class CardVersus extends Card
     public void SetProfileID(int profileID){ _profileID = profileID; }
 
     public void SetData(){
-        Profile _profile = ProfileManager.GetProfileByID(_profileID);
+        Profile _profile = ProfileManager.getInstance().GetProfileByID(_profileID);
         if (_profile != null){
 
             //Clear chart info
@@ -175,7 +176,7 @@ public class CardVersus extends Card
                                 TimePeriod tp = tr.GetTimePeriod();
                                 if (tp != null) {
                                     if (tp.GetDate() != null) {
-                                        SimpleDateFormat formatter = new SimpleDateFormat(ProfileManager.simpleDateFormatShortNoDay, ProfileManager.locale);
+                                        SimpleDateFormat formatter = new SimpleDateFormat(ProfileManager.simpleDateFormatShortNoDay, App.GetLocale());
                                         return formatter.format(tp.GetDate().toDate());
                                         //return String.valueOf(value);
                                     }

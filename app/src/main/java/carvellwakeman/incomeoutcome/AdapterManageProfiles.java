@@ -27,7 +27,7 @@ public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManagePro
     public void onBindViewHolder(final ProfileViewHolder holder, int position)
     {
         //Profile
-        Profile pr = ProfileManager.GetProfileByIndex(position);
+        Profile pr = ProfileManager.getInstance().GetProfileByIndex(position);
         if (pr != null) {
             //Textview
             holder.title.setText(pr.GetName());
@@ -35,7 +35,7 @@ public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManagePro
 
             if (holder.subTitle.getText() != null) { holder.subTitle.setVisibility(View.VISIBLE); }
 
-            if (ProfileManager.GetCurrentProfile() == pr){
+            if (ProfileManager.getInstance().GetCurrentProfile() == pr){
                 //holder.secondaryIcon.setImageDrawable(ProfileManager.getDrawable(R.drawable.ic_check_white_24dp));
                 holder.secondaryIcon.setVisibility(View.VISIBLE);
                 //holder.base.setBackgroundColor(ProfileManager.getColor(R.color.blue));
@@ -48,7 +48,7 @@ public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManagePro
 
     @Override public int getItemCount()
     {
-        return ProfileManager.GetProfileCount();
+        return ProfileManager.getInstance().GetProfileCount();
     }
 
 
@@ -58,7 +58,7 @@ public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManagePro
 
         @Override
         public void onClick(View v) {
-            Profile pr = ProfileManager.GetProfileByIndex(getAdapterPosition());
+            Profile pr = ProfileManager.getInstance().GetProfileByIndex(getAdapterPosition());
             if (pr != null) {
                 String descriptionString =
                         pr.GetDateFormatted() + "\n" +
@@ -69,13 +69,13 @@ public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManagePro
                         new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.SelectProfile(data, dialogFragment); } },
                         new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeleteProfile(data, dialogFragment); } }),
                         true); //TODO: Handle mIsLargeDisplay
-                //parent.EditProfile(ProfileManager.GetProfileByIndex(getAdapterPosition()));
+                //parent.EditProfile(ProfileManager.getInstance().GetProfileByIndex(getAdapterPosition()));
             }
         }
 
         @Override
         public boolean onLongClick(View v){
-            ProfileManager.SelectProfile(ProfileManager.GetProfileByIndex(getAdapterPosition()));
+            ProfileManager.getInstance().SelectProfile(ProfileManager.getInstance().GetProfileByIndex(getAdapterPosition()));
             notifyDataSetChanged();
             return true;
         }

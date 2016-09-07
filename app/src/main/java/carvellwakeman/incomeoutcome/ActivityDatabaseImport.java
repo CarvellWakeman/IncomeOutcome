@@ -1,6 +1,7 @@
 package carvellwakeman.incomeoutcome;
 
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -65,7 +66,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
         button_restorebackup = (Button) findViewById(R.id.button_dialogin_backup);
         button_exportOpen = (Button) findViewById(R.id.button_dialogex_export);
 
-        existingDatabases = ProfileManager.GetImportDatabaseFilesString();
+        existingDatabases = ProfileManager.getInstance().GetImportDatabaseFilesString();
 
         switch_override = (SwitchCompat) findViewById(R.id.switch_override_export);
 
@@ -103,7 +104,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
 
 
         //Setup backup restore button if there is a backup
-        if (ProfileManager.DoesBackupExist()){
+        if (ProfileManager.getInstance().DoesBackupExist()){
             button_restorebackup.setEnabled(true);
             button_restorebackup.setText(R.string.info_backupnotice);
         }
@@ -116,7 +117,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                         .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ProfileManager.ImportDatabaseBackup();
+                                ProfileManager.getInstance().ImportDatabaseBackup(ActivityDatabaseImport.this);
                                 finish();
                             }})
                         .setNegativeButton(R.string.confirm_no, null)
@@ -177,10 +178,10 @@ public class ActivityDatabaseImport extends AppCompatActivity {
             case R.id.toolbar_export: //EXPORT button
                 String str = editText_filename.getText().toString();
                 if (!str.equals("")) {
-                    ProfileManager.ExportDatabase(str);
+                    ProfileManager.getInstance().ExportDatabase(str);
                     ToggleMenu(false);
                     ProfileManager.hideSoftKeyboard(this, editText_filename);
-                    existingDatabases = ProfileManager.GetImportDatabaseFilesString();
+                    existingDatabases = ProfileManager.getInstance().GetImportDatabaseFilesString();
                     UpdateAdapter();
                 }
                 return true;
@@ -192,16 +193,16 @@ public class ActivityDatabaseImport extends AppCompatActivity {
     //Import Database
     public void ImportDatabase(final String path, final DialogFragmentManagePPC dialogFragment){
 
-        final File file = ProfileManager.GetDatabaseByPath(path);
+        final File file = ProfileManager.getInstance().GetDatabaseByPath(path);
         final int version = SQLiteDatabase.openDatabase(file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
-        final int currentVersion = ProfileManager.GetNewestDatabaseVersion();
+        final int currentVersion = ProfileManager.getInstance().GetNewestDatabaseVersion();
 
         if (version <= currentVersion) { //Version check
             new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deleteall)
                     .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ProfileManager.ImportDatabase(file);
+                            ProfileManager.getInstance().ImportDatabase(ActivityDatabaseImport.this, file);
                             dialogFragment.dismiss();
                             finish();
                             dialog.dismiss();
@@ -210,7 +211,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                     .create().show();
         }
         else {
-            Print("ERROR: Selected database is a newer version than this app supports.");
+            ProfileManager.Print(this, "ERROR: Selected database is a newer version than this app supports.");
         }
     }
     public void DeleteDatabase(final String path, final DialogFragmentManagePPC dialogFragment){
@@ -219,10 +220,10 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (path != null) {
-                            ProfileManager.DeleteDatabaseByPath(path);
+                            ProfileManager.getInstance().DeleteDatabaseByPath(path);
                             UpdateAdapter();
 
-                            Print("File Deleted");
+                            Print(ActivityDatabaseImport.this, "File Deleted");
 
                             CheckCanExport();
 
@@ -255,7 +256,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
 
 
     public void CheckCanExport(){
-        existingDatabases = ProfileManager.GetImportDatabaseFilesString();
+        existingDatabases = ProfileManager.getInstance().GetImportDatabaseFilesString();
 
         String str = editText_filename.getText().toString();
 
@@ -287,7 +288,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
         button_export.setVisible(exportState);
 
         //Toolbar subtitle
-        toolbar.setSubtitle( (exportState ? ProfileManager.GetExportDirectory() : "") );
+        toolbar.setSubtitle( (exportState ? ProfileManager.getInstance().GetExportDirectory() : "") );
 
         //Set title
         toolbar.setTitle( (exportState ? R.string.title_exportdatabase : R.string.title_importdatabase) );

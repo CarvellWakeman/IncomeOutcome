@@ -70,20 +70,6 @@ public class Profile implements java.io.Serializable
         _startTime = null;
         _endTime = null;
 
-        //Income sources
-       //for (Income in : IncomeSources){
-        //    in.ClearAllObjects();
-        //}
-        //IncomeSources.clear();
-        //_IncomeSources_timeFrame.clear();
-
-        //Expenses sources
-        //for (Expense ex : ExpenseSources){
-        //    ex.ClearAllObjects();
-        //}
-        //ExpenseSources.clear();
-        //_ExpenseSources_timeFrame.clear();
-
         //Transactions
         for (Transaction tr : Transactions){
             tr.ClearAllObjects();
@@ -91,22 +77,13 @@ public class Profile implements java.io.Serializable
         Transactions.clear();
         Transactions_timeFrame.clear();
 
-
         //Totals
         TransactionTotals.clear();
-        //_ExpenseTotals.clear();
-        //_IncomeTotals.clear();
     }
 
     public void RemoveAll(){
-        //for (int i = 0; i < ExpenseSources.size(); i++){
-        //    RemoveExpenseDontSave(ExpenseSources.get(i), true);
-        //}
-        //for (int i = 0; i < IncomeSources.size(); i++){
-        //    RemoveIncomeDontSave(IncomeSources.get(i), true);
-        //}
         for (int i = 0; i < Transactions.size(); i++){
-            RemoveTransactionDontSave(Transactions.get(i), true);
+            RemoveTransaction(Transactions.get(i), true);
         }
     }
 
@@ -139,32 +116,32 @@ public class Profile implements java.io.Serializable
 
             else if (_startTime.getMonthOfYear()==DateTimeConstants.DECEMBER && _startTime.getDayOfMonth() == 1 &&
                     _endTime.getMonthOfYear()==DateTimeConstants.FEBRUARY && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){ //Seasonally (Winter)
-                return "Winter, " + _startTime.getYear() + "-" + _endTime.getYear();
+                return ProfileManager.getString(R.string.time_winter) + _startTime.getYear() + "-" + _endTime.getYear();
             }
             else if (_startTime.getMonthOfYear()==DateTimeConstants.MARCH && _startTime.getDayOfMonth() == 1 &&
                     _endTime.getMonthOfYear()==DateTimeConstants.MAY && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){ //Seasonally (Spring)
-                return "Spring, " + _startTime.getYear();
+                return ProfileManager.getString(R.string.time_spring) + _startTime.getYear();
             }
             else if (_startTime.getMonthOfYear()==DateTimeConstants.JUNE && _startTime.getDayOfMonth() == 1 &&
                     _endTime.getMonthOfYear()==DateTimeConstants.AUGUST && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){ //Seasonally (Summer)
-                return "Summer, " + _startTime.getYear();
+                return ProfileManager.getString(R.string.time_summer) + _startTime.getYear();
             }
             else if (_startTime.getMonthOfYear()==DateTimeConstants.SEPTEMBER && _startTime.getDayOfMonth() == 1 &&
                     _endTime.getMonthOfYear()==DateTimeConstants.NOVEMBER && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){ //Seasonally (Fall)
-                return "Autumn, " + _startTime.getYear();
+                return ProfileManager.getString(R.string.time_fall) + _startTime.getYear();
             }
 
 
             else { //Default
-                return _startTime.toString(ProfileManager.simpleDateFormat) + " to " + _endTime.toString(ProfileManager.simpleDateFormat);
+                return _startTime.toString(ProfileManager.simpleDateFormat) + " - " + _endTime.toString(ProfileManager.simpleDateFormat);
             }
         }
         else {
             if (_endTime == null && _startTime != null){
-                return "Started " + _startTime.toString(ProfileManager.simpleDateFormat);
+                return ProfileManager.getString(R.string.time_started) + _startTime.toString(ProfileManager.simpleDateFormat);
             }
             else {
-                return "No date";
+                return ProfileManager.getString(R.string.time_nodate);
             }
         }
     }
@@ -178,26 +155,28 @@ public class Profile implements java.io.Serializable
     public void SetName(String newName){ name = newName; }
     public void SetStartTimeDontSave(LocalDate start){
         _startTime = start;
-    }
-    public void SetStartTime(LocalDate start){ //[EXCLUDE] Removing insertSettingDatabase so that the database is not updated many times for one profile
-        SetStartTimeDontSave(start);
+        //Set end time if it does not exist
         if (GetStartTime() != null && GetEndTime() == null) {
             SetEndTime(GetStartTime().plus(GetPeriod()));
             SetEndTime(GetEndTime().minusDays(1));
         }
-        ProfileManager.InsertSettingDatabase(this, true);
+    }
+    public void SetStartTime(LocalDate start){ //[EXCLUDE] Removing insertSettingDatabase so that the database is not updated many times for one profile
+        SetStartTimeDontSave(start);
+
+        ProfileManager.getInstance().InsertSettingDatabase(this, true);
     }
     public void SetEndTimeDontSave(LocalDate end){ _endTime = end; }
     public void SetEndTime(LocalDate end){
         SetEndTimeDontSave(end);
-        ProfileManager.InsertSettingDatabase(this, true);
+        ProfileManager.getInstance().InsertSettingDatabase(this, true);
     }
     public void SetPeriodDontSave(Period period){
         _period = period;
     }
     public void SetPeriod(Period period){
         SetPeriodDontSave(period);
-        ProfileManager.InsertSettingDatabase(this, true);
+        ProfileManager.getInstance().InsertSettingDatabase(this, true);
     }
 
     public void TimePeriodPlus(int n){
@@ -224,7 +203,7 @@ public class Profile implements java.io.Serializable
 
     //Transaction management
     public void AddTransactionDontSave(Transaction transaction) { Transactions.add(transaction); }
-    public void AddTransaction(Transaction transaction) { AddTransactionDontSave(transaction); ProfileManager.InsertTransactionDatabase(this, transaction, false);}
+    public void AddTransaction(Transaction transaction) { AddTransactionDontSave(transaction); ProfileManager.getInstance().InsertTransactionDatabase(this, transaction, false);}
     public void RemoveTransactionDontSave(Transaction transaction, boolean deleteChildren) {
         if (transaction != null) {
             if (deleteChildren) {
@@ -245,13 +224,13 @@ public class Profile implements java.io.Serializable
         }
     }
     public void RemoveTransaction(Transaction transaction, boolean deleteChildren) {
-        ProfileManager.RemoveTransactionDatabase(transaction);
+        ProfileManager.getInstance().RemoveTransactionDatabase(transaction);
         RemoveTransactionDontSave(transaction, deleteChildren);
     }
     public void RemoveTransaction(int id, boolean deleteChildren) { RemoveTransaction(GetTransaction(id), deleteChildren); }
 
     private void UpdateTransaction(Transaction transaction, Profile profile) {
-        ProfileManager.InsertTransactionDatabase(profile, transaction, true);
+        ProfileManager.getInstance().InsertTransactionDatabase(profile, transaction, true);
         //Check if transaction has a parent and is exactly like its parent, and if so, remove its date from the parent's blacklist and delete it
         Transaction parent = null;
         if (transaction.GetParentID() > 0){ parent = GetTransaction(transaction.GetParentID()); }
@@ -486,7 +465,9 @@ public class Profile implements java.io.Serializable
 
         return new HashMap<>(TransactionTotals);
     }
-
+    public HashMap<String, Transaction> GetTransactionTotals() { return TransactionTotals; }
+    public Set<String> GetTotalsKeySet(){ return TransactionTotals.keySet(); }
+    public Collection<Transaction> GetTotalsValueSet(){ return TransactionTotals.values(); }
 
     //Transfer
     public void TransferTransaction(Transaction transaction, Profile moveTo){

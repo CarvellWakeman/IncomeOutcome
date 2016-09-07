@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -85,15 +86,16 @@
                     </android.support.design.widget.TextInputLayout>
 
 
-                    <TextView
+                    <Button
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
+                        style="@style/FlatButtonTheme"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="@string/tt_add_to_split"
-                        android:id="@+id/textView_newTransaction_splitNotice"
+                        android:id="@+id/button_newTransaction_splitNotice"
                         android:textStyle="italic"
                         android:visibility="gone"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"  />
 
                     <LinearLayout
                         android:orientation="horizontal"
@@ -291,8 +293,19 @@
                         android:layout_height="wrap_content"
                         android:weightSum="9" >
 
+                        <Button
+                            style="@style/FlatButtonTheme"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="@string/tt_add_to_category"
+                            android:id="@+id/button_newTransaction_categorynotice"
+                            android:textStyle="italic"
+                            android:visibility="gone"
+                            android:layout_weight="2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
                         <carvellwakeman.incomeoutcome.NoDefaultSpinner
-                            android:layout_width="fill_parent"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/spinner_newTransaction_categories"
                             android:spinnerMode="dropdown"
