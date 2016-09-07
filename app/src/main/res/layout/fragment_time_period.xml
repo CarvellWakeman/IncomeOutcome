@@ -37,26 +37,27 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp">
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp">
 
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Repeat"
+                android:text="@string/repeat"
                 android:id="@+id/checkBox_repeat"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentStart="false"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:layout_alignBottom="@+id/spinner_repeatFrequency"
-                android:layout_alignTop="@+id/spinner_repeatFrequency"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:gravity="center_vertical"/>
 
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/spinner_repeatFrequency"
                 android:layout_toEndOf="@+id/checkBox_repeat"
+                android:layout_alignTop="@+id/checkBox_repeat"
+                android:layout_alignBottom="@+id/checkBox_repeat"
+
                 android:visibility="gone"
                 android:theme="@style/MaterialTheme" />
 
@@ -80,7 +81,7 @@
                     android:layout_alignParentTop="true"
                     android:theme="@style/Base.Theme.AppCompat.Light"
                     android:layout_toEndOf="@+id/textView_every"
-                    android:text="1"
+                    android:text="@string/format_one"
                     android:gravity="center_horizontal"
                     android:visibility="gone"
                     android:inputType="number" />
@@ -89,7 +90,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Every"
+                    android:text="@string/repeat_every"
                     android:id="@+id/textView_every"
                     android:layout_alignParentTop="false"
                     android:layout_alignParentStart="true"
@@ -103,7 +104,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="day(s)"
+                    android:text="@string/repeat_days"
                     android:id="@+id/textView_repeatType"
                     android:layout_toEndOf="@+id/editText_repeatFrequency"
                     android:layout_alignParentTop="false"
@@ -117,7 +118,7 @@
                 <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Mon"
+                    android:text="@string/repeat_mon"
                     android:id="@+id/checkBox_repeatWeekly_mon"
                     android:layout_below="@+id/textView_every"
                     android:layout_alignStart="@+id/textView_every"
@@ -127,7 +128,7 @@
                 <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tues"
+                    android:text="@string/repeat_tue"
                     android:id="@+id/checkBox_repeatWeekly_tues"
                     android:layout_toEndOf="@+id/checkBox_repeatWeekly_mon"
                     android:layout_alignBottom="@+id/checkBox_repeatWeekly_mon"
@@ -136,7 +137,7 @@
                 <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Wed"
+                    android:text="@string/repeat_wed"
                     android:id="@+id/checkBox_repeatWeekly_wed"
                     android:layout_toEndOf="@+id/checkBox_repeatWeekly_tues"
                     android:layout_alignBottom="@+id/checkBox_repeatWeekly_tues"
@@ -145,7 +146,7 @@
                 <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Thur"
+                    android:text="@string/repeat_thur"
                     android:id="@+id/checkBox_repeatWeekly_thur"
                     android:layout_below="@+id/checkBox_repeatWeekly_mon"
                     android:layout_alignStart="@+id/checkBox_repeatWeekly_mon"
@@ -154,7 +155,7 @@
                 <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Fri"
+                    android:text="@string/repeat_fri"
                     android:id="@+id/checkBox_repeatWeekly_fri"
                     android:layout_alignTop="@+id/checkBox_repeatWeekly_thur"
                     android:layout_alignStart="@+id/checkBox_repeatWeekly_tues"
@@ -163,7 +164,7 @@
                 <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sat"
+                    android:text="@string/repeat_sat"
                     android:id="@+id/checkBox_repeatWeekly_sat"
                     android:layout_alignTop="@+id/checkBox_repeatWeekly_fri"
                     android:layout_toEndOf="@+id/checkBox_repeatWeekly_tues"
@@ -172,7 +173,7 @@
                 <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sun"
+                    android:text="@string/repeat_sun"
                     android:id="@+id/checkBox_repeatWeekly_sun"
                     android:layout_below="@+id/checkBox_repeatWeekly_thur"
                     android:layout_alignStart="@+id/checkBox_repeatWeekly_thur"
@@ -189,7 +190,7 @@
                     android:layout_alignParentTop="true"
                     android:theme="@style/Base.Theme.AppCompat.Light"
                     android:layout_toEndOf="@+id/textView_repeatType"
-                    android:text="1"
+                    android:text="@string/format_one"
                     android:gravity="center_horizontal"
                     android:visibility="gone" />
 
@@ -209,14 +210,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:id="@+id/button_monthDayOfYear"
-                    android:text="Set a Date"
+                    android:text="@string/time_setdate"
                     style="@style/FlatButtonTheme"
                     android:layout_alignParentTop="false"
                     android:visibility="gone"
                     android:layout_alignParentEnd="false"
                     android:layout_alignParentBottom="false"
                     android:layout_alignTop="@+id/textView_repeatType"
-                    android:layout_toRightOf="@+id/textView_repeatType"
+                    android:layout_toEndOf="@+id/textView_repeatType"
                     android:layout_alignBottom="@+id/textView_repeatType" />
 
             </RelativeLayout>
@@ -228,7 +229,7 @@
                 android:id="@+id/spinner_repeatUntil"
 
                 android:visibility="gone"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_below="@+id/relativeLayout_fragmentRepeat"
                 android:theme="@style/MaterialTheme" />
 
@@ -237,13 +238,13 @@
                 android:layout_height="80dp"
                 android:id="@+id/button_repeatUntil"
                 style="@style/FlatButtonTheme"
-                android:text="Repeat Until"
+                android:text="@string/repeat_until"
                 android:layout_alignParentTop="false"
                 android:visibility="gone"
                 android:layout_alignParentEnd="false"
                 android:layout_alignParentBottom="false"
                 android:layout_alignTop="@+id/spinner_repeatUntil"
-                android:layout_toRightOf="@+id/spinner_repeatUntil"
+                android:layout_toEndOf="@+id/spinner_repeatUntil"
                 android:layout_alignBottom="@+id/spinner_repeatUntil" />
 
             <EditText
@@ -254,25 +255,25 @@
                 android:id="@+id/editText_repeatNumberOccurences"
                 android:layout_gravity="center_horizontal|top"
                 android:theme="@style/Base.Theme.AppCompat.Light"
-                android:text="1"
+                android:text="@string/format_one"
                 android:visibility="gone"
                 android:layout_marginStart="10dp"
                 android:gravity="center_vertical|center_horizontal"
                 android:layout_alignTop="@+id/spinner_repeatUntil"
-                android:layout_toRightOf="@+id/spinner_repeatUntil"
+                android:layout_toEndOf="@+id/spinner_repeatUntil"
                 android:layout_alignBottom="@+id/spinner_repeatUntil" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="time(s)"
+                android:text="@string/repeat_times"
                 android:id="@+id/textView_repeatUntilTimes"
                 android:gravity="center_vertical"
                 android:visibility="gone"
                 android:layout_alignBottom="@+id/editText_repeatNumberOccurences"
                 android:layout_alignTop="@+id/editText_repeatNumberOccurences"
-                android:layout_toRightOf="@+id/editText_repeatNumberOccurences" />
+                android:layout_toEndOf="@+id/editText_repeatNumberOccurences" />
 
 
         </RelativeLayout>
@@ -298,14 +299,14 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp">
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp">
 
             <TextView
                 android:id="@+id/textView_blacklist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Blacklisted dates"
+                android:text="@string/subtitle_blacklist"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp" />

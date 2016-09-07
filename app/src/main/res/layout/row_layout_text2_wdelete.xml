@@ -13,24 +13,24 @@
         android:id="@+id/linearLayout_dialog"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="10dp">
+        android:paddingStart="24dp"
+        android:paddingEnd="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/textView1_dialog"
-            android:text="&lt;Text>"
-            android:layout_gravity="left" />
+            android:text="@string/placeholder_text"
+            android:layout_gravity="start" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/textView2_dialog"
-            android:text="&lt;Text>"
-            android:layout_gravity="left" />
+            android:text="@string/placeholder_text"
+            android:layout_gravity="start" />
 
     </LinearLayout>
 

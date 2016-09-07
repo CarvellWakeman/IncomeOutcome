@@ -64,7 +64,7 @@
         android:layout_alignBottom="@+id/button_dialogpb_positive"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_toLeftOf="@+id/button_dialogpb_positive"
+        android:layout_toStartOf="@+id/button_dialogpb_positive"
         android:visibility="visible" />
 
     <Button

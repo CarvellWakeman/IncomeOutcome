@@ -38,7 +38,7 @@
                 <EditText
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="File Name"
+                    android:hint="@string/placeholder_filename"
                     android:maxLines="1"
                     android:inputType="textCapWords"
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_-1234567890&lt;>~"
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/switch_override_export"
 
-                android:text="Override"
+                android:text="@string/tt_override"
                 android:gravity="center_vertical|end"
                 android:checked="false"
                 android:clickable="false"

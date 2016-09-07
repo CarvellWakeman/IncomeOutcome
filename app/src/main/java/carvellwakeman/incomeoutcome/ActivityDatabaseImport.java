@@ -139,7 +139,8 @@ public class ActivityDatabaseImport extends AppCompatActivity {
             @Override public void afterTextChanged(Editable s) { CheckCanExport(); }
         });
 
-        editText_filename.setText("data_export_" + (new LocalDate()).toString(ProfileManager.simpleDateFormatSaving));
+        //editText_filename.setText(ProfileManager.getString(R.string.placeholder_exportfilename) + (new LocalDate()).toString(ProfileManager.simpleDateFormatSaving));
+        editText_filename.setText(getString(R.string.format_exportfilename, (new LocalDate()).toString(ProfileManager.simpleDateFormatSaving)));
 
         switch_override.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

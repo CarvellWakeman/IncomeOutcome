@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/textView_dialog"
-        android:text="&lt;Text>"
-        android:layout_gravity="left" />
+        android:text="@string/placeholder_text"
+        android:layout_gravity="start" />
 
 </LinearLayout>

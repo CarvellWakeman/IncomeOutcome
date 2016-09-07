@@ -30,6 +30,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tt_showall"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
                 android:layout_centerVertical="true"
                 android:theme="@style/WhiteCheckboxTheme"
                 android:textColor="@color/white"/>

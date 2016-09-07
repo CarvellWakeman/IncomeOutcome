@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="4dp"
+    android:paddingStart="4dp"
     android:paddingTop="4dp"
-    android:paddingRight="4dp"
+    android:paddingEnd="4dp"
     android:weightSum="1">
 
     <LinearLayout
@@ -67,21 +67,27 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/info_source"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
                     android:id="@+id/transaction_row_source"
                     android:layout_toEndOf="@+id/transaction_row_colorbar"
+                    android:layout_toStartOf="@+id/transaction_row_overflow"
                     android:layout_alignTop="@+id/transaction_row_colorbar"
                     android:layout_marginStart="8dp"
-                    android:textColor="#000000" />
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/info_category"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
                     android:id="@+id/transaction_row_category"
                     android:gravity="start|center_vertical"
                     android:layout_alignBottom="@+id/transaction_row_colorbar"
                     android:layout_toEndOf="@+id/transaction_row_colorbar"
+                    android:layout_toStartOf="@+id/transaction_row_overflow"
                     android:layout_marginStart="8dp" />
 
 
@@ -102,7 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="0.00"
+                    android:text="@string/format_zerocurrency"
                     android:id="@+id/transaction_row_cost"
                     android:textColor="#000000" />
 
@@ -121,7 +127,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="Person"
+                    android:text="@string/placeholder_person"
                     android:id="@+id/transaction_row_paidby_who"
                     android:layout_marginStart="4dp"
                     android:layout_alignBottom="@+id/transaction_row_paidby"
@@ -205,10 +211,12 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/time_date"
                     android:id="@+id/transaction_row_date"
-
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
                     android:layout_alignTop="@+id/transaction_row_calendaricon"
                     android:layout_alignBottom="@+id/transaction_row_calendaricon"
                     android:layout_toEndOf="@+id/transaction_row_calendaricon"
+                    android:layout_toStartOf="@+id/transaction_row_expand"
                     android:layout_marginStart="8dp" />
 
                 <TextView
@@ -217,7 +225,10 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:id="@+id/transaction_row_repeat"
                     android:hint="@string/repeat"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
                     android:layout_toEndOf="@+id/transaction_row_calendaricon"
+                    android:layout_toStartOf="@+id/transaction_row_expand"
                     android:layout_below="@+id/transaction_row_date"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="4dp" />

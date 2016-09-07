@@ -89,7 +89,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="Add a person to split this transaction"
+                        android:text="@string/tt_add_to_split"
                         android:id="@+id/textView_newTransaction_splitNotice"
                         android:textStyle="italic"
                         android:visibility="gone"
@@ -107,9 +107,10 @@
                         <CheckBox
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:text="Split Cost"
+                            android:text="@string/action_splitcost"
                             android:id="@+id/checkBox_newTransaction_splitEnabled"
                             android:theme="@style/BlackCheckboxTheme"
+                            android:textColor="@color/black"
                             android:textAppearance="?android:attr/textAppearanceSmall"
                             android:layout_weight="3"
                             android:layout_gravity="bottom"
@@ -159,7 +160,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="Percentage Split"
+                            android:text="@string/tt_percentage_split"
                             android:id="@+id/textView_newTransaction_split"
                             android:layout_marginStart="5dp"
                             android:layout_weight="10" />
@@ -169,11 +170,11 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/switch_paidBy"
                             android:checked="true"
-                            android:text="I paid "
+                            android:text="@string/tt_ipaid"
                             android:visibility="visible"
-                            android:gravity="center_vertical|right"
-                            android:textOff="They paid"
-                            android:textOn="I paid"
+                            android:gravity="center_vertical|end"
+                            android:textOff="@string/tt_theypaid"
+                            android:textOn="@string/tt_ipaid"
                             android:layout_weight="9" />
 
                     </TableRow>
@@ -202,7 +203,7 @@
                                 android:digits=".0123456789"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentEnd="true"
-                                android:hint="Your Cost" />
+                                android:hint="@string/tt_yourcost" />
 
                         </android.support.design.widget.TextInputLayout>
 
@@ -223,7 +224,7 @@
                                 android:digits=".0123456789"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentEnd="true"
-                                android:hint="Their Cost" />
+                                android:hint="@string/tt_theircost" />
 
                         </android.support.design.widget.TextInputLayout>
                     </TableRow>
@@ -314,7 +315,7 @@
                                 android:layout_alignEnd="@+id/editText_newTransaction_name"
                                 android:maxLines="1"
                                 android:imeOptions="actionNext"
-                                android:hint="Source"
+                                android:hint="@string/info_source"
                                 android:minLines="1"
                                 android:maxLength="30" />
                         </android.support.design.widget.TextInputLayout>
@@ -352,7 +353,7 @@
                         android:layout_alignEnd="@+id/editText_newTransaction_name"
                         android:maxLines="4"
                         android:imeOptions="actionNext"
-                        android:hint="Description"
+                        android:hint="@string/info_description"
                         android:minLines="1" />
                 </android.support.design.widget.TextInputLayout>
 

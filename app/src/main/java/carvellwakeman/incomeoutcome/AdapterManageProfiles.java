@@ -58,12 +58,6 @@ public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManagePro
 
         @Override
         public void onClick(View v) {
-            ProfileManager.SelectProfile(ProfileManager.GetProfileByIndex(getAdapterPosition()));
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public boolean onLongClick(View v){
             Profile pr = ProfileManager.GetProfileByIndex(getAdapterPosition());
             if (pr != null) {
                 String descriptionString =
@@ -77,6 +71,12 @@ public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManagePro
                         true); //TODO: Handle mIsLargeDisplay
                 //parent.EditProfile(ProfileManager.GetProfileByIndex(getAdapterPosition()));
             }
+        }
+
+        @Override
+        public boolean onLongClick(View v){
+            ProfileManager.SelectProfile(ProfileManager.GetProfileByIndex(getAdapterPosition()));
+            notifyDataSetChanged();
             return true;
         }
     }

@@ -22,9 +22,9 @@
         android:layout_toStartOf="@+id/frameLayout"
         style="@style/SelectableItemForeground"
         android:id="@+id/linearLayout_dialog"
-        android:paddingLeft="24dp"
+        android:paddingStart="24dp"
         android:paddingTop="10dp"
-        android:paddingRight="10dp"
+        android:paddingEnd="10dp"
         android:paddingBottom="10dp">
 
         <TextView
@@ -32,8 +32,8 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/textView_dialog"
-            android:text="&lt;Text>"
-            android:layout_gravity="left" />
+            android:text="@string/placeholder_text"
+            android:layout_gravity="start" />
 
     </LinearLayout>
 

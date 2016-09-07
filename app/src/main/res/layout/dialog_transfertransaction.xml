@@ -63,8 +63,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_alignParentRight="false"
-        android:layout_toLeftOf="@+id/button_dialogtt_positive" />
+        android:layout_alignParentEnd="false"
+        android:layout_toStartOf="@+id/button_dialogtt_positive" />
 
 
     <!--Add new -->

@@ -60,7 +60,6 @@ public class ActivityNewTransaction extends AppCompatActivity
 
     //Fragments
     FragmentManager fragmentManager;
-    FragmentTransaction fragmentTransaction;
     FragmentTimePeriod fragment_timePeriod;
 
 
@@ -302,11 +301,10 @@ public class ActivityNewTransaction extends AppCompatActivity
         //Set TimePeriod fragment
         fragment_timePeriod = new FragmentTimePeriod();
         fragmentManager = getFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout_timePeriod, fragment_timePeriod);
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        //FragmentTransaction fragmentTransaction = ;
+        fragmentManager.beginTransaction().replace(R.id.frameLayout_timePeriod, fragment_timePeriod).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
         //fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        //fragmentTransaction.commit();
 
 
         //Set Title
@@ -664,11 +662,11 @@ public class ActivityNewTransaction extends AppCompatActivity
 
         //Update split text percentages
         if (tCost > 0) {
-            textView_percentageSplit.setText("Percentage Split - " + ProfileManager.decimalFormat.format( 100- (splitPercent * 100.00f) ) + "% / " + ProfileManager.decimalFormat.format(splitPercent * 100.00f) + "%");
+            textView_percentageSplit.setText(ProfileManager.getString(R.string.tt_percentage_split) + " - " + ProfileManager.decimalFormat.format( 100- (splitPercent * 100.00f) ) + "% / " + ProfileManager.decimalFormat.format(splitPercent * 100.00f) + "%");
         }
         else
         {
-            textView_percentageSplit.setText("Percentage Split");
+            textView_percentageSplit.setText(ProfileManager.getString(R.string.tt_percentage_split));
         }
     }
     public void UpdateCostBasedOnSeekBar()

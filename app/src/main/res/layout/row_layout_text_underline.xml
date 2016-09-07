@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Title"
+            android:text="@string/placeholder_title"
             android:textColor="@color/black" />
 
         <TextView
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Subtitle"
+            android:text="@string/placeholder_subtitle"
             android:textColor="@color/gray"
             android:visibility="gone" />
 

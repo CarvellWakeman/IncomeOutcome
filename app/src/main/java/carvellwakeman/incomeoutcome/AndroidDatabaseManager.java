@@ -1195,7 +1195,7 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 		        	//if the tbale layout has the first 10 tuples then toast that this is the first page
 		            if(indexInfo.currentpage==1)
 		            {
-		            	Toast.makeText(getApplicationContext(), "This is the first page", Toast.LENGTH_SHORT);
+		            	Toast.makeText(getApplicationContext(), "This is the first page", Toast.LENGTH_SHORT).show();
 		            }
 		            else
 		            {
@@ -1246,7 +1246,7 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 		        //if there are no tuples to be shown toast that this the last page	
 		            if(indexInfo.currentpage>=indexInfo.numberofpages)
 		            {
-		            	Toast.makeText(getApplicationContext(), "This is the last page", Toast.LENGTH_SHORT);
+		            	Toast.makeText(getApplicationContext(), "This is the last page", Toast.LENGTH_SHORT).show();
 		            }
 		            else
 		            {

@@ -256,7 +256,7 @@ public class FragmentTimePeriod extends Fragment {
                     switch (timePeriod.GetRepeatUntil()) {
                         case FOREVER:
                             dateUntil = null;
-                            button_repeatUntilDate.setText("Repeat Until");
+                            button_repeatUntilDate.setText(R.string.repeat_until);
                             editText_repeatNumberTimes.setText("1");
 
                             editText_repeatNumberTimes.setVisibility(View.GONE);

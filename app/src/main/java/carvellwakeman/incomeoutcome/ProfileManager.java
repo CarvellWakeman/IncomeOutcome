@@ -28,6 +28,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 
 public class ProfileManager
@@ -53,7 +54,7 @@ public class ProfileManager
 
     //Formats
     public static DecimalFormat decimalFormat;
-    public static DecimalFormat currencyFormat;
+    public static NumberFormat currencyFormat;
     //public static DateFormat simpleDateFormat;
     public static String simpleDateFormat;
     public static String simpleDateFormatJustYear;
@@ -117,7 +118,7 @@ public class ProfileManager
 
 
         decimalFormat = new DecimalFormat("#.###");
-        currencyFormat = new DecimalFormat("¤#.###");
+        currencyFormat = NumberFormat.getCurrencyInstance(); //new DecimalFormat("¤#.###");
         //simpleDateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
         simpleDateFormat = "MMMM dd, yyyy"; //May 12, 2016
         //simpleDateFormatNoYear = new SimpleDateFormat("MMMM dd", Locale.US);

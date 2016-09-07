@@ -5,9 +5,9 @@
     android:orientation="horizontal"
     android:background="@drawable/ripple_api19"
     android:clickable="true"
-    android:paddingLeft="15dp"
+    android:paddingStart="15dp"
     android:paddingTop="20dp"
-    android:paddingRight="10dp"
+    android:paddingEnd="10dp"
     android:paddingBottom="20dp">
 
     <ImageView
@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Setting Title"
+            android:text="@string/placeholder_title"
             android:textColor="@color/black" />
 
         <TextView
@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Setting Subtitle"
+            android:text="@string/placeholder_subtitle"
             android:textColor="@color/gray"
             android:visibility="gone" />
 
