@@ -133,6 +133,34 @@ public class ActivitySettings extends AppCompatActivity
                     startActivity(dbmanager);
                 }
             }));
+            debug.AddSetting(new Setting(inflater, R.drawable.ic_clear_white_24dp, getString(R.string.title_settings_importmytab), getString(R.string.subtitle_settings_importmytab), new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (ProfileManager.isStoragePermissionGranted(ActivitySettings.this)) {
+                        new AlertDialog.Builder(ActivitySettings.this).setTitle(R.string.confirm_areyousure_deleteall)
+                            .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
+                                @Override public void onClick(DialogInterface dialog, int which) {
+                                    String result = MyTabConversion.load(ActivitySettings.this);
+                                    if (!result.equals("")){
+                                        ProfileManager.PrintUser(ActivitySettings.this, "Error:" + result);
+                                    }
+                                    else {
+                                        ProfileManager.PrintUser(ActivitySettings.this, "Tab Data successfully loaded");
+                                    }
+                                }})
+                            .setNegativeButton(R.string.action_cancel, null)
+                            .create().show();
+                    }
+                    else {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(ActivitySettings.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                            ProfileManager.OpenDialogFragment(ActivitySettings.this, DialogFragmentPermissionReasoning.newInstance(ActivitySettings.this, new int[]{ R.string.tt_permission_writestorage3 }, new int[]{ R.string.tt_permission_writestorage4 }, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }), true);
+                        } else {
+                            //Request permission
+                            ActivityCompat.requestPermissions(ActivitySettings.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                        }
+                    }
+                }
+            }));
             CardView c = (CardView) debug.getView().findViewById(R.id.row_layout_settingscard);
             if (c != null) { c.setBackgroundColor(Color.YELLOW); }
         }
@@ -143,7 +171,7 @@ public class ActivitySettings extends AppCompatActivity
         //Insert categories
         //profilesPeopleCategories.insert(insertPoint, 0);
         //database.insert(insertPoint, 1);
-         //debug.insert(insertPoint, 2);
+        //debug.insert(insertPoint, 2);
     }
 
 

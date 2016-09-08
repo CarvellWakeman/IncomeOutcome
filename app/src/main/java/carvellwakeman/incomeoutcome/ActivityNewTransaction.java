@@ -289,11 +289,11 @@ public class ActivityNewTransaction extends AppCompatActivity
         spinner_otherPeople.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (otherPeopleAdapter.getItem(position) != null) {
+                //if (otherPeopleAdapter.getItem(position) != null) {
                     //if (otherPeopleAdapter.getItem(position).equals(getString(R.string.add_otherperson))) {
                         //newTransactionNewPersonClick(view);
                     //}
-                }
+                //}
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}

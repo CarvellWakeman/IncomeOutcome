@@ -61,7 +61,7 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
-        sha1="0c8f7f2944474b86b5e068c8dd27c060f6c7fecd">
+        sha1="cdd890fb740b15225442626b4890360a628081ca">
         <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_fc653f8c230479063eb1d918260a574123e3c7ff\classes.dex" />
     </item>
     <item
@@ -133,7 +133,7 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
-        sha1="30bc13972c827db3252d9d2ea7725df99ead7d09">
+        sha1="183ea4d7e34f2e6669ed397aaf8b6f88e24266b4">
         <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_b919fd65d42a3a61f73abd88c0308e2a8443b34d\classes.dex" />
     </item>
     <item

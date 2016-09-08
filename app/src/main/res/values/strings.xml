@@ -55,12 +55,14 @@
     <string name="title_settings_defaultcategories">Load default categories</string>
     <string name="title_settings_deletealldata">Delete ALL Data</string>
     <string name="title_settings_importbackup">Import Secret Backup</string>
+    <string name="title_settings_importmytab">Import MyTab Save File</string>
     <!-- Setting subtitles -->
     <string name="subtitle_settings_defaultcategories">Erase all existing categories, load defaults</string>
     <string name="subtitle_settings_deletealldata">Erase all data permanently \n(excluding exported data)</string>
     <string name="subtitle_settings_import">Erase all current data and import new data</string>
     <string name="subtitle_settings_export">Export all current data to an external file</string>
     <string name="subtitle_settings_importexport">Erase all current data and import new data\nExport all current data to an external file</string>
+    <string name="subtitle_settings_importmytab">Erase all current data and import data from the MyTab app</string>
 
 
 
@@ -104,6 +106,8 @@
     <string name="tt_suggestaddprofile">Add a profile to begin</string>
     <string name="tt_permission_writestorage1">Access files request</string>
     <string name="tt_permission_writestorage2">In order for this app to export or import data from an external directory, you must grant it permission to access and modify external files.</string>
+    <string name="tt_permission_writestorage3">Access files request</string>
+    <string name="tt_permission_writestorage4">To import a MyTab save file, you must grant this app permission to view the external save file</string>
     <string name="tt_add_to_split">Click here to add a person to split this transaction with</string>
     <string name="tt_add_to_category">Add a category</string>
 

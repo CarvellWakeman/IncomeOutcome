@@ -224,6 +224,7 @@ public class ProfileManager
     //Universal print
     public static void Print(Context c, String msg){ if (isDebugMode(c)) { Toast.makeText(c, msg, Toast.LENGTH_SHORT).show(); } }
     public static void PrintLong(Context c, String msg){ if (isDebugMode(c)) { Toast.makeText(c, msg, Toast.LENGTH_LONG).show(); } }
+    public static void PrintUser(Context c, String msg){ Toast.makeText(c, msg, Toast.LENGTH_SHORT).show(); }
     public static void Log(Context c, String cat, String msg){ if (isDebugMode(c)) { Log.e(cat, msg); } }
     /*
     static int ret = 0;
@@ -517,8 +518,8 @@ public class ProfileManager
         }
     }
     public void RemoveAllCategories(){
-        for (Category c : _categories){
-            RemoveCategory(c);
+        for (int i = 0; i < _categories.size(); i++){
+            RemoveCategory(_categories.get(i));
         }
     }
 

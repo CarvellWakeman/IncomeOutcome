@@ -18,7 +18,7 @@
 
         android:layout_marginStart="@dimen/cardview_default_margin"
         android:layout_marginEnd="@dimen/cardview_default_margin"
-        android:layout_marginTop="@dimen/cardview_default_margin"
+        android:layout_marginBottom="@dimen/cardview_default_margin"
         android:id="@+id/row_layout_settingscard">
 
         <LinearLayout
