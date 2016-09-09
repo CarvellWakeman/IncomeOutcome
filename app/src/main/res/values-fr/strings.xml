@@ -96,6 +96,7 @@
     <string name="tt_nodata">Aucune donnée</string>
     <string name="tt_exportto">* Exporter vers </string>
     <string name="tt_override">Substituez</string>
+    <string name="tt_override_enddate">Substituez Date de fin</string>
     <string name="tt_nodata_viewdetails">Aucune donnée, ne cliquez ici pour ajouter une transaction</string>
     <string name="tt_suggestaddprofile">Ajouter un profil pour commencer</string>
     <string name="tt_permission_writestorage1">Demande d’accès des fichiers</string>

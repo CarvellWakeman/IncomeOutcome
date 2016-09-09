@@ -103,6 +103,7 @@
     <string name="tt_nodata">No Data</string>
     <string name="tt_exportto">*Export to </string>
     <string name="tt_override">Override</string>
+    <string name="tt_override_enddate">Override End Date</string>
     <string name="tt_nodata_viewdetails">No Data, click here to add a transaction</string>
     <string name="tt_suggestaddprofile">Add a profile to begin</string>
     <string name="tt_permission_writestorage1">Access files request</string>
@@ -241,13 +242,13 @@
 
     <string name="repeat_until">Repeat Until</string>
 
-    <string name="repeat_mon">Lun</string>
-    <string name="repeat_tue">Mar</string>
-    <string name="repeat_wed">Mer</string>
-    <string name="repeat_thur">Jeu</string>
-    <string name="repeat_fri">Ven</string>
-    <string name="repeat_sat">Sam</string>
-    <string name="repeat_sun">Dim</string>
+    <string name="repeat_mon">Mon</string>
+    <string name="repeat_tue">Tue</string>
+    <string name="repeat_wed">Wed</string>
+    <string name="repeat_thur">Thur</string>
+    <string name="repeat_fri">Fri</string>
+    <string name="repeat_sat">Sat</string>
+    <string name="repeat_sun">Sun</string>
 
     <!-- Key Type array -->
     <string-array name="keytype_array_ex">

@@ -403,7 +403,7 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
-        sha1="3e6c4176b445395fa260a96f026d1a181f998c91">
+        sha1="de2a45ab2f7f13e3714c6301cd72509f6fa8bf19">
         <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_b919fd65d42a3a61f73abd88c0308e2a8443b34d\classes.dex" />
     </item>
     <item

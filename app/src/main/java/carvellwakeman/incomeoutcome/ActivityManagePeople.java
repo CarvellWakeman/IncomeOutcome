@@ -147,7 +147,7 @@ public class ActivityManagePeople extends AppCompatActivity {
     public void onBackPressed()
     {
         if (menustate){ super.onBackPressed(); }
-        else { ToggleMenus(true); }
+        else { ClearAddMenu(); ToggleMenus(true); }
     }
 
     @Override
@@ -166,23 +166,28 @@ public class ActivityManagePeople extends AppCompatActivity {
         {
             case android.R.id.home:
                 if (menustate) { finish(); }
-                else { ToggleMenus(true); }
+                else { ClearAddMenu(); ToggleMenus(true); }
                 return true;
             case R.id.toolbar_save: //SAVE button
                 String str = editText_personname.getText().toString();
 
-                //Update other person
-                ProfileManager.getInstance().UpdateOtherPerson(old_otherperson, str);
+                if (!str.equals("")) {
+                    //Update other person
+                    ProfileManager.getInstance().UpdateOtherPerson(old_otherperson, str);
 
-                //Delete old person if they exist (For editing)
-                ProfileManager.getInstance().RemoveOtherPerson(old_otherperson);
+                    //Delete old person if they exist (For editing)
+                    ProfileManager.getInstance().RemoveOtherPerson(old_otherperson);
 
-                //Add new person (Edit or new)
-                ProfileManager.getInstance().AddOtherPerson(str);
+                    //Add new person (Edit or new)
+                    ProfileManager.getInstance().AddOtherPerson(str);
 
-                //Dismiss dialog
-                ToggleMenus(true);
-                ProfileManager.hideSoftKeyboard(this, toolbar);
+                    adapter.notifyDataSetChanged();
+
+                    //Dismiss dialog
+                    ClearAddMenu();
+                    ToggleMenus(true);
+                    ProfileManager.hideSoftKeyboard(this, toolbar);
+                }
                 //finish();
 
                 return true;
@@ -237,8 +242,6 @@ public class ActivityManagePeople extends AppCompatActivity {
     public void ToggleMenus(Boolean edit){
         menustate = edit;
 
-        editText_personname.setText("");
-
         //Enable edit layout
         //layout_edit.setVisibility( (edit ? View.VISIBLE : View.GONE) );
         //Disable add layout
@@ -253,6 +256,12 @@ public class ActivityManagePeople extends AppCompatActivity {
         toolbar.setTitle( (edit ? R.string.title_managepeople : R.string.title_addnewperson) );
         //Set back button
         //toolbar.setNavigationIcon( (edit ? R.drawable.ic_clear_white_24dp : R.drawable.ic_arrow_back_white_24dp) );
+    }
+
+    public void ClearAddMenu(){
+        old_otherperson = "";
+
+        editText_personname.setText("");
     }
 
 

@@ -18,6 +18,7 @@ public class Profile implements java.io.Serializable
     private LocalDate _startTime;
     private LocalDate _endTime;
     private Period _period;
+    private Repeat _periodFrequency;
 
     //Income sources
     //private ArrayList<Income> IncomeSources;
@@ -95,6 +96,7 @@ public class Profile implements java.io.Serializable
     public LocalDate GetStartTime(){  return _startTime; }
     public LocalDate GetEndTime(){ return _endTime; }
     public Period GetPeriod() { return _period; }
+    public Repeat GetPeriodFreqency() { return _periodFrequency; }
 
     //public int GetIncomeSourcesSize() { return IncomeSources.size(); }
     //public int GetExpenseSourcesSize() { return ExpenseSources.size(); }
@@ -132,6 +134,9 @@ public class Profile implements java.io.Serializable
                 return ProfileManager.getString(R.string.time_fall) + _startTime.getYear();
             }
 
+            else if (_startTime.equals(_endTime)) {
+                return _startTime.toString(ProfileManager.simpleDateFormat);
+            }
 
             else { //Default
                 return _startTime.toString(ProfileManager.simpleDateFormat) + " - " + _endTime.toString(ProfileManager.simpleDateFormat);
@@ -157,8 +162,8 @@ public class Profile implements java.io.Serializable
     public void SetStartTimeDontSave(LocalDate start){
         _startTime = start;
         //Set end time if it does not exist
-        if (GetStartTime() != null && GetEndTime() == null) {
-            SetEndTime(GetStartTime().plus(GetPeriod()));
+        if (_startTime != null && GetEndTime() == null) {
+            SetEndTime(_startTime.plus(GetPeriod()));
             SetEndTime(GetEndTime().minusDays(1));
         }
     }
@@ -174,6 +179,16 @@ public class Profile implements java.io.Serializable
     }
     public void SetPeriodDontSave(Period period){
         _period = period;
+        //Set frequency
+        if (period.getYears()>0){ _periodFrequency = Repeat.YEARLY; }
+        else if (period.getMonths()>0) { _periodFrequency = Repeat.MONTHLY; }
+        else if (period.getWeeks()>0) { _periodFrequency = Repeat.WEEKLY; }
+        else if (period.getDays()>0) { _periodFrequency = Repeat.DAILY; }
+        else { _periodFrequency = Repeat.NEVER; }
+        //Set start and end dates to the precision of the period
+        LocalDate T = TimePeriod.calcNearestDateInPeriod(period, GetStartTime());
+        SetStartTime(T);
+        //SetEndTime(TimePeriod.calcNearestDateInPeriod(period, GetEndTime()));
     }
     public void SetPeriod(Period period){
         SetPeriodDontSave(period);
@@ -190,7 +205,7 @@ public class Profile implements java.io.Serializable
         SetEndTime(GetStartTime().plus(GetPeriod()));
 
         //Subtract one day for months
-        if (GetPeriod()==Period.months(1)) { SetEndTime(GetEndTime().minusDays(1)); }
+        if (GetPeriodFreqency()==Repeat.MONTHLY || GetPeriodFreqency()==Repeat.YEARLY) { SetEndTime(GetEndTime().minusDays(1)); }
 
     }
     public void TimePeriodMinus(int n){
@@ -202,7 +217,7 @@ public class Profile implements java.io.Serializable
 
         SetEndTime(GetStartTime().plus(GetPeriod()));
         //Subtract one day for months
-        if (GetPeriod()==Period.months(1)) { SetEndTime(GetEndTime().minusDays(1)); }
+        if (GetPeriodFreqency()==Repeat.MONTHLY || GetPeriodFreqency()==Repeat.YEARLY) { SetEndTime(GetEndTime().minusDays(1)); }
     }
 
 

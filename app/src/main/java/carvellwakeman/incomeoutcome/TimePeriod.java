@@ -234,6 +234,26 @@ public class TimePeriod implements java.io.Serializable
         }
         return null;
     }
+    public static LocalDate calcNearestDateInPeriod(Period per, LocalDate date){
+        if (per != null && date != null) {
+            LocalDate ret = new LocalDate(date);
+
+            if (per.getYears() != 0) {
+                return ret.yearOfEra().roundFloorCopy().minusYears(ret.getYearOfEra() % per.getYears());
+            }
+            else if (per.getMonths() != 0) {
+                return ret.monthOfYear().roundFloorCopy().minusMonths((ret.getMonthOfYear() - 1) % per.getMonths());
+            }
+            else if (per.getWeeks() != 0) {
+                return ret.weekOfWeekyear().roundFloorCopy().minusWeeks((ret.getWeekOfWeekyear() - 1) % per.getWeeks());
+            }
+            else if (per.getDays() != 0) {
+                return ret.dayOfMonth().roundFloorCopy().minusDays((ret.getDayOfMonth() - 1) % per.getDays());
+            }
+            return ret.dayOfYear().roundCeilingCopy().minusDays(ret.getDayOfYear() % per.getMillis());
+        }
+        return null;
+    }
 
 
     //Repeating events calculations

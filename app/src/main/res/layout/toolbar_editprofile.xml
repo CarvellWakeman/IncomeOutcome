@@ -43,39 +43,12 @@
 
             </android.support.design.widget.TextInputLayout>
 
-
-
-            <Button
-                style="@style/RaisedButtonTheme"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/time_startlower"
-                android:id="@+id/button_dialogmpr_startdate"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_below="@id/TIL_dialogmpr_profilename" />
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/time_endlower"
-                android:id="@+id/button_dialogmpr_enddate"
-                android:layout_gravity="center_horizontal"
-                style="@style/RaisedButtonTheme"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginBottom="8dp"
-                android:visibility="gone"
-                android:layout_below="@id/button_dialogmpr_startdate" />
-
             <RelativeLayout
+                android:id="@+id/relativeLayout_editprofile_period"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_below="@id/button_dialogmpr_enddate">
+                android:layout_marginTop="8dp"
+                android:layout_below="@id/TIL_dialogmpr_profilename">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -113,6 +86,47 @@
                     android:layout_centerVertical="true" />
 
             </RelativeLayout>
+
+
+            <Button
+                style="@style/RaisedButtonTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/time_startlower"
+                android:id="@+id/button_dialogmpr_startdate"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_below="@id/relativeLayout_editprofile_period" />
+
+            <CheckBox
+                android:id="@+id/checkbox_override_enddate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tt_override_enddate"
+                android:layout_below="@id/button_dialogmpr_startdate"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/white"
+                android:theme="@style/WhiteCheckboxTheme"/>
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/time_endlower"
+                android:id="@+id/button_dialogmpr_enddate"
+                android:layout_gravity="center_horizontal"
+                style="@style/RaisedButtonTheme"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"
+                android:layout_below="@id/checkbox_override_enddate" />
+
 
         </RelativeLayout>
 

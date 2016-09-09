@@ -196,7 +196,7 @@ public class ActivityManageCategories extends AppCompatActivity {
     public void onBackPressed()
     {
         if (menustate){ super.onBackPressed(); }
-        else { ToggleMenus(true); }
+        else { ClearAddMenu(); ToggleMenus(true); }
     }
 
     @Override
@@ -215,28 +215,33 @@ public class ActivityManageCategories extends AppCompatActivity {
         {
             case android.R.id.home:
                 if (menustate) { finish(); }
-                else { ToggleMenus(true); }
+                else { ClearAddMenu(); ToggleMenus(true); }
                 return true;
             case R.id.toolbar_save: //SAVE button
                 String str = editText_categoryname.getText().toString();
 
-                if (editingCategory != null) {
-                    ProfileManager.Print(this, "UpdateCategory");
-                    String old = editingCategory.GetTitle();
+                if (!str.equals("")) {
+                    if (editingCategory != null) {
+                        String old = editingCategory.GetTitle();
 
-                    editingCategory.SetTitle(str);
-                    editingCategory.SetColor(GetColor());
+                        editingCategory.SetTitle(str);
+                        editingCategory.SetColor(GetColor());
 
-                    //Update old category
-                    ProfileManager.getInstance().UpdateCategory(old, editingCategory);
+                        //Update old category
+                        ProfileManager.getInstance().UpdateCategory(old, editingCategory);
+                    }
+                    else {
+                        //Add new category
+                        ProfileManager.getInstance().AddCategory(str, GetColor());
+                    }
+
+                    adapter.notifyDataSetChanged();
+
+                    ClearAddMenu();
+                    ToggleMenus(true);
+                    ProfileManager.hideSoftKeyboard(this, editText_categoryname);
                 }
-                else {
-                    //Add new category
-                    ProfileManager.Print(this, "AddCategory");
-                    ProfileManager.getInstance().AddCategory(str, GetColor());
-                }
-
-                finish();
+                //finish();
                 return true;
             default:
                 return false;
@@ -338,12 +343,6 @@ public class ActivityManageCategories extends AppCompatActivity {
     public void ToggleMenus(Boolean editList){
         menustate = editList;
 
-        //Reset old state
-        editText_categoryname.setText("");
-        seekBar_red.setProgress(50);
-        seekBar_green.setProgress(50);
-        seekBar_blue.setProgress(50);
-
         //Color preview button
         //imageView_colorindicator.setVisibility( (edit ? View.GONE : View.VISIBLE) );
         //Enable edit layout
@@ -360,6 +359,16 @@ public class ActivityManageCategories extends AppCompatActivity {
         toolbar.setTitle( (editList ? R.string.title_managecategories : R.string.title_addnewcategory) );
         //Set back button
         //toolbar.setNavigationIcon( (edit ? R.drawable.ic_clear_white_24dp : R.drawable.ic_arrow_back_white_24dp) );
+    }
+
+    public void ClearAddMenu(){
+        editingCategory = null;
+
+        //Reset old state
+        editText_categoryname.setText("");
+        seekBar_red.setProgress(50);
+        seekBar_green.setProgress(50);
+        seekBar_blue.setProgress(50);
     }
 
 

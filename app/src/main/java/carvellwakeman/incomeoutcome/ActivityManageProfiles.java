@@ -23,7 +23,6 @@ import org.joda.time.Period;
 
 public class ActivityManageProfiles extends AppCompatActivity {
     Boolean menustate = true;
-    Boolean editstate = false;
     Profile editingprofile = null;
 
     LocalDate start_date;
@@ -39,6 +38,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
     FloatingActionButton button_new;
     Button button_startdate;
     Button button_enddate;
+    CheckBox checkbox_override_enddate;
 
     TextInputLayout TIL;
     EditText editText_profilename;
@@ -67,6 +67,8 @@ public class ActivityManageProfiles extends AppCompatActivity {
         button_new = (FloatingActionButton) findViewById(R.id.FAB_dialogmpr_new);
         button_startdate = (Button) findViewById(R.id.button_dialogmpr_startdate);
         button_enddate = (Button) findViewById(R.id.button_dialogmpr_enddate);
+
+        checkbox_override_enddate = (CheckBox) findViewById(R.id.checkbox_override_enddate);
 
         layout_edit = (LinearLayout) findViewById(R.id.linearLayout_dialogmpr_editprofile);
 
@@ -204,6 +206,16 @@ public class ActivityManageProfiles extends AppCompatActivity {
             }
         });
 
+        //End Date override
+        checkbox_override_enddate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                button_enddate.setVisibility( (b ? View.VISIBLE : View.GONE) );
+            }
+        });
+
+        ClearAddMenu();
+
     }
 
 
@@ -211,7 +223,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
     public void onBackPressed()
     {
         if (menustate){ super.onBackPressed(); }
-        else { ToggleMenus(true); }
+        else { ClearAddMenu(); ToggleMenus(true); }
     }
 
     @Override
@@ -225,53 +237,48 @@ public class ActivityManageProfiles extends AppCompatActivity {
     //Toolbar button handling
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 if (menustate) { finish(); }
-                else { ToggleMenus(true); }
+                else {
+                    ClearAddMenu();
+                    ToggleMenus(true);
+                }
                 return true;
             case R.id.toolbar_save: //SAVE button
-                if (editstate) { //Make changes to an existing profile
-                    if (editingprofile != null){
+                if (start_date == null) { start_date = new LocalDate(); }
 
-                        if (!editText_profilename.getText().toString().equals("")){
-                            editingprofile.SetName(editText_profilename.getText().toString());
-
-                            editingprofile.SetPeriodDontSave(period);
-                            editingprofile.SetStartTimeDontSave(start_date);
-                            if (end_date!= null) { editingprofile.SetEndTimeDontSave(end_date); }
-
-                            ProfileManager.getInstance().UpdateProfile(editingprofile);
-
-                            adapter.notifyDataSetChanged();
-
-                            ProfileManager.hideSoftKeyboard(this, editText_profilename);
-                            ClearAddMenu();
-                            ToggleMenus(true);
-                            //finish();
-                        }
+                if (!editText_profilename.getText().toString().equals("")) {
+                    if (editingprofile != null) {//Make changes to an existing profile
+                        //Name
+                        editingprofile.SetName(editText_profilename.getText().toString());
+                        //Date
+                        editingprofile.SetStartTimeDontSave(start_date);
+                        editingprofile.SetEndTimeDontSave(null);
+                        editingprofile.SetPeriodDontSave(period);
+                        if (end_date != null) { editingprofile.SetEndTimeDontSave(end_date); }
+                        //Update
+                        ProfileManager.getInstance().UpdateProfile(editingprofile);
                     }
-                }
-                else{ //Add a new profile
-                    if (!editText_profilename.getText().toString().equals("")){
+                    else { //Add a new profile
+                        //Create profile
                         Profile pr = new Profile(editText_profilename.getText().toString());
-
-                        pr.SetPeriodDontSave(period);
+                        //Date
                         pr.SetStartTimeDontSave(start_date);
-                        if (end_date!= null) { pr.SetEndTimeDontSave(end_date); }
-
+                        pr.SetEndTimeDontSave(null);
+                        pr.SetPeriodDontSave(period);
+                        if (end_date != null) { pr.SetEndTimeDontSave(end_date); }
+                        //Add new
                         ProfileManager.getInstance().AddProfile(pr);
                         ProfileManager.getInstance().SelectProfile(pr);
-
-                        adapter.notifyDataSetChanged();
-
-                        ClearAddMenu();
-                        ToggleMenus(true);
-                        //finish();
                     }
+
+                    adapter.notifyDataSetChanged();
+
+                    ProfileManager.hideSoftKeyboard(this, editText_profilename);
+                    ClearAddMenu();
+                    ToggleMenus(true);
                 }
-                ProfileManager.hideSoftKeyboard(this, toolbar);
                 return true;
             default:
                 return false;
@@ -298,19 +305,17 @@ public class ActivityManageProfiles extends AppCompatActivity {
             //Set title to edit
             toolbar.setTitle(R.string.title_editprofile);
 
-            //Set edit state to true
-            editstate = true;
 
             //Load profile information into add new profile settings
             editText_profilename.setText(pr.GetName());
             start_date = pr.GetStartTime();
-            end_date = pr.GetEndTime();
+            //end_date = pr.GetEndTime();
             period = pr.GetPeriod();
             UpdateDates();
             UpdatePeriod();
 
             //Visibility
-            button_enddate.setVisibility(View.VISIBLE);
+            //button_enddate.setVisibility(View.VISIBLE);
 
             //Dismiss dialogfragment
             dialogFragment.dismiss();
@@ -321,7 +326,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
     public void SelectProfile(String id, final DialogFragmentManagePPC dialogFragment){
         Profile pr = ProfileManager.getInstance().GetProfileByID(Integer.valueOf(id));
         if (pr != null) {
-            if (!ProfileManager.getInstance().SelectProfile(pr)) {ProfileManager.Print(this, "Selected Profile could not be found.");}
+            if (!ProfileManager.getInstance().SelectProfile(pr)) {ProfileManager.PrintUser(this, "Selected Profile could not be found.");}
             adapter.notifyDataSetChanged();
             dialogFragment.dismiss();
         }
@@ -390,16 +395,18 @@ public class ActivityManageProfiles extends AppCompatActivity {
 
     //Update period
     public void UpdatePeriod(){
-        Period pe = editingprofile.GetPeriod();
+        if (editingprofile != null) {
+            Period pe = editingprofile.GetPeriod();
 
-        int YEARS = pe.getYears();
-        int MONTHS = pe.getMonths();
-        int WEEKS = pe.getWeeks();
-        int DAYS = pe.getDays();
+            int YEARS = pe.getYears();
+            int MONTHS = pe.getMonths();
+            int WEEKS = pe.getWeeks();
+            int DAYS = pe.getDays();
 
-        editText_period.setText( String.valueOf( Math.max( Math.max(YEARS, Math.max(MONTHS, Math.max(WEEKS, DAYS) ) ), 1) ) );
-        int index = (DAYS>0 ? 0 : WEEKS>0 ? 1 : MONTHS>0 ? 2 : YEARS>0 ? 3 : 0);
-        spinner_period.setSelection(index);
+            editText_period.setText(String.valueOf(Math.max(Math.max(YEARS, Math.max(MONTHS, Math.max(WEEKS, DAYS))), 1)));
+            int index = (DAYS > 0 ? 0 : WEEKS > 0 ? 1 : MONTHS > 0 ? 2 : YEARS > 0 ? 3 : 0);
+            spinner_period.setSelection(index);
+        }
     }
 
     //Calculate period
@@ -447,8 +454,6 @@ public class ActivityManageProfiles extends AppCompatActivity {
     public void ToggleMenus(boolean editList){
         menustate = editList;
 
-        ClearAddMenu();
-
         //Enable edit layout
         //layout_edit.setVisibility( (edit ? View.VISIBLE : View.GONE) );
         //Disable add layout
@@ -473,9 +478,13 @@ public class ActivityManageProfiles extends AppCompatActivity {
 
         UpdateDates();
 
+        checkbox_override_enddate.setChecked(false);
+
         editText_profilename.setText("");
         editText_period.setText("1");
         spinner_period.setSelection(2);
+
+        editingprofile = null;
     }
 
     public void AppBarLayoutExpanded(boolean expanded){
