@@ -181,7 +181,9 @@ public class ActivityManagePeople extends AppCompatActivity {
                 ProfileManager.getInstance().AddOtherPerson(str);
 
                 //Dismiss dialog
-                finish();
+                ToggleMenus(true);
+                ProfileManager.hideSoftKeyboard(this, toolbar);
+                //finish();
 
                 return true;
             default:

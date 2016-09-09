@@ -112,6 +112,12 @@ public class CardVersus extends Card
         left.setDrawZeroLine(true);
         left.setZeroLineColor(Color.BLACK);
         left.setZeroLineWidth(1f);
+        left.setSpaceTop(100f);
+        left.setSpaceBottom(100f);
+        //left.setAxisMaxValue(dataSet.getYMax() * 1.5f);
+        //left.setAxisMinValue(dataSet.getYMin() * 1.5f);
+        //left.setCenterAxisLabels(true);
+        //chart.setExtraOffsets(0,0,100,0);
         chart.getAxisRight().setEnabled(false);
 
         chart.getLegend().setEnabled(false);
@@ -137,7 +143,7 @@ public class CardVersus extends Card
             final ArrayList<Transaction> pastTransactionPeriods = new ArrayList<>();
             for (int i = 0; i < monthsBack; i++){
                 _profile.CalculateTimeFrame(null);
-                pastTransactionPeriods.add(_profile.CalculatePeriodTotalBetweenDates());
+                pastTransactionPeriods.add(_profile.CalculatePeriodTotalBetweenDates(context));
                 _profile.TimePeriodPlus(1);
             }
 
@@ -197,8 +203,6 @@ public class CardVersus extends Card
                 dataSet = new BarDataSet(entries, "");
                 dataSet.setColors(colors);
 
-                chart.getAxisLeft().setAxisMaxValue(dataSet.getYMax() * 1.2f);
-                chart.getAxisLeft().setAxisMinValue(dataSet.getYMin() * 1.2f);
                 //chart.setMaxVisibleValueCount(monthsBack+10);
 
                 dataSet.setValueTextSize(12);

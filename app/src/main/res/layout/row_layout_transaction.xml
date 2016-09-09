@@ -28,7 +28,7 @@
 
         android:layout_marginStart="@dimen/cardview_default_margin"
         android:layout_marginEnd="@dimen/cardview_default_margin"
-        android:layout_marginTop="@dimen/cardview_default_margin">
+        android:layout_marginTop="@dimen/cardview_default_halfmargin">
 
 
         <RelativeLayout
@@ -225,7 +225,6 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:id="@+id/transaction_row_repeat"
                     android:hint="@string/repeat"
-                    android:maxLines="1"
                     android:scrollHorizontally="true"
                     android:layout_toEndOf="@+id/transaction_row_calendaricon"
                     android:layout_toStartOf="@+id/transaction_row_expand"

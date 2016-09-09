@@ -208,7 +208,7 @@ public class ProfileManager
 
         AddCategory("Medical", Color.argb(255, 130, 0, 40));
         AddCategory("Prescription", Color.argb(255, 180, 45, 50));
-        AddCategory("Health & Beauty", Color.argb(255, 200, 20, 180));
+        AddCategory("Health & Beauty", Color.argb(255, 100, 0, 200));
         AddCategory("Personal", Color.argb(255, 216, 66, 216));
 
         AddCategory("Other", Color.argb(255, 140, 140, 140));
@@ -518,8 +518,11 @@ public class ProfileManager
         }
     }
     public void RemoveAllCategories(){
-        for (int i = 0; i < _categories.size(); i++){
-            RemoveCategory(_categories.get(i));
+        ArrayList<Category> temp = new ArrayList<>();
+        temp.addAll(_categories);
+
+        for (int i = 0; i < temp.size(); i++){
+            RemoveCategory(temp.get(i));
         }
     }
 

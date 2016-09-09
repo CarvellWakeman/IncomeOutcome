@@ -1,9 +1,11 @@
     <resources>
     <string name="app_name">Income Outcome</string>
     <string name="app_name_nospace">IncomeOutcome</string>
+
     <!-- Activity Titles -->
     <string name="title_activity_new_transaction">Ajouter une Transaction</string>
     <string name="title_activity_transaction">TransactionActivity</string>
+
     <!-- Titles -->
     <string name="title_settings">Paramètres</string>
     <string name="title_expenses">Dépenses</string>
@@ -35,10 +37,12 @@
     <string name="title_copytransaction">Opération de copie</string>
     <string name="title_paidback">Remboursé</string>
     <string name="title_sourcecategory">Catégorie et Source</string>
+
     <!-- Sub titles -->
     <string name="subtitle_transferto">et de transférer ses opérations à</string>
     <string name="subtitle_or">OU</string>
     <string name="subtitle_blacklist">Dates sur la liste noire</string>
+
     <!-- Setting titles -->
     <string name="title_settings_profilespeoplecategories">Profils, les personnes et les catégories</string>
     <string name="title_settings_database">Données</string>
@@ -48,12 +52,16 @@
     <string name="title_settings_defaultcategories">Charger les catégories par défaut</string>
     <string name="title_settings_deletealldata">Supprimer toutes les données</string>
     <string name="title_settings_importbackup">Importation de sauvegarde Secret</string>
+    <string name="title_settings_importmytab">Importer MyTab Enregistrer le fichier</string>
+
     <!-- Setting subtitles -->
     <string name="subtitle_settings_defaultcategories">Effacer toutes les catégories existantes, de charger les valeurs par défaut</string>
     <string name="subtitle_settings_deletealldata">Effacer toutes les données en permanence \n (à l’exclusion des données exportées)</string>
     <string name="subtitle_settings_import">Effacer toutes les données actuelles et importer les nouvelles données</string>
     <string name="subtitle_settings_export">Exporter toutes les données actuelles vers un fichier externe</string>
     <string name="subtitle_settings_importexport">Effacer toutes les données actuelles et importer data\nExport nouveau toutes les données actuelles vers un fichier externe</string>
+        <string name="subtitle_settings_importmytab">Effacer toutes les données actuelles et les données d\'importation à partir de l\'application MyTab</string>
+
     <!-- Headers -->
     <string name="header_cost">Coût</string>
     <string name="header_amount">Montant du paiement</string>
@@ -61,14 +69,17 @@
     <string name="header_expenses_summary">Sommaire des dépenses</string>
     <string name="header_income_summary">Résumé de revenu</string>
     <string name="header_split_summary">Résumé de Split</string>
+
     <!-- Misc -->
     <string name="misc_transactoins">Transactions</string>
+
     <!-- Placeholders -->
     <string name="placeholder_title">Titre</string>
     <string name="placeholder_subtitle">Subtitle</string>
     <string name="placeholder_text">Texte</string>
     <string name="placeholder_filename">Nom de fichier</string>
     <string name="placeholder_person">Personne</string>
+
     <!-- Tool Tip -->
     <string name="tt_theircost">Leur coût</string>
     <string name="tt_yourcost">Votre coût</string>
@@ -88,9 +99,12 @@
     <string name="tt_nodata_viewdetails">Aucune donnée, ne cliquez ici pour ajouter une transaction</string>
     <string name="tt_suggestaddprofile">Ajouter un profil pour commencer</string>
     <string name="tt_permission_writestorage1">Demande d’accès des fichiers</string>
-    <string name="tt_permission_writestorage2">Afin que ce soft exporter ou importer des données d’un annuaire externe, vous devez il accorder l’autorisation pour accéder et modifier des fichiers externes.</string>
+    <string name="tt_permission_writestorage2">Afin que ce soft exporter ou importer des données d\’un annuaire externe, vous devez il accorder l\’autorisation pour accéder et modifier des fichiers externes.</string>
+    <string name="tt_permission_writestorage3">Demande d\’accès des fichiers</string>
+    <string name="tt_permission_writestorage4">Pour importer un fichier MyTab sauver, vous devez accorder cette application l\'autorisation d\'afficher le fichier de sauvegarde externe</string>
     <string name="tt_add_to_split">Cliquez ici pour ajouter une personne pour fractionner cette transaction</string>
     <string name="tt_add_to_category">Ajouter une catégorie</string>
+
     <!-- Information -->
     <string name="info_title_value">%1$s %2$s</string>
     <string name="info_income_summary_value">Gagné %1$s</string>
@@ -124,10 +138,13 @@
     <string name="format_zerocurrency">0.00</string>
     <string name="format_one">1</string>
     <string name="format_exportfilename">data_export_ %1$s</string>
+
     <!-- DEBUG -->
     <string name="debug_database">Voir base de données</string>
+
     <!-- Spinner selection -->
     <string name="select_category">Sélectionnez une catégorie...</string>
+
     <!-- User actions -->
     <string name="action_edit">Edit</string>
     <string name="action_delete">Supprimer</string>
@@ -152,6 +169,7 @@
     <string name="action_transfer">TRANSFERT</string>
     <string name="action_viewdetails">VOIR LES DÉTAILS</string>
     <string name="action_setpaidback">La valeur payée antidater</string>
+
     <!-- Confirmation -->
     <string name="confirm_yes">OUI</string>
     <string name="confirm_no">N°</string>
@@ -163,6 +181,7 @@
     <string name="confirm_areyousure_nolongerexists">Cette personne n’existe plus. Ce changement ne peut pas être annulé.</string>
     <string name="confirm_areyousure_nolongerexists2">Cette catégorie n’existe plus. Ce changement ne peut pas être annulé.</string>
     <string name="confirm_areyousure_transferdelete">Prendre des mesures pour les transactions dans ce profil</string>
+
     <!-- Time -->
     <string name="time_date">Date</string>
     <string name="time_setdate">Fixer une Date</string>
@@ -226,6 +245,7 @@
       <item>Par Source</item>
       <item>Par catégorie</item>
     </string-array>
+
     <!-- Repeat arrays -->
     <string-array name="repeat_array">
         <item>Jamais</item>

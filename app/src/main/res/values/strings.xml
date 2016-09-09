@@ -56,6 +56,7 @@
     <string name="title_settings_deletealldata">Delete ALL Data</string>
     <string name="title_settings_importbackup">Import Secret Backup</string>
     <string name="title_settings_importmytab">Import MyTab Save File</string>
+
     <!-- Setting subtitles -->
     <string name="subtitle_settings_defaultcategories">Erase all existing categories, load defaults</string>
     <string name="subtitle_settings_deletealldata">Erase all data permanently \n(excluding exported data)</string>

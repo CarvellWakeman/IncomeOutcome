@@ -13,8 +13,7 @@
         card_view:cardElevation="@dimen/cardview_default_elevation"
         card_view:contentPadding="@dimen/cardview_default_padding"
         android:layout_marginStart="@dimen/cardview_default_margin"
-        android:layout_marginEnd="@dimen/cardview_default_margin"
-        android:layout_marginTop="4dp">
+        android:layout_marginEnd="@dimen/cardview_default_margin">
 
         <RelativeLayout
             android:layout_width="match_parent"

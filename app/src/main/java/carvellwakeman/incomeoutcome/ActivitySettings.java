@@ -119,8 +119,14 @@ public class ActivitySettings extends AppCompatActivity
             database.AddSetting(new Setting(inflater, R.drawable.ic_database_plus_white_24dp, getString(R.string.title_settings_defaultcategories), getString(R.string.subtitle_settings_defaultcategories), new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ProfileManager.getInstance().RemoveAllCategories();
-                    ProfileManager.getInstance().LoadDefaultCategories(ActivitySettings.this);
+                    new AlertDialog.Builder(ActivitySettings.this).setTitle(R.string.confirm_areyousure_deleteall)
+                            .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
+                                @Override public void onClick(DialogInterface dialog, int which) {
+                                    ProfileManager.getInstance().RemoveAllCategories();
+                                    ProfileManager.getInstance().LoadDefaultCategories(ActivitySettings.this);
+                                }})
+                            .setNegativeButton(R.string.action_cancel, null)
+                            .create().show();
                 }
             }));
         if (ProfileManager.isDebugMode(this)) {

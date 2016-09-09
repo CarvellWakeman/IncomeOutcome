@@ -12,5 +12,9 @@
     <!-- Cards -->
     <dimen name="cardview_default_padding">8dp</dimen>
     <dimen name="cardview_default_margin">8dp</dimen>
+    <dimen name="cardview_default_halfmargin">4dp</dimen>
+
+    <!-- Seekbar -->
+
 
 </resources>

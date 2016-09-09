@@ -3,6 +3,7 @@ package carvellwakeman.incomeoutcome;
 
 import java.util.*;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import org.joda.time.*;
 
@@ -187,7 +188,10 @@ public class Profile implements java.io.Serializable
         }
 
         SetEndTime(GetStartTime().plus(GetPeriod()));
-        SetEndTime(GetEndTime().minusDays(1));
+
+        //Subtract one day for months
+        if (GetPeriod()==Period.months(1)) { SetEndTime(GetEndTime().minusDays(1)); }
+
     }
     public void TimePeriodMinus(int n){
         if (GetStartTime() == null) { SetStartTime( (new LocalDate()).withDayOfMonth(1) ); }
@@ -197,7 +201,8 @@ public class Profile implements java.io.Serializable
         }
 
         SetEndTime(GetStartTime().plus(GetPeriod()));
-        SetEndTime(GetEndTime().minusDays(1));
+        //Subtract one day for months
+        if (GetPeriod()==Period.months(1)) { SetEndTime(GetEndTime().minusDays(1)); }
     }
 
 
@@ -353,14 +358,14 @@ public class Profile implements java.io.Serializable
     }
 
     //Get period total cost between two dates
-    public Transaction CalculatePeriodTotalBetweenDates(){
+    public Transaction CalculatePeriodTotalBetweenDates(Context ac){
         Transaction nt = new Transaction();
 
         for (int i = 0; i < Transactions_timeFrame.size(); i++){
             Transaction tr = Transactions_timeFrame.get(i);
 
             if (tr.GetType() == Transaction.TRANSACTION_TYPE.Expense){
-                nt.SetValue(nt.GetValue() - tr.GetValue());
+                nt.SetValue(nt.GetValue() - tr.GetMyCost());
             }
             else if (tr.GetType() == Transaction.TRANSACTION_TYPE.Income){
                 nt.SetValue(nt.GetValue() + tr.GetValue());

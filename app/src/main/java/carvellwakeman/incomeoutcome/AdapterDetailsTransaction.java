@@ -108,7 +108,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                             holder.split.setText(activity.getString(R.string.format_ipaid, transaction.GetSplitWith(), transaction.GetSplitValueFormatted(), ProfileManager.decimalFormat.format(Math.round(transaction.GetOtherSplitPercentage() * 100.00f))));
                         }
                         else {
-                            holder.split.setText(activity.getString(R.string.format_theypaid, transaction.GetMySplitValueFormatted(), ProfileManager.decimalFormat.format(Math.round(transaction.GetOtherSplitPercentage() * 100.00f))));
+                            holder.split.setText(activity.getString(R.string.format_theypaid, transaction.GetMySplitValueFormatted(), ProfileManager.decimalFormat.format(Math.round(transaction.GetMySplitPercentage() * 100.00f))));
                         }
 
                         //Paid back
@@ -140,7 +140,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     if (transaction.GetSourceName().equals("")) { holder.sourceName.setText(R.string.info_nosource); }
                     else { holder.sourceName.setText(transaction.GetSourceName()); }
 
-                    //Color Bar
+                    //Color circle
                     Category cat = ProfileManager.getInstance().GetCategory(transaction.GetCategory());
                     if (cat != null && cat.GetColor() != 0) {
                         holder.colorbar.setColorFilter(cat.GetColor());
@@ -195,7 +195,9 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                         holder.repeat.setVisibility(View.GONE);
                         holder.description.setVisibility(View.GONE);
                         holder.indent.setVisibility(View.GONE);
-                        holder.expandCard.setVisibility(View.GONE);
+                        if (transaction.GetDescription().equals("")){
+                            holder.expandCard.setVisibility(View.GONE);
+                        }
                     }
                 }
 

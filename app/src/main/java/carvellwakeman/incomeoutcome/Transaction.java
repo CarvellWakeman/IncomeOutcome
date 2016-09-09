@@ -102,6 +102,7 @@ public class Transaction implements java.io.Serializable
     public String GetCategory() { return _category; }
     public String GetDescription() { return _description; }
 
+    //Total Transaction value
     public Double GetValue() { return value; }
     public boolean GetStatic() { return staticValue; }
     public String GetValueFormatted() { return (staticValue ? "" : "~") + ProfileManager.currencyFormat.format(GetValue()); }
@@ -132,14 +133,24 @@ public class Transaction implements java.io.Serializable
     //EXPENSE ONLY Accessors
     public String GetSplitWith() { return splitWith; }
 
+    //Partition of transaction that was split with another person
     public Double GetSplitValue() { return splitValue; }
+    //My partition of the split transaction
     public Double GetMySplitValue() { return GetValue() - GetSplitValue(); }
 
+    //The money I owe OtherPerson
     public Double GetMyDebt() { if (!GetIPaid() && !IsPaidBack()) { return GetMySplitValue(); } else { return 0.0d; } }
+    //The money OtherPerson owes me
     public Double GetSplitDebt() { if (GetIPaid() && !IsPaidBack()) { return GetSplitValue(); } else { return 0.0d; } }
 
-    public Double GetMyCost() { if (GetIPaid() && GetSplitWith() != null || GetSplitWith() == null) { return GetMySplitValue(); } else { return GetMyDebt(); } }
-    public Double GetSplitCost() { if (!GetIPaid() && GetSplitWith() != null) { return GetSplitValue(); } else { return GetSplitDebt(); } }
+    //The money I spend on this transaction, depends on whether or not OtherPerson has paid me for their partition
+    public Double GetMyCost() { if ( GetIPaid() && GetSplitWith() != null || GetSplitWith() == null) {
+        if (IsPaidBack()){ return GetMySplitValue(); } else { return GetValue(); }
+    } else { return GetMyDebt(); } }
+    //The money OtherPerson has spent on this transaction, depends on whether or not I have paid them back
+    public Double GetSplitCost() { if ( !GetIPaid() && GetSplitWith() != null) {
+        if (IsPaidBack()){ return GetSplitValue(); } else { return GetValue(); }
+    } else { return GetSplitDebt(); } }
 
     public Double GetTotalZeroWeighted() {
         //ProfileManager.Print("SplitWith:" + GetSplitWith());
