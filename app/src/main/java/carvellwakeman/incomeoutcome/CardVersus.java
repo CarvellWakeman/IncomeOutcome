@@ -141,9 +141,11 @@ public class CardVersus extends Card
             _profile.TimePeriodMinus(monthsBack-1);
 
             final ArrayList<Transaction> pastTransactionPeriods = new ArrayList<>();
+            Transaction tran;
             for (int i = 0; i < monthsBack; i++){
                 _profile.CalculateTimeFrame(null);
-                pastTransactionPeriods.add(_profile.CalculatePeriodTotalBetweenDates(context));
+                tran = _profile.CalculatePeriodTotalBetweenDates(context);
+                if (tran != null){ pastTransactionPeriods.add(tran); }
                 _profile.TimePeriodPlus(1);
             }
 

@@ -61,6 +61,7 @@ public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManagePro
             Profile pr = ProfileManager.getInstance().GetProfileByIndex(getAdapterPosition());
             if (pr != null) {
                 String descriptionString =
+                        pr.GetPeriodFormatted() + "\n" +
                         pr.GetDateFormatted() + "\n" +
                                 pr.GetTransactionsSize() + " " + ProfileManager.getString(R.string.misc_transactoins);
 

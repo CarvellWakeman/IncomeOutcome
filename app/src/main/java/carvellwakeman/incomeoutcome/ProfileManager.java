@@ -62,6 +62,8 @@ public class ProfileManager
     static String simpleDateFormatShortNoDay = "MMM, yyyy"; //Apr, 2016
     static String simpleDateFormatSaving = "MM-dd-yyyy"; //05-12-2016
 
+    static String simplePeriodFormat = "MM-dd-yyyy"; //05-12-2016
+
 
     //Context
     //private ActivityMain MainActivityInstance;

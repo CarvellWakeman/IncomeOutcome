@@ -43,7 +43,7 @@ public class CardTransaction extends Card
     CardView cardView;
 
     Spinner spinner_keyType;
-    Switch switch_showMore;
+    android.support.v7.widget.SwitchCompat switch_showLegend;
 
     Button button_viewDetails;
 
@@ -71,11 +71,11 @@ public class CardTransaction extends Card
         textView_nodata = (TextView) v.findViewById(R.id.textView_cardTransaction_nodata);
 
         //Show More switch
-        switch_showMore = (Switch) v.findViewById(R.id.switch_cardTransaction);
-        switch_showMore.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        switch_showLegend = (android.support.v7.widget.SwitchCompat) v.findViewById(R.id.switch_cardTransaction);
+        switch_showLegend.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                SetExpanded(switch_showMore.isChecked());
+                SetExpanded(switch_showLegend.isChecked());
             }
         });
 
@@ -219,15 +219,20 @@ public class CardTransaction extends Card
                 chart.invalidate(); //Refresh
 
                 chart.setVisibility(View.VISIBLE);
+                if (activityType==0){ spinner_keyType.setVisibility(View.VISIBLE); }
+                switch_showLegend.setVisibility(View.VISIBLE);
                 //relativeLayout_controls.setVisibility(View.VISIBLE);
                 //textView_nodata.setVisibility(View.GONE);
                 button_viewDetails.setText(R.string.action_viewdetails);
             }
             else { //No data
                 chart.setVisibility(View.GONE);
+                spinner_keyType.setVisibility(View.GONE);
+                switch_showLegend.setVisibility(View.GONE);
                 //relativeLayout_controls.setVisibility(View.GONE);
                 //textView_nodata.setVisibility(View.VISIBLE);
-                button_viewDetails.setText(R.string.tt_nodata_viewdetails);
+                String transactionType = ProfileManager.getString(activityType==0 ? R.string.format_nodata_viewdetails_expense : R.string.misc_income);
+                button_viewDetails.setText(String.format(context.getString(R.string.format_nodata_viewdetails), transactionType));
             }
         }
 

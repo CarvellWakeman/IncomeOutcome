@@ -105,7 +105,7 @@ public class ActivitySettings extends AppCompatActivity
             database.AddSetting(new Setting(inflater, R.drawable.ic_delete_white_24dp, getString(R.string.title_settings_deletealldata), getString(R.string.subtitle_settings_deletealldata),
                     new View.OnClickListener() { @Override public void onClick(View v) {
                         new AlertDialog.Builder(ActivitySettings.this).setTitle(R.string.confirm_areyousure_deleteall)
-                                .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
+                                .setPositiveButton(R.string.action_continue, new DialogInterface.OnClickListener() {
                                     @Override public void onClick(DialogInterface dialog, int which) {
                                         ProfileManager.getInstance().DeleteDatabase();
                                         ProfileManager.getInstance().ClearAllObjects();
@@ -120,7 +120,7 @@ public class ActivitySettings extends AppCompatActivity
                 @Override
                 public void onClick(View view) {
                     new AlertDialog.Builder(ActivitySettings.this).setTitle(R.string.confirm_areyousure_deleteall)
-                            .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.action_continue, new DialogInterface.OnClickListener() {
                                 @Override public void onClick(DialogInterface dialog, int which) {
                                     ProfileManager.getInstance().RemoveAllCategories();
                                     ProfileManager.getInstance().LoadDefaultCategories(ActivitySettings.this);
@@ -139,12 +139,13 @@ public class ActivitySettings extends AppCompatActivity
                     startActivity(dbmanager);
                 }
             }));
+            //MyTab Data Import
             debug.AddSetting(new Setting(inflater, R.drawable.ic_clear_white_24dp, getString(R.string.title_settings_importmytab), getString(R.string.subtitle_settings_importmytab), new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (ProfileManager.isStoragePermissionGranted(ActivitySettings.this)) {
                         new AlertDialog.Builder(ActivitySettings.this).setTitle(R.string.confirm_areyousure_deleteall)
-                            .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.action_continue, new DialogInterface.OnClickListener() {
                                 @Override public void onClick(DialogInterface dialog, int which) {
                                     String result = MyTabConversion.load(ActivitySettings.this);
                                     if (!result.equals("")){

@@ -6,6 +6,7 @@ import java.util.*;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import org.joda.time.*;
+import org.joda.time.format.PeriodFormat;
 
 public class Profile implements java.io.Serializable
 {
@@ -105,6 +106,13 @@ public class Profile implements java.io.Serializable
     //public int GetIncomeSourcesInTimeFrameSize() { return _IncomeSources_timeFrame.size(); }
     //public int GetExpenseSourcesInTimeFrameSize() { return _ExpenseSources_timeFrame.size(); }
     public int GetTransactionsInTimeFrameSize() { return Transactions_timeFrame.size(); }
+
+    public String GetPeriodFormatted(){
+        if (_period != null){
+            return ProfileManager.getString(R.string.repeat_occurevery) + " "+ _period.toString(PeriodFormat.wordBased(App.GetLocale()));
+        }
+        return "No Period";
+    }
 
     public String GetDateFormatted()
     {
@@ -374,19 +382,22 @@ public class Profile implements java.io.Serializable
 
     //Get period total cost between two dates
     public Transaction CalculatePeriodTotalBetweenDates(Context ac){
-        Transaction nt = new Transaction();
+        Transaction nt = null;
+        if (Transactions_timeFrame.size() > 0) {
+            nt = new Transaction();
 
-        for (int i = 0; i < Transactions_timeFrame.size(); i++){
-            Transaction tr = Transactions_timeFrame.get(i);
+            for (int i = 0; i < Transactions_timeFrame.size(); i++) {
+                Transaction tr = Transactions_timeFrame.get(i);
 
-            if (tr.GetType() == Transaction.TRANSACTION_TYPE.Expense){
-                nt.SetValue(nt.GetValue() - tr.GetMyCost());
+                if (tr.GetType() == Transaction.TRANSACTION_TYPE.Expense) {
+                    nt.SetValue(nt.GetValue() - tr.GetMyCost());
+                }
+                else if (tr.GetType() == Transaction.TRANSACTION_TYPE.Income) {
+                    nt.SetValue(nt.GetValue() + tr.GetValue());
+                }
             }
-            else if (tr.GetType() == Transaction.TRANSACTION_TYPE.Income){
-                nt.SetValue(nt.GetValue() + tr.GetValue());
-            }
+            nt.SetTimePeriod(new TimePeriod(GetStartTime()));
         }
-        nt.SetTimePeriod(new TimePeriod(GetStartTime()));
 
         return nt;
     }

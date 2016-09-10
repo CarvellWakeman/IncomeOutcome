@@ -187,7 +187,7 @@ public class Transaction implements java.io.Serializable
 
     //EXPENSE ONLY Mutators
     public void SetSplitValue(String name, Double val) {
-        if (name!=null && name.equals("")){ splitWith = null; } else { splitWith = name; }
+        if (name.equals("")){ splitWith = null; } else { splitWith = name; }
         splitValue = val;
     }
     public void SetIPaid(boolean paid) { IPaid = paid; }

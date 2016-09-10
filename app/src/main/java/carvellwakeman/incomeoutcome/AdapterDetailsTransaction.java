@@ -63,7 +63,6 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
         return null;
     }
 
-    //When creating a view holder
     @Override
     public TransactionViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
@@ -72,7 +71,6 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
         return new TransactionViewHolder(itemView);
     }
 
-    //Bind view holder to the recyclerView
     @Override
     public void onBindViewHolder(final TransactionViewHolder holder, int position)
     {
@@ -98,11 +96,14 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                 //Activity specific differences
                 if (activityType == 0) { //Expenses
                     //Split
-                    if (transaction.GetSplitWith() == null) {
+                    if (transaction.GetSplitWith() == null || transaction.GetSplitWith().equals("")) {
                         holder.split.setVisibility(View.GONE);
+                        holder.paidBack.setVisibility(View.GONE);
                     }
                     else {
                         holder.split.setVisibility(View.VISIBLE);
+                        holder.paidBack.setVisibility(View.VISIBLE);
+
                         //Who owes who
                         if (transaction.GetIPaid()) {
                             holder.split.setText(activity.getString(R.string.format_ipaid, transaction.GetSplitWith(), transaction.GetSplitValueFormatted(), ProfileManager.decimalFormat.format(Math.round(transaction.GetOtherSplitPercentage() * 100.00f))));
@@ -120,6 +121,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                         }
                         else {
                             holder.split.setPaintFlags(0);
+                            holder.paidBack.setText("");
                             holder.paidBack.setVisibility(View.GONE);
                         }
 
@@ -175,6 +177,8 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     TimePeriod parent_tp = parent.GetTimePeriod();
                     //Repeat text && Repeat Expense Indenting
                     if (parent_tp != null && parent_tp.DoesRepeat() && parent_tp.GetFirstOccurrence() != null && tp.GetDate() != null) {
+                        //Expand Card
+                        holder.expandCard.setVisibility(View.VISIBLE);
 
                         //Repeat Text
                         holder.repeat.setText(parent_tp.GetRepeatString(parent_tp.GetRepeatFrequency(), parent_tp.GetRepeatUntil()));
@@ -207,8 +211,6 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
     }
 
-
-    //How many items are there
     @Override
     public int getItemCount()
     {
@@ -315,7 +317,6 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
         }
 
         //Overflow menu
-
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             final Transaction tran = GetTransaction(getAdapterPosition());

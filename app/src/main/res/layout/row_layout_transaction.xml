@@ -26,8 +26,8 @@
         card_view:cardUseCompatPadding="true"
         card_view:cardElevation="@dimen/cardview_default_elevation"
 
-        android:layout_marginStart="@dimen/cardview_default_margin"
-        android:layout_marginEnd="@dimen/cardview_default_margin"
+        android:layout_marginStart="@dimen/cardview_default_halfmargin"
+        android:layout_marginEnd="@dimen/cardview_default_halfmargin"
         android:layout_marginTop="@dimen/cardview_default_halfmargin">
 
 

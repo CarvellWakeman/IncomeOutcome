@@ -78,6 +78,9 @@
 
     <!-- Misc -->
     <string name="misc_transactoins">Transactions</string>
+    <string name="misc_transactoin">Transaction</string>
+    <string name="misc_expense">Expense</string>
+    <string name="misc_income">Income</string>
 
     <!-- Placeholders -->
     <string name="placeholder_title">Title</string>
@@ -101,10 +104,10 @@
     <string name="tt_categoryname">Category Name</string>
     <string name="tt_displaydata">Display Data </string>
     <string name="tt_nodata">No Data</string>
+    <string name="tt_viewdetails">View Details</string>
     <string name="tt_exportto">*Export to </string>
     <string name="tt_override">Override</string>
     <string name="tt_override_enddate">Override End Date</string>
-    <string name="tt_nodata_viewdetails">No Data, click here to add a transaction</string>
     <string name="tt_suggestaddprofile">Add a profile to begin</string>
     <string name="tt_permission_writestorage1">Access files request</string>
     <string name="tt_permission_writestorage2">In order for this app to export or import data from an external directory, you must grant it permission to access and modify external files.</string>
@@ -146,6 +149,9 @@
     <string name="format_zerocurrency">0.00</string>
     <string name="format_one">1</string>
     <string name="format_exportfilename">data_export_%1$s</string>
+    <string name="format_nodata_viewdetails">Click here to add %1$s</string>
+    <string name="format_nodata_viewdetails_expense">an Expense</string>
+
 
     <!-- DEBUG -->
     <string name="debug_database">View Database</string>

@@ -7,11 +7,12 @@
     tools:context=".FragmentTimePeriod"
     android:id="@+id/linearLayout_timePeriod_parent">
 
-
+    <!-- Start Date -->
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/button_newExpense_date"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         android:theme="@style/Base.Theme.AppCompat.Light"
         style="@style/RaisedButtonTheme"
         android:text="@string/time_setdate"

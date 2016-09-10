@@ -17,9 +17,9 @@
         card_view:cardUseCompatPadding="true"
         card_view:cardElevation="@dimen/cardview_default_elevation"
         card_view:contentPadding="16dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginStart="@dimen/cardview_default_halfmargin"
+        android:layout_marginEnd="@dimen/cardview_default_halfmargin"
+        android:layout_marginBottom="@dimen/cardview_default_halfmargin">
 
         <RelativeLayout
             android:layout_width="match_parent"
