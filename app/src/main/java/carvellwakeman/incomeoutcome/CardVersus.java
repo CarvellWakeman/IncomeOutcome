@@ -140,12 +140,14 @@ public class CardVersus extends Card
 
             _profile.TimePeriodMinus(monthsBack-1);
 
+            int nonNullPeriods = 0;
             final ArrayList<Transaction> pastTransactionPeriods = new ArrayList<>();
             Transaction tran;
             for (int i = 0; i < monthsBack; i++){
                 _profile.CalculateTimeFrame(null);
                 tran = _profile.CalculatePeriodTotalBetweenDates(context);
-                if (tran != null){ pastTransactionPeriods.add(tran); }
+                pastTransactionPeriods.add(tran);
+                if (tran != null) { nonNullPeriods++; }
                 _profile.TimePeriodPlus(1);
             }
 
@@ -154,21 +156,26 @@ public class CardVersus extends Card
             _profile.SetEndTime(origEnd);
 
 
-            if (pastTransactionPeriods.size() > 0) {
+            if (_profile.GetTransactionsSize() > 0 && nonNullPeriods > 0) {
                 //Convert transactions data to a list of entries
                 List<BarEntry> entries = new ArrayList<>();
                 List<Integer> colors = new ArrayList<>();
                 for (int i = 0; i < pastTransactionPeriods.size(); i++){
                     Transaction tr = pastTransactionPeriods.get(i);
+                    Double val = 0.0d;
+                    if (tr != null) {
+                        val = tr.GetValue();
+                    }
 
-                    Double val = tr.GetValue();
                     entries.add(new BarEntry(i, val.floatValue()));
 
                     if (val >= 0) { //TODO: Better colors
                         colors.add(ProfileManager.getColor(R.color.green));
-                    } else {
+                    }
+                    else {
                         colors.add(ProfileManager.getColor(R.color.red));
                     }
+
                 }
 
                 XAxis xAxis = chart.getXAxis();
@@ -205,10 +212,12 @@ public class CardVersus extends Card
                 dataSet = new BarDataSet(entries, "");
                 dataSet.setColors(colors);
 
-                //chart.setMaxVisibleValueCount(monthsBack+10);
+                //chart.setMaxVisibleValueCount(monthsBack);
 
                 dataSet.setValueTextSize(12);
                 dataSet.setValueFormatter(new CurrencyValueFormatter(2));
+
+                xAxis.setLabelCount(monthsBack);
 
 
                 BarData barData = new BarData(dataSet);

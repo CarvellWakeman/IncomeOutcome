@@ -382,22 +382,19 @@ public class Profile implements java.io.Serializable
 
     //Get period total cost between two dates
     public Transaction CalculatePeriodTotalBetweenDates(Context ac){
-        Transaction nt = null;
-        if (Transactions_timeFrame.size() > 0) {
-            nt = new Transaction();
+        Transaction nt = new Transaction();
 
-            for (int i = 0; i < Transactions_timeFrame.size(); i++) {
-                Transaction tr = Transactions_timeFrame.get(i);
+        for (int i = 0; i < Transactions_timeFrame.size(); i++) {
+            Transaction tr = Transactions_timeFrame.get(i);
 
-                if (tr.GetType() == Transaction.TRANSACTION_TYPE.Expense) {
-                    nt.SetValue(nt.GetValue() - tr.GetMyCost());
-                }
-                else if (tr.GetType() == Transaction.TRANSACTION_TYPE.Income) {
-                    nt.SetValue(nt.GetValue() + tr.GetValue());
-                }
+            if (tr.GetType() == Transaction.TRANSACTION_TYPE.Expense) {
+                nt.SetValue(nt.GetValue() - tr.GetMyCost());
             }
-            nt.SetTimePeriod(new TimePeriod(GetStartTime()));
+            else if (tr.GetType() == Transaction.TRANSACTION_TYPE.Income) {
+                nt.SetValue(nt.GetValue() + tr.GetValue());
+            }
         }
+        nt.SetTimePeriod(new TimePeriod(GetStartTime()));
 
         return nt;
     }

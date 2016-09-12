@@ -327,6 +327,9 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         //elementsAdapter = new AdapterDetailsTransaction(this, _profileID, activityType);
         //elementsView.setAdapter(elementsAdapter);
 
+        elementsView.getRecycledViewPool().clear();
+        elementsAdapter.notifyDataSetChanged();
+
         totalsAdapter = new AdapterTransactionTotals(this, _profileID, activityType, keyType);
         totalsView.setAdapter(totalsAdapter);
 
