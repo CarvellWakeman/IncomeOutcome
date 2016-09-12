@@ -4,7 +4,6 @@ package carvellwakeman.incomeoutcome;
 import java.util.*;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import org.joda.time.*;
 import org.joda.time.format.PeriodFormat;
 
@@ -16,6 +15,7 @@ public class Profile implements java.io.Serializable
 
 
     //TimeFrame
+    private boolean _showAll;
     private LocalDate _startTime;
     private LocalDate _endTime;
     private Period _period;
@@ -72,6 +72,7 @@ public class Profile implements java.io.Serializable
     public void ClearAllObjects(){
         _startTime = null;
         _endTime = null;
+        _showAll = false;
 
         //Transactions
         for (Transaction tr : Transactions){
@@ -98,6 +99,7 @@ public class Profile implements java.io.Serializable
     public LocalDate GetEndTime(){ return _endTime; }
     public Period GetPeriod() { return _period; }
     public Repeat GetPeriodFreqency() { return _periodFrequency; }
+    public boolean GetShowAll() { return _showAll; }
 
     //public int GetIncomeSourcesSize() { return IncomeSources.size(); }
     //public int GetExpenseSourcesSize() { return ExpenseSources.size(); }
@@ -116,7 +118,7 @@ public class Profile implements java.io.Serializable
 
     public String GetDateFormatted()
     {
-        if (_endTime != null && _startTime != null) {
+        if (_endTime != null && _startTime != null && !_showAll) {
             if (_endTime.getDayOfYear() == _endTime.dayOfYear().getMaximumValue() && _startTime.getDayOfYear() == _startTime.dayOfYear().getMinimumValue()){ //Yearly
                 return _startTime.toString(ProfileManager.simpleDateFormatJustYear);
             }
@@ -151,7 +153,7 @@ public class Profile implements java.io.Serializable
             }
         }
         else {
-            if (_endTime == null && _startTime != null){
+            if (_endTime == null && _startTime != null && !_showAll){
                 return ProfileManager.getString(R.string.time_started) + _startTime.toString(ProfileManager.simpleDateFormat);
             }
             else {
@@ -227,6 +229,7 @@ public class Profile implements java.io.Serializable
         //Subtract one day for months
         if (GetPeriodFreqency()==Repeat.MONTHLY || GetPeriodFreqency()==Repeat.YEARLY) { SetEndTime(GetEndTime().minusDays(1)); }
     }
+    public void SetShowAll(boolean shouldShowAll){ _showAll = shouldShowAll; }
 
 
     //Transaction management
@@ -638,7 +641,7 @@ public class Profile implements java.io.Serializable
         TimePeriod tp;
         ArrayList<LocalDate> occ = null;
 
-        if (_startTime!= null && _endTime != null) {
+        if (_startTime!= null && _endTime != null && !_showAll) {
 
             //Add transactions within the time period to the timeframe array
             for (int i = 0; i < Transactions.size(); i++) {
@@ -672,7 +675,7 @@ public class Profile implements java.io.Serializable
         }
         else{ //Add all transactions if start and end time are null
             for (Transaction tr : Transactions){
-                if (tr.GetType().ordinal() == activityType) {
+                if (activityType==null || tr.GetType().ordinal() == activityType) {
                     Transactions_timeFrame.add(tr);
                 }
             }

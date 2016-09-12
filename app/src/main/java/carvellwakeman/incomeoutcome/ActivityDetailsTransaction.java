@@ -105,6 +105,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             button_nextPeriod.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
                     if (_profile != null){
+                        checkbox_showall.setChecked(false);
                         _profile.TimePeriodPlus(1);
                         RefreshActivity();
                     }
@@ -113,6 +114,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             button_prevPeriod.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
                     if (_profile != null){
+                        checkbox_showall.setChecked(false);
                         _profile.TimePeriodMinus(1);
                         RefreshActivity();
                     }
@@ -121,12 +123,13 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             checkbox_showall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if (_profile != null){
-                        if (b){
-                            storedStartTime = _profile.GetStartTime();
-                            storedEndTime = _profile.GetEndTime();
-                        }
-                        _profile.SetStartTime( (b ? null : storedStartTime) );
-                        _profile.SetEndTime( (b ? null : storedEndTime) );
+                        //if (b){
+                        //    storedStartTime = _profile.GetStartTime();
+                        //    storedEndTime = _profile.GetEndTime();
+                        //}
+                        //_profile.SetStartTime( (b ? null : storedStartTime) );
+                        //_profile.SetEndTime( (b ? null : storedEndTime) );
+                        _profile.SetShowAll(b);
                         RefreshActivity();
                     }
                 }
@@ -209,6 +212,8 @@ public class ActivityDetailsTransaction extends AppCompatActivity
     @Override
     public void onResume(){
         super.onResume();
+
+        if (_profile != null) { checkbox_showall.setChecked(_profile.GetShowAll()); }
 
         CheckShowNoDataNotice();
     }

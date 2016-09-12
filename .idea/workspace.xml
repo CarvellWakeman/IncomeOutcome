@@ -16,8 +16,8 @@
   <component name="ChangeListManager">
     <list default="true" id="1666df32-c590-42ce-87db-27bbb09024ee" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityDetailsTransaction.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityDetailsTransaction.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityMain.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityMain.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardVersus.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardVersus.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java" afterPath="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/intermediates/dex-cache/cache.xml" afterPath="$PROJECT_DIR$/build/intermediates/dex-cache/cache.xml" />
@@ -56,38 +56,75 @@
       <file leaf-file-name="Profile.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="454">
-              <caret line="397" column="0" selection-start-line="397" selection-start-column="0" selection-end-line="397" selection-end-column="0" />
+            <state relative-caret-position="216">
+              <caret line="636" column="16" selection-start-line="636" selection-start-column="16" selection-end-line="636" selection-end-column="16" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3375#3427#0" expanded="true" />
-                <element signature="e#4542#4588#0" expanded="true" />
-                <element signature="e#4953#4999#0" expanded="true" />
-                <element signature="e#5339#5385#0" expanded="true" />
-                <element signature="e#5730#5774#0" expanded="true" />
-                <element signature="e#6244#6291#0" expanded="true" />
-                <element signature="e#6404#6450#0" expanded="true" />
-                <element signature="e#17917#17961#0" expanded="true" />
-                <element signature="e#23719#23880#0" expanded="true" />
-                <element signature="e#23879#23880#0" expanded="true" />
-                <element signature="e#23991#24152#0" expanded="true" />
-                <element signature="e#24151#24152#0" expanded="true" />
-                <element signature="e#24261#24423#0" expanded="true" />
-                <element signature="e#24422#24423#0" expanded="true" />
-                <element signature="e#24534#24696#0" expanded="true" />
-                <element signature="e#24695#24696#0" expanded="true" />
-                <element signature="e#24809#24974#0" expanded="true" />
-                <element signature="e#24973#24974#0" expanded="true" />
-                <element signature="e#25089#25254#0" expanded="true" />
-                <element signature="e#25253#25254#0" expanded="true" />
-                <element signature="e#25365#25528#0" expanded="true" />
-                <element signature="e#25527#25528#0" expanded="true" />
-                <element signature="e#25641#25804#0" expanded="true" />
-                <element signature="e#25803#25804#0" expanded="true" />
-                <element signature="e#25915#26078#0" expanded="true" />
-                <element signature="e#26077#26078#0" expanded="true" />
-                <element signature="e#26191#26354#0" expanded="true" />
-                <element signature="e#26353#26354#0" expanded="true" />
+                <element signature="e#3437#3489#0" expanded="true" />
+                <element signature="method#GetDateFormatted#0;class#Profile#0" expanded="false" />
+                <element signature="e#4617#4663#0" expanded="true" />
+                <element signature="e#5028#5074#0" expanded="true" />
+                <element signature="e#5414#5460#0" expanded="true" />
+                <element signature="e#5805#5849#0" expanded="true" />
+                <element signature="e#6332#6379#0" expanded="true" />
+                <element signature="e#6492#6538#0" expanded="true" />
+                <element signature="e#18084#18128#0" expanded="true" />
+                <element signature="method#dateSort#0;class#Profile#0" expanded="false" />
+                <element signature="method#Sort#0;class#Profile#0" expanded="false" />
+                <element signature="e#23886#24047#0" expanded="true" />
+                <element signature="e#24046#24047#0" expanded="true" />
+                <element signature="e#24158#24319#0" expanded="true" />
+                <element signature="e#24318#24319#0" expanded="true" />
+                <element signature="e#24428#24590#0" expanded="true" />
+                <element signature="e#24589#24590#0" expanded="true" />
+                <element signature="e#24701#24863#0" expanded="true" />
+                <element signature="e#24862#24863#0" expanded="true" />
+                <element signature="e#24976#25141#0" expanded="true" />
+                <element signature="e#25140#25141#0" expanded="true" />
+                <element signature="e#25256#25421#0" expanded="true" />
+                <element signature="e#25420#25421#0" expanded="true" />
+                <element signature="e#25532#25695#0" expanded="true" />
+                <element signature="e#25694#25695#0" expanded="true" />
+                <element signature="e#25808#25971#0" expanded="true" />
+                <element signature="e#25970#25971#0" expanded="true" />
+                <element signature="e#26082#26245#0" expanded="true" />
+                <element signature="e#26244#26245#0" expanded="true" />
+                <element signature="e#26358#26521#0" expanded="true" />
+                <element signature="e#26520#26521#0" expanded="true" />
+                <element signature="method#Filter#0;class#Profile#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CardVersus.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardVersus.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="131" column="30" selection-start-line="131" selection-start-column="30" selection-end-line="131" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ActivityMain.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityMain.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="369">
+              <caret line="219" column="12" selection-start-line="219" selection-start-column="12" selection-end-line="219" selection-end-column="12" />
+              <folding>
+                <element signature="e#1385#1596#0" expanded="true" />
+                <element signature="e#1595#1596#0" expanded="true" />
+                <element signature="e#1905#2212#0" expanded="true" />
+                <element signature="e#2211#2212#0" expanded="true" />
+                <element signature="e#2260#2568#0" expanded="true" />
+                <element signature="e#2567#2568#0" expanded="true" />
+                <element signature="e#2623#3266#0" expanded="true" />
+                <element signature="e#3265#3266#0" expanded="true" />
+                <element signature="e#4042#4085#0" expanded="true" />
+                <element signature="e#4206#4247#0" expanded="true" />
+                <element signature="e#8011#8045#0" expanded="true" />
+                <element signature="e#8208#8231#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -96,46 +133,23 @@
       <file leaf-file-name="ActivityDetailsTransaction.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityDetailsTransaction.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="17" column="65" selection-start-line="17" selection-start-column="65" selection-end-line="17" selection-end-column="65" />
+            <state relative-caret-position="306">
+              <caret line="116" column="0" selection-start-line="116" selection-start-column="0" selection-end-line="116" selection-end-column="0" />
               <folding>
-                <element signature="e#3399#3678#0" expanded="true" />
-                <element signature="e#3677#3678#0" expanded="true" />
-                <element signature="e#3730#4010#0" expanded="true" />
-                <element signature="e#4009#4010#0" expanded="true" />
-                <element signature="e#4069#4704#0" expanded="true" />
-                <element signature="e#4703#4704#0" expanded="true" />
-                <element signature="e#5117#5902#0" expanded="true" />
-                <element signature="e#5901#5902#0" expanded="true" />
-                <element signature="e#6022#6424#0" expanded="true" />
-                <element signature="e#6423#6424#0" expanded="true" />
-                <element signature="e#6586#6755#0" expanded="true" />
-                <element signature="e#6754#6755#0" expanded="true" />
-                <element signature="e#12581#12604#0" expanded="true" />
-                <element signature="e#12682#12703#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ActivityMain.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityMain.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="16" column="34" selection-start-line="16" selection-start-column="34" selection-end-line="16" selection-end-column="34" />
-              <folding>
-                <element signature="e#1498#1709#0" expanded="true" />
-                <element signature="e#1708#1709#0" expanded="true" />
-                <element signature="e#2018#2269#0" expanded="true" />
-                <element signature="e#2268#2269#0" expanded="true" />
-                <element signature="e#2317#2569#0" expanded="true" />
-                <element signature="e#2568#2569#0" expanded="true" />
-                <element signature="e#2624#3211#0" expanded="true" />
-                <element signature="e#3210#3211#0" expanded="true" />
-                <element signature="e#3987#4030#0" expanded="true" />
-                <element signature="e#4151#4192#0" expanded="true" />
-                <element signature="e#7869#7903#0" expanded="true" />
-                <element signature="e#8066#8089#0" expanded="true" />
+                <element signature="e#3399#3738#0" expanded="true" />
+                <element signature="e#3737#3738#0" expanded="true" />
+                <element signature="e#3790#4130#0" expanded="true" />
+                <element signature="e#4129#4130#0" expanded="true" />
+                <element signature="e#4189#4884#0" expanded="true" />
+                <element signature="e#4883#4884#0" expanded="true" />
+                <element signature="e#5297#6082#0" expanded="true" />
+                <element signature="e#6081#6082#0" expanded="true" />
+                <element signature="e#6202#6604#0" expanded="true" />
+                <element signature="e#6603#6604#0" expanded="true" />
+                <element signature="e#6766#6935#0" expanded="true" />
+                <element signature="e#6934#6935#0" expanded="true" />
+                <element signature="e#12848#12871#0" expanded="true" />
+                <element signature="e#12949#12970#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1866,9 +1880,9 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/row_layout_transaction.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/card_transaction.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/card_versus.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityMain.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityDetailsTransaction.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityDetailsTransaction.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityMain.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardVersus.java" />
       </list>
     </option>
@@ -2606,7 +2620,14 @@
       <option name="project" value="LOCAL" />
       <updated>1473528218403</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="UNRELEASED&#10;*[BUGFIX] CardVersus not showing 5 months when only one month has transactions&#10;*[BUGFIX] Details transaction objects sometimes not showing an expand button when they should be&#10;*[BUGFIX] Details transaction objects sometimes showing paidBack string when they were not paid back.&#10;*[CHANGE] Overview page is now cleaner and emptier when there is no data&#10;*[CHANGE] Switch Compat now used to produce nicer switches in API 19&#10;*[CHANGE] AlertDialogs in Settings changed Positive button from &quot;DELTE&quot; to &quot;CONTINUE&quot;&#10;*[CHANGE] Show period data in DialogFragmentManagePPC for profile&#10;*[CHANGE] Decrease margins in details and overview activity">
+      <created>1473658131937</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1473658131937</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -2707,7 +2728,8 @@
     <MESSAGE value="Play Store Alpha Release Ver 1.0" />
     <MESSAGE value="Ver 1.0.2 ALPHA 2016-09-08&#10;*[BUGFIX] Profiles/Categories edited when the user indicated they were making a new one&#10;*[ADD] Override end date button, profiles automatically change start date to the precision level of the period. (IE: Yearly Period with StartDate set to March 4th 2014 will become StartDate January 1st 2014)&#10;" />
     <MESSAGE value="UNRELEASED&#10;*[CHANGE] Overview page is now cleaner and emptier when there is no data&#10;*[CHANGE] Switch Compat now used to produce nicer switches in API 19&#10;*[CHANGE] AlertDialogs in Settings changed Positive button from &quot;DELTE&quot; to &quot;CONTINUE&quot;&#10;*[CHANGE] Show period data in DialogFragmentManagePPC for profile&#10;*[CHANGE] Decrease margins in details and overview activity&#10;*[BUGFIX] Details transaction objects sometimes not showing an expand button when they should be&#10;*[BUGFIX] Details transaction objects sometimes showing paidBack string when they were not paid back." />
-    <option name="LAST_COMMIT_MESSAGE" value="UNRELEASED&#10;*[CHANGE] Overview page is now cleaner and emptier when there is no data&#10;*[CHANGE] Switch Compat now used to produce nicer switches in API 19&#10;*[CHANGE] AlertDialogs in Settings changed Positive button from &quot;DELTE&quot; to &quot;CONTINUE&quot;&#10;*[CHANGE] Show period data in DialogFragmentManagePPC for profile&#10;*[CHANGE] Decrease margins in details and overview activity&#10;*[BUGFIX] Details transaction objects sometimes not showing an expand button when they should be&#10;*[BUGFIX] Details transaction objects sometimes showing paidBack string when they were not paid back." />
+    <MESSAGE value="UNRELEASED&#10;*[BUGFIX] CardVersus not showing 5 months when only one month has transactions&#10;*[BUGFIX] Details transaction objects sometimes not showing an expand button when they should be&#10;*[BUGFIX] Details transaction objects sometimes showing paidBack string when they were not paid back.&#10;*[CHANGE] Overview page is now cleaner and emptier when there is no data&#10;*[CHANGE] Switch Compat now used to produce nicer switches in API 19&#10;*[CHANGE] AlertDialogs in Settings changed Positive button from &quot;DELTE&quot; to &quot;CONTINUE&quot;&#10;*[CHANGE] Show period data in DialogFragmentManagePPC for profile&#10;*[CHANGE] Decrease margins in details and overview activity" />
+    <option name="LAST_COMMIT_MESSAGE" value="UNRELEASED&#10;*[BUGFIX] CardVersus not showing 5 months when only one month has transactions&#10;*[BUGFIX] Details transaction objects sometimes not showing an expand button when they should be&#10;*[BUGFIX] Details transaction objects sometimes showing paidBack string when they were not paid back.&#10;*[CHANGE] Overview page is now cleaner and emptier when there is no data&#10;*[CHANGE] Switch Compat now used to produce nicer switches in API 19&#10;*[CHANGE] AlertDialogs in Settings changed Positive button from &quot;DELTE&quot; to &quot;CONTINUE&quot;&#10;*[CHANGE] Show period data in DialogFragmentManagePPC for profile&#10;*[CHANGE] Decrease margins in details and overview activity" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -3068,93 +3090,97 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="454">
-          <caret line="397" column="0" selection-start-line="397" selection-start-column="0" selection-end-line="397" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3375#3427#0" expanded="true" />
-            <element signature="e#4542#4588#0" expanded="true" />
-            <element signature="e#4953#4999#0" expanded="true" />
-            <element signature="e#5339#5385#0" expanded="true" />
-            <element signature="e#5730#5774#0" expanded="true" />
-            <element signature="e#6244#6291#0" expanded="true" />
-            <element signature="e#6404#6450#0" expanded="true" />
-            <element signature="e#17917#17961#0" expanded="true" />
-            <element signature="e#23719#23880#0" expanded="true" />
-            <element signature="e#23879#23880#0" expanded="true" />
-            <element signature="e#23991#24152#0" expanded="true" />
-            <element signature="e#24151#24152#0" expanded="true" />
-            <element signature="e#24261#24423#0" expanded="true" />
-            <element signature="e#24422#24423#0" expanded="true" />
-            <element signature="e#24534#24696#0" expanded="true" />
-            <element signature="e#24695#24696#0" expanded="true" />
-            <element signature="e#24809#24974#0" expanded="true" />
-            <element signature="e#24973#24974#0" expanded="true" />
-            <element signature="e#25089#25254#0" expanded="true" />
-            <element signature="e#25253#25254#0" expanded="true" />
-            <element signature="e#25365#25528#0" expanded="true" />
-            <element signature="e#25527#25528#0" expanded="true" />
-            <element signature="e#25641#25804#0" expanded="true" />
-            <element signature="e#25803#25804#0" expanded="true" />
-            <element signature="e#25915#26078#0" expanded="true" />
-            <element signature="e#26077#26078#0" expanded="true" />
-            <element signature="e#26191#26354#0" expanded="true" />
-            <element signature="e#26353#26354#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardVersus.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="344">
-          <caret line="158" column="72" selection-start-line="158" selection-start-column="72" selection-end-line="158" selection-end-column="72" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityDetailsTransaction.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="17" column="65" selection-start-line="17" selection-start-column="65" selection-end-line="17" selection-end-column="65" />
+        <state relative-caret-position="306">
+          <caret line="116" column="0" selection-start-line="116" selection-start-column="0" selection-end-line="116" selection-end-column="0" />
           <folding>
-            <element signature="e#3399#3678#0" expanded="true" />
-            <element signature="e#3677#3678#0" expanded="true" />
-            <element signature="e#3730#4010#0" expanded="true" />
-            <element signature="e#4009#4010#0" expanded="true" />
-            <element signature="e#4069#4704#0" expanded="true" />
-            <element signature="e#4703#4704#0" expanded="true" />
-            <element signature="e#5117#5902#0" expanded="true" />
-            <element signature="e#5901#5902#0" expanded="true" />
-            <element signature="e#6022#6424#0" expanded="true" />
-            <element signature="e#6423#6424#0" expanded="true" />
-            <element signature="e#6586#6755#0" expanded="true" />
-            <element signature="e#6754#6755#0" expanded="true" />
-            <element signature="e#12581#12604#0" expanded="true" />
-            <element signature="e#12682#12703#0" expanded="true" />
+            <element signature="e#3399#3738#0" expanded="true" />
+            <element signature="e#3737#3738#0" expanded="true" />
+            <element signature="e#3790#4130#0" expanded="true" />
+            <element signature="e#4129#4130#0" expanded="true" />
+            <element signature="e#4189#4884#0" expanded="true" />
+            <element signature="e#4883#4884#0" expanded="true" />
+            <element signature="e#5297#6082#0" expanded="true" />
+            <element signature="e#6081#6082#0" expanded="true" />
+            <element signature="e#6202#6604#0" expanded="true" />
+            <element signature="e#6603#6604#0" expanded="true" />
+            <element signature="e#6766#6935#0" expanded="true" />
+            <element signature="e#6934#6935#0" expanded="true" />
+            <element signature="e#12848#12871#0" expanded="true" />
+            <element signature="e#12949#12970#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/ActivityMain.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="16" column="34" selection-start-line="16" selection-start-column="34" selection-end-line="16" selection-end-column="34" />
+        <state relative-caret-position="369">
+          <caret line="219" column="12" selection-start-line="219" selection-start-column="12" selection-end-line="219" selection-end-column="12" />
           <folding>
-            <element signature="e#1498#1709#0" expanded="true" />
-            <element signature="e#1708#1709#0" expanded="true" />
-            <element signature="e#2018#2269#0" expanded="true" />
-            <element signature="e#2268#2269#0" expanded="true" />
-            <element signature="e#2317#2569#0" expanded="true" />
-            <element signature="e#2568#2569#0" expanded="true" />
-            <element signature="e#2624#3211#0" expanded="true" />
-            <element signature="e#3210#3211#0" expanded="true" />
-            <element signature="e#3987#4030#0" expanded="true" />
-            <element signature="e#4151#4192#0" expanded="true" />
-            <element signature="e#7869#7903#0" expanded="true" />
-            <element signature="e#8066#8089#0" expanded="true" />
+            <element signature="e#1385#1596#0" expanded="true" />
+            <element signature="e#1595#1596#0" expanded="true" />
+            <element signature="e#1905#2212#0" expanded="true" />
+            <element signature="e#2211#2212#0" expanded="true" />
+            <element signature="e#2260#2568#0" expanded="true" />
+            <element signature="e#2567#2568#0" expanded="true" />
+            <element signature="e#2623#3266#0" expanded="true" />
+            <element signature="e#3265#3266#0" expanded="true" />
+            <element signature="e#4042#4085#0" expanded="true" />
+            <element signature="e#4206#4247#0" expanded="true" />
+            <element signature="e#8011#8045#0" expanded="true" />
+            <element signature="e#8208#8231#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/Profile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="636" column="16" selection-start-line="636" selection-start-column="16" selection-end-line="636" selection-end-column="16" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3437#3489#0" expanded="true" />
+            <element signature="method#GetDateFormatted#0;class#Profile#0" expanded="false" />
+            <element signature="e#4617#4663#0" expanded="true" />
+            <element signature="e#5028#5074#0" expanded="true" />
+            <element signature="e#5414#5460#0" expanded="true" />
+            <element signature="e#5805#5849#0" expanded="true" />
+            <element signature="e#6332#6379#0" expanded="true" />
+            <element signature="e#6492#6538#0" expanded="true" />
+            <element signature="e#18084#18128#0" expanded="true" />
+            <element signature="method#dateSort#0;class#Profile#0" expanded="false" />
+            <element signature="method#Sort#0;class#Profile#0" expanded="false" />
+            <element signature="e#23886#24047#0" expanded="true" />
+            <element signature="e#24046#24047#0" expanded="true" />
+            <element signature="e#24158#24319#0" expanded="true" />
+            <element signature="e#24318#24319#0" expanded="true" />
+            <element signature="e#24428#24590#0" expanded="true" />
+            <element signature="e#24589#24590#0" expanded="true" />
+            <element signature="e#24701#24863#0" expanded="true" />
+            <element signature="e#24862#24863#0" expanded="true" />
+            <element signature="e#24976#25141#0" expanded="true" />
+            <element signature="e#25140#25141#0" expanded="true" />
+            <element signature="e#25256#25421#0" expanded="true" />
+            <element signature="e#25420#25421#0" expanded="true" />
+            <element signature="e#25532#25695#0" expanded="true" />
+            <element signature="e#25694#25695#0" expanded="true" />
+            <element signature="e#25808#25971#0" expanded="true" />
+            <element signature="e#25970#25971#0" expanded="true" />
+            <element signature="e#26082#26245#0" expanded="true" />
+            <element signature="e#26244#26245#0" expanded="true" />
+            <element signature="e#26358#26521#0" expanded="true" />
+            <element signature="e#26520#26521#0" expanded="true" />
+            <element signature="method#Filter#0;class#Profile#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/carvellwakeman/incomeoutcome/CardVersus.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="131" column="30" selection-start-line="131" selection-start-column="30" selection-end-line="131" selection-end-column="30" />
+          <folding />
         </state>
       </provider>
     </entry>

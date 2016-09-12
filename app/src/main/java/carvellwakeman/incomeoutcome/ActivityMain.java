@@ -1,6 +1,5 @@
 package carvellwakeman.incomeoutcome;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.view.*;
 import android.widget.*;
 import org.joda.time.LocalDate;
 
-import java.util.ArrayList;
 
 public class ActivityMain extends AppCompatActivity
 {
@@ -27,8 +25,6 @@ public class ActivityMain extends AppCompatActivity
 
     Button button_suggestaddprofile;
 
-    LocalDate storedStartTime;
-    LocalDate storedEndTime;
     ImageView button_nextPeriod;
     ImageView button_prevPeriod;
     CheckBox checkbox_showall;
@@ -69,6 +65,7 @@ public class ActivityMain extends AppCompatActivity
         button_nextPeriod.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (_profile != null){
+                    checkbox_showall.setChecked(false);
                     _profile.TimePeriodPlus(1);
                     RefreshOverview();
                 }
@@ -77,6 +74,7 @@ public class ActivityMain extends AppCompatActivity
         button_prevPeriod.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (_profile != null){
+                    checkbox_showall.setChecked(false);
                     _profile.TimePeriodMinus(1);
                     RefreshOverview();
                 }
@@ -85,12 +83,13 @@ public class ActivityMain extends AppCompatActivity
         checkbox_showall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (_profile != null){
-                    if (b){
-                        storedStartTime = _profile.GetStartTime();
-                        storedEndTime = _profile.GetEndTime();
-                    }
-                    _profile.SetStartTime( (b ? null : storedStartTime) );
-                    _profile.SetEndTime( (b ? null : storedEndTime) );
+                    //if (b){
+                    //    storedStartTime = _profile.GetStartTime();
+                    //    storedEndTime = _profile.GetEndTime();
+                    //}
+                    //_profile.SetStartTime( (b ? null : storedStartTime) );
+                    //_profile.SetEndTime( (b ? null : storedEndTime) );
+                    _profile.SetShowAll(b);
                     RefreshOverview();
                 }
             }
@@ -137,6 +136,8 @@ public class ActivityMain extends AppCompatActivity
     @Override
     public void onResume(){
         super.onResume();
+
+        if (_profile != null) { checkbox_showall.setChecked(_profile.GetShowAll()); }
 
         RefreshOverview();
 

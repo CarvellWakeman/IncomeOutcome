@@ -144,12 +144,17 @@ public class CardVersus extends Card
             final ArrayList<Transaction> pastTransactionPeriods = new ArrayList<>();
             Transaction tran;
             for (int i = 0; i < monthsBack; i++){
+                boolean b = _profile.GetShowAll();
+                _profile.SetShowAll(false);
                 _profile.CalculateTimeFrame(null);
+                _profile.SetShowAll(b);
                 tran = _profile.CalculatePeriodTotalBetweenDates(context);
                 pastTransactionPeriods.add(tran);
                 if (tran != null) { nonNullPeriods++; }
                 _profile.TimePeriodPlus(1);
             }
+
+
 
             //Reset time periods back to original dates
             _profile.SetStartTime(origStart);
@@ -193,7 +198,6 @@ public class CardVersus extends Card
                                     if (tp.GetDate() != null) {
                                         SimpleDateFormat formatter = new SimpleDateFormat(ProfileManager.simpleDateFormatShortNoDay, App.GetLocale());
                                         return formatter.format(tp.GetDate().toDate());
-                                        //return String.valueOf(value);
                                     }
                                 }
                             }
