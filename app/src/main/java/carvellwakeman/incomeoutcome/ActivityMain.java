@@ -1,5 +1,6 @@
 package carvellwakeman.incomeoutcome;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,12 +41,14 @@ public class ActivityMain extends AppCompatActivity
 
         //Initialize the profile manager
         profileManager = ProfileManager.getInstance();
-        profileManager.initialize(this);
+        profileManager.initialize(this, new ProfileManager.CallBack() {
+            @Override public void call() { RefreshOverview(); }
+        });
 
         //Toolbar menus
         toolbar_menus = new ArrayList<>();
         toolbar_menus.add(R.menu.submenu_settings);
-        toolbar_menus.add(R.menu.submenu_filter);
+        toolbar_menus.add(R.menu.submenu_filter_expense);
         toolbar_menus.add(R.menu.submenu_paidback);
 
         //Set our activity's data
@@ -142,12 +145,24 @@ public class ActivityMain extends AppCompatActivity
     }
 
     @Override
+    public void onStart(){
+        super.onStart();
+
+
+        RefreshOverview();
+    }
+
+    @Override
     public void onResume(){
         super.onResume();
 
-        if (_profile != null) { checkbox_showall.setChecked(_profile.GetShowAll()); }
+        if (_profile != null) {
+            checkbox_showall.setChecked(_profile.GetShowAll());
 
-        RefreshOverview();
+            //ProfileManager.Print(ActivityMain.this, "Size:" + _profile.GetTransactionsSize());
+            RefreshOverview();
+        }
+
 
         //Suggest the user add a profile if none exist
         if (profileManager.GetProfileCount()==0){

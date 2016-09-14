@@ -333,7 +333,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
     }
 
     //Delete profile
-    public void DeleteProfile(String id, final DialogFragmentManagePPC dialogFragment){
+    public void RemoveProfile(String id, final DialogFragmentManagePPC dialogFragment){
         final Profile pr = ProfileManager.getInstance().GetProfileByID(Integer.valueOf(id));
         if (pr != null) {
             if (pr.GetTransactionsSize() > 0) {
@@ -344,7 +344,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
                         .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ProfileManager.getInstance().DeleteProfile(pr);
+                                ProfileManager.getInstance().RemoveProfile(pr);
                                 adapter.notifyDataSetChanged();
                                 dialogFragment.dismiss();
                                 dialog.dismiss();

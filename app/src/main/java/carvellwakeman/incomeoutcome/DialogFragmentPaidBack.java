@@ -87,24 +87,26 @@ public class DialogFragmentPaidBack extends DialogFragment {
         button_positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (radioButton_today.isChecked()){ //Today
-                    _profile.UpdatePaidBackInTimeFrame(new LocalDate(), true);
-                }
-                else if (radioButton_date.isChecked()){ //A date
-                    _profile.UpdatePaidBackInTimeFrame(date, true);
-                }
-                else if (radioButton_never.isChecked()){ //Never
-                    _profile.UpdatePaidBackInTimeFrame(null, true);
-                }
+                if (_profile != null){
+                    if (radioButton_today.isChecked()) { //Today
+                        _profile.UpdatePaidBackInTimeFrame(new LocalDate(), true);
+                    }
+                    else if (radioButton_date.isChecked()) { //A date
+                        _profile.UpdatePaidBackInTimeFrame(date, true);
+                    }
+                    else if (radioButton_never.isChecked()) { //Never
+                        _profile.UpdatePaidBackInTimeFrame(null, true);
+                    }
 
-                //_parent.elementsAdapter.notifyDataSetChanged();
-                //_parent.totalsAdapter.notifyDataSetChanged();
-                //_parent.UpdateAdapters();
+                    //_parent.elementsAdapter.notifyDataSetChanged();
+                    //_parent.totalsAdapter.notifyDataSetChanged();
+                    //_parent.UpdateAdapters();
 
-                //_profile.CalculateTimeFrame(); //TODO Necessary? - Yes, necessary.
-                //_profile.CalculateTimeFrame(_parent.activityType);
-                //_profile.CalculateTotalsInTimeFrame(_parent.activityType, _parent.keyType);
-                _callBack.call();
+                    //_profile.CalculateTimeFrame(); //TODO Necessary? - Yes, necessary.
+                    //_profile.CalculateTimeFrame(_parent.activityType);
+                    //_profile.CalculateTotalsInTimeFrame(_parent.activityType, _parent.keyType);
+                    _callBack.call();
+                }
 
                 dismiss();
             }

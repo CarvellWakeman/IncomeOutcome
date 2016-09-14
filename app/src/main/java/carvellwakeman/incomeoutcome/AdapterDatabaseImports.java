@@ -85,10 +85,10 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
 
                     ProfileManager.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, file.getName(), parent.getString(R.string.format_dbversion, String.valueOf(version)), file.getAbsolutePath(), null, new ProfileManager.ParentCallback() {
                         @Override
-                        public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.ImportDatabase(data, dialogFragment); }
+                        public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DBImport(data, dialogFragment); }
                     }, new ProfileManager.ParentCallback() {
                         @Override
-                        public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeleteDatabase(data, dialogFragment); }
+                        public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DBDelete(data, dialogFragment); }
                     }), true); //TODO: Handle mIsLargeDisplay
                 }
             }

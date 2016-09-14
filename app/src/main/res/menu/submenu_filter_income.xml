@@ -14,9 +14,6 @@
             <item
                 android:id="@+id/toolbar_filter_source"
                 android:title="@string/filter_source" />
-            <item
-                android:id="@+id/toolbar_filter_whopaid"
-                android:title="@string/filter_whopaid" />
         </menu>
 
         </item>

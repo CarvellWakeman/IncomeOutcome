@@ -170,6 +170,10 @@ public class Transaction implements java.io.Serializable
     public boolean IsPaidBack() { return !(paidBack == null); }
     public String GetPaidBackFormatted() { return "Paid Back " + GetPaidBack().toString(ProfileManager.simpleDateFormat); }
     public boolean GetIPaid() { return IPaid; }
+    public String GetWhoPaid() {
+        if (GetIPaid()){ return ProfileManager.getString(R.string.format_me); }
+        else { return GetSplitWith(); }
+    }
 
 
 

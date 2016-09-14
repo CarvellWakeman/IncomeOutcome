@@ -122,8 +122,11 @@ public class SortFilterOptions {
             case R.id.toolbar_filter_source:
                 Filter(ProfileManager.FILTER_METHODS.SOURCE);
                 break;
-            case R.id.toolbar_filter_whopaid:
+            case R.id.toolbar_filter_paidby:
                 Filter(ProfileManager.FILTER_METHODS.PAIDBY);
+                break;
+            case R.id.toolbar_filter_splitwith:
+                Filter(ProfileManager.FILTER_METHODS.SPLITWITH);
                 break;
         }
 

@@ -92,7 +92,7 @@ public class CardTransaction extends Card
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     if (keyType != position) { //Key Type changed
                         keyType = position;
-                        SetData();
+                        //SetData();
                     }
                 }
 
@@ -134,7 +134,7 @@ public class CardTransaction extends Card
 
         chart.setDescription("");
 
-        chart.setHighlightPerTapEnabled(false);
+        chart.setHighlightPerTapEnabled(true);
         chart.setDrawHoleEnabled(true);
         chart.setDrawCenterText(true);
         chart.setRotationEnabled(true);
@@ -159,7 +159,7 @@ public class CardTransaction extends Card
         chart.setEntryLabelColor(Color.BLACK);
 
         //Gather Data
-        SetData();
+        //SetData();
 
         //Contract the card view
         SetExpanded(false);

@@ -1,14 +1,12 @@
 package carvellwakeman.incomeoutcome;
 
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import org.joda.time.LocalDate;
@@ -72,14 +70,14 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             finish();
         }
         else if (activityType == 0) { //Expense
-            toolbar_menus.add(R.menu.submenu_sort);
-            toolbar_menus.add(R.menu.submenu_filter);
+            toolbar_menus.add(R.menu.submenu_sort_expense);
+            toolbar_menus.add(R.menu.submenu_filter_expense);
             toolbar_menus.add(R.menu.submenu_paidback);
             ac_editing_activity = ActivityNewTransaction.class;
         }
         else if (activityType == 1) { //Income
-            toolbar_menus.add(R.menu.submenu_sort);
-            toolbar_menus.add(R.menu.submenu_filter);
+            toolbar_menus.add(R.menu.submenu_sort_income);
+            toolbar_menus.add(R.menu.submenu_filter_income);
             ac_editing_activity = ActivityNewTransaction.class;
         }
 
@@ -250,6 +248,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         SortFilterOptions.Run(this, _profile, item, activityType,
             new ProfileManager.CallBack() { @Override public void call() {
                 _profile.CalculateTimeFrame(activityType);
+                _profile.CalculateTotalsInTimeFrame(activityType, keyType);
                 elementsAdapter.notifyDataSetChanged();
                 totalsAdapter.notifyDataSetChanged();
             }});
@@ -417,7 +416,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         tr.GetTimePeriod().AddBlacklistDate(tran.GetTimePeriod().GetDate(), false);
 
         //Update database
-        ProfileManager.getInstance().InsertTransactionDatabase(_profile, tr, true);
+        ProfileManager.getInstance().DBInsertTransaction(_profile, tr, true);
 
         //Update transaction list
         //_profile.CalculateTimeFrame(activityType);

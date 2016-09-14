@@ -1,18 +1,18 @@
 package carvellwakeman.incomeoutcome;
 
-
 import android.os.AsyncTask;
-import android.util.Log;
-import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 
-public class DatabaseBackgroundHelper extends AsyncTask<Object, String, String> {
+
+public class GenericAsyncTask extends AsyncTask<Object, String, String> {
 
     DatabaseHelper databaseHelper;
+    ArrayList<ProfileManager.CallBack> _callBacks = new ArrayList<>();
 
-    public DatabaseBackgroundHelper(){
+    public static void RunDBTask(Object... params) { (new GenericAsyncTask()).execute(params); }
+
+    public GenericAsyncTask(){
         databaseHelper = ProfileManager.getInstance().GetDatabaseHelper();
     }
 
@@ -22,15 +22,43 @@ public class DatabaseBackgroundHelper extends AsyncTask<Object, String, String> 
     @Override
     protected String doInBackground(Object... params) {
         try {
+            ProfileManager.CallBack task = (ProfileManager.CallBack) params[0];
 
-            int action = (int) params[0];
+            if (task != null){
+                for (int i = 1; i < params.length; i++){ _callBacks.add((ProfileManager.CallBack)params[i]); }
+
+                task.call();
+            }
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    protected void onProgressUpdate(String... text) {}
+
+    @Override
+    protected void onPostExecute(String result) {
+        if (_callBacks.size() > 0){
+            for (int i = 0; i < _callBacks.size(); i++) {
+                _callBacks.get(i).call();
+            }
+        }
+    }
+
+
+    /*
+     int action = (int) params[0];
 
             switch (action) {
                 case 0: //Import database
                     databaseHelper.importDatabase((File) params[1], (boolean) params[2]);
                     break;
                 case 1: //Export database
-                    databaseHelper.exportDatabase((String) params[1]);
+                    databaseHelper.DBExport((String) params[1]);
                     break;
                 case 2: //Insert setting category
                     databaseHelper.insertSetting((Category) params[1], (boolean) params[2]);
@@ -71,21 +99,10 @@ public class DatabaseBackgroundHelper extends AsyncTask<Object, String, String> 
                 case 15: //Delete database
                     databaseHelper.DeleteDB();
                     break;
+                case 16: //Delete transactions and profiles
+                    databaseHelper.DeleteTransactions();
+                    databaseHelper.DeleteProfiles();
+                    break;
             }
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
-
-        return null;
-    }
-
-    @Override
-    protected void onProgressUpdate(String... text) {}
-
-    @Override
-    protected void onPostExecute(String result) {
-
-    }
-
+     */
 }

@@ -148,7 +148,7 @@ public class Profile implements java.io.Serializable
                 return ProfileManager.getString(R.string.time_started) + _startTime.toString(ProfileManager.simpleDateFormat);
             }
             else {
-                return ProfileManager.getString(R.string.time_nodate);
+                return ProfileManager.getString(R.string.misc_all);
             }
         }
     }
@@ -168,15 +168,15 @@ public class Profile implements java.io.Serializable
             SetEndTime(GetEndTime().minusDays(1));
         }
     }
-    public void SetStartTime(LocalDate start){ //[EXCLUDE] Removing insertSettingDatabase so that the database is not updated many times for one profile
+    public void SetStartTime(LocalDate start){ //[EXCLUDE] Removing DBInsertSetting so that the database is not updated many times for one profile
         SetStartTimeDontSave(start);
 
-        ProfileManager.getInstance().InsertSettingDatabase(this, true);
+        ProfileManager.getInstance().DBInsertSetting(this, true);
     }
     public void SetEndTimeDontSave(LocalDate end){ _endTime = end; }
     public void SetEndTime(LocalDate end){
         SetEndTimeDontSave(end);
-        ProfileManager.getInstance().InsertSettingDatabase(this, true);
+        ProfileManager.getInstance().DBInsertSetting(this, true);
     }
     public void SetPeriodDontSave(Period period){
         _period = period;
@@ -193,7 +193,7 @@ public class Profile implements java.io.Serializable
     }
     public void SetPeriod(Period period){
         SetPeriodDontSave(period);
-        ProfileManager.getInstance().InsertSettingDatabase(this, true);
+        ProfileManager.getInstance().DBInsertSetting(this, true);
     }
 
     public void TimePeriodPlus(int n){
@@ -225,7 +225,7 @@ public class Profile implements java.io.Serializable
 
     //Transaction management
     public void AddTransactionDontSave(Transaction transaction) { Transactions.add(transaction); }
-    public void AddTransaction(Transaction transaction) { AddTransactionDontSave(transaction); ProfileManager.getInstance().InsertTransactionDatabase(this, transaction, false);}
+    public void AddTransaction(Transaction transaction) { AddTransactionDontSave(transaction); ProfileManager.getInstance().DBInsertTransaction(this, transaction, false);}
     public void RemoveTransactionDontSave(Transaction transaction, boolean deleteChildren) {
         if (transaction != null) {
             if (deleteChildren) {
@@ -246,13 +246,13 @@ public class Profile implements java.io.Serializable
         }
     }
     public void RemoveTransaction(Transaction transaction, boolean deleteChildren) {
-        ProfileManager.getInstance().RemoveTransactionDatabase(transaction);
+        ProfileManager.getInstance().DBRemoveTransaction(transaction);
         RemoveTransactionDontSave(transaction, deleteChildren);
     }
     public void RemoveTransaction(int id, boolean deleteChildren) { RemoveTransaction(GetTransaction(id), deleteChildren); }
 
     private void UpdateTransaction(Transaction transaction, Profile profile) {
-        ProfileManager.getInstance().InsertTransactionDatabase(profile, transaction, true);
+        ProfileManager.getInstance().DBInsertTransaction(profile, transaction, true);
         //Check if transaction has a parent and is exactly like its parent, and if so, remove its date from the parent's blacklist and delete it
         Transaction parent = null;
         if (transaction.GetParentID() > 0){ parent = GetTransaction(transaction.GetParentID()); }
@@ -526,7 +526,7 @@ public class Profile implements java.io.Serializable
         return 0;
     }
     public int valueSort(Transaction t1, Transaction t2){ return (int)Math.signum( (t1.GetValue()) - (t2.GetValue()) ); }
-    public int paidbySort(Transaction t1, Transaction t2){ return (t1.GetIPaid() ? 1 : 0) - (t2.GetIPaid() ? 1 : 0); }
+    public int paidbySort(Transaction t1, Transaction t2){ return t1.GetWhoPaid().compareTo(t2.GetWhoPaid()); }
     public int categorySort(Transaction t1, Transaction t2){ return  t1.GetCategory().compareTo(t2.GetCategory()); }
     public int sourceSort(Transaction t1, Transaction t2){ return  t1.GetSourceName().compareTo(t2.GetSourceName()); }
     public void SetSortMethod(ProfileManager.SORT_METHODS method)
@@ -616,13 +616,13 @@ public class Profile implements java.io.Serializable
             //ArrayList<Transaction> temp = new ArrayList<>();
             //temp.addAll(Transactions_timeFrame);
 
-            if (filterMethod == ProfileManager.FILTER_METHODS.NONE) {
+            //if (filterMethod == ProfileManager.FILTER_METHODS.NONE) {
                 //Reset time frame
                 //CalculateTimeFrame(activityType);
                 //Calculate totals
                 //CalculateTotalsInTimeFrame(activityType, (activityType == 0 ? 0 : 1));
-                return;
-            }
+                //return;
+            //}
             /*
             for (int i = 0; i < temp.size(); i++) {
                 switch (filterMethod) {
@@ -695,49 +695,7 @@ public class Profile implements java.io.Serializable
                                     Transactions_timeFrame.add(temp);
                                 }
                             }
-
-                            //Apply Filtering
-                            if (filterMethod != null) {
-                                switch (filterMethod) {
-                                    default:
-                                    case NONE:
-                                        break;
-                                    case CATEGORY:
-                                        if (filterData == null || Transactions.get(i).GetCategory() == null) {
-                                            Transactions_timeFrame.clear();
-                                            break;
-                                        }
-                                        if (filterData != null && Transactions.get(i).GetCategory() != null && !Transactions.get(i).GetCategory().equalsIgnoreCase(String.valueOf(filterData))) {
-                                            Transactions_timeFrame.remove(Transactions.get(i));
-                                        }
-                                        break;
-                                    case SOURCE:
-                                        if (filterData == null || Transactions.get(i).GetSourceName() == null) {
-                                            Transactions_timeFrame.clear();
-                                            break;
-                                        }
-                                        if (filterData != null && Transactions.get(i).GetSourceName() != null && !Transactions.get(i).GetSourceName().equalsIgnoreCase(String.valueOf(filterData))) {
-                                            Transactions_timeFrame.remove(Transactions.get(i));
-                                        }
-                                        break;
-                                    case PAIDBY:
-                                        if (filterData == null || Transactions.get(i).GetSplitWith() == null) {
-                                            Transactions_timeFrame.clear();
-                                            break;
-                                        }
-                                        if (filterData != null && Transactions.get(i).GetSplitWith() != null && !Transactions.get(i).GetSplitWith().equalsIgnoreCase(String.valueOf(filterData))) {
-                                            Transactions_timeFrame.remove(Transactions.get(i));
-                                        }
-                                        break;
-                                }
-                            }
                         }
-
-                        //Apply sorting
-                        if (sortComparator != null && sortMethod != null) {
-                            Collections.sort(Transactions_timeFrame, sortComparator);
-                        }
-
                         //Add expense if there are no repetitions of it
                         //if (occ.size() == 1){
                         //_ExpenseSources_timeFrame.add( ExpenseSources.get(i) );
@@ -755,7 +713,75 @@ public class Profile implements java.io.Serializable
             }
         }
 
-        //if (activityType!= null && activityType==0){ ProfileManager.Print(App.GetContext(), "TTS:" + Transactions_timeFrame.size()); }
+        //Sorting and filtering - This is a separate loop so that the sorting and filtering still work even when ShowAll is active (Above code is two separate loops in two if statements)
+        for (int i = 0; i < Transactions.size(); i++) {
+            //Apply Filtering
+            if (filterMethod != null) {
+                switch (filterMethod) {
+                    default:
+                    case NONE:
+                        break;
+                    case CATEGORY:
+                        if (filterData != null) {
+                            if (Transactions.get(i).GetCategory() != null) {
+                                if (!Transactions.get(i).GetCategory().equalsIgnoreCase(String.valueOf(filterData))) {
+                                    Transactions_timeFrame.remove(Transactions.get(i));
+                                }
+                            }
+                            else { Transactions_timeFrame.remove(Transactions.get(i)); }
+                        }
+                        break;
+                    case SOURCE:
+                        if (filterData != null) {
+                            if (Transactions.get(i).GetSourceName() != null) {
+                                if (!Transactions.get(i).GetSourceName().equalsIgnoreCase(String.valueOf(filterData))) {
+                                    Transactions_timeFrame.remove(Transactions.get(i));
+                                }
+                            }
+                            else { Transactions_timeFrame.remove(Transactions.get(i)); }
+                        }
+                        break;
+                    case PAIDBY:
+                        if (filterData != null) {
+                            if (Transactions.get(i).GetSplitWith() != null) {
+                                if (String.valueOf(filterData).equalsIgnoreCase(ProfileManager.getString(R.string.format_me))) {
+                                    if (!Transactions.get(i).GetIPaid()) {
+                                        Transactions_timeFrame.remove(Transactions.get(i));
+                                    }
+                                }
+                                else if (Transactions.get(i).GetSplitWith().equalsIgnoreCase(String.valueOf(filterData))) {
+                                    if (Transactions.get(i).GetIPaid()) {
+                                        Transactions_timeFrame.remove(Transactions.get(i));
+                                    }
+                                }
+                                else { Transactions_timeFrame.remove(Transactions.get(i)); }
+                            }
+                            else {
+                                if (!String.valueOf(filterData).equalsIgnoreCase(ProfileManager.getString(R.string.format_me)) || !Transactions.get(i).GetIPaid()) {
+                                    Transactions_timeFrame.remove(Transactions.get(i));
+                                }
+                            }
+                        }
+                        break;
+                    case SPLITWITH:
+                        if (filterData != null) {
+                            if (Transactions.get(i).GetSplitWith() != null) {
+                                if (!Transactions.get(i).GetSplitWith().equalsIgnoreCase(String.valueOf(filterData))) {
+                                    Transactions_timeFrame.remove(Transactions.get(i));
+                                }
+                            }
+                            else { Transactions_timeFrame.remove(Transactions.get(i)); }
+                        }
+                        break;
+                }
+            }
+
+            //Apply sorting
+            if (sortComparator != null && sortMethod != null) {
+                Collections.sort(Transactions_timeFrame, sortComparator);
+            }
+        }
+
 
     }
 }

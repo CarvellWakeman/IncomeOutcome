@@ -34,11 +34,11 @@
         style="@style/FlatButtonTheme"
         android:text="@string/action_ok"
         android:id="@+id/button_dialogtt_positive"
+        android:layout_below="@+id/spinner_filter"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="8dp"
         android:enabled="true"
-        android:layout_marginTop="20dp"
-        android:layout_alignParentBottom="true" />
+        android:layout_marginTop="20dp" />
 
 
     <Button
@@ -47,13 +47,11 @@
         style="@style/FlatButtonTheme"
         android:text="@string/action_cancel"
         android:id="@+id/button_dialogtt_negative"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/spinner_filter"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginTop="20dp"
         android:layout_alignParentEnd="false"
         android:layout_toStartOf="@+id/button_dialogtt_positive" />
-
-
-    <!--Add new -->
 
 </RelativeLayout>

@@ -61,24 +61,29 @@ public class DialogFragmentFilter extends DialogFragment
 
         //Populate spinner
         ArrayAdapter<String> adapter = null;
-        switch(filterMethod){
+        switch (filterMethod) {
             case CATEGORY:
                 adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_title, ProfileManager.getInstance().GetCategoriesString());
                 break;
             case SOURCE:
-                ArrayList<String> sources = new ArrayList<>();
-                for (int i = 0; i < _profile.GetTransactionsSize(); i++){
-                    if (!sources.contains(_profile.GetTransactionAtIndex(i).GetSourceName())){
-                        sources.add(_profile.GetTransactionAtIndex(i).GetSourceName());
+                if (_profile != null) {
+                    ArrayList<String> sources = new ArrayList<>();
+                    for (int i = 0; i < _profile.GetTransactionsSize(); i++) {
+                        if (!sources.contains(_profile.GetTransactionAtIndex(i).GetSourceName())) {
+                            sources.add(_profile.GetTransactionAtIndex(i).GetSourceName());
+                        }
                     }
+                    adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_title, sources);
                 }
-                adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_title, sources);
                 break;
             case PAIDBY:
+                adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_title, ProfileManager.getInstance().GetOtherPeopleIncludingMe());
+                break;
+            case SPLITWITH:
                 adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_title, ProfileManager.getInstance().GetOtherPeople());
                 break;
         }
-        if (adapter != null){
+        if (adapter != null) {
             adapter.setDropDownViewResource(R.layout.spinner_dropdown_list_primary);
             spinner_filter.setAdapter(adapter);
         }
@@ -87,21 +92,34 @@ public class DialogFragmentFilter extends DialogFragment
         button_positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _profile.SetFilterMethod(filterMethod, spinner_filter.getSelectedItem());
+                if (_profile != null) {
+                    _profile.SetFilterMethod(filterMethod, spinner_filter.getSelectedItem());
 
-                switch(filterMethod){
-                    case NONE:
-                        if (_callBack!=null) {SortFilterOptions.Call("", false, null);}
-                        break;
-                    case CATEGORY:
-                        if (_callBack!=null) {SortFilterOptions.Call("", false, ProfileManager.getString(R.string.filter) + ":" + ProfileManager.getString(R.string.category));}
-                        break;
-                    case SOURCE:
-                        if (_callBack!=null) {SortFilterOptions.Call("", false, ProfileManager.getString(R.string.filter) + ":" + ProfileManager.getString(R.string.source));}
-                        break;
-                    case PAIDBY:
-                        if (_callBack!=null) {SortFilterOptions.Call("", false, ProfileManager.getString(R.string.filter) + ":" + ProfileManager.getString(R.string.whopaid));}
-                        break;
+                    switch (filterMethod) {
+                        case NONE:
+                            if (_callBack != null) {SortFilterOptions.Call("", false, null);}
+                            break;
+                        case CATEGORY:
+                            if (_callBack != null) {
+                                SortFilterOptions.Call("", false, ProfileManager.getString(R.string.filter) + ":" + String.valueOf(spinner_filter.getSelectedItem()));
+                            }
+                            break;
+                        case SOURCE:
+                            if (_callBack != null) {
+                                SortFilterOptions.Call("", false, ProfileManager.getString(R.string.filter) + ":" + String.valueOf(spinner_filter.getSelectedItem()));
+                            }
+                            break;
+                        case PAIDBY:
+                            if (_callBack != null) {
+                                SortFilterOptions.Call("", false, ProfileManager.getString(R.string.filter) + ":" + ProfileManager.getString(R.string.info_paidby) + " " + String.valueOf(spinner_filter.getSelectedItem()));
+                            }
+                            break;
+                        case SPLITWITH:
+                            if (_callBack != null) {
+                                SortFilterOptions.Call("", false, ProfileManager.getString(R.string.filter) + ":" + ProfileManager.getString(R.string.splitwith) + " " + String.valueOf(spinner_filter.getSelectedItem()));
+                            }
+                            break;
+                    }
                 }
                 dismiss();
             }
@@ -144,7 +162,6 @@ public class DialogFragmentFilter extends DialogFragment
         Dialog dialog = getDialog();
         if (dialog != null) {
             dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            //dialog.getWindow().setBackgroundDrawable(null);
         }
     }
 }

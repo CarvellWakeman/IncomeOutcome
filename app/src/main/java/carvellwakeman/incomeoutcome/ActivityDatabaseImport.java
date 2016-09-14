@@ -117,7 +117,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                         .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ProfileManager.getInstance().ImportDatabaseBackup(ActivityDatabaseImport.this);
+                                ProfileManager.getInstance().DBImportBackup(ActivityDatabaseImport.this);
                                 finish();
                             }})
                         .setNegativeButton(R.string.confirm_no, null)
@@ -178,7 +178,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
             case R.id.toolbar_export: //EXPORT button
                 String str = editText_filename.getText().toString();
                 if (!str.equals("")) {
-                    ProfileManager.getInstance().ExportDatabase(str);
+                    ProfileManager.getInstance().DBExport(str);
                     ToggleMenu(false);
                     ProfileManager.hideSoftKeyboard(this, editText_filename);
                     existingDatabases = ProfileManager.getInstance().GetImportDatabaseFilesString();
@@ -191,7 +191,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
 
 
     //Import Database
-    public void ImportDatabase(final String path, final DialogFragmentManagePPC dialogFragment){
+    public void DBImport(final String path, final DialogFragmentManagePPC dialogFragment){
 
         final File file = ProfileManager.getInstance().GetDatabaseByPath(path);
         final int version = SQLiteDatabase.openDatabase(file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
@@ -202,7 +202,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                     .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ProfileManager.getInstance().ImportDatabase(ActivityDatabaseImport.this, file);
+                            ProfileManager.getInstance().DBImport(ActivityDatabaseImport.this, file);
                             dialogFragment.dismiss();
                             finish();
                             dialog.dismiss();
@@ -214,13 +214,13 @@ public class ActivityDatabaseImport extends AppCompatActivity {
             ProfileManager.PrintUser(this, "ERROR: Selected database is a newer version than this app supports.");
         }
     }
-    public void DeleteDatabase(final String path, final DialogFragmentManagePPC dialogFragment){
+    public void DBDelete(final String path, final DialogFragmentManagePPC dialogFragment){
         new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle)
                 .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (path != null) {
-                            ProfileManager.getInstance().DeleteDatabaseByPath(path);
+                            ProfileManager.getInstance().DBDeleteByPath(path);
                             UpdateAdapter();
 
                             Print(ActivityDatabaseImport.this, "File Deleted");
@@ -291,7 +291,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
         toolbar.setSubtitle( (exportState ? ProfileManager.getInstance().GetExportDirectory() : "") );
 
         //Set title
-        toolbar.setTitle( (exportState ? R.string.title_exportdatabase : R.string.title_importdatabase) );
+        toolbar.setTitle( (exportState ? R.string.title_DBExport : R.string.title_importdatabase) );
     }
 
     public void AppBarLayoutExpanded(boolean expanded){

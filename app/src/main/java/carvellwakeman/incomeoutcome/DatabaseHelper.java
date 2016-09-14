@@ -611,47 +611,28 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     public void DeleteDB(){
-
-        if (isTableExists(TABLE_SETTINGS_CATEGORIES, false)){
-            database.delete(TABLE_SETTINGS_CATEGORIES, null, null);
-            //database.execSQL(DROP_TABLE_SETTINGS_CATEGORIES);
-        } //else { ProfileManager.Print(TABLE_SETTINGS_CATEGORIES + " not found"); }
-
-        if (isTableExists(TABLE_SETTINGS_OTHERPEOPLE, false)){
-            database.delete(TABLE_SETTINGS_OTHERPEOPLE, null, null);
-            //database.execSQL(DROP_TABLE_SETTINGS_OTHERPEOPLE);
-        } //else { ProfileManager.Print(TABLE_SETTINGS_OTHERPEOPLE + " not found"); }
-
-        if (isTableExists(TABLE_SETTINGS_PROFILES, false)){
-            database.delete(TABLE_SETTINGS_PROFILES, null, null);
-            //database.execSQL(DROP_TABLE_SETTINGS_PROFILES);
-        } //else { ProfileManager.Print(TABLE_SETTINGS_PROFILES + " not found"); }
-
-
-            if (isTableExists(TABLE_EXPENSES, false)){
-                database.delete(TABLE_EXPENSES, null, null);
-                //database.execSQL(DROP_TABLE_EXPENSES);
-            } //else { ProfileManager.Print(TABLE_EXPENSES + " not found"); }
-            if (isTableExists(TABLE_INCOME, false)){
-                database.delete(TABLE_INCOME, null, null);
-                //database.execSQL(DROP_TABLE_INCOME);
-            } //else { ProfileManager.Print(TABLE_INCOME + " not found"); }
-        if (isTableExists(TABLE_TRANSACTIONS, false)){
-            database.delete(TABLE_TRANSACTIONS, null, null);
-            //database.execSQL(DROP_TABLE_TRANSACTIONS);
-        }
-        if (isTableExists(TABLE_TIMEPERIODS, false)){
-            database.delete(TABLE_TIMEPERIODS, null, null);
-            //database.execSQL(DROP_TABLE_TIMEPERIODS);
-        } //else { ProfileManager.Print(TABLE_TIMEPERIODS + " not found"); }
-
-        //onCreate(database);
+        DeleteTable(TABLE_SETTINGS_CATEGORIES);
+        DeleteTable(TABLE_SETTINGS_OTHERPEOPLE);
+        DeleteTable(TABLE_SETTINGS_PROFILES);
+        //Legacy
+        DeleteTable(TABLE_EXPENSES);
+        DeleteTable(TABLE_INCOME);
+        DeleteTable(TABLE_TRANSACTIONS);
+        DeleteTable(TABLE_TIMEPERIODS);
+    }
+    public void DeleteTransactions() { DeleteTable(TABLE_TRANSACTIONS); }
+    public void DeleteProfiles() { DeleteTable(TABLE_SETTINGS_PROFILES); }
+    public void DeleteTable(String tableName){
+        if (isTableExists(tableName, false)){
+            database.delete(tableName, null, null);
+            //database.execSQL(tableName);
+        } //else { ProfileManager.Print(tableName + " not found"); }
     }
 
 
     //Import and Export
-    public void exportDatabase(String str) { exportDatabase(str, EXPORT_DIRECTORY); }
-    public void exportDatabase(String str, File destination) {
+    public void DBExport(String str) { DBExport(str, EXPORT_DIRECTORY); }
+    public void DBExport(String str, File destination) {
 
         try {
             File datadir = Environment.getDataDirectory();
@@ -711,7 +692,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
                         //Backup currentDB (Secret)
                         if (backup) {
-                            exportDatabase(BACKUP_FILENAME, EXPORT_DIRECTORY_BACKUP);
+                            DBExport(BACKUP_FILENAME, EXPORT_DIRECTORY_BACKUP);
                         }
 
                         //Delete current database

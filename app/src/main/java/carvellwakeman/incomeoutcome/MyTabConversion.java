@@ -62,7 +62,7 @@ public class MyTabConversion {
 
             //Clear database and objects
             ProfileManager.getInstance().ClearAllObjects();
-            ProfileManager.getInstance().DeleteDatabase();
+            ProfileManager.getInstance().DBDelete();
 
 
             //Convert between Tab/MyTabTransaction objects into Profile/Transaction objects

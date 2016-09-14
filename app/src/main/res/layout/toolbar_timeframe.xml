@@ -50,8 +50,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/rounded_corner"
                     android:text="@string/filter"
-                    android:layout_margin="8dp"
-                    android:paddingEnd="16dp" />
+                    android:layout_margin="8dp" />
 
                 <FrameLayout
                     android:layout_width="wrap_content"

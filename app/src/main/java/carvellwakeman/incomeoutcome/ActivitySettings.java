@@ -102,19 +102,12 @@ public class ActivitySettings extends AppCompatActivity
                     }}
             ));
         //Delete all data
-            database.AddSetting(new Setting(inflater, R.drawable.ic_delete_white_24dp, getString(R.string.title_settings_deletealldata), getString(R.string.subtitle_settings_deletealldata),
+            database.AddSetting(new Setting(inflater, R.drawable.ic_delete_white_24dp, getString(R.string.title_settrings_deletedata), getString(R.string.subtitle_settings_deletedata),
                     new View.OnClickListener() { @Override public void onClick(View v) {
-                        new AlertDialog.Builder(ActivitySettings.this).setTitle(R.string.confirm_areyousure_deleteall)
-                                .setPositiveButton(R.string.action_continue, new DialogInterface.OnClickListener() {
-                                    @Override public void onClick(DialogInterface dialog, int which) {
-                                        ProfileManager.getInstance().DeleteDatabase();
-                                        ProfileManager.getInstance().ClearAllObjects();
-                                        ProfileManager.getInstance().GetDatabaseHelper().TryCreateDatabase();
-                                    }})
-                                .setNegativeButton(R.string.action_cancel, null)
-                                .create().show();
-                    }}
-            ));
+                        ProfileManager.OpenDialogFragment(ActivitySettings.this, DialogFragmentDeleteData.newInstance(ActivitySettings.this, new ProfileManager.CallBack() { @Override public void call() {
+
+                        }}), true);
+                    }}));
         //Load default categories
             database.AddSetting(new Setting(inflater, R.drawable.ic_database_plus_white_24dp, getString(R.string.title_settings_defaultcategories), getString(R.string.subtitle_settings_defaultcategories), new View.OnClickListener() {
                 @Override

@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import org.joda.time.LocalDate;
-import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -98,6 +97,7 @@ public class ProfileManager
         DATE,
         COST,
         PAIDBY,
+        SPLITWITH,
         CATEGORY,
         SOURCE
     }
@@ -106,7 +106,7 @@ public class ProfileManager
     private ProfileManager(){}
     static ProfileManager getInstance(){ return instance; }
 
-    public void initialize(ActivityMain ac)
+    public void initialize(final Context ac, final CallBack databaseLoadingCallback)
     {
         //MainActivityInstance = ac;
         //MainActivityContext = ac.getBaseContext();
@@ -122,11 +122,25 @@ public class ProfileManager
         //Initialize database helper
         databaseHelper = new DatabaseHelper(ac);
 
+
         //Load from database
         //databaseHelper.loadSettings();
         //databaseHelper.loadTransactions();
-        (new DatabaseBackgroundHelper()).execute(8); //databaseHelper.loadSettings();
-        (new DatabaseBackgroundHelper()).execute(9); //databaseHelper.loadTransactions();
+        GenericAsyncTask.RunDBTask(
+            new CallBack() {
+            @Override
+            public void call() { databaseHelper.loadSettings(); }},
+
+            new CallBack() {
+            @Override public void call() {
+                GenericAsyncTask.RunDBTask(new CallBack() {
+                    @Override public void call() { databaseHelper.loadTransactions(); }
+                }, databaseLoadingCallback);
+            }
+        });
+
+        //(new DatabaseBackgroundHelper()).execute(8); //databaseHelper.loadTransactions();
+        //(new DatabaseBackgroundHelper()).execute(9); //databaseHelper.loadTransactions();
         //databaseHelper.loadExpenses();
         //databaseHelper.loadIncome();
 
@@ -135,7 +149,7 @@ public class ProfileManager
             LoadDefaultCategories(ac);
         }
 
-        //Try to create the database
+        //Try to create the database (if it doesn't exist)
         databaseHelper.TryCreateDatabase();
     }
 
@@ -225,10 +239,10 @@ public class ProfileManager
 
 
     //Universal print
-    public static void Print(Context c, String msg){ if (isDebugMode(c)) { Toast.makeText(c, msg, Toast.LENGTH_SHORT).show(); } }
-    public static void PrintLong(Context c, String msg){ if (isDebugMode(c)) { Toast.makeText(c, msg, Toast.LENGTH_LONG).show(); } }
-    public static void PrintUser(Context c, String msg){ Toast.makeText(c, msg, Toast.LENGTH_SHORT).show(); }
-    public static void Log(Context c, String cat, String msg){ if (isDebugMode(c)) { Log.e(cat, msg); } }
+    public static void Print(Context c, String msg){ if (c!=null && isDebugMode(c)) { Toast.makeText(c, msg, Toast.LENGTH_SHORT).show(); } }
+    public static void PrintLong(Context c, String msg){ if (c!=null && isDebugMode(c)) { Toast.makeText(c, msg, Toast.LENGTH_LONG).show(); } }
+    public static void PrintUser(Context c, String msg){ if (c!=null){ Toast.makeText(c, msg, Toast.LENGTH_SHORT).show(); } }
+    public static void Log(Context c, String cat, String msg){ if (c!=null && isDebugMode(c)) { Log.e(cat, msg); } }
     /*
     static int ret = 0;
     public static int AlertDialog(String title, String positive, String negative){
@@ -275,15 +289,15 @@ public class ProfileManager
             //MainActivityInstance.UpdateProfileList(false);
         }
     }
-    public void AddProfile(Profile profile) { if (profile != null) { AddProfile(profile, true); InsertSettingDatabase(profile, true); } }
+    public void AddProfile(Profile profile) { if (profile != null) { AddProfile(profile, true); DBInsertSetting(profile, true); } }
 
     public void UpdateProfile(Profile profile) {
-        InsertSettingDatabase(profile, true);
+        DBInsertSetting(profile, true);
         //MainActivityInstance.UpdateProfileList(false); //INFINITE LOOP
     }
 
     //Delete profile
-    public void DeleteProfile(Profile profile)
+    public void RemoveProfile(Profile profile)
     {
         boolean reselect = false;
         reselect = (profile == GetCurrentProfile());
@@ -291,7 +305,7 @@ public class ProfileManager
         if (profile != null) {
             profile.RemoveAll();
             _profiles.remove(profile);
-            RemoveProfileSettingDatabase(profile);
+            DBRemoveSettingProfile(profile);
             //Print("DeleteProfile");
         }
         if (reselect) { SelectProfile(GetProfileByIndex(0)); }
@@ -299,16 +313,31 @@ public class ProfileManager
         //MainActivityInstance.UpdateProfileList(false);
         //MainActivityInstance.SetSelection(GetProfileIndex(GetCurrentProfile()));
     }
-    public void DeleteProfileByID(String id)
+    public void RemoveProfileByID(String id)
     {
         if (id != null && !id.equals("")) {
             for (int i = 0; i < _profiles.size(); i++) {
                 if (_profiles.get(i).toString().equals(id)) {
-                    DeleteProfile(_profiles.get(i));
+                    RemoveProfile(_profiles.get(i));
                     break;
                 }
             }
         }
+    }
+    public void RemoveAllProfilesAndTransactions(){
+        for (int i = 0; i < _profiles.size(); i++){
+            _profiles.get(i).RemoveAll();
+            //_profiles.get(i).ClearAllObjects();
+            Print(App.GetContext(), "TransactionsCountAfter:" + _profiles.get(i).GetTransactionsSize());
+        }
+
+        ArrayList<Profile> temp = new ArrayList<>();
+        temp.addAll(_profiles);
+        for (int i = 0; i < temp.size(); i++){
+            RemoveProfile(temp.get(i));
+        }
+
+        ClearProfiles();
     }
 
 
@@ -358,13 +387,13 @@ public class ProfileManager
             Profile old = GetCurrentProfile();
             //Update new profile to be active
             _currentProfileID = profile.GetID();
-            InsertSettingDatabase(profile, true);
+            DBInsertSetting(profile, true);
             //MainActivityInstance.SetSelection(GetProfileIndex(profile));
             //MainActivityInstance.UpdateStartEndDate();
 
             //Update old profile to be unselected
             if (_profiles.size() > 0 && old != null) {
-                InsertSettingDatabase(old, true);
+                DBInsertSetting(old, true);
             }
             return _currentProfileID >= 0;
         }
@@ -441,7 +470,7 @@ public class ProfileManager
     }
     public void AddOtherPerson(String name){
         AddOtherPerson(name, true);
-        InsertSettingDatabase(name, true);
+        DBInsertSetting(name, true);
     }
 
     //Remove other person
@@ -449,9 +478,20 @@ public class ProfileManager
         for (int i = 0; i < _otherPeople.size(); i++){
             if (_otherPeople.get(i).equals(name)){
                 _otherPeople.remove(i);
-                RemovePersonSettingDatabase(name);
+                DBRemoveSettingPerson(name);
             }
         }
+    }
+
+    public void RemoveAllPeople(){
+        ArrayList<String> temp = new ArrayList<>();
+        temp.addAll(_otherPeople);
+
+        for (int i = 0; i < temp.size(); i++){
+            RemoveOtherPerson(temp.get(i));
+        }
+
+        ClearOtherPeople();
     }
 
     //Get other person by index
@@ -472,6 +512,12 @@ public class ProfileManager
     //Get array of OtherPeople objects
     public ArrayList<String> GetOtherPeople(){
         return _otherPeople;
+    }
+    public ArrayList<String> GetOtherPeopleIncludingMe(){
+        ArrayList<String> temp = new ArrayList<>();
+        temp.addAll(_otherPeople);
+        temp.add(getString(R.string.format_me));
+        return temp;
     }
 
     //Get count of other people
@@ -502,7 +548,7 @@ public class ProfileManager
     }
     public void AddCategory(Category category){
         AddCategory(category, true);
-        InsertSettingDatabase(category, true);
+        DBInsertSetting(category, true);
     }
     public void AddCategory(String name, int color){
         AddCategory(new Category(name, color));
@@ -511,7 +557,7 @@ public class ProfileManager
     //Remove category
     public void RemoveCategory(Category category) {
         _categories.remove(category);
-        RemoveCategorySettingDatabase(category.GetTitle());
+        DBRemoveSettingCategory(category.GetTitle());
     }
     public void RemoveCategory(String title){
         for (int i = 0; i < _categories.size(); i++){
@@ -527,6 +573,8 @@ public class ProfileManager
         for (int i = 0; i < temp.size(); i++){
             RemoveCategory(temp.get(i));
         }
+
+        ClearCategories();
     }
 
     //Get category by index
@@ -594,7 +642,7 @@ public class ProfileManager
         for (Profile pr : _profiles){
             pr.UpdateCategory(old, category.GetTitle());
         }
-        InsertSettingDatabase(category, true);
+        DBInsertSetting(category, true);
     }
 
     //Clear All
@@ -690,86 +738,125 @@ public class ProfileManager
 
     //External Database Management
     public DatabaseHelper GetDatabaseHelper() { return databaseHelper; }
-    public void InsertSettingDatabase(Category category, boolean tryupdate){
+    public void DBInsertSetting(final Category category, final boolean tryupdate){
         if ( category != null ){ //|| databaseHelper.insertSetting(category, tryupdate) == -1
             //Print("Error inserting category into database");
-            (new DatabaseBackgroundHelper()).execute(2, category, tryupdate);
+            GenericAsyncTask.RunDBTask(new CallBack() {
+                @Override public void call() { databaseHelper.insertSetting(category, tryupdate); }
+            });
+            //(new DatabaseBackgroundHelper()).execute(2, category, tryupdate);
         }
     }
-    public void InsertSettingDatabase(String name, boolean tryupdate){
+    public void DBInsertSetting(final String name, final boolean tryupdate){
         if (!name.equals("") ) { //|| databaseHelper.insertSetting(name, tryupdate) == -1
             //Print("Error inserting person into database");
-            (new DatabaseBackgroundHelper()).execute(3, name, tryupdate);
+            //(new DatabaseBackgroundHelper()).execute(3, name, tryupdate);
+            GenericAsyncTask.RunDBTask(new CallBack() {
+                @Override public void call() { databaseHelper.insertSetting(name, tryupdate); }
+            });
         }
     }
-    public void InsertSettingDatabase(Profile profile, boolean tryupdate){
+    public void DBInsertSetting(final Profile profile, final boolean tryupdate){
         if (profile != null ) { //|| databaseHelper.insertSetting(profile, tryupdate) == -1
             //Print("Error inserting profile into database");
-            (new DatabaseBackgroundHelper()).execute(4, profile, tryupdate);
+            //(new DatabaseBackgroundHelper()).execute(4, profile, tryupdate);
+            GenericAsyncTask.RunDBTask(new CallBack() {
+                @Override public void call() { databaseHelper.insertSetting(profile, tryupdate); }
+            });
         }
 
     }
 
-    public void InsertTransactionDatabase(Profile pr, Transaction tr, boolean tryupdate){
+    public void DBInsertTransaction(final Profile pr, final Transaction tr, final boolean tryupdate){
         if ( pr != null && tr != null){
             //Print("Transaction " + (tryupdate ? "updated" : "inserted into database") );
-            (new DatabaseBackgroundHelper()).execute(5, pr, tr, tryupdate);
+            //(new DatabaseBackgroundHelper()).execute(5, pr, tr, tryupdate);
+            GenericAsyncTask.RunDBTask(new CallBack() {
+                @Override public void call() { databaseHelper.insert(pr, tr, tryupdate); }
+            });
         } else { }//Print("Error inserting transaction into database"); }
     }
 
 
 
-    public void RemoveCategorySettingDatabase(String category){
+    public void DBRemoveSettingCategory(final String category){
         if ( !category.equals("") ){ //databaseHelper.removeCategorySetting(category)
             //Print("Category removed from database");
-            (new DatabaseBackgroundHelper()).execute(10, category);
+            GenericAsyncTask.RunDBTask(new CallBack() {
+                @Override public void call() { databaseHelper.removeCategorySetting(category); }
+            });
+            //(new DatabaseBackgroundHelper()).execute(10, category);
         } else { }//Print("Error removing category from database"); }
     }
-    public void RemovePersonSettingDatabase(String person){
+    public void DBRemoveSettingPerson(final String person){
         if ( !person.equals("") ){ //databaseHelper.removeSettingPerson(person)
             //Print("Person removed from database");
-            (new DatabaseBackgroundHelper()).execute(11, person);
+            //(new DatabaseBackgroundHelper()).execute(11, person);
+            GenericAsyncTask.RunDBTask(new CallBack() {
+                @Override public void call() { databaseHelper.removePersonSetting(person); }
+            });
         } else { }//Print("Error removing person from database"); }
     }
-    public void RemoveProfileSettingDatabase(Profile pr){
+    public void DBRemoveSettingProfile(final Profile pr){
         if ( pr != null ){ //databaseHelper.removeProfileSetting(pr)
             //Print("Profile removed from database");
-            (new DatabaseBackgroundHelper()).execute(12, pr);
+            //(new DatabaseBackgroundHelper()).execute(12, pr);
+            GenericAsyncTask.RunDBTask(new CallBack() {
+                @Override public void call() { databaseHelper.removeProfileSetting(pr); }
+            });
         } else { }//Print("Error removing profile from database"); }
     }
 
-    public void RemoveTransactionDatabase(Transaction tr){
+    public void DBRemoveTransaction(final Transaction tr){
         if ( tr != null ){ //databaseHelper.remove(tr)
             //Print("Transaction removed from database");
-            (new DatabaseBackgroundHelper()).execute(13, tr);
+            //(new DatabaseBackgroundHelper()).execute(13, tr);
+            GenericAsyncTask.RunDBTask(new CallBack() {
+                @Override public void call() { databaseHelper.remove(tr); }
+            });
         } else { }//Print("Error removing transaction from database"); }
     }
-    public void DeleteDatabase(){
+    public void DBDelete(){
         //databaseHelper.DeleteDB();
-        (new DatabaseBackgroundHelper()).execute(15);
+        GenericAsyncTask.RunDBTask(new CallBack() {
+            @Override public void call() { databaseHelper.DeleteDB(); }
+        });
+        //(new DatabaseBackgroundHelper()).execute(15);
+    }
+    public void DBDeleteTransactionsAndProfiles(){
+        //(new DatabaseBackgroundHelper()).execute(16);
+        GenericAsyncTask.RunDBTask(new CallBack() {
+            @Override public void call() { databaseHelper.DeleteTransactions(); databaseHelper.DeleteProfiles(); }
+        });
     }
 
-    public void ExportDatabase(String str){
+    public void DBExport(final String str){
         if (!str.equals("")) {
-            //databaseHelper.exportDatabase(str);
-            (new DatabaseBackgroundHelper()).execute(1, str);
+            //databaseHelper.DBExport(str);
+            //(new DatabaseBackgroundHelper()).execute(1, str);
+            GenericAsyncTask.RunDBTask(new CallBack() {
+                @Override public void call() { databaseHelper.DBExport(str); }
+            });
         }
     }
-    public void ImportDatabase(Context c, File file) { ImportDatabase(c, file, true); }
-    public void ImportDatabase(Context c, File file, boolean backup){
+    public void DBImport(Context c, File file) { DBImport(c, file, true); }
+    public void DBImport(Context c, final File file, final boolean backup){
         if (isStoragePermissionGranted(c)) {
             //Clear all old data
             ClearAllObjects();
 
             //Import new database
             //databaseHelper.importDatabase(file, backup);
-            (new DatabaseBackgroundHelper()).execute(0, file, backup);
+            //(new DatabaseBackgroundHelper()).execute(0, file, backup);
+            GenericAsyncTask.RunDBTask(new CallBack() {
+                @Override public void call() { databaseHelper.importDatabase(file, backup); }
+            });
         }
     }
     public Boolean DoesBackupExist() { return databaseHelper.EXPORT_BACKUP.exists(); }
-    public void ImportDatabaseBackup(Context c) { ImportDatabase(c, databaseHelper.EXPORT_BACKUP, false);  }
+    public void DBImportBackup(Context c) { DBImport(c, databaseHelper.EXPORT_BACKUP, false);  }
     public File GetDatabaseByPath(String path) { return databaseHelper.getDatabaseByPath(path); }
-    public void DeleteDatabaseByPath(String path) { GetDatabaseByPath(path).delete(); }
+    public void DBDeleteByPath(String path) { GetDatabaseByPath(path).delete(); }
     public ArrayList<File> GetImportDatabaseFiles() { return databaseHelper.getImportableDatabases(); }
     public ArrayList<String> GetImportDatabaseFilesString() { return databaseHelper.getImportableDatabasesString();  }
 

@@ -14,7 +14,7 @@
 
     <string name="title_overview">Overview</string>
 
-    <string name="title_exportdatabase">Export Database</string>
+    <string name="title_DBExport">Export Database</string>
     <string name="title_importdatabase">Import Database</string>
     <string name="title_manageprofile">Manage Profile</string>
     <string name="title_manageprofiles">Manage Profiles</string>
@@ -37,7 +37,7 @@
     <string name="title_editperson">Edit Person</string>
     <string name="title_editcategory">Edit Category</string>
     <string name="title_copytransaction">Copy Transaction</string>
-    <string name="title_paidback">Paid Back</string>
+    <string name="title_paidback">These transactions were paid back</string>
     <string name="title_sourcecategory">Category and Source</string>
     <!-- Sub titles -->
     <string name="subtitle_transferto">and transfer its transactions to</string>
@@ -53,13 +53,18 @@
     <string name="title_settings_export">Export Data</string>
     <string name="title_settings_importexport">Import and Export Data</string>
     <string name="title_settings_defaultcategories">Load default categories</string>
+    <string name="title_settrings_deletedata">Delete Data</string>
     <string name="title_settings_deletealldata">Delete ALL Data</string>
+    <string name="title_settings_deletetransactions">Delete Profiles and Transactions</string>
+    <string name="title_settings_deletepeople">Delete People</string>
+    <string name="title_settings_deletecategories">Delete Categories</string>
     <string name="title_settings_importbackup">Import Secret Backup</string>
     <string name="title_settings_importmytab">Import MyTab Save File</string>
 
     <!-- Setting subtitles -->
     <string name="subtitle_settings_defaultcategories">Erase all existing categories, load defaults</string>
     <string name="subtitle_settings_deletealldata">Erase all data permanently \n(excluding exported data)</string>
+    <string name="subtitle_settings_deletedata">Select data to delete\n*(Excluding exported data)</string>
     <string name="subtitle_settings_import">Erase all current data and import new data</string>
     <string name="subtitle_settings_export">Export all current data to an external file</string>
     <string name="subtitle_settings_importexport">Erase all current data and import new data\nExport all current data to an external file</string>
@@ -81,6 +86,7 @@
     <string name="misc_transactoin">Transaction</string>
     <string name="misc_expense">Expense</string>
     <string name="misc_income">Income</string>
+    <string name="misc_all">All</string>
 
     <!-- Placeholders -->
     <string name="placeholder_title">Title</string>
@@ -193,9 +199,9 @@
     <string name="confirm_areyousure">Are you sure?</string>
     <string name="confirm_areyousure_deletesingle">Are you sure you want to delete this?</string>
     <string name="confirm_areyousure_deletetransactions">Are you sure you want to delete these transactions?</string>
-    <string name="confirm_areyousure_deleteall">Are you sure? All current data will be erased.</string>
-    <string name="confirm_areyousure_nolongerexists">This Person no longer exists. This change cannot be undone.</string>
-    <string name="confirm_areyousure_nolongerexists2">This Category no longer exists. This change cannot be undone.</string>
+    <string name="confirm_areyousure_deleteall">Are you sure? All data will be erased.</string>
+    <string name="confirm_areyousure_nolongerexists">This Person no longer exists. Changing it cannot be undone.</string>
+    <string name="confirm_areyousure_nolongerexists2">The current Category no longer exists. Changing it cannot be undone.</string>
     <string name="confirm_areyousure_transferdelete">Take action for transactions in this profile</string>
 
     <!-- Time -->
@@ -208,7 +214,7 @@
     <string name="time_start_format">START %1$s</string>
     <string name="time_end_format">END %1$s</string>
     <string name="time_today">Today</string>
-    <string name="time_ondate">On Date</string>
+    <string name="time_ondate">On a Date</string>
     <string name="time_ondate_formatted">On %1$s</string>
     <string name="time_never">Never</string>
     <string name="time_nextperiod">Next</string>
@@ -232,12 +238,14 @@
     <string name="filter_category">Filter by category</string>
     <string name="filter_source">Filter by source</string>
     <string name="filter_whopaid">Filter by who paid</string>
+    <string name="filter_splitwith">Filter by cost split</string>
 
     <string name="date">Date</string>
     <string name="cost">Cost</string>
     <string name="category">Category</string>
     <string name="source">Source</string>
     <string name="whopaid">Who Paid</string>
+    <string name="splitwith">Split With</string>
 
 
     <!-- Repeat Info -->

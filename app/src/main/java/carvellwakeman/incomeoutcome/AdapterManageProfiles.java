@@ -68,7 +68,7 @@ public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManagePro
                 ProfileManager.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, pr.GetName(), descriptionString, String.valueOf(pr.GetID()),
                         new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.EditProfile(data, dialogFragment); } },
                         new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.SelectProfile(data, dialogFragment); } },
-                        new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeleteProfile(data, dialogFragment); } }),
+                        new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.RemoveProfile(data, dialogFragment); } }),
                         true); //TODO: Handle mIsLargeDisplay
                 //parent.EditProfile(ProfileManager.getInstance().GetProfileByIndex(getAdapterPosition()));
             }
