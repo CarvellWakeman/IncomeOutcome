@@ -121,7 +121,7 @@ public class CardTransaction extends Card
                     ((ActivityMain)_context).startActivityForResult(intent, 0);
                 }
                 else {
-                    ProfileManager.Print(_context, "ERROR: Profile not found, could not start transaction details activity");
+                    ProfileManager.PrintUser(_context, "ERROR: Profile not found, could not start transaction details activity");
                 }
             }
         });

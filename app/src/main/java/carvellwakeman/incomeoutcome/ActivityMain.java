@@ -7,12 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
 import android.widget.*;
-import org.joda.time.LocalDate;
+
+import java.util.ArrayList;
 
 
 public class ActivityMain extends AppCompatActivity
 {
     ProfileManager profileManager;
+
+    ArrayList<Integer> toolbar_menus;
 
     Toolbar toolbar;
 
@@ -39,6 +42,11 @@ public class ActivityMain extends AppCompatActivity
         profileManager = ProfileManager.getInstance();
         profileManager.initialize(this);
 
+        //Toolbar menus
+        toolbar_menus = new ArrayList<>();
+        toolbar_menus.add(R.menu.submenu_settings);
+        toolbar_menus.add(R.menu.submenu_filter);
+        toolbar_menus.add(R.menu.submenu_paidback);
 
         //Set our activity's data
         _profile = profileManager.GetCurrentProfile();
@@ -99,7 +107,7 @@ public class ActivityMain extends AppCompatActivity
         //Configure toolbar
         //toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         //toolbar.setNavigationOnClickListener(new View.OnClickListener() { @Override public void onClick(View v) { onBackPressed(); } });
-        toolbar.inflateMenu(R.menu.toolbar_menu_main);
+        for(int m : toolbar_menus){ toolbar.inflateMenu(m); }
         setSupportActionBar(toolbar);
         ToolbarTitleUpdate();
 
@@ -159,7 +167,8 @@ public class ActivityMain extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        getMenuInflater().inflate(R.menu.toolbar_menu_main, menu);
+        for(int m : toolbar_menus){ getMenuInflater().inflate(m, menu); }
+
         return true;
     }
 
@@ -180,10 +189,19 @@ public class ActivityMain extends AppCompatActivity
                 intent = new Intent(ActivityMain.this, ActivitySettings.class);
                 startActivityForResult(intent, 0);
                 return true;
-
-            default:
-                return false;
+            case R.id.toolbar_paidback: //Expense only
+                ProfileManager.OpenDialogFragment(ActivityMain.this, DialogFragmentPaidBack.newInstance(new ProfileManager.CallBack() { @Override public void call() {
+                    RefreshOverview();
+                }}, _profile), true);
+                return true;
         }
+
+        SortFilterOptions.Run(this, _profile, item, -1,
+            new ProfileManager.CallBack() { @Override public void call() {
+                RefreshOverview();
+            }});
+
+        return true;
     }
 
 

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class DialogFragmentFilter extends DialogFragment
 {
-    ActivityDetailsTransaction _parent;
+    ProfileManager.CallBack _callBack;
     Profile _profile;
     ProfileManager.FILTER_METHODS filterMethod;
 
@@ -30,12 +30,9 @@ public class DialogFragmentFilter extends DialogFragment
     Button button_negative;
 
 
-    NpaLinearLayoutManager linearLayoutManager;
-    RecyclerView recyclerView;
-
-    static DialogFragmentFilter newInstance(ActivityDetailsTransaction parent, Profile profile, ProfileManager.FILTER_METHODS method) {
+    static DialogFragmentFilter newInstance(ProfileManager.CallBack callBack, Profile profile, ProfileManager.FILTER_METHODS method) {
         DialogFragmentFilter fg = new DialogFragmentFilter();
-        fg._parent = parent;
+        fg._callBack = callBack;
         Bundle args = new Bundle();
         args.putSerializable("profile", profile);
         args.putSerializable("method", method);
@@ -90,9 +87,22 @@ public class DialogFragmentFilter extends DialogFragment
         button_positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _profile.Filter(filterMethod, spinner_filter.getSelectedItem(), _parent.activityType);
-                _parent.elementsAdapter.notifyDataSetChanged();
-                _parent.totalsAdapter.notifyDataSetChanged();
+                _profile.SetFilterMethod(filterMethod, spinner_filter.getSelectedItem());
+
+                switch(filterMethod){
+                    case NONE:
+                        if (_callBack!=null) {SortFilterOptions.Call("", false, null);}
+                        break;
+                    case CATEGORY:
+                        if (_callBack!=null) {SortFilterOptions.Call("", false, ProfileManager.getString(R.string.filter) + ":" + ProfileManager.getString(R.string.category));}
+                        break;
+                    case SOURCE:
+                        if (_callBack!=null) {SortFilterOptions.Call("", false, ProfileManager.getString(R.string.filter) + ":" + ProfileManager.getString(R.string.source));}
+                        break;
+                    case PAIDBY:
+                        if (_callBack!=null) {SortFilterOptions.Call("", false, ProfileManager.getString(R.string.filter) + ":" + ProfileManager.getString(R.string.whopaid));}
+                        break;
+                }
                 dismiss();
             }
         });

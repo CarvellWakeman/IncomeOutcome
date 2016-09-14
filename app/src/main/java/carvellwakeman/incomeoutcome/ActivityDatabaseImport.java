@@ -211,7 +211,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                     .create().show();
         }
         else {
-            ProfileManager.Print(this, "ERROR: Selected database is a newer version than this app supports.");
+            ProfileManager.PrintUser(this, "ERROR: Selected database is a newer version than this app supports.");
         }
     }
     public void DeleteDatabase(final String path, final DialogFragmentManagePPC dialogFragment){

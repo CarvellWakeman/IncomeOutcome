@@ -15,7 +15,8 @@ package carvellwakeman.incomeoutcome;
 
 public class DialogFragmentPaidBack extends DialogFragment {
 
-    ActivityDetailsTransaction _parent;
+    ProfileManager.CallBack _callBack;
+
     Profile _profile;
     LocalDate date;
 
@@ -28,9 +29,9 @@ public class DialogFragmentPaidBack extends DialogFragment {
     Button button_negative;
 
 
-    static DialogFragmentPaidBack newInstance(ActivityDetailsTransaction parent, Profile profile) {
+    static DialogFragmentPaidBack newInstance(ProfileManager.CallBack callBack, Profile profile) {
         DialogFragmentPaidBack fg = new DialogFragmentPaidBack();
-        fg._parent = parent;
+        fg._callBack = callBack;
         Bundle args = new Bundle();
         args.putSerializable("profile", profile);
         fg.setArguments(args);
@@ -96,13 +97,14 @@ public class DialogFragmentPaidBack extends DialogFragment {
                     _profile.UpdatePaidBackInTimeFrame(null, true);
                 }
 
-                _parent.elementsAdapter.notifyDataSetChanged();
-                _parent.totalsAdapter.notifyDataSetChanged();
-                _parent.UpdateAdapters();
+                //_parent.elementsAdapter.notifyDataSetChanged();
+                //_parent.totalsAdapter.notifyDataSetChanged();
+                //_parent.UpdateAdapters();
 
                 //_profile.CalculateTimeFrame(); //TODO Necessary? - Yes, necessary.
-                _profile.CalculateTimeFrame(_parent.activityType);
-                _profile.CalculateTotalsInTimeFrame(_parent.activityType, _parent.keyType);
+                //_profile.CalculateTimeFrame(_parent.activityType);
+                //_profile.CalculateTotalsInTimeFrame(_parent.activityType, _parent.keyType);
+                _callBack.call();
 
                 dismiss();
             }

@@ -2,15 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/toolbar_filter"
-        android:icon="@drawable/ic_filter_list_white_24dp"
+        android:icon="@drawable/ic_filter_white_24dp"
         android:title="@string/filter"
         app:showAsAction="never"
         android:orderInCategory="2" >
 
         <menu>
-            <item
-                android:id="@+id/toolbar_filter_none"
-                android:title="@string/filter_none" />
             <item
                 android:id="@+id/toolbar_filter_category"
                 android:title="@string/filter_category" />

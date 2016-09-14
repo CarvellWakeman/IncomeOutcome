@@ -1,6 +1,7 @@
 package carvellwakeman.incomeoutcome;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -45,8 +46,6 @@ public class ActivityDetailsTransaction extends AppCompatActivity
     int _profileID;
     Profile _profile;
 
-    LocalDate storedStartTime;
-    LocalDate storedEndTime;
     ImageView button_nextPeriod;
     ImageView button_prevPeriod;
     CheckBox checkbox_showall;
@@ -69,7 +68,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         keyType = intent.getIntExtra("keytype", -1);
 
         if (activityType == -1){ //None (error)
-            ProfileManager.Print(this, "Error opening details activity, no type (expense/income) specified.");
+            ProfileManager.PrintUser(this, "Error opening details activity, no type (expense/income) specified.");
             finish();
         }
         else if (activityType == 0) { //Expense
@@ -152,7 +151,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                         startActivityForResult(intent, 4);
                     }
                     else {
-                        ProfileManager.Print(ActivityDetailsTransaction.this, "ERROR: Profile not found, could not start New Transaction Activity");
+                        ProfileManager.PrintUser(ActivityDetailsTransaction.this, "ERROR: Profile not found, could not start New Transaction Activity");
                     }
                 }
             });
@@ -223,63 +222,38 @@ public class ActivityDetailsTransaction extends AppCompatActivity
     {
         for(int m : toolbar_menus){ getMenuInflater().inflate(m, menu); }
 
+        for (int i = 0; i < menu.size(); i++) { menu.getItem(i).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM); }
+
         return true;
     }
 
 
     //Toolbar button handling
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId())
-        {
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        switch (item.getItemId()) {
             case android.R.id.home:
                 Intent intent = new Intent();
                 setResult(RESULT_OK, intent);
                 finish();
                 return true;
+            case R.id.toolbar_paidback: //Expense only
+                ProfileManager.OpenDialogFragment(ActivityDetailsTransaction.this, DialogFragmentPaidBack.newInstance(new ProfileManager.CallBack() { @Override public void call() {
+                    elementsAdapter.notifyDataSetChanged();
+                    totalsAdapter.notifyDataSetChanged();
+                }}, _profile), true);
+                return true;
+        }
 
-            case R.id.toolbar_sort_category:
-                if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.CATEGORY_UP) { _profile.Sort(ProfileManager.SORT_METHODS.CATEGORY_DOWN); } else { _profile.Sort(ProfileManager.SORT_METHODS.CATEGORY_UP); }
-                elementsAdapter.notifyDataSetChanged();
-                return true;
-            case R.id.toolbar_sort_source:
-                if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.SOURCE_UP) { _profile.Sort(ProfileManager.SORT_METHODS.SOURCE_DOWN); } else { _profile.Sort(ProfileManager.SORT_METHODS.SOURCE_UP); }
-                elementsAdapter.notifyDataSetChanged();
-                return true;
-            case R.id.toolbar_sort_cost:
-                if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.COST_UP) { _profile.Sort(ProfileManager.SORT_METHODS.COST_DOWN); } else { _profile.Sort(ProfileManager.SORT_METHODS.COST_UP); }
-                elementsAdapter.notifyDataSetChanged();
-                return true;
-            case R.id.toolbar_sort_date:
-                if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.DATE_UP) { _profile.Sort(ProfileManager.SORT_METHODS.DATE_DOWN); } else { _profile.Sort(ProfileManager.SORT_METHODS.DATE_UP); }
-                elementsAdapter.notifyDataSetChanged();
-                return true;
-            case R.id.toolbar_sort_paidby:
-                if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.PAIDBY_UP) { _profile.Sort(ProfileManager.SORT_METHODS.PAIDBY_DOWN); } else { _profile.Sort(ProfileManager.SORT_METHODS.PAIDBY_UP); }
-                elementsAdapter.notifyDataSetChanged();
-                return true;
-
-            case R.id.toolbar_filter_none:
-                _profile.Filter(ProfileManager.FILTER_METHODS.NONE, null, activityType);
+        SortFilterOptions.Run(this, _profile, item, activityType,
+            new ProfileManager.CallBack() { @Override public void call() {
+                _profile.CalculateTimeFrame(activityType);
                 elementsAdapter.notifyDataSetChanged();
                 totalsAdapter.notifyDataSetChanged();
-                return true;
-            case R.id.toolbar_filter_category:
-                ProfileManager.OpenDialogFragment(this, DialogFragmentFilter.newInstance(this, _profile, ProfileManager.FILTER_METHODS.CATEGORY), true);
-                return true;
-            case R.id.toolbar_filter_source:
-                ProfileManager.OpenDialogFragment(this, DialogFragmentFilter.newInstance(this, _profile, ProfileManager.FILTER_METHODS.SOURCE), true);
-                return true;
-            case R.id.toolbar_filter_whopaid:
-                ProfileManager.OpenDialogFragment(this, DialogFragmentFilter.newInstance(this, _profile, ProfileManager.FILTER_METHODS.PAIDBY), true);
-                return true;
-
-            case R.id.toolbar_paidback: //Expense only
-                ProfileManager.OpenDialogFragment(this, DialogFragmentPaidBack.newInstance(this, _profile), true);
-                return true;
-            default:
-                return false;
-        }
+            }});
+        return true;
     }
 
 

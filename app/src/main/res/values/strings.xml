@@ -233,7 +233,11 @@
     <string name="filter_source">Filter by source</string>
     <string name="filter_whopaid">Filter by who paid</string>
 
-
+    <string name="date">Date</string>
+    <string name="cost">Cost</string>
+    <string name="category">Category</string>
+    <string name="source">Source</string>
+    <string name="whopaid">Who Paid</string>
 
 
     <!-- Repeat Info -->

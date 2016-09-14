@@ -21,28 +21,19 @@ public class Profile implements java.io.Serializable
     private Period _period;
     private Repeat _periodFrequency;
 
-    //Income sources
-    //private ArrayList<Income> IncomeSources;
-    //private ArrayList<Income> _IncomeSources_timeFrame;
-
-    //Expenses sources
-    //private ArrayList<Expense> ExpenseSources;
-    //private ArrayList<Expense> _ExpenseSources_timeFrame;
-
     //Transaction sources
     private ArrayList<Transaction> Transactions;
     private ArrayList<Transaction> Transactions_timeFrame;
 
+    //Totals
+    private HashMap<String, Transaction> TransactionTotals;
+
+
     //Sorting & Filtering
     private ProfileManager.SORT_METHODS sortMethod;
     private ProfileManager.FILTER_METHODS filterMethod;
-
-
-    //Totals
-    //protected HashMap<String, Expense> _ExpenseTotals;
-    //protected HashMap<String, Income> _IncomeTotals;
-    protected HashMap<String, Transaction> TransactionTotals;
-
+    private Comparator<Transaction> sortComparator;
+    private Object filterData;
 
 
     public Profile(String _name){
@@ -149,7 +140,7 @@ public class Profile implements java.io.Serializable
             }
 
             else { //Default
-                return _startTime.toString(ProfileManager.simpleDateFormat) + " - " + _endTime.toString(ProfileManager.simpleDateFormat);
+                return _startTime.toString(ProfileManager.simpleDateFormatShort) + " - " + _endTime.toString(ProfileManager.simpleDateFormatShort);
             }
         }
         else {
@@ -322,29 +313,32 @@ public class Profile implements java.io.Serializable
             Transaction tr = tempList.get(i);
             //ProfileManager.Print(ex.GetID() + " : " + tr.GetCategory());
 
-            //Child or Parent that doesn't repeat : Set paid back unless it already exists or override
-            if (GetTransaction(tr.GetID()) != null){
-                if (tr.IsChild() || tr.GetTimePeriod() != null && !tr.GetTimePeriod().DoesRepeat()) {
-                    //ProfileManager.Print("Option 1");
-                    if (tr.GetPaidBack() == null || override) {
-                        tr.SetPaidBack(paidBack);
-                        UpdateTransaction(tr);
+            if (tr.GetType() == Transaction.TRANSACTION_TYPE.Expense) {
+                //Child or Parent that doesn't repeat : Set paid back unless it already exists or override
+                if (GetTransaction(tr.GetID()) != null) {
+                    if (tr.IsChild() || tr.GetTimePeriod() != null && !tr.GetTimePeriod().DoesRepeat()) {
+                        //ProfileManager.Print("Option 1");
+                        if (tr.GetPaidBack() == null || override) {
+                            tr.SetPaidBack(paidBack);
+                            UpdateTransaction(tr);
+                        }
                     }
-                } else { //Parent that does repeat : clone expense to avoid affecting children
-                    //ProfileManager.Print("Option 2");
+                    else { //Parent that does repeat : clone expense to avoid affecting children
+                        //ProfileManager.Print("Option 2");
+                        Transaction newTr = new Transaction(tr);
+                        newTr.SetTimePeriod(new TimePeriod(tr.GetTimePeriod().GetDate()));
+                        newTr.SetPaidBack(paidBack);
+                        newTr.RemoveChildren();
+                        CloneTransaction(tr, newTr);
+                    }
+                }
+                else { //Not independent transaction : CloneExpense and set paid back
+                    //ProfileManager.Print("Option 3");
                     Transaction newTr = new Transaction(tr);
-                    newTr.SetTimePeriod(new TimePeriod(tr.GetTimePeriod().GetDate()));
                     newTr.SetPaidBack(paidBack);
                     newTr.RemoveChildren();
-                    CloneTransaction(tr, newTr);
+                    CloneTransaction(GetTransaction(tr.GetParentID()), newTr);
                 }
-            }
-            else { //Not independent transaction : CloneExpense and set paid back
-                //ProfileManager.Print("Option 3");
-                Transaction newTr = new Transaction(tr);
-                newTr.SetPaidBack(paidBack);
-                newTr.RemoveChildren();
-                CloneTransaction(GetTransaction(tr.GetParentID()), newTr);
             }
         }
     }
@@ -416,33 +410,35 @@ public class Profile implements java.io.Serializable
         TransactionTotals.clear();
 
         Transaction.TRANSACTION_TYPE ttype = (activityType==0 ? Transaction.TRANSACTION_TYPE.Expense : Transaction.TRANSACTION_TYPE.Income);
-        String key = "";
+        String key = null;
         String me = ProfileManager.getString(R.string.format_me);
 
         Transaction curr;
 
+        //ProfileManager.Print(App.GetContext(), "ActivityType(" + ttype.toString() + ") keyType(" + keyType + ")");
+        //ProfileManager.Print(App.GetContext(), "CalculateTotalsTTS: " + Transactions_timeFrame.size());
         for (int i = 0; i < Transactions_timeFrame.size(); i++) {
             Transaction next = Transactions_timeFrame.get(i);
 
             //Find key type
-            switch(keyType){
-                case 0: //Split With
-                    key = next.GetSplitWith();
-                    break;
-                case 1: //Source name
-                    key = next.GetSourceName();
-                    break;
-                case 2: //Category
-                    key = next.GetCategory();
-                    break;
+            if (keyType==0) { //Split With
+                key = next.GetSplitWith();
+            } else if (keyType==1) { //Source name
+                key = next.GetSourceName();
+            } else if (keyType==2) { //Category
+                key = next.GetCategory();
             }
+
 
             //Find transaction by key if it's been found before in the loop, or make a new one
             curr = TransactionTotals.get(key);
-            if (curr == null && key != null && !key.equals("")) {
-                TransactionTotals.put(key, new Transaction( ttype ));//TODO Avoid creating a new transaction, try to just sum up the value
+            //ProfileManager.Print(App.GetContext(), "Curr:" + curr + " Key: " + key);
+            if (curr == null && key != null) {
+                Transaction nt = new Transaction( ttype );
+                TransactionTotals.put(key, nt);//TODO Avoid creating a new transaction, try to just sum up the value
 
-                curr = TransactionTotals.get(key);
+                curr = nt;
+                //ProfileManager.Print(App.GetContext(), activityType + " - CreateNewTransaction");
             }
 
 
@@ -533,122 +529,159 @@ public class Profile implements java.io.Serializable
     public int paidbySort(Transaction t1, Transaction t2){ return (t1.GetIPaid() ? 1 : 0) - (t2.GetIPaid() ? 1 : 0); }
     public int categorySort(Transaction t1, Transaction t2){ return  t1.GetCategory().compareTo(t2.GetCategory()); }
     public int sourceSort(Transaction t1, Transaction t2){ return  t1.GetSourceName().compareTo(t2.GetSourceName()); }
-    public void Sort(ProfileManager.SORT_METHODS method)
+    public void SetSortMethod(ProfileManager.SORT_METHODS method)
     {
-        sortMethod = method;
+        if (method != null) {
+            sortMethod = method;
 
-        switch (sortMethod) {
-            case DATE_UP:
-                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
-                    @Override public int compare(Transaction  t1, Transaction  t2) { return dateSort(t1, t2); }
-                });
-                break;
-            case DATE_DOWN:
-                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
-                    @Override public int compare(Transaction  t1, Transaction  t2) { return dateSort(t2, t1); }
-                });
-                break;
-            case COST_UP:
-                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
-                    @Override public int compare(Transaction  t1, Transaction  t2) { return valueSort(t1, t2); }
-                });
-                break;
-            case COST_DOWN:
-                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
-                    @Override public int compare(Transaction  t1, Transaction  t2) { return valueSort(t2, t1); }
-                });
-                break;
-            case CATEGORY_UP:
-                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
-                    @Override public int compare(Transaction  t1, Transaction  t2) { return categorySort(t1, t2); }
-                });
-                break;
-            case CATEGORY_DOWN:
-                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
-                    @Override public int compare(Transaction  t1, Transaction  t2) { return categorySort(t2, t1); }
-                });
-                break;
-            case SOURCE_UP:
-                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
-                    @Override public int compare(Transaction  t1, Transaction  t2) { return sourceSort(t1, t2); }
-                });
-                break;
-            case SOURCE_DOWN:
-                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
-                    @Override public int compare(Transaction  t1, Transaction  t2) { return sourceSort(t2, t1); }
-                });
-                break;
-            case PAIDBY_UP:
-                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
-                    @Override public int compare(Transaction  t1, Transaction  t2) { return paidbySort(t1, t2); }
-                });
-                break;
-            case PAIDBY_DOWN:
-                Collections.sort(Transactions_timeFrame, new Comparator<Transaction>() {
-                    @Override public int compare(Transaction  t1, Transaction  t2) { return paidbySort(t2, t1); }
-                });
-                break;
+            switch (sortMethod) {
+                case DATE_UP:
+                    sortComparator = new Comparator<Transaction>() {
+                        @Override
+                        public int compare(Transaction t1, Transaction t2) { return dateSort(t1, t2); }
+                    };
+                    break;
+                case DATE_DOWN:
+                    sortComparator = new Comparator<Transaction>() {
+                        @Override
+                        public int compare(Transaction t1, Transaction t2) { return dateSort(t2, t1); }
+                    };
+                    break;
+                case COST_UP:
+                    sortComparator = new Comparator<Transaction>() {
+                        @Override
+                        public int compare(Transaction t1, Transaction t2) { return valueSort(t1, t2); }
+                    };
+                    break;
+                case COST_DOWN:
+                    sortComparator = new Comparator<Transaction>() {
+                        @Override
+                        public int compare(Transaction t1, Transaction t2) { return valueSort(t2, t1); }
+                    };
+                    break;
+                case CATEGORY_UP:
+                    sortComparator = new Comparator<Transaction>() {
+                        @Override
+                        public int compare(Transaction t1, Transaction t2) { return categorySort(t1, t2); }
+                    };
+                    break;
+                case CATEGORY_DOWN:
+                    sortComparator = new Comparator<Transaction>() {
+                        @Override
+                        public int compare(Transaction t1, Transaction t2) { return categorySort(t2, t1); }
+                    };
+                    break;
+                case SOURCE_UP:
+                    sortComparator = new Comparator<Transaction>() {
+                        @Override
+                        public int compare(Transaction t1, Transaction t2) { return sourceSort(t1, t2); }
+                    };
+                    break;
+                case SOURCE_DOWN:
+                    sortComparator = new Comparator<Transaction>() {
+                        @Override
+                        public int compare(Transaction t1, Transaction t2) { return sourceSort(t2, t1); }
+                    };
+                    break;
+                case PAIDBY_UP:
+                    sortComparator = new Comparator<Transaction>() {
+                        @Override
+                        public int compare(Transaction t1, Transaction t2) { return paidbySort(t1, t2); }
+                    };
+                    break;
+                case PAIDBY_DOWN:
+                    sortComparator = new Comparator<Transaction>() {
+                        @Override
+                        public int compare(Transaction t1, Transaction t2) { return paidbySort(t2, t1); }
+                    };
+                    break;
+                default:
+                    sortComparator = new Comparator<Transaction>() {
+                        @Override
+                        public int compare(Transaction t1, Transaction t2) { return dateSort(t1, t2); }
+                    };
+                    break;
+            }
         }
     }
 
     //Filter
-    public void Filter(ProfileManager.FILTER_METHODS method, Object filterData, int activityType){
-        filterMethod = method;
-        ArrayList<Transaction> temp = new ArrayList<>();
-        temp.addAll(Transactions_timeFrame);
+    public ProfileManager.FILTER_METHODS GetFilterMethod() { return filterMethod; }
+    public Object GetFilterData() { return filterData; }
+    public void SetFilterMethod(ProfileManager.FILTER_METHODS method, Object data){
+        if (method != null) {
+            filterMethod = method;
+            filterData = data;
 
-        if (filterMethod == ProfileManager.FILTER_METHODS.NONE){
-            //Reset time frame
-            CalculateTimeFrame(activityType);
-            //Calculate totals
-            CalculateTotalsInTimeFrame(activityType, (activityType==0 ? 0 : 1));
-            return;
-        }
+            //ArrayList<Transaction> temp = new ArrayList<>();
+            //temp.addAll(Transactions_timeFrame);
 
-        for (int i = 0; i < temp.size(); i++) {
-            switch (filterMethod) {
-                case CATEGORY:
-                    if (filterData == null || temp.get(i).GetCategory() == null) { Transactions_timeFrame.clear(); break; }
-                    if (filterData != null && temp.get(i).GetCategory() != null && !temp.get(i).GetCategory().equalsIgnoreCase(String.valueOf(filterData))) {
-                        Transactions_timeFrame.remove(temp.get(i));
-                    }
-                    break;
-                case SOURCE:
-                    if (filterData == null || temp.get(i).GetSourceName() == null) { Transactions_timeFrame.clear(); break; }
-                    if (filterData != null && temp.get(i).GetSourceName() != null && !temp.get(i).GetSourceName().equalsIgnoreCase(String.valueOf(filterData))) {
-                        Transactions_timeFrame.remove(temp.get(i));
-                    }
-                    break;
-                case PAIDBY:
-                    if (filterData == null || temp.get(i).GetSplitWith() == null) { Transactions_timeFrame.clear(); break; }
-                    if (filterData != null && temp.get(i).GetSplitWith() != null && !temp.get(i).GetSplitWith().equalsIgnoreCase(String.valueOf(filterData))) {
-                        Transactions_timeFrame.remove(temp.get(i));
-                    }
-                    break;
+            if (filterMethod == ProfileManager.FILTER_METHODS.NONE) {
+                //Reset time frame
+                //CalculateTimeFrame(activityType);
+                //Calculate totals
+                //CalculateTotalsInTimeFrame(activityType, (activityType == 0 ? 0 : 1));
+                return;
             }
+            /*
+            for (int i = 0; i < temp.size(); i++) {
+                switch (filterMethod) {
+                    case CATEGORY:
+                        if (filterData == null || temp.get(i).GetCategory() == null) {
+                            Transactions_timeFrame.clear();
+                            break;
+                        }
+                        if (filterData != null && temp.get(i).GetCategory() != null && !temp.get(i).GetCategory().equalsIgnoreCase(String.valueOf(filterData))) {
+                            Transactions_timeFrame.remove(temp.get(i));
+                        }
+                        break;
+                    case SOURCE:
+                        if (filterData == null || temp.get(i).GetSourceName() == null) {
+                            Transactions_timeFrame.clear();
+                            break;
+                        }
+                        if (filterData != null && temp.get(i).GetSourceName() != null && !temp.get(i).GetSourceName().equalsIgnoreCase(String.valueOf(filterData))) {
+                            Transactions_timeFrame.remove(temp.get(i));
+                        }
+                        break;
+                    case PAIDBY:
+                        if (filterData == null || temp.get(i).GetSplitWith() == null) {
+                            Transactions_timeFrame.clear();
+                            break;
+                        }
+                        if (filterData != null && temp.get(i).GetSplitWith() != null && !temp.get(i).GetSplitWith().equalsIgnoreCase(String.valueOf(filterData))) {
+                            Transactions_timeFrame.remove(temp.get(i));
+                        }
+                        break;
+                }
+            }
+*/
+            //Calculate totals
+            //CalculateTotalsInTimeFrame(activityType, (activityType == 0 ? 0 : 1));
         }
-
-        //Calculate totals
-        CalculateTotalsInTimeFrame(activityType, (activityType==0 ? 0 : 1));
     }
 
 
     //Calculate the expenses and income sources that are within the timeframe provided
-    public void CalculateTimeFrame(Integer activityType)
-    {
+    public void CalculateTimeFrame(Integer activityType) {
+        //ProfileManager.Print(App.GetContext(), "CalculateTimeFrame(" + activityType + ")");
         Transactions_timeFrame.clear();
 
         TimePeriod tp;
         ArrayList<LocalDate> occ = null;
 
         if (_startTime!= null && _endTime != null && !_showAll) {
-
             //Add transactions within the time period to the timeframe array
             for (int i = 0; i < Transactions.size(); i++) {
                 if (activityType == null || Transactions.get(i).GetType().ordinal() == activityType) {
                     tp = Transactions.get(i).GetTimePeriod();
                     if (tp != null) {
+
                         occ = tp.GetOccurrencesWithin(_startTime, _endTime);
+
+                        //if (activityType!= null && activityType==0 && _startTime==null){ ProfileManager.Print(App.GetContext(), "_startTime=null"); }
+                        //if (activityType!= null && activityType==0 && _endTime==null){ ProfileManager.Print(App.GetContext(), "_endTime=null"); }
+                        //if (activityType!= null && activityType==0 && occ.size() > 0){ ProfileManager.Print(App.GetContext(), "occ.size" + occ.size()); }
 
                         for (int ii = 0; ii < occ.size(); ii++) {
                             //Add transaction to temp array
@@ -662,6 +695,47 @@ public class Profile implements java.io.Serializable
                                     Transactions_timeFrame.add(temp);
                                 }
                             }
+
+                            //Apply Filtering
+                            if (filterMethod != null) {
+                                switch (filterMethod) {
+                                    default:
+                                    case NONE:
+                                        break;
+                                    case CATEGORY:
+                                        if (filterData == null || Transactions.get(i).GetCategory() == null) {
+                                            Transactions_timeFrame.clear();
+                                            break;
+                                        }
+                                        if (filterData != null && Transactions.get(i).GetCategory() != null && !Transactions.get(i).GetCategory().equalsIgnoreCase(String.valueOf(filterData))) {
+                                            Transactions_timeFrame.remove(Transactions.get(i));
+                                        }
+                                        break;
+                                    case SOURCE:
+                                        if (filterData == null || Transactions.get(i).GetSourceName() == null) {
+                                            Transactions_timeFrame.clear();
+                                            break;
+                                        }
+                                        if (filterData != null && Transactions.get(i).GetSourceName() != null && !Transactions.get(i).GetSourceName().equalsIgnoreCase(String.valueOf(filterData))) {
+                                            Transactions_timeFrame.remove(Transactions.get(i));
+                                        }
+                                        break;
+                                    case PAIDBY:
+                                        if (filterData == null || Transactions.get(i).GetSplitWith() == null) {
+                                            Transactions_timeFrame.clear();
+                                            break;
+                                        }
+                                        if (filterData != null && Transactions.get(i).GetSplitWith() != null && !Transactions.get(i).GetSplitWith().equalsIgnoreCase(String.valueOf(filterData))) {
+                                            Transactions_timeFrame.remove(Transactions.get(i));
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+
+                        //Apply sorting
+                        if (sortComparator != null && sortMethod != null) {
+                            Collections.sort(Transactions_timeFrame, sortComparator);
                         }
 
                         //Add expense if there are no repetitions of it
@@ -680,5 +754,8 @@ public class Profile implements java.io.Serializable
                 }
             }
         }
+
+        //if (activityType!= null && activityType==0){ ProfileManager.Print(App.GetContext(), "TTS:" + Transactions_timeFrame.size()); }
+
     }
 }
