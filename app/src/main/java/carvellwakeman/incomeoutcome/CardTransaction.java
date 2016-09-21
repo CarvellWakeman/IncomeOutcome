@@ -92,7 +92,7 @@ public class CardTransaction extends Card
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     if (keyType != position) { //Key Type changed
                         keyType = position;
-                        //SetData();
+                        SetData();
                     }
                 }
 

@@ -76,9 +76,9 @@ public class Profile implements java.io.Serializable
         TransactionTotals.clear();
     }
 
-    public void RemoveAll(){
+    public void RemoveAll(Context ac){
         for (int i = 0; i < Transactions.size(); i++){
-            RemoveTransaction(Transactions.get(i), true);
+            RemoveTransaction(ac, Transactions.get(i), true);
         }
     }
 
@@ -164,19 +164,19 @@ public class Profile implements java.io.Serializable
         _startTime = start;
         //Set end time if it does not exist
         if (_startTime != null && GetEndTime() == null) {
-            SetEndTime(_startTime.plus(GetPeriod()));
-            SetEndTime(GetEndTime().minusDays(1));
+            SetEndTimeDontSave(_startTime.plus(GetPeriod()));
+            SetEndTimeDontSave(GetEndTime().minusDays(1));
         }
     }
-    public void SetStartTime(LocalDate start){ //[EXCLUDE] Removing DBInsertSetting so that the database is not updated many times for one profile
+    public void SetStartTime(Context ac, LocalDate start){ //[EXCLUDE] Removing DBInsertSetting so that the database is not updated many times for one profile
         SetStartTimeDontSave(start);
 
-        ProfileManager.getInstance().DBInsertSetting(this, true);
+        ProfileManager.getInstance().DBInsertSetting(ac, this, true);
     }
     public void SetEndTimeDontSave(LocalDate end){ _endTime = end; }
-    public void SetEndTime(LocalDate end){
+    public void SetEndTime(Context ac, LocalDate end){
         SetEndTimeDontSave(end);
-        ProfileManager.getInstance().DBInsertSetting(this, true);
+        ProfileManager.getInstance().DBInsertSetting(ac, this, true);
     }
     public void SetPeriodDontSave(Period period){
         _period = period;
@@ -188,49 +188,51 @@ public class Profile implements java.io.Serializable
         else { _periodFrequency = Repeat.NEVER; }
         //Set start and end dates to the precision of the period
         LocalDate T = TimePeriod.calcNearestDateInPeriod(period, GetStartTime());
-        SetStartTime(T);
+        SetStartTimeDontSave(T);
         //SetEndTime(TimePeriod.calcNearestDateInPeriod(period, GetEndTime()));
     }
-    public void SetPeriod(Period period){
+    public void SetPeriod(Context ac, Period period){
         SetPeriodDontSave(period);
-        ProfileManager.getInstance().DBInsertSetting(this, true);
+        ProfileManager.getInstance().DBInsertSetting(ac, this, true);
     }
 
-    public void TimePeriodPlus(int n){
-        if (GetStartTime() == null) { SetStartTime( (new LocalDate()).withDayOfMonth(1) ); }
+    public void TimePeriodPlus(Context ac, int n){
+        if (GetStartTime() == null) { SetStartTime(ac, (new LocalDate()).withDayOfMonth(1) ); }
 
         for (int i = 0; i < n; i++) {
-            SetStartTime(GetStartTime().plus(GetPeriod()));
+            SetStartTime(ac, GetStartTime().plus(GetPeriod()));
         }
 
-        SetEndTime(GetStartTime().plus(GetPeriod()));
+        SetEndTime(ac, GetStartTime().plus(GetPeriod()));
 
         //Subtract one day for months
-        if (GetPeriodFreqency()==Repeat.MONTHLY || GetPeriodFreqency()==Repeat.YEARLY) { SetEndTime(GetEndTime().minusDays(1)); }
+        if (GetPeriodFreqency()==Repeat.MONTHLY || GetPeriodFreqency()==Repeat.YEARLY) { SetEndTime(ac, GetEndTime().minusDays(1)); }
 
     }
-    public void TimePeriodMinus(int n){
-        if (GetStartTime() == null) { SetStartTime( (new LocalDate()).withDayOfMonth(1) ); }
+    public void TimePeriodMinus(Context ac, int n){
+        if (GetStartTime() == null) { SetStartTime(ac, (new LocalDate()).withDayOfMonth(1) ); }
 
         for (int i = 0; i < n; i++) {
-            SetStartTime(GetStartTime().minus(GetPeriod()));
+            SetStartTime(ac, GetStartTime().minus(GetPeriod()));
         }
 
-        SetEndTime(GetStartTime().plus(GetPeriod()));
+        SetEndTime(ac, GetStartTime().plus(GetPeriod()));
         //Subtract one day for months
-        if (GetPeriodFreqency()==Repeat.MONTHLY || GetPeriodFreqency()==Repeat.YEARLY) { SetEndTime(GetEndTime().minusDays(1)); }
+        if (GetPeriodFreqency()==Repeat.MONTHLY || GetPeriodFreqency()==Repeat.YEARLY) { SetEndTime(ac, GetEndTime().minusDays(1)); }
     }
     public void SetShowAll(boolean shouldShowAll){ _showAll = shouldShowAll; }
 
 
     //Transaction management
     public void AddTransactionDontSave(Transaction transaction) { Transactions.add(transaction); }
-    public void AddTransaction(Transaction transaction) { AddTransactionDontSave(transaction); ProfileManager.getInstance().DBInsertTransaction(this, transaction, false);}
-    public void RemoveTransactionDontSave(Transaction transaction, boolean deleteChildren) {
+    public void AddTransaction(Context ac, Transaction transaction) { AddTransactionDontSave(transaction); ProfileManager.getInstance().DBInsertTransaction(ac, this, transaction, false);}
+    public void RemoveTransaction(Context ac, Transaction transaction, boolean deleteChildren) {
+        ProfileManager.getInstance().DBRemoveTransaction(ac, transaction);
+
         if (transaction != null) {
             if (deleteChildren) {
                 for (int id : transaction.GetChildren()) {
-                    RemoveTransaction(GetTransaction(id), deleteChildren);
+                    RemoveTransaction(ac, GetTransaction(id), deleteChildren);
                 }
             }
             //Remove transaction from it's parent as a child
@@ -238,21 +240,17 @@ public class Profile implements java.io.Serializable
                 Transaction parent = GetTransaction(transaction.GetParentID());
                 if (parent != null){
                     parent.RemoveChild(transaction.GetID());
-                    UpdateTransaction(parent);
+                    UpdateTransaction(ac, parent);
                 }
             }
             //Remove expense from profile
             Transactions.remove(transaction);
         }
     }
-    public void RemoveTransaction(Transaction transaction, boolean deleteChildren) {
-        ProfileManager.getInstance().DBRemoveTransaction(transaction);
-        RemoveTransactionDontSave(transaction, deleteChildren);
-    }
-    public void RemoveTransaction(int id, boolean deleteChildren) { RemoveTransaction(GetTransaction(id), deleteChildren); }
+    public void RemoveTransaction(Context ac, int id, boolean deleteChildren) { RemoveTransaction(ac, GetTransaction(id), deleteChildren); }
 
-    private void UpdateTransaction(Transaction transaction, Profile profile) {
-        ProfileManager.getInstance().DBInsertTransaction(profile, transaction, true);
+    private void UpdateTransaction(Context ac, Transaction transaction, Profile profile) {
+        ProfileManager.getInstance().DBInsertTransaction(ac, profile, transaction, true);
         //Check if transaction has a parent and is exactly like its parent, and if so, remove its date from the parent's blacklist and delete it
         Transaction parent = null;
         if (transaction.GetParentID() > 0){ parent = GetTransaction(transaction.GetParentID()); }
@@ -269,42 +267,42 @@ public class Profile implements java.io.Serializable
                 //Remove transaction child from its parent
                 parent.RemoveChild(transaction.GetID());
                 //Remove transaction
-                profile.RemoveTransaction(transaction, false);
+                profile.RemoveTransaction(ac, transaction, false);
             }
         }
     }
-    public void UpdateTransaction(Transaction transaction) { UpdateTransaction(transaction, this); }
+    public void UpdateTransaction(Context ac, Transaction transaction) { UpdateTransaction(ac, transaction, this); }
 
-    public void CloneTransaction(Transaction oldTr, Transaction newTr){
-        AddTransaction(newTr);
+    public void CloneTransaction(Context ac, Transaction oldTr, Transaction newTr){
+        AddTransaction(ac, newTr);
 
         //Set child relationship
         oldTr.AddChild(newTr, true);
         newTr.SetParentID(oldTr.GetID());
 
-        UpdateTransaction(newTr);
-        UpdateTransaction(oldTr);
+        UpdateTransaction(ac, newTr);
+        UpdateTransaction(ac, oldTr);
     }
 
-    public void UpdateOtherPerson(String old, String name) {
+    public void UpdateOtherPerson(Context ac, String old, String name) {
         for (Transaction tr : Transactions){
             if (tr.GetSplitWith() != null && tr.GetSplitWith().equals(old)) {
                 tr.SetSplitValue(name, tr.GetSplitValue());
-                UpdateTransaction(tr);
+                UpdateTransaction(ac, tr);
             }
         }
     }
 
-    public void UpdateCategory(String old, String name) {
+    public void UpdateCategory(Context ac, String old, String name) {
         for (Transaction tr : Transactions){
             if (tr.GetCategory().equals(old)) {
                 tr.SetCategory(name);
-                UpdateTransaction(tr);
+                UpdateTransaction(ac, tr);
             }
         }
     }
 
-    public void UpdatePaidBackInTimeFrame(LocalDate paidBack, boolean override){
+    public void UpdatePaidBackInTimeFrame(Context ac, LocalDate paidBack, boolean override){
         ArrayList<Transaction> tempList = new ArrayList<>();
         for (Transaction tr : Transactions_timeFrame) { tempList.add(tr); }
 
@@ -320,7 +318,7 @@ public class Profile implements java.io.Serializable
                         //ProfileManager.Print("Option 1");
                         if (tr.GetPaidBack() == null || override) {
                             tr.SetPaidBack(paidBack);
-                            UpdateTransaction(tr);
+                            UpdateTransaction(ac, tr);
                         }
                     }
                     else { //Parent that does repeat : clone expense to avoid affecting children
@@ -329,7 +327,7 @@ public class Profile implements java.io.Serializable
                         newTr.SetTimePeriod(new TimePeriod(tr.GetTimePeriod().GetDate()));
                         newTr.SetPaidBack(paidBack);
                         newTr.RemoveChildren();
-                        CloneTransaction(tr, newTr);
+                        CloneTransaction(ac, tr, newTr);
                     }
                 }
                 else { //Not independent transaction : CloneExpense and set paid back
@@ -337,7 +335,7 @@ public class Profile implements java.io.Serializable
                     Transaction newTr = new Transaction(tr);
                     newTr.SetPaidBack(paidBack);
                     newTr.RemoveChildren();
-                    CloneTransaction(GetTransaction(tr.GetParentID()), newTr);
+                    CloneTransaction(ac, GetTransaction(tr.GetParentID()), newTr);
                 }
             }
         }
@@ -497,14 +495,14 @@ public class Profile implements java.io.Serializable
     public Collection<Transaction> GetTotalsValueSet(){ return TransactionTotals.values(); }
 
     //Transfer
-    public void TransferTransaction(Transaction transaction, Profile moveTo){
-        UpdateTransaction(transaction, moveTo);
+    public void TransferTransaction(Context ac, Transaction transaction, Profile moveTo){
+        UpdateTransaction(ac, transaction, moveTo);
         moveTo.AddTransactionDontSave(transaction);
-        RemoveTransaction(transaction, true);
+        RemoveTransaction(ac, transaction, true);
     }
-    public void TransferAllTransactions(Profile moveTo){
+    public void TransferAllTransactions(Context ac, Profile moveTo){
         for (int i = 0; i < Transactions.size(); i++){
-            TransferTransaction(Transactions.get(i), moveTo);
+            TransferTransaction(ac, Transactions.get(i), moveTo);
         }
     }
 

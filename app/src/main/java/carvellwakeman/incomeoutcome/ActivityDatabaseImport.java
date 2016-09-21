@@ -59,99 +59,108 @@ public class ActivityDatabaseImport extends AppCompatActivity {
         //View view = inflater.inflate(R.layout.dialog_importdatabase, container, false);
         //view.setBackgroundColor(Color.WHITE);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        appBarLayout = (AppBarLayout) findViewById(R.id.appbarlayout);
-        AppBarLayoutExpanded(false);
+        if (ProfileManager.isStoragePermissionGranted(this)) {
+            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            appBarLayout = (AppBarLayout) findViewById(R.id.appbarlayout);
+            AppBarLayoutExpanded(false);
 
-        button_restorebackup = (Button) findViewById(R.id.button_dialogin_backup);
-        button_exportOpen = (Button) findViewById(R.id.button_dialogex_export);
+            button_restorebackup = (Button) findViewById(R.id.button_dialogin_backup);
+            button_exportOpen = (Button) findViewById(R.id.button_dialogex_export);
 
-        existingDatabases = ProfileManager.getInstance().GetImportDatabaseFilesString();
+            switch_override = (SwitchCompat) findViewById(R.id.switch_override_export);
 
-        switch_override = (SwitchCompat) findViewById(R.id.switch_override_export);
-
-        recyclerView_files = (RecyclerView) findViewById(R.id.dialog_recyclerView_files);
-
-
-        TIL = (TextInputLayout) findViewById(R.id.TIL_dialog_filename);
-        TIL.setErrorEnabled(true);
-        editText_filename = TIL.getEditText();
+            recyclerView_files = (RecyclerView) findViewById(R.id.dialog_recyclerView_files);
 
 
-        //Set recyclerview adapter
-        adapter = new AdapterDatabaseImports(this);
-        recyclerView_files.setAdapter(adapter);
-
-        //LinearLayoutManager for RecyclerView
-        linearLayoutManager = new NpaLinearLayoutManager(this);
-        linearLayoutManager.setOrientation(NpaLinearLayoutManager.VERTICAL);
-        linearLayoutManager.scrollToPosition(0);
-        recyclerView_files.setLayoutManager(linearLayoutManager);
+            TIL = (TextInputLayout) findViewById(R.id.TIL_dialog_filename);
+            TIL.setErrorEnabled(true);
+            editText_filename = TIL.getEditText();
 
 
-        //Configure toolbar
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
+            //Set recyclerview adapter
+            adapter = new AdapterDatabaseImports(this);
+            recyclerView_files.setAdapter(adapter);
+
+            //LinearLayoutManager for RecyclerView
+            linearLayoutManager = new NpaLinearLayoutManager(this);
+            linearLayoutManager.setOrientation(NpaLinearLayoutManager.VERTICAL);
+            linearLayoutManager.scrollToPosition(0);
+            recyclerView_files.setLayoutManager(linearLayoutManager);
+
+
+            //Configure toolbar
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+            toolbar.inflateMenu(R.menu.toolbar_menu_export);
+            toolbar.setTitle(R.string.title_importdatabase);
+            setSupportActionBar(toolbar);
+
+
+            //Setup backup restore button if there is a backup
+            if (ProfileManager.getInstance().DoesBackupExist(this)) {
+                button_restorebackup.setEnabled(true);
+                button_restorebackup.setText(R.string.info_backupnotice);
             }
-        });
-        toolbar.inflateMenu(R.menu.toolbar_menu_export);
-        toolbar.setTitle(R.string.title_importdatabase);
-        setSupportActionBar(toolbar);
+
+            //Button listeners
+            button_restorebackup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(ActivityDatabaseImport.this).setTitle(R.string.confirm_areyousure_deleteall).setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ProfileManager.getInstance().DBImportBackup(ActivityDatabaseImport.this);
+                            finish();
+                        }
+                    }).setNegativeButton(R.string.confirm_no, null).create().show();
+                }
+            });
+
+            button_exportOpen.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    CheckCanExport();
+                    ToggleMenu(true);
+                }
+            });
 
 
+            editText_filename.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-        //Setup backup restore button if there is a backup
-        if (ProfileManager.getInstance().DoesBackupExist()){
-            button_restorebackup.setEnabled(true);
-            button_restorebackup.setText(R.string.info_backupnotice);
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+                @Override
+                public void afterTextChanged(Editable s) { CheckCanExport(); }
+            });
+
+            //editText_filename.setText(ProfileManager.getString(R.string.placeholder_exportfilename) + (new LocalDate()).toString(ProfileManager.simpleDateFormatSaving));
+            editText_filename.setText(getString(R.string.format_exportfilename, (new LocalDate()).toString(ProfileManager.simpleDateFormatSaving)));
+
+            switch_override.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    SetSaveButtonEnabled(isChecked && OverrideState);
+                }
+            });
+
+            //Causes crash, + unneccessary call for onCreate()
+            //existingDatabases = ProfileManager.getInstance().GetImportDatabaseFilesString(this);
         }
-
-        //Button listeners
-        button_restorebackup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(ActivityDatabaseImport.this).setTitle(R.string.confirm_areyousure_deleteall)
-                        .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ProfileManager.getInstance().DBImportBackup(ActivityDatabaseImport.this);
-                                finish();
-                            }})
-                        .setNegativeButton(R.string.confirm_no, null)
-                        .create().show();
-            }
-        });
-
-        button_exportOpen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CheckCanExport();
-                ToggleMenu(true);
-            }
-        });
-
-
-        editText_filename.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override public void afterTextChanged(Editable s) { CheckCanExport(); }
-        });
-
-        //editText_filename.setText(ProfileManager.getString(R.string.placeholder_exportfilename) + (new LocalDate()).toString(ProfileManager.simpleDateFormatSaving));
-        editText_filename.setText(getString(R.string.format_exportfilename, (new LocalDate()).toString(ProfileManager.simpleDateFormatSaving)));
-
-        switch_override.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SetSaveButtonEnabled(isChecked && OverrideState);
-            }
-        });
-
+        else { finish(); }
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+    }
 
     @Override
     public void onBackPressed() {
@@ -178,10 +187,10 @@ public class ActivityDatabaseImport extends AppCompatActivity {
             case R.id.toolbar_export: //EXPORT button
                 String str = editText_filename.getText().toString();
                 if (!str.equals("")) {
-                    ProfileManager.getInstance().DBExport(str);
+                    ProfileManager.getInstance().DBExport(this, str);
                     ToggleMenu(false);
                     ProfileManager.hideSoftKeyboard(this, editText_filename);
-                    existingDatabases = ProfileManager.getInstance().GetImportDatabaseFilesString();
+                    existingDatabases = ProfileManager.getInstance().GetImportDatabaseFilesString(this);
                     UpdateAdapter();
                 }
                 return true;
@@ -193,9 +202,9 @@ public class ActivityDatabaseImport extends AppCompatActivity {
     //Import Database
     public void DBImport(final String path, final DialogFragmentManagePPC dialogFragment){
 
-        final File file = ProfileManager.getInstance().GetDatabaseByPath(path);
+        final File file = ProfileManager.getInstance().GetDatabaseByPath(this, path);
         final int version = SQLiteDatabase.openDatabase(file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
-        final int currentVersion = ProfileManager.getInstance().GetNewestDatabaseVersion();
+        final int currentVersion = ProfileManager.getInstance().GetNewestDatabaseVersion(this);
 
         if (version <= currentVersion) { //Version check
             new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deleteall)
@@ -220,7 +229,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (path != null) {
-                            ProfileManager.getInstance().DBDeleteByPath(path);
+                            ProfileManager.getInstance().DBDeleteByPath(ActivityDatabaseImport.this, path);
                             UpdateAdapter();
 
                             Print(ActivityDatabaseImport.this, "File Deleted");
@@ -256,7 +265,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
 
 
     public void CheckCanExport(){
-        existingDatabases = ProfileManager.getInstance().GetImportDatabaseFilesString();
+        existingDatabases = ProfileManager.getInstance().GetImportDatabaseFilesString(this);
 
         String str = editText_filename.getText().toString();
 
@@ -288,7 +297,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
         button_export.setVisible(exportState);
 
         //Toolbar subtitle
-        toolbar.setSubtitle( (exportState ? ProfileManager.getInstance().GetExportDirectory() : "") );
+        toolbar.setSubtitle( (exportState ? ProfileManager.getInstance().GetExportDirectory(this) : "") );
 
         //Set title
         toolbar.setTitle( (exportState ? R.string.title_DBExport : R.string.title_importdatabase) );

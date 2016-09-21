@@ -20,7 +20,7 @@ import org.joda.time.LocalDate;
 
 public class DialogFragmentDeleteData extends DialogFragment {
 
-    Activity _caller;
+    Activity _parent;
     ProfileManager.CallBack _callBack;
 
     RadioButton radioButton_deleteall;
@@ -35,7 +35,7 @@ public class DialogFragmentDeleteData extends DialogFragment {
     static DialogFragmentDeleteData newInstance(Activity caller, ProfileManager.CallBack callBack) {
         DialogFragmentDeleteData fg = new DialogFragmentDeleteData();
         fg._callBack = callBack;
-        fg._caller = caller;
+        fg._parent = caller;
         return fg;
     }
 
@@ -59,10 +59,10 @@ public class DialogFragmentDeleteData extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (radioButton_deleteall.isChecked()){ //Delete ALL data
-                    new AlertDialog.Builder(_caller).setTitle(R.string.confirm_areyousure_deleteall)
+                    new AlertDialog.Builder(_parent).setTitle(R.string.confirm_areyousure_deleteall)
                             .setPositiveButton(R.string.action_deleteall, new DialogInterface.OnClickListener() {
                                 @Override public void onClick(DialogInterface dialog, int which) {
-                                    ProfileManager.getInstance().DBDelete();
+                                    ProfileManager.getInstance().DBDelete(_parent);
                                     ProfileManager.getInstance().ClearAllObjects();
                                     ProfileManager.getInstance().GetDatabaseHelper().TryCreateDatabase();
                                     if (_callBack != null) { _callBack.call(); }
@@ -73,11 +73,11 @@ public class DialogFragmentDeleteData extends DialogFragment {
                             .create().show();
                 }
                 else if (radioButton_deletetransactions.isChecked()){ //Delete profiles and transactions
-                    new AlertDialog.Builder(_caller).setTitle(R.string.confirm_areyousure_deletesingle)
+                    new AlertDialog.Builder(_parent).setTitle(R.string.confirm_areyousure_deletesingle)
                             .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                                 @Override public void onClick(DialogInterface dialog, int which) {
-                                    ProfileManager.getInstance().RemoveAllProfilesAndTransactions();
-                                    ProfileManager.getInstance().DBDeleteTransactionsAndProfiles();
+                                    ProfileManager.getInstance().RemoveAllProfilesAndTransactions(_parent);
+                                    ProfileManager.getInstance().DBDeleteTransactionsAndProfiles(_parent);
                                     if (_callBack != null) { _callBack.call(); }
                                     DialogFragmentDeleteData.this.dismiss();
                                     dismiss();
@@ -86,10 +86,10 @@ public class DialogFragmentDeleteData extends DialogFragment {
                             .create().show();
                 }
                 else if (radioButton_deletepeople.isChecked()){ //Delete people
-                    new AlertDialog.Builder(_caller).setTitle(R.string.confirm_areyousure_deletesingle)
+                    new AlertDialog.Builder(_parent).setTitle(R.string.confirm_areyousure_deletesingle)
                             .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                                 @Override public void onClick(DialogInterface dialog, int which) {
-                                    ProfileManager.getInstance().RemoveAllPeople();
+                                    ProfileManager.getInstance().RemoveAllPeople(_parent);
                                     if (_callBack != null) { _callBack.call(); }
                                     DialogFragmentDeleteData.this.dismiss();
                                     dismiss();
@@ -98,10 +98,10 @@ public class DialogFragmentDeleteData extends DialogFragment {
                             .create().show();
                 }
                 else if (radioButton_deletecategories.isChecked()){ //Delete categories
-                    new AlertDialog.Builder(_caller).setTitle(R.string.confirm_areyousure_deletesingle)
+                    new AlertDialog.Builder(_parent).setTitle(R.string.confirm_areyousure_deletesingle)
                             .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                                 @Override public void onClick(DialogInterface dialog, int which) {
-                                    ProfileManager.getInstance().RemoveAllCategories();
+                                    ProfileManager.getInstance().RemoveAllCategories(_parent);
                                     if (_callBack != null) { _callBack.call(); }
                                     DialogFragmentDeleteData.this.dismiss();
                                     dismiss();

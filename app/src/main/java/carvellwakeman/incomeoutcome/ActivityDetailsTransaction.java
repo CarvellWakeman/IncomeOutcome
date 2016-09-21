@@ -103,7 +103,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                 @Override public void onClick(View view) {
                     if (_profile != null){
                         checkbox_showall.setChecked(false);
-                        _profile.TimePeriodPlus(1);
+                        _profile.TimePeriodPlus(ActivityDetailsTransaction.this, 1);
                         RefreshActivity();
                     }
                 }
@@ -112,7 +112,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                 @Override public void onClick(View view) {
                     if (_profile != null){
                         checkbox_showall.setChecked(false);
-                        _profile.TimePeriodMinus(1);
+                        _profile.TimePeriodMinus(ActivityDetailsTransaction.this, 1);
                         RefreshActivity();
                     }
                 }
@@ -238,7 +238,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                 finish();
                 return true;
             case R.id.toolbar_paidback: //Expense only
-                ProfileManager.OpenDialogFragment(ActivityDetailsTransaction.this, DialogFragmentPaidBack.newInstance(new ProfileManager.CallBack() { @Override public void call() {
+                ProfileManager.OpenDialogFragment(ActivityDetailsTransaction.this, DialogFragmentPaidBack.newInstance(ActivityDetailsTransaction.this, new ProfileManager.CallBack() { @Override public void call() {
                     elementsAdapter.notifyDataSetChanged();
                     totalsAdapter.notifyDataSetChanged();
                 }}, _profile), true);
@@ -394,7 +394,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         // If this is a child expense, blacklist the date in the parent expense, else, delete as normal
         if (deleteParent) {
             //Remove expense from profile and update expense list
-            _profile.RemoveTransaction(tran, deleteChildren);
+            _profile.RemoveTransaction(this, tran, deleteChildren);
         }
         else {
             blacklistTransaction(tran);
@@ -416,7 +416,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         tr.GetTimePeriod().AddBlacklistDate(tran.GetTimePeriod().GetDate(), false);
 
         //Update database
-        ProfileManager.getInstance().DBInsertTransaction(_profile, tr, true);
+        ProfileManager.getInstance().DBInsertTransaction(this, _profile, tr, true);
 
         //Update transaction list
         //_profile.CalculateTimeFrame(activityType);

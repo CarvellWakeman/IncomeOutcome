@@ -77,7 +77,7 @@ public class ActivityMain extends AppCompatActivity
             @Override public void onClick(View view) {
                 if (_profile != null){
                     checkbox_showall.setChecked(false);
-                    _profile.TimePeriodPlus(1);
+                    _profile.TimePeriodPlus(ActivityMain.this, 1);
                     RefreshOverview();
                 }
             }
@@ -86,7 +86,7 @@ public class ActivityMain extends AppCompatActivity
             @Override public void onClick(View view) {
                 if (_profile != null){
                     checkbox_showall.setChecked(false);
-                    _profile.TimePeriodMinus(1);
+                    _profile.TimePeriodMinus(ActivityMain.this, 1);
                     RefreshOverview();
                 }
             }
@@ -205,7 +205,7 @@ public class ActivityMain extends AppCompatActivity
                 startActivityForResult(intent, 0);
                 return true;
             case R.id.toolbar_paidback: //Expense only
-                ProfileManager.OpenDialogFragment(ActivityMain.this, DialogFragmentPaidBack.newInstance(new ProfileManager.CallBack() { @Override public void call() {
+                ProfileManager.OpenDialogFragment(ActivityMain.this, DialogFragmentPaidBack.newInstance(ActivityMain.this, new ProfileManager.CallBack() { @Override public void call() {
                     RefreshOverview();
                 }}, _profile), true);
                 return true;

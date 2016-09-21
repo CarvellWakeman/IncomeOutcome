@@ -14,6 +14,7 @@ import android.os.Build;
 
 import android.support.design.widget.CollapsingToolbarLayout;
 
+import android.support.v4.content.PermissionChecker;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -190,45 +191,45 @@ public class ProfileManager
         //AddCategory(MainActivityContext.getString(R.string.select_category), 0, true);
 
         //Default _categories
-        AddCategory("Groceries", Color.argb(255, 0, 0, 255));
-        AddCategory("Fast Food", Color.argb(255, 0, 20, 200));
-        AddCategory("Restaurant", Color.argb(255, 50, 50, 150));
-        AddCategory("Snacks", Color.argb(255, 50, 80, 150));
+        AddCategory(ac, "Groceries", Color.argb(255, 0, 0, 255));
+        AddCategory(ac, "Fast Food", Color.argb(255, 0, 20, 200));
+        AddCategory(ac, "Restaurant", Color.argb(255, 50, 50, 150));
+        AddCategory(ac, "Snacks", Color.argb(255, 50, 80, 150));
 
-        AddCategory("Rent", Color.argb(255, 200, 0, 0));
-        AddCategory("Mortgage", Color.argb(255, 180, 30, 0));
-        AddCategory("ATM Withdrawal", Color.argb(255, 150, 50, 0));
+        AddCategory(ac, "Rent", Color.argb(255, 200, 0, 0));
+        AddCategory(ac, "Mortgage", Color.argb(255, 180, 30, 0));
+        AddCategory(ac, "ATM Withdrawal", Color.argb(255, 150, 50, 0));
 
-        AddCategory("Electricity", Color.argb(255, 250, 255, 30));
-        AddCategory("Sewer", Color.argb(255, 165, 165, 60));
-        AddCategory("Water", Color.argb(255, 36, 174, 212));
-        AddCategory("Garbage", Color.argb(255, 62, 105, 54));
-        AddCategory("Internet", Color.argb(255, 50, 50, 150));
-        AddCategory("Entertainment", Color.argb(255, 180, 255, 120));
+        AddCategory(ac, "Electricity", Color.argb(255, 250, 255, 30));
+        AddCategory(ac, "Sewer", Color.argb(255, 165, 165, 60));
+        AddCategory(ac, "Water", Color.argb(255, 36, 174, 212));
+        AddCategory(ac, "Garbage", Color.argb(255, 62, 105, 54));
+        AddCategory(ac, "Internet", Color.argb(255, 50, 50, 150));
+        AddCategory(ac, "Entertainment", Color.argb(255, 180, 255, 120));
 
-        AddCategory("Gasoline", Color.argb(255, 150, 0, 150));
-        AddCategory("Travel", Color.argb(255, 230, 50, 255));
-        AddCategory("Vehicle", Color.argb(255, 85, 0, 80));
+        AddCategory(ac, "Gasoline", Color.argb(255, 150, 0, 150));
+        AddCategory(ac, "Travel", Color.argb(255, 230, 50, 255));
+        AddCategory(ac, "Vehicle", Color.argb(255, 85, 0, 80));
 
-        AddCategory("Office Supplies", Color.argb(255, 255, 180, 80));
-        AddCategory("Home Supplies", Color.argb(255, 255, 100, 40));
-        AddCategory("Kitchen Supplies", Color.argb(255, 255, 50, 20));
-        AddCategory("Home Improvement", Color.argb(255, 50, 0, 255));
-        AddCategory("Home Repair", Color.argb(255, 115, 80, 255));
-        AddCategory("Pet", Color.argb(255, 200, 255, 200));
+        AddCategory(ac, "Office Supplies", Color.argb(255, 255, 180, 80));
+        AddCategory(ac, "Home Supplies", Color.argb(255, 255, 100, 40));
+        AddCategory(ac, "Kitchen Supplies", Color.argb(255, 255, 50, 20));
+        AddCategory(ac, "Home Improvement", Color.argb(255, 50, 0, 255));
+        AddCategory(ac, "Home Repair", Color.argb(255, 115, 80, 255));
+        AddCategory(ac, "Pet", Color.argb(255, 200, 255, 200));
 
-        AddCategory("Hobbies", Color.argb(255, 30, 200, 80));
-        AddCategory("Second-Hand", Color.argb(255, 15, 140, 50));
-        AddCategory("Clothing/Jewelry", Color.argb(255, 20, 200, 5));
+        AddCategory(ac, "Hobbies", Color.argb(255, 30, 200, 80));
+        AddCategory(ac, "Second-Hand", Color.argb(255, 15, 140, 50));
+        AddCategory(ac, "Clothing/Jewelry", Color.argb(255, 20, 200, 5));
 
-        AddCategory("Gifts", Color.argb(255, 0, 255, 255));
+        AddCategory(ac, "Gifts", Color.argb(255, 0, 255, 255));
 
-        AddCategory("Medical", Color.argb(255, 130, 0, 40));
-        AddCategory("Prescription", Color.argb(255, 180, 45, 50));
-        AddCategory("Health & Beauty", Color.argb(255, 100, 0, 200));
-        AddCategory("Personal", Color.argb(255, 216, 66, 216));
+        AddCategory(ac, "Medical", Color.argb(255, 130, 0, 40));
+        AddCategory(ac, "Prescription", Color.argb(255, 180, 45, 50));
+        AddCategory(ac, "Health & Beauty", Color.argb(255, 100, 0, 200));
+        AddCategory(ac, "Personal", Color.argb(255, 216, 66, 216));
 
-        AddCategory("Other", Color.argb(255, 140, 140, 140));
+        AddCategory(ac, "Other", Color.argb(255, 140, 140, 140));
 
         //MainActivityInstance.UpdateProfileList(false);
         //MainActivityInstance.SetSelection(GetProfileIndex(GetCurrentProfile()));
@@ -274,85 +275,81 @@ public class ProfileManager
         }
     }
 
-    //ActivityMain profile list update
-    public static void UpdateProfileList(Boolean select){
-        //MainActivityInstance.UpdateProfileList(select);
-    }
-
-
     //Profile Management
 
     //Add profile
-    public void AddProfile(Profile profile, Boolean dontsave) {
-        if (profile != null) {
+    public void AddProfileDontSave(Profile profile) {
+        if (profile != null && _profiles != null) {
             _profiles.add(profile);
             //MainActivityInstance.UpdateProfileList(false);
         }
     }
-    public void AddProfile(Profile profile) { if (profile != null) { AddProfile(profile, true); DBInsertSetting(profile, true); } }
+    public void AddProfile(Context ac, Profile profile) {
+        if (profile != null) { AddProfileDontSave(profile); DBInsertSetting(ac, profile, true); }
+    }
 
-    public void UpdateProfile(Profile profile) {
-        DBInsertSetting(profile, true);
+    public void UpdateProfile(Context ac, Profile profile) {
+        DBInsertSetting(ac, profile, true);
         //MainActivityInstance.UpdateProfileList(false); //INFINITE LOOP
     }
 
     //Delete profile
-    public void RemoveProfile(Profile profile)
+    public void RemoveProfile(Context ac, Profile profile)
     {
-        boolean reselect = false;
-        reselect = (profile == GetCurrentProfile());
+        if (_profiles != null) {
+            boolean reselect = false;
+            reselect = (profile == GetCurrentProfile());
 
-        if (profile != null) {
-            profile.RemoveAll();
-            _profiles.remove(profile);
-            DBRemoveSettingProfile(profile);
-            //Print("DeleteProfile");
+            if (profile != null && _profiles != null) {
+                profile.RemoveAll(ac);
+                _profiles.remove(profile);
+                DBRemoveSettingProfile(ac, profile);
+                //Print("DeleteProfile");
+            }
+            if (reselect) { SelectProfile(ac, GetProfileByIndex(0)); }
+
+            //MainActivityInstance.UpdateProfileList(false);
+            //MainActivityInstance.SetSelection(GetProfileIndex(GetCurrentProfile()));
         }
-        if (reselect) { SelectProfile(GetProfileByIndex(0)); }
-
-        //MainActivityInstance.UpdateProfileList(false);
-        //MainActivityInstance.SetSelection(GetProfileIndex(GetCurrentProfile()));
     }
-    public void RemoveProfileByID(String id)
-    {
-        if (id != null && !id.equals("")) {
+    public void RemoveProfileByID(Context ac, String id) {
+        if (id != null && !id.equals("") && _profiles != null) {
             for (int i = 0; i < _profiles.size(); i++) {
                 if (_profiles.get(i).toString().equals(id)) {
-                    RemoveProfile(_profiles.get(i));
+                    RemoveProfile(ac, _profiles.get(i));
                     break;
                 }
             }
         }
     }
-    public void RemoveAllProfilesAndTransactions(){
-        for (int i = 0; i < _profiles.size(); i++){
-            _profiles.get(i).RemoveAll();
-            //_profiles.get(i).ClearAllObjects();
-            Print(App.GetContext(), "TransactionsCountAfter:" + _profiles.get(i).GetTransactionsSize());
-        }
+    public void RemoveAllProfilesAndTransactions(Context ac){
+        if (_profiles != null) {
+            for (int i = 0; i < _profiles.size(); i++) {
+                _profiles.get(i).RemoveAll(ac);
+                //_profiles.get(i).ClearAllObjects();
+            }
 
-        ArrayList<Profile> temp = new ArrayList<>();
-        temp.addAll(_profiles);
-        for (int i = 0; i < temp.size(); i++){
-            RemoveProfile(temp.get(i));
-        }
+            ArrayList<Profile> temp = new ArrayList<>();
+            temp.addAll(_profiles);
+            for (int i = 0; i < temp.size(); i++) {
+                RemoveProfile(ac, temp.get(i));
+            }
 
-        ClearProfiles();
+            ClearProfiles();
+        }
     }
 
 
     //Get Profile at index
-    public Profile GetProfileByIndex(int index)
-    {
-        if (GetProfileCount() >= index+1 && index >= 0) {
+    public Profile GetProfileByIndex(int index) {
+        if (GetProfileCount() >= index+1 && index >= 0 && _profiles != null) {
             return _profiles.get(index);
         }
         return null;
     }
 
     //Get Profile with ID
-    public Profile GetProfileByID(int id)
-    {
+    public Profile GetProfileByID(int id) {
         if (_profiles != null) {
             for (int i = 0; i < _profiles.size(); i++) {
                 if (_profiles.get(i).GetID() == id) {
@@ -377,33 +374,41 @@ public class ProfileManager
 
     //Get Profile Index
     public int GetProfileIndex(Profile profile) {
-        if (profile != null) { return _profiles.indexOf(profile); }
-        else { return 0; }
+        if (profile != null && _profiles != null) {
+            return _profiles.indexOf(profile);
+        }
+        return -1;
     }
 
     //Select Profile
-    public boolean SelectProfile(Profile profile){
-        if (profile != null) {
+    public void SelectProfileDontSave(Profile profile){
+        _currentProfileID = profile.GetID();
+    }
+    public boolean SelectProfile(Context ac, Profile profile){
+        if (profile != null && _profiles != null) {
             Profile old = GetCurrentProfile();
+
             //Update new profile to be active
-            _currentProfileID = profile.GetID();
-            DBInsertSetting(profile, true);
-            //MainActivityInstance.SetSelection(GetProfileIndex(profile));
-            //MainActivityInstance.UpdateStartEndDate();
+            SelectProfileDontSave(profile);
+
+            //Insert setting into database
+            DBInsertSetting(ac, profile, true);
 
             //Update old profile to be unselected
             if (_profiles.size() > 0 && old != null) {
-                DBInsertSetting(old, true);
+                DBInsertSetting(ac, old, true);
             }
             return _currentProfileID >= 0;
         }
         return false;
     }
-    public boolean SelectProfile(String name){
-        for (int i = 0; i < _profiles.size(); i++) {
-            if (_profiles.get(i).GetName().equals(name)) {
-                SelectProfile(_profiles.get(i));
-                return true;
+    public boolean SelectProfile(Context ac, String name){
+        if (_profiles != null) {
+            for (int i = 0; i < _profiles.size(); i++) {
+                if (_profiles.get(i).GetName().equals(name)) {
+                    SelectProfile(ac, _profiles.get(i));
+                    return true;
+                }
             }
         }
         return false;
@@ -419,31 +424,41 @@ public class ProfileManager
     }
 
     //Get count
-    public int GetProfileCount()
-    {
-        return _profiles.size();
+    public int GetProfileCount() {
+        if (_profiles != null) {
+            return _profiles.size();
+        }
+        return -1;
     }
 
     //Get profiles array
     public ArrayList<Profile> GetProfiles(){
-        return _profiles;
+        if (_profiles != null) {
+            return _profiles;
+        }
+        return null;
     }
 
     //Get String array of profile names
     public ArrayList<String> GetProfileNames(){
-        ArrayList<String> ar = new ArrayList<>();
+        if (_profiles != null) {
+            ArrayList<String> ar = new ArrayList<>();
 
-        for (int i = 0; i < _profiles.size(); i++){
-            ar.add(_profiles.get(i).GetName());
+            for (int i = 0; i < _profiles.size(); i++) {
+                ar.add(_profiles.get(i).GetName());
+            }
+
+            return ar;
         }
-
-        return ar;
+        return null;
     }
 
-    public Boolean HasProfile(String profile){
-        for (int i = 0; i < _profiles.size(); i++){
-            if (_profiles.get(i).GetName().equals(profile)){
-                return true;
+    public boolean HasProfile(String profile){
+        if (_profiles != null) {
+            for (int i = 0; i < _profiles.size(); i++) {
+                if (_profiles.get(i).GetName().equals(profile)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -451,11 +466,13 @@ public class ProfileManager
 
     //Clear profiles
     public void ClearProfiles(){
-        for (Profile pr : _profiles){
-            pr.ClearAllObjects();
+        if (_profiles != null && _profiles.size() > 0) {
+            for (Profile pr : _profiles){
+                pr.ClearAllObjects();
+            }
+            _profiles.clear();
+            _currentProfileID = -1;
         }
-        _profiles.clear();
-        _currentProfileID = -1;
     }
 
 
@@ -463,47 +480,56 @@ public class ProfileManager
 
     //Other People
     //Add other person
-    public void AddOtherPerson(String name, Boolean dontsave) {
-        if (!name.equals("")) {
+    public void AddOtherPersonDontSave(String name) {
+        if (!name.equals("") && _otherPeople != null) {
             _otherPeople.add(name);
         }
     }
-    public void AddOtherPerson(String name){
-        AddOtherPerson(name, true);
-        DBInsertSetting(name, true);
+    public void AddOtherPerson(Context ac, String name){
+        AddOtherPersonDontSave(name);
+        DBInsertSetting(ac, name, true);
     }
 
     //Remove other person
-    public void RemoveOtherPerson(String name){
-        for (int i = 0; i < _otherPeople.size(); i++){
-            if (_otherPeople.get(i).equals(name)){
-                _otherPeople.remove(i);
-                DBRemoveSettingPerson(name);
+    public void RemoveOtherPerson(Context ac, String name){
+        if (_otherPeople != null) {
+            for (int i = 0; i < _otherPeople.size(); i++) {
+                if (_otherPeople.get(i).equals(name)) {
+                    _otherPeople.remove(i);
+                    DBRemoveSettingPerson(ac, name);
+                }
             }
         }
     }
 
-    public void RemoveAllPeople(){
-        ArrayList<String> temp = new ArrayList<>();
-        temp.addAll(_otherPeople);
+    public void RemoveAllPeople(Context ac){
+        if (_otherPeople != null) {
+            ArrayList<String> temp = new ArrayList<>();
+            temp.addAll(_otherPeople);
 
-        for (int i = 0; i < temp.size(); i++){
-            RemoveOtherPerson(temp.get(i));
+            for (int i = 0; i < temp.size(); i++) {
+                RemoveOtherPerson(ac, temp.get(i));
+            }
+
+            ClearOtherPeople();
         }
-
-        ClearOtherPeople();
     }
 
     //Get other person by index
     public String GetOtherPersonByIndex(int idx){
-        return _otherPeople.get(idx);
+        if (_otherPeople != null) {
+            return _otherPeople.get(idx);
+        }
+        return null;
     }
 
     //Get other person by name
     public boolean HasOtherPerson(String name){
-        for (int i = 0; i < _otherPeople.size(); i++){
-            if (_otherPeople.get(i).equals(name)){
-                return true;
+        if (_otherPeople != null) {
+            for (int i = 0; i < _otherPeople.size(); i++) {
+                if (_otherPeople.get(i).equals(name)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -514,26 +540,34 @@ public class ProfileManager
         return _otherPeople;
     }
     public ArrayList<String> GetOtherPeopleIncludingMe(){
-        ArrayList<String> temp = new ArrayList<>();
-        temp.addAll(_otherPeople);
-        temp.add(getString(R.string.format_me));
-        return temp;
+        if (_otherPeople != null) {
+            ArrayList<String> temp = new ArrayList<>();
+            temp.addAll(_otherPeople);
+            temp.add(getString(R.string.format_me));
+            return temp;
+        }
+        return null;
     }
 
     //Get count of other people
     public int GetOtherPeopleCount(){
-        return _otherPeople.size();
+        if (_otherPeople != null) {
+            return _otherPeople.size();
+        }
+        return -1;
     }
 
     //Clear other people
     public void ClearOtherPeople(){
-        _otherPeople.clear();
+        if (_otherPeople != null) {_otherPeople.clear();}
     }
 
     //Update other person
-    public void UpdateOtherPerson(String old, String name){
-        for (Profile pr : _profiles){
-            pr.UpdateOtherPerson(old, name);
+    public void UpdateOtherPerson(Context ac, String old, String name){
+        if (_profiles != null) {
+            for (Profile pr : _profiles) {
+                pr.UpdateOtherPerson(ac, old, name);
+            }
         }
     }
 
@@ -541,79 +575,105 @@ public class ProfileManager
 
     //Categories
     //Add category
-    public void AddCategory(Category category, Boolean dontsave) {
-        if (category != null) {
+    public void AddCategoryDontSave(Category category) {
+        if (category != null && _categories != null) {
             _categories.add(category);
         }
     }
-    public void AddCategory(Category category){
-        AddCategory(category, true);
-        DBInsertSetting(category, true);
+    public void AddCategory(Context ac, Category category){
+        AddCategoryDontSave(category);
+        DBInsertSetting(ac, category, true);
     }
-    public void AddCategory(String name, int color){
-        AddCategory(new Category(name, color));
+    public void AddCategory(Context ac, String name, int color){
+        AddCategory(ac, new Category(name, color));
     }
 
     //Remove category
-    public void RemoveCategory(Category category) {
-        _categories.remove(category);
-        DBRemoveSettingCategory(category.GetTitle());
+    public void RemoveCategory(Context ac, Category category) {
+        if (_categories != null) {
+            _categories.remove(category);
+            DBRemoveSettingCategory(ac, category.GetTitle());
+        }
     }
-    public void RemoveCategory(String title){
-        for (int i = 0; i < _categories.size(); i++){
-            if (_categories.get(i).GetTitle().equals(title)){
-                RemoveCategory(_categories.get(i));
+    public void RemoveCategory(Context ac, String title){
+        if (_categories != null) {
+            for (int i = 0; i < _categories.size(); i++) {
+                if (_categories.get(i).GetTitle().equals(title)) {
+                    RemoveCategory(ac, _categories.get(i));
+                }
             }
         }
     }
-    public void RemoveAllCategories(){
-        ArrayList<Category> temp = new ArrayList<>();
-        temp.addAll(_categories);
+    public void RemoveAllCategories(Context ac){
+        if (_categories != null) {
+            ArrayList<Category> temp = new ArrayList<>();
+            temp.addAll(_categories);
 
-        for (int i = 0; i < temp.size(); i++){
-            RemoveCategory(temp.get(i));
+            for (int i = 0; i < temp.size(); i++) {
+                RemoveCategory(ac, temp.get(i));
+            }
+
+            ClearCategories();
         }
-
-        ClearCategories();
     }
 
     //Get category by index
     public Boolean HasCategory(String category){
-        for (int i = 0; i < _categories.size(); i++){
-            if (_categories.get(i).GetTitle().equals(category)){
-                return true;
+        if (_categories != null) {
+            for (int i = 0; i < _categories.size(); i++) {
+                if (_categories.get(i).GetTitle().equals(category)) {
+                    return true;
+                }
             }
         }
         return false;
     }
     public Category GetCategory(String category)
     {
-        for (int i = 0; i < _categories.size(); i++){
-            if (_categories.get(i).GetTitle().equals(category)){
-                return _categories.get(i);
+        if (_categories != null) {
+            for (int i = 0; i < _categories.size(); i++) {
+                if (_categories.get(i).GetTitle().equals(category)) {
+                    return _categories.get(i);
+                }
             }
         }
         return null;
     }
     public Category GetCategoryByIndex(int idx){
-        return _categories.get(idx);
+        if (_categories != null) {
+            return _categories.get(idx);
+        }
+        return null;
     }
 
-    public int GetCategoryIndex(String title) { return _categories.indexOf(GetCategory(title)); }
+    public int GetCategoryIndex(String title) {
+        if (_categories != null) {
+            return _categories.indexOf(GetCategory(title));
+        }
+        return -1;
+    }
 
     //Get array of OtherPeople objects
     public ArrayList<Category> GetCategories(){
         return _categories;
     }
     public ArrayList<String> GetCategoriesString(){
-        ArrayList<String> arr = new ArrayList<>();
-        for(Category c : _categories){
-            arr.add(c.GetTitle());
+        if (_categories != null) {
+            ArrayList<String> arr = new ArrayList<>();
+            for (Category c : _categories) {
+                arr.add(c.GetTitle());
+            }
+            return arr;
         }
-        return arr;
+        return null;
     }
 
-    public int GetCategoriesCount() { return _categories.size(); }
+    public int GetCategoriesCount() {
+        if (_categories != null) {
+            return _categories.size();
+        }
+        return -1;
+    }
 
 
     //Get ArrayList<String> of _categories
@@ -621,28 +681,33 @@ public class ProfileManager
     //    return _categories;
     //}
     public ArrayList<String> GetCategoryTitles(){
-        ArrayList<String> arr = new ArrayList<>();
-        arr.add(0,getString(R.string.select_category));
+        if (_categories != null) {
+            ArrayList<String> arr = new ArrayList<>();
+            arr.add(0, getString(R.string.select_category));
 
-        for (Category cat : _categories){
-            arr.add(cat.GetTitle());
+            for (Category cat : _categories) {
+                arr.add(cat.GetTitle());
+            }
+
+
+            return arr;
         }
-
-
-        return arr;
+        return null;
     }
 
     //Clear _categories
     public void ClearCategories(){
-        _categories.clear();
+        if (_categories != null) {_categories.clear();}
     }
 
     //Update category
-    public void UpdateCategory(String old, Category category){
-        for (Profile pr : _profiles){
-            pr.UpdateCategory(old, category.GetTitle());
+    public void UpdateCategory(Context ac, String old, Category category){
+        if (_profiles != null) {
+            for (Profile pr : _profiles) {
+                pr.UpdateCategory(ac, old, category.GetTitle());
+            }
+            DBInsertSetting(ac, category, true);
         }
-        DBInsertSetting(category, true);
     }
 
     //Clear All
@@ -661,8 +726,7 @@ public class ProfileManager
     public static Drawable getDrawable(int resourceID) { return App.GetResources().getDrawable(resourceID); }
     //public static Drawable getDrawable(int resourceID){ return MainActivityInstance.getResources().getDrawable(resourceID); }
 
-    public static void setRefreshToolbarEnable(CollapsingToolbarLayout collapsingToolbarLayout,
-                                               boolean refreshToolbarEnable) {
+    public static void setRefreshToolbarEnable(CollapsingToolbarLayout collapsingToolbarLayout, boolean refreshToolbarEnable) {
         try {
             Field field = CollapsingToolbarLayout.class.getDeclaredField("mRefreshToolbar");
             field.setAccessible(true);
@@ -716,16 +780,16 @@ public class ProfileManager
     //Permissions
     public static boolean isStoragePermissionGranted(Context ac) {
         if (Build.VERSION.SDK_INT >= 23) {
-            if (ac.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                ////Log.v("PERMISSIONS","External Write Storage permission is granted");
+            if (PermissionChecker.checkSelfPermission(ac, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                Log.v("PERMISSIONS","External Write Storage permission is granted");
                 return true;
             } else {
-                ////Log.v("PERMISSIONS", "External Write Storage permission is not granted");
+                Log.v("PERMISSIONS", "External Write Storage permission is not granted");
                 return false;
             }
         }
         else { //permission is automatically granted on sdk<23 upon installation
-            ////Log.v("PERMISSIONS","Permission is granted");
+            Log.v("PERMISSIONS","Permission is granted by default");
             return true;
         }
     }
@@ -738,110 +802,153 @@ public class ProfileManager
 
     //External Database Management
     public DatabaseHelper GetDatabaseHelper() { return databaseHelper; }
-    public void DBInsertSetting(final Category category, final boolean tryupdate){
-        if ( category != null ){ //|| databaseHelper.insertSetting(category, tryupdate) == -1
-            //Print("Error inserting category into database");
-            GenericAsyncTask.RunDBTask(new CallBack() {
-                @Override public void call() { databaseHelper.insertSetting(category, tryupdate); }
-            });
-            //(new DatabaseBackgroundHelper()).execute(2, category, tryupdate);
+    public void DBInsertSetting(Context ac, final Category category, final boolean tryupdate){
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            if ( category != null ){ //|| databaseHelper.insertSetting(category, tryupdate) == -1
+                //Print("Error inserting category into database");
+                GenericAsyncTask.RunDBTask(new CallBack() {
+                    @Override public void call() { databaseHelper.insertSetting(category, tryupdate); }
+                });
+                //(new DatabaseBackgroundHelper()).execute(2, category, tryupdate);
+            }
         }
     }
-    public void DBInsertSetting(final String name, final boolean tryupdate){
-        if (!name.equals("") ) { //|| databaseHelper.insertSetting(name, tryupdate) == -1
-            //Print("Error inserting person into database");
-            //(new DatabaseBackgroundHelper()).execute(3, name, tryupdate);
+    public void DBInsertSetting(Context ac, final String name, final boolean tryupdate){
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            if (!name.equals("")) { //|| databaseHelper.insertSetting(name, tryupdate) == -1
+                //Print("Error inserting person into database");
+                //(new DatabaseBackgroundHelper()).execute(3, name, tryupdate);
+                GenericAsyncTask.RunDBTask(new CallBack() {
+                    @Override
+                    public void call() { databaseHelper.insertSetting(name, tryupdate); }
+                });
+            }
+        }
+    }
+    public void DBInsertSetting(Context ac, final Profile profile, final boolean tryupdate){
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            if (profile != null) { //|| databaseHelper.insertSetting(profile, tryupdate) == -1
+                //Print("Error inserting profile into database");
+                //(new DatabaseBackgroundHelper()).execute(4, profile, tryupdate);
+                GenericAsyncTask.RunDBTask(new CallBack() {
+                    @Override
+                    public void call() { databaseHelper.insertSetting(profile, tryupdate); }
+                });
+            }
+        }
+    }
+
+    public void DBInsertTransaction(Context ac, final Profile pr, final Transaction tr, final boolean tryupdate){
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            if (pr != null && tr != null) {
+                //Print("Transaction " + (tryupdate ? "updated" : "inserted into database") );
+                //(new DatabaseBackgroundHelper()).execute(5, pr, tr, tryupdate);
+                GenericAsyncTask.RunDBTask(new CallBack() {
+                    @Override
+                    public void call() { databaseHelper.insert(pr, tr, tryupdate); }
+                });
+            }
+            else { }//Print("Error inserting transaction into database"); }
+        }
+    }
+
+
+
+    public void DBRemoveSettingCategory(Context ac, final String category){
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            if (!category.equals("")) { //databaseHelper.removeCategorySetting(category)
+                //Print("Category removed from database");
+                GenericAsyncTask.RunDBTask(new CallBack() {
+                    @Override
+                    public void call() { databaseHelper.removeCategorySetting(category); }
+                });
+                //(new DatabaseBackgroundHelper()).execute(10, category);
+            }
+            else { }//Print("Error removing category from database"); }
+        }
+    }
+    public void DBRemoveSettingPerson(Context ac, final String person){
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            if (!person.equals("")) { //databaseHelper.removeSettingPerson(person)
+                //Print("Person removed from database");
+                //(new DatabaseBackgroundHelper()).execute(11, person);
+                GenericAsyncTask.RunDBTask(new CallBack() {
+                    @Override
+                    public void call() { databaseHelper.removePersonSetting(person); }
+                });
+            }
+            else { }//Print("Error removing person from database"); }
+        }
+    }
+    public void DBRemoveSettingProfile(Context ac, final Profile pr){
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            if (pr != null) { //databaseHelper.removeProfileSetting(pr)
+                //Print("Profile removed from database");
+                //(new DatabaseBackgroundHelper()).execute(12, pr);
+                GenericAsyncTask.RunDBTask(new CallBack() {
+                    @Override
+                    public void call() { databaseHelper.removeProfileSetting(pr); }
+                });
+            }
+            else { }//Print("Error removing profile from database"); }
+        }
+    }
+
+    public void DBRemoveTransaction(Context ac, final Transaction tr){
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            if (tr != null) { //databaseHelper.remove(tr)
+                //Print("Transaction removed from database");
+                //(new DatabaseBackgroundHelper()).execute(13, tr);
+                GenericAsyncTask.RunDBTask(new CallBack() {
+                    @Override
+                    public void call() { databaseHelper.remove(tr); }
+                });
+            }
+            else { }//Print("Error removing transaction from database"); }
+        }
+    }
+    public void DBDelete(Context ac){
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            //databaseHelper.DeleteDB();
             GenericAsyncTask.RunDBTask(new CallBack() {
-                @Override public void call() { databaseHelper.insertSetting(name, tryupdate); }
+                @Override
+                public void call() { databaseHelper.DeleteDB(); }
+            });
+            //(new DatabaseBackgroundHelper()).execute(15);
+        }
+    }
+    public void DBDeleteTransactionsAndProfiles(Context ac){
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            //(new DatabaseBackgroundHelper()).execute(16);
+            GenericAsyncTask.RunDBTask(new CallBack() {
+                @Override
+                public void call() {
+                    databaseHelper.DeleteTransactions();
+                    databaseHelper.DeleteProfiles();
+                }
             });
         }
     }
-    public void DBInsertSetting(final Profile profile, final boolean tryupdate){
-        if (profile != null ) { //|| databaseHelper.insertSetting(profile, tryupdate) == -1
-            //Print("Error inserting profile into database");
-            //(new DatabaseBackgroundHelper()).execute(4, profile, tryupdate);
-            GenericAsyncTask.RunDBTask(new CallBack() {
-                @Override public void call() { databaseHelper.insertSetting(profile, tryupdate); }
-            });
-        }
 
-    }
-
-    public void DBInsertTransaction(final Profile pr, final Transaction tr, final boolean tryupdate){
-        if ( pr != null && tr != null){
-            //Print("Transaction " + (tryupdate ? "updated" : "inserted into database") );
-            //(new DatabaseBackgroundHelper()).execute(5, pr, tr, tryupdate);
-            GenericAsyncTask.RunDBTask(new CallBack() {
-                @Override public void call() { databaseHelper.insert(pr, tr, tryupdate); }
-            });
-        } else { }//Print("Error inserting transaction into database"); }
-    }
-
-
-
-    public void DBRemoveSettingCategory(final String category){
-        if ( !category.equals("") ){ //databaseHelper.removeCategorySetting(category)
-            //Print("Category removed from database");
-            GenericAsyncTask.RunDBTask(new CallBack() {
-                @Override public void call() { databaseHelper.removeCategorySetting(category); }
-            });
-            //(new DatabaseBackgroundHelper()).execute(10, category);
-        } else { }//Print("Error removing category from database"); }
-    }
-    public void DBRemoveSettingPerson(final String person){
-        if ( !person.equals("") ){ //databaseHelper.removeSettingPerson(person)
-            //Print("Person removed from database");
-            //(new DatabaseBackgroundHelper()).execute(11, person);
-            GenericAsyncTask.RunDBTask(new CallBack() {
-                @Override public void call() { databaseHelper.removePersonSetting(person); }
-            });
-        } else { }//Print("Error removing person from database"); }
-    }
-    public void DBRemoveSettingProfile(final Profile pr){
-        if ( pr != null ){ //databaseHelper.removeProfileSetting(pr)
-            //Print("Profile removed from database");
-            //(new DatabaseBackgroundHelper()).execute(12, pr);
-            GenericAsyncTask.RunDBTask(new CallBack() {
-                @Override public void call() { databaseHelper.removeProfileSetting(pr); }
-            });
-        } else { }//Print("Error removing profile from database"); }
-    }
-
-    public void DBRemoveTransaction(final Transaction tr){
-        if ( tr != null ){ //databaseHelper.remove(tr)
-            //Print("Transaction removed from database");
-            //(new DatabaseBackgroundHelper()).execute(13, tr);
-            GenericAsyncTask.RunDBTask(new CallBack() {
-                @Override public void call() { databaseHelper.remove(tr); }
-            });
-        } else { }//Print("Error removing transaction from database"); }
-    }
-    public void DBDelete(){
-        //databaseHelper.DeleteDB();
-        GenericAsyncTask.RunDBTask(new CallBack() {
-            @Override public void call() { databaseHelper.DeleteDB(); }
-        });
-        //(new DatabaseBackgroundHelper()).execute(15);
-    }
-    public void DBDeleteTransactionsAndProfiles(){
-        //(new DatabaseBackgroundHelper()).execute(16);
-        GenericAsyncTask.RunDBTask(new CallBack() {
-            @Override public void call() { databaseHelper.DeleteTransactions(); databaseHelper.DeleteProfiles(); }
-        });
-    }
-
-    public void DBExport(final String str){
-        if (!str.equals("")) {
-            //databaseHelper.DBExport(str);
-            //(new DatabaseBackgroundHelper()).execute(1, str);
-            GenericAsyncTask.RunDBTask(new CallBack() {
-                @Override public void call() { databaseHelper.DBExport(str); }
-            });
+    public void DBExport(Context ac, final String str){
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            if (!str.equals("")) {
+                //databaseHelper.DBExport(str);
+                //(new DatabaseBackgroundHelper()).execute(1, str);
+                GenericAsyncTask.RunDBTask(new CallBack() {
+                    @Override
+                    public void call() { databaseHelper.DBExport(str); }
+                });
+            }
         }
     }
-    public void DBImport(Context c, File file) { DBImport(c, file, true); }
-    public void DBImport(Context c, final File file, final boolean backup){
-        if (isStoragePermissionGranted(c)) {
+    public void DBImport(Context ac, File file) {
+        if (isStoragePermissionGranted(ac)) {
+            DBImport(ac, file, true);
+        }
+    }
+    public void DBImport(Context ac, final File file, final boolean backup){
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
             //Clear all old data
             ClearAllObjects();
 
@@ -853,15 +960,52 @@ public class ProfileManager
             });
         }
     }
-    public Boolean DoesBackupExist() { return databaseHelper.EXPORT_BACKUP.exists(); }
-    public void DBImportBackup(Context c) { DBImport(c, databaseHelper.EXPORT_BACKUP, false);  }
-    public File GetDatabaseByPath(String path) { return databaseHelper.getDatabaseByPath(path); }
-    public void DBDeleteByPath(String path) { GetDatabaseByPath(path).delete(); }
-    public ArrayList<File> GetImportDatabaseFiles() { return databaseHelper.getImportableDatabases(); }
-    public ArrayList<String> GetImportDatabaseFilesString() { return databaseHelper.getImportableDatabasesString();  }
+    public boolean DoesBackupExist(Context ac) {
+        if (isStoragePermissionGranted(ac)) {
+            if (databaseHelper != null && databaseHelper.EXPORT_BACKUP != null){
+                return databaseHelper.EXPORT_BACKUP.exists();
+            }
+            return false;
+        }
+        return false;
+    }
+    public void DBImportBackup(Context ac) { DBImport(ac, databaseHelper.EXPORT_BACKUP, false);  }
+    public File GetDatabaseByPath(Context ac, String path) {
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            return databaseHelper.getDatabaseByPath(path);
+        }
+        return null;
+    }
+    public void DBDeleteByPath(Context ac, String path) {
+        if (isStoragePermissionGranted(ac)) {
+            GetDatabaseByPath(ac, path).delete();
+        }
+    }
+    public ArrayList<File> GetImportDatabaseFiles(Context ac) {
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            return databaseHelper.getImportableDatabases();
+        }
+        return null;
+    }
+    public ArrayList<String> GetImportDatabaseFilesString(Context ac) {
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            return databaseHelper.getImportableDatabasesString();
+        }
+        return null;
+    }
 
-    public String GetExportDirectory() { return databaseHelper.GetExportDirectory(); }
-    public int GetNewestDatabaseVersion() { return databaseHelper.GetNewestVersion(); }
+    public String GetExportDirectory(Context ac) {
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            return databaseHelper.GetExportDirectory();
+        }
+        return null;
+    }
+    public int GetNewestDatabaseVersion(Context ac) {
+        if (isStoragePermissionGranted(ac) && databaseHelper != null) {
+            return databaseHelper.GetNewestVersion();
+        }
+        return -1;
+    }
 
 
 

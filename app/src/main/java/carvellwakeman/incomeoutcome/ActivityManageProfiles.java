@@ -258,7 +258,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
                         editingprofile.SetPeriodDontSave(period);
                         if (end_date != null) { editingprofile.SetEndTimeDontSave(end_date); }
                         //Update
-                        ProfileManager.getInstance().UpdateProfile(editingprofile);
+                        ProfileManager.getInstance().UpdateProfile(this, editingprofile);
                     }
                     else { //Add a new profile
                         //Create profile
@@ -269,8 +269,8 @@ public class ActivityManageProfiles extends AppCompatActivity {
                         pr.SetPeriodDontSave(period);
                         if (end_date != null) { pr.SetEndTimeDontSave(end_date); }
                         //Add new
-                        ProfileManager.getInstance().AddProfile(pr);
-                        ProfileManager.getInstance().SelectProfile(pr);
+                        ProfileManager.getInstance().AddProfile(this, pr);
+                        ProfileManager.getInstance().SelectProfile(this, pr);
                     }
 
                     adapter.notifyDataSetChanged();
@@ -326,7 +326,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
     public void SelectProfile(String id, final DialogFragmentManagePPC dialogFragment){
         Profile pr = ProfileManager.getInstance().GetProfileByID(Integer.valueOf(id));
         if (pr != null) {
-            if (!ProfileManager.getInstance().SelectProfile(pr)) {ProfileManager.PrintUser(this, "Selected Profile could not be found.");}
+            if (!ProfileManager.getInstance().SelectProfile(this, pr)) {ProfileManager.PrintUser(this, "Selected Profile could not be found.");}
             adapter.notifyDataSetChanged();
             dialogFragment.dismiss();
         }
@@ -344,7 +344,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
                         .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ProfileManager.getInstance().RemoveProfile(pr);
+                                ProfileManager.getInstance().RemoveProfile(ActivityManageProfiles.this, pr);
                                 adapter.notifyDataSetChanged();
                                 dialogFragment.dismiss();
                                 dialog.dismiss();

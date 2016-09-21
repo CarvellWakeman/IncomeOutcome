@@ -22,102 +22,8 @@
             android:paddingEnd="8dp"
             android:paddingBottom="8dp"
 
-            app:layout_collapseMode="pin"
+            app:layout_collapseMode="parallax"
             app:layout_collapseParallaxMultiplier="0.7" >
-
-            <CheckBox
-                android:id="@+id/checkbox_showall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tt_showall"
-                android:maxLines="1"
-                android:scrollHorizontally="true"
-                android:layout_centerVertical="true"
-                android:theme="@style/WhiteCheckboxTheme"
-                android:textColor="@color/white"/>
-
-            <FrameLayout
-                android:id="@+id/frameLayout_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/checkbox_showall"
-                android:layout_centerVertical="true"
-                android:visibility="gone"
-                android:layout_marginStart="8dp">
-                <TextView
-                    android:id="@+id/textView_filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_corner"
-                    android:text="@string/filter"
-                    android:layout_margin="8dp" />
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|top">
-                    <ImageView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:background="@drawable/closex"
-                        android:alpha="0.7" />
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_gravity="center"
-                        android:alpha="0.7"
-                        android:background="@drawable/ic_clear_white_24dp"/>
-                </FrameLayout>
-
-            </FrameLayout>
-
-
-            <FrameLayout
-                android:id="@+id/frameLayout_sort"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/frameLayout_filter"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="8dp"
-                android:visibility="gone">
-                <TextView
-                    android:id="@+id/textView_sort"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_corner"
-                    android:layout_margin="8dp"
-                    android:paddingEnd="16dp"
-                    android:text="@string/sort" />
-
-
-                <ImageView
-                    android:id="@+id/imageView_sortUpDown"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:tint="@color/black"
-                    android:alpha="0.7"
-                    android:layout_gravity="center_vertical|end"
-                    android:layout_marginEnd="4dp"
-                    android:src="@drawable/ic_keyboard_arrow_up_white_24dp" />
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|top">
-                    <ImageView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:background="@drawable/closex"
-                        android:alpha="0.7" />
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_gravity="center"
-                        android:alpha="0.7"
-                        android:background="@drawable/ic_clear_white_24dp"/>
-                </FrameLayout>
-            </FrameLayout>
 
 
             <ImageView
@@ -138,6 +44,106 @@
                 android:src="@drawable/ic_arrow_right_white_24dp"
                 android:background="@drawable/ripple_borderless_api19"
                 android:padding="8dp" />
+
+            <CheckBox
+                android:id="@+id/checkbox_showall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tt_showall"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
+                android:layout_centerVertical="true"
+                android:theme="@style/WhiteCheckboxTheme"
+                android:textColor="@color/white"
+                android:layout_alignTop="@id/button_prevPeriod"
+                android:layout_alignBottom="@id/button_prevPeriod" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@+id/button_nextPeriod">
+
+                <FrameLayout
+                    android:id="@+id/frameLayout_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginStart="8dp">
+                    <TextView
+                        android:id="@+id/textView_filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_corner"
+                        android:text="@string/filter"
+                        android:layout_margin="8dp" />
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top">
+                        <ImageView
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:background="@drawable/closex"
+                            android:alpha="0.7" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:alpha="0.7"
+                            android:background="@drawable/ic_clear_white_24dp"/>
+                    </FrameLayout>
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/frameLayout_sort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:visibility="gone">
+                    <TextView
+                        android:id="@+id/textView_sort"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_corner"
+                        android:layout_margin="8dp"
+                        android:paddingEnd="16dp"
+                        android:text="@string/sort" />
+
+
+                    <ImageView
+                        android:id="@+id/imageView_sortUpDown"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:tint="@color/black"
+                        android:alpha="0.7"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_marginEnd="4dp"
+                        android:src="@drawable/ic_keyboard_arrow_up_white_24dp" />
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top">
+                        <ImageView
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:background="@drawable/closex"
+                            android:alpha="0.7" />
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:alpha="0.7"
+                            android:background="@drawable/ic_clear_white_24dp"/>
+                    </FrameLayout>
+                </FrameLayout>
+
+            </LinearLayout>
 
         </RelativeLayout>
 

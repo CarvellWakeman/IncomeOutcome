@@ -23,7 +23,7 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
     public AdapterDatabaseImports(ActivityDatabaseImport _parent)
     {
         parent = _parent;
-        database_import_files = ProfileManager.getInstance().GetImportDatabaseFiles();
+        database_import_files = ProfileManager.getInstance().GetImportDatabaseFiles(parent);
     }
 
 
@@ -39,13 +39,13 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
     @Override
     public void onBindViewHolder(final FileViewHolder holder, int position)
     {
-        database_import_files = ProfileManager.getInstance().GetImportDatabaseFiles();
+        database_import_files = ProfileManager.getInstance().GetImportDatabaseFiles(parent);
 
         if (database_import_files != null && position < database_import_files.size()) {
             File file = database_import_files.get(position);
             if (file != null && file.exists()) {
                 int version = SQLiteDatabase.openDatabase(file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
-                int currentVersion = ProfileManager.getInstance().GetNewestDatabaseVersion();
+                int currentVersion = ProfileManager.getInstance().GetNewestDatabaseVersion(parent);
 
                 holder.title.setText(file.getName());
                 holder.subTitle.setText(parent.getString(R.string.format_dbversion, String.valueOf(version)));
@@ -77,7 +77,7 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
 
         @Override
         public void onClick(View v) {
-            database_import_files = ProfileManager.getInstance().GetImportDatabaseFiles();
+            database_import_files = ProfileManager.getInstance().GetImportDatabaseFiles(parent);
             if (getAdapterPosition() < getItemCount()) {
                 File file = database_import_files.get(getAdapterPosition());
                 if (file != null && file.exists()) {

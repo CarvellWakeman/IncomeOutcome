@@ -20,88 +20,95 @@ public class MyTabConversion {
     private static String tabsFilename = "Tabs.xml";
 
     public static String load(Context ac){
-        ArrayList<Tab> _tabs = new ArrayList<>();
+        if (ProfileManager.isStoragePermissionGranted(ac)){
+            ArrayList<Tab> _tabs = new ArrayList<>();
 
-        //Find MyTab file
-        try {
-            //Create a file that represents the directory we are saving in
-            File tabsFile = new File(appDir, tabsFilename);
+            //Find MyTab file
+            try {
+                //Create a file that represents the directory we are saving in
+                File tabsFile = new File(appDir, tabsFilename);
 
-            //Create a reader
-            BufferedReader reader = new BufferedReader(new FileReader(tabsFile));
-            String line;
+                //Create a reader
+                BufferedReader reader = new BufferedReader(new FileReader(tabsFile));
+                String line;
 
-            while( (line = reader.readLine()) != null) {
-                //Create new JSONObject
-                JSONObject obj = new JSONObject(line);
-
-                Tab tab = new Tab(ac);
-                tab.SetJSON(obj);
-
-                //Add tab to _tabs
-                _tabs.add(tab);
-            }
-
-            //Close reader
-            reader.close();
-        }
-        catch (FileNotFoundException ex) { return "File Not Found Exception"; }
-        catch (JSONException ex) { return "JSONException"; }
-        catch (IOException ex) { return "IOException"; }
-
-        if (_tabs.size() > 0) {
-            //Create profile to house MyTab loaded objects
-            Profile myTabProfile = new Profile("MyTabData");
-            if (_tabs.get(0) != null) {
-                myTabProfile.SetStartTime(new LocalDate(_tabs.get(0).GetDateStart()));
-                myTabProfile.SetEndTime(new LocalDate(_tabs.get(0).GetDateEnd()));
-                myTabProfile.SetPeriod(new Period(0,1,0,0,0,0,0,0)); //1 Month
-            }
-            else { return "Bad Data Received"; }
-
-
-            //Clear database and objects
-            ProfileManager.getInstance().ClearAllObjects();
-            ProfileManager.getInstance().DBDelete();
-
-
-            //Convert between Tab/MyTabTransaction objects into Profile/Transaction objects
-            for (Tab tab : _tabs){
-                for (MyTabTransaction tran : tab._transactions){
-                    Transaction NewTransaction = new Transaction();
-
-                    //Mutators
-                    NewTransaction.SetType(Transaction.TRANSACTION_TYPE.Expense);
-                    NewTransaction.SetSourceName(tran.GetCompany());
-                    NewTransaction.SetCategory(tran.GetCategory());
-                        if (!ProfileManager.getInstance().HasCategory(tran.GetCategory())){
-                            Category cat = new Category(tran.GetCategory(), CategoryColors.getColor(tran.GetCategory()));
-                            ProfileManager.getInstance().AddCategory(cat);
-                        }
-                    NewTransaction.SetDescription(tran.GetDescription());
-                    NewTransaction.SetValue(Double.parseDouble(Float.toString(tran.GetCost())));
-                    NewTransaction.SetTimePeriod(new TimePeriod(new LocalDate(tran.GetDate())));
-
-                    //EXPENSE ONLY Mutators
-                    NewTransaction.SetSplitValue(tab.GetPersonB(), Double.parseDouble(Float.toString(tran.GetCostB())));
-                    if (!ProfileManager.getInstance().HasOtherPerson(tab.GetPersonB())){
-                        ProfileManager.getInstance().AddOtherPerson(tab.GetPersonB());
-                    }
-                    NewTransaction.SetIPaid(tran.GetPersonAPaid());
-                    NewTransaction.SetPaidBack( (tab.GetDatePaid() == null ? null : new LocalDate(tab.GetDatePaid())) );
-
-                    myTabProfile.AddTransaction(NewTransaction);
+                while ((line = reader.readLine()) != null) {
+                    //Create new JSONObject
+                    JSONObject obj = new JSONObject(line);
+                    Tab tab = new Tab(ac);
+                    tab.SetJSON(obj);
+                    //Add tab to _tabs
+                    _tabs.add(tab);
                 }
+
+                //Close reader
+                reader.close();
             }
+            catch (FileNotFoundException ex) { return "File Not Found Exception"; }
+            catch (JSONException ex) { return "JSONException"; }
+            catch (IOException ex) { return "IOException"; }
+
+            if (_tabs != null && _tabs.size() > 0) {
+                //Create profile to house MyTab loaded objects
+                Profile myTabProfile = new Profile("MyTabData");
+                if (_tabs.get(0) != null) {
+                    myTabProfile.SetStartTime(ac, new LocalDate(_tabs.get(0).GetDateStart()));
+                    myTabProfile.SetEndTime(ac, new LocalDate(_tabs.get(0).GetDateEnd()));
+                    myTabProfile.SetPeriod(ac, new Period(0,1,0,0,0,0,0,0)); //1 Month
+                }
+                else { return "Bad Data Received"; }
 
 
-            //Add new profile and its data
-            //ProfileManager.getInstance().LoadDefaultCategories(ac);
-            ProfileManager.getInstance().AddProfile(myTabProfile);
-            ProfileManager.getInstance().SelectProfile(myTabProfile);
+                //Clear database and objects
+                ProfileManager.getInstance().ClearAllObjects();
+                ProfileManager.getInstance().DBDelete(ac);
+
+
+                //Convert between Tab/MyTabTransaction objects into Profile/Transaction objects
+                for (Tab tab : _tabs) {
+                    if (tab != null && tab._transactions != null) {
+                        for (MyTabTransaction tran : tab._transactions) {
+                            if (tran != null) {
+                                Transaction NewTransaction = new Transaction();
+
+                                //Mutators
+                                NewTransaction.SetType(Transaction.TRANSACTION_TYPE.Expense);
+                                NewTransaction.SetSourceName(tran.GetCompany());
+                                NewTransaction.SetCategory(tran.GetCategory());
+                                if (!ProfileManager.getInstance().HasCategory(tran.GetCategory())) {
+                                    Category cat = new Category(tran.GetCategory(), CategoryColors.getColor(tran.GetCategory()));
+                                    ProfileManager.getInstance().AddCategory(ac, cat);
+                                }
+                                NewTransaction.SetDescription(tran.GetDescription());
+                                NewTransaction.SetValue(Double.parseDouble(Float.toString(tran.GetCost())));
+                                NewTransaction.SetTimePeriod(new TimePeriod(new LocalDate(tran.GetDate())));
+
+                                //EXPENSE ONLY Mutators
+                                NewTransaction.SetSplitValue(tab.GetPersonB(), Double.parseDouble(Float.toString(tran.GetCostB())));
+                                if (!ProfileManager.getInstance().HasOtherPerson(tab.GetPersonB())) {
+                                    ProfileManager.getInstance().AddOtherPerson(ac, tab.GetPersonB());
+                                }
+                                NewTransaction.SetIPaid(tran.GetPersonAPaid());
+                                NewTransaction.SetPaidBack((tab.GetDatePaid() == null ? null : new LocalDate(tab.GetDatePaid())));
+
+                                myTabProfile.AddTransaction(ac, NewTransaction);
+                            }
+                        }
+                    }
+                }
+
+
+                //Add new profile and its data
+                //ProfileManager.getInstance().LoadDefaultCategories(ac);
+                ProfileManager.getInstance().AddProfile(ac, myTabProfile);
+                ProfileManager.getInstance().SelectProfile(ac, myTabProfile);
+            }
+            else {
+                return "No Tab Data Found";
+            }
         }
         else {
-            return "No Tab Data Found";
+            return "Storage Permission not granted";
         }
 
         return "";

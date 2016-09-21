@@ -884,8 +884,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
             //Insert/update row and return result
             long result = 0;
-            if (tryupdate) { result = database.update(TABLE_TIMEPERIODS, contentValues_tp, COLUMN_tp_parent + "=" + UID, null); }
-            if (result == 0) { result = database.insert(TABLE_TIMEPERIODS, null, contentValues_tp); }
+            if (contentValues_tp != null && contentValues_tp.size() > 0) {
+                if (tryupdate) { result = database.update(TABLE_TIMEPERIODS, contentValues_tp, COLUMN_tp_parent + "=" + UID, null); }
+                if (result == 0) { result = database.insert(TABLE_TIMEPERIODS, null, contentValues_tp); }
+            }
 
             return result;
         }
@@ -957,7 +959,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
                 //Fill out category
                 if (category != null){
-                    ProfileManager.getInstance().AddCategory(new Category(category, catColor), true);
+                    ProfileManager.getInstance().AddCategoryDontSave(new Category(category, catColor));
                 }
             }
 
@@ -968,7 +970,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
                 //Fill out other people
                 if (person != null){
-                    ProfileManager.getInstance().AddOtherPerson(person);
+                    ProfileManager.getInstance().AddOtherPersonDontSave(person);
                 }
             }
 
@@ -986,12 +988,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 if (profile != null){
                     Profile p = new Profile(profile);
                     p.SetID(uniqueID);
-                    if (start_date != null){ p.SetStartTime(ProfileManager.ConvertDateFromString(start_date)); }
-                    if (end_date != null){ p.SetEndTime(ProfileManager.ConvertDateFromString(end_date)); }
-                    if (period != null){ try { p.SetPeriod(Period.parse(period)); } catch (Exception e) { e.printStackTrace(); } }
-                    ProfileManager.getInstance().AddProfile(p, true);
+                    if (start_date != null){ p.SetStartTimeDontSave(ProfileManager.ConvertDateFromString(start_date)); }
+                    if (end_date != null){ p.SetEndTimeDontSave(ProfileManager.ConvertDateFromString(end_date)); }
+                    if (period != null){ try { p.SetPeriodDontSave(Period.parse(period)); } catch (Exception e) { e.printStackTrace(); } }
+                    ProfileManager.getInstance().AddProfileDontSave(p);
 
-                    if (profileSel == 1){ ProfileManager.getInstance().SelectProfile(p); }
+                    if (profileSel == 1){ ProfileManager.getInstance().SelectProfileDontSave(p); }
                 }
             }
         }

@@ -76,7 +76,7 @@ public class AdapterManageProfiles extends RecyclerView.Adapter<AdapterManagePro
 
         @Override
         public boolean onLongClick(View v){
-            ProfileManager.getInstance().SelectProfile(ProfileManager.getInstance().GetProfileByIndex(getAdapterPosition()));
+            ProfileManager.getInstance().SelectProfile(parent, ProfileManager.getInstance().GetProfileByIndex(getAdapterPosition()));
             notifyDataSetChanged();
             return true;
         }

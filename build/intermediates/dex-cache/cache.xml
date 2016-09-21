@@ -3,219 +3,219 @@
 
     <item
         is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-fragment\24.2.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.1"
-        sha1="d8bd2268fdcbfd52c76ade65d9900cd8def93a44">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-fragment-24.2.0_3e2724a19d0011fc57ff0525f69f93a34cd47617\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-media-compat\24.2.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.1"
-        sha1="6eb9107eb34d2fe2b020662b7fbbec991dcba846">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-media-compat-24.2.0_ce07cc1b9d1b99b2c64b9dccf8e73c5eb1415488\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-compat\24.2.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.1"
-        sha1="f9b41622897665678d31d78e57a361cb0cebcb0d">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-compat-24.2.0_0e4449c9733c1d3fa9d80fcc8e313528d57f0a8b\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\Arctures-user\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\24.2.0\support-annotations-24.2.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.1"
-        sha1="6be858a75633b1f0a2d24cad740db57775cb6871">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\support-annotations-24.2.0_82fab2b74cea527346dd5bed8fd412a13c07e96d\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-fragment\24.2.0\jars\libs\internal_impl-24.2.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.1"
-        sha1="032a4b53def5e2ceedfc2e793b126c0163cfa1dd">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-24.2.0_e2cec4fef2302dcc1a98cf7b3e802695586b0466\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Program Files\Android\gradle\m2repository\commons-io\commons-io\2.4\commons-io-2.4.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.1"
-        sha1="b1b6ea3b7e4aa4f492509a4952029cd8e48019ad">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\commons-io-2.4_a7ea5e8b25ea925bebe2cdb51434c85d44d4543a\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-media-compat\24.2.0\jars\libs\internal_impl-24.2.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.1"
-        sha1="045be695d968dd707691cc55d23746dbf8cf569a">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-24.2.0_754ba60e60f2f551be2dc5531e56c090698167be\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\24.2.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.1"
-        sha1="beac40bcc8a320a896dd15f5109cfcaea5e1e0e3">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-vector-drawable-24.2.0_4db7161a20ef7d0ca72edb1c61bd4e4c76dd63ec\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\org.adw.library\discrete-seekbar\1.0.0\jars\classes.jar"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\org.adw.library\discrete-seekbar\1.0.0\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
         sha1="3e2965bae48affdd6dcd3f87cd525a988ade1250">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\org.adw.library-discrete-seekbar-1.0.0_4e226daecaa13cb12dd4873b6cdddc3f67bbba3d\classes.dex" />
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\org.adw.library-discrete-seekbar-1.0.0_262f2ecfff03c778bb528f3695b038e0e4eef04e\classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\24.2.0\jars\classes.jar"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-core-ui\24.2.1\jars\libs\internal_impl-24.2.1.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
-        sha1="f3ee23ef25c9a8fe3d40246d0b7097267963a612">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-animated-vector-drawable-24.2.0_b82ffa6ceee75909ef00d26d95016c4ef92dfb7b\classes.dex" />
+        sha1="867dad63c33388ff8c7644b236579355036d075f">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-24.2.1_0727686826afb8b683e160c6217bf6ca6e12b580\classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\24.2.0\jars\classes.jar"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-media-compat\24.2.1\jars\libs\internal_impl-24.2.1.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
-        sha1="c755536e5a100d9c76c8ea0b72f76c018f7a9de2">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-recyclerview-v7-24.2.0_3022bdf56c5759ddda119832a6c8824e82515be1\classes.dex" />
+        sha1="fbf8da429efd5ad21e02e3e5ecaa1efc4167878d">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-24.2.1_49d1dc1c93f34433288d98914a99d4fc8d4ccc11\classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Arctures-user\.gradle\caches\modules-2\files-2.1\com.github.PhilJay\MPAndroidChart\v3.0.0-beta1\54d65d51b5ebec588a19b2384efb6395b5bf5b18\MPAndroidChart-v3.0.0-beta1.jar"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-compat\24.2.1\jars\libs\internal_impl-24.2.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.1"
+        sha1="7e4389bd133359a2ff88623ff1e4ff93d6e6f780">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-24.2.1_1f7d71491a504cfaac25db0bcd75f186d9af37f9\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Zach\.gradle\caches\modules-2\files-2.1\com.github.PhilJay\MPAndroidChart\v3.0.0-beta1\54d65d51b5ebec588a19b2384efb6395b5bf5b18\MPAndroidChart-v3.0.0-beta1.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
         sha1="54d65d51b5ebec588a19b2384efb6395b5bf5b18">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\MPAndroidChart-v3.0.0-beta1_eff1934fd6d5627c3c211d551c873a64fd77d85b\classes.dex" />
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\MPAndroidChart-v3.0.0-beta1_04cccf7634e88fd30646107ac7ee6385ce76a3b0\classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\design\24.2.0\jars\classes.jar"
+        jar="C:\Program Files\Android\Android Studio\gradle\m2repository\commons-io\commons-io\2.4\commons-io-2.4.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
-        sha1="23eb0d2998a782213b56168cbf23a0688b9111d9">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-design-24.2.0_57a396807f221f2d6c01070c8b0137327e2779de\classes.dex" />
+        sha1="b1b6ea3b7e4aa4f492509a4952029cd8e48019ad">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\commons-io-2.4_b2955a73e8fdec69863902c786dced8321b28c5c\classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-core-ui\24.2.0\jars\libs\internal_impl-24.2.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.1"
-        sha1="6e02e34594ebe9c0501ffda8dd48497f81b82977">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-24.2.0_250c5ab949da356bec4607ab17e2e5707c9e4155\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\24.2.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.1"
-        sha1="96e33a7aaee00ab64270e2a9887b8f9ef32c8b73">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-cardview-v7-24.2.0_d300d5f8aaed4b8b7f59d829d49a69137d52f9c1\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\Arctures-user\.gradle\caches\modules-2\files-2.1\joda-time\joda-time\2.9.1\c261495d1e01df849cdb3cbc941564018f0d3539\joda-time-2.9.1.jar"
+        jar="C:\Users\Zach\.gradle\caches\modules-2\files-2.1\joda-time\joda-time\2.9.1\c261495d1e01df849cdb3cbc941564018f0d3539\joda-time-2.9.1.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
         sha1="c261495d1e01df849cdb3cbc941564018f0d3539">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\joda-time-2.9.1_2278b2fa514a4c677dc83557e379c3a615cf1fea\classes.dex" />
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\joda-time-2.9.1_1205d7dfe3fdd504b9e86409bdb52fba56ab6c6e\classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-core-utils\24.2.0\jars\libs\internal_impl-24.2.0.jar"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\24.2.1\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
-        sha1="60d7b23621d31e6f42f4f76f16af467e57a20cda">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-24.2.0_fb61313969c7d775677879a1cbd91d7d095a6bf9\classes.dex" />
+        sha1="d5c731fc64c03dfe04d51134955b483551c35849">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-vector-drawable-24.2.1_dc67acfc7332394299848b4f64748ca923be9ac1\classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-core-utils\24.2.0\jars\classes.jar"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
-        sha1="fcc945a86ebcbf527429acb8216ec7dae2c06417">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-core-utils-24.2.0_1514e754fe5b3b6e112289fa8b6bdaae92b599e1\classes.dex" />
+        sha1="89674b5f8e7b8e1516d6686bb9c1692cfd59101b">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_fc653f8c230479063eb1d918260a574123e3c7ff\classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-compat\24.2.1\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
-        sha1="e7bd4d0160f677bde3811cac30449b2afdd7df3e">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_44b884dd7be117cff55cff93c903120e715164c5\classes.dex" />
+        sha1="0ecb4b595fa0f0f8018a149ace3ea6525624f94e">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-compat-24.2.1_5d61c21aa2b167193b9cf8112ed287ed84ff9aec\classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-core-ui\24.2.0\jars\classes.jar"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\design\24.2.1\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
-        sha1="c84e216d9bf618464d6b9564d71d9a656433e7c4">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-core-ui-24.2.0_a9c12ff7a2d3f7a5145d4679b8b662c1a51b99ba\classes.dex" />
+        sha1="e03f47f3d1017a093bb3239d4ec47c3447f40744">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-design-24.2.1_c710de70ade99c470cb7876ce2c1e652c6f68836\classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-compat\24.2.0\jars\libs\internal_impl-24.2.0.jar"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-fragment\24.2.1\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
-        sha1="771b3cc0e597b54da25f8086ba73180c59c6bc71">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-24.2.0_559060406a05a03ad9bd54882657cfbbdbeb51e5\classes.dex" />
+        sha1="b9a1ac78ad7ef3abedc4a4b30cd92bcacb939d1f">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-fragment-24.2.1_80a5f0c804c8a242ef4d9a50a9e1128d8e66a78e\classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\24.2.0\jars\classes.jar"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-fragment\24.2.1\jars\libs\internal_impl-24.2.1.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
-        sha1="c3c638be6e650b165ab9ae144857b64e82787fad">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-24.2.0_01d5277fd29d61c2b0af5396f1c59063a458fdbd\classes.dex" />
+        sha1="5f64d657e838e8375135c0f6057a7ff8fab6a50e">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-24.2.1_bafe642be3ad9c97742fdb620456acbf23b4dcff\classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-core-utils\24.2.1\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
-        sha1="ad09c81f043976d1db77f0543db853c7389ded62">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_2375b808c4ee617308fd7e4568e5726c40e57780\classes.dex" />
+        sha1="9c4c3bc902450c39ed54de170db4fb12aea20a35">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-core-utils-24.2.1_9aed00163dcde1933f50c51492b6a7609f33a634\classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-v4\24.2.0\jars\classes.jar"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-core-ui\24.2.1\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.1"
-        sha1="45f5eda279825ff470e3f51019d374d1ef61e000">
-        <dex dex="C:\Users\Arctures-user\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-v4-24.2.0_801451ea4a26c2a855bbd7ffbfdbbd519678de5d\classes.dex" />
+        sha1="e7f3132168957eefc46229fc32c3bd464642b71e">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-core-ui-24.2.1_97463c9cf280ce1a27da47efbc7bbf1cc0ab3540\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-core-utils\24.2.1\jars\libs\internal_impl-24.2.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.1"
+        sha1="935a969265b2a166b2d20415423f5f6e90fe16e0">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-24.2.1_08ac8b7ace263ca41cbdcf889a150de644612056\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\24.2.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.1"
+        sha1="c5e6490573cd2cc8018417f60ddd251138b6ed61">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-cardview-v7-24.2.1_5d358313f82b792dc349e1daaea67ae60591ffa7\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\24.2.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.1"
+        sha1="94bc1dfb84dcc8b6f6f8f7cc726d7b2dd39c1574">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-animated-vector-drawable-24.2.1_f424e2b6e42e6f5b08f2277b8a9b73cea57e3d6e\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\24.2.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.1"
+        sha1="43b2dba6b5a0b14527961b75329d0b90025f15ea">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-24.2.1_34638c82974cad09ea44a738321b53d9aa55d2bf\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-media-compat\24.2.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.1"
+        sha1="09b462bbcb77650284bd6614f1a32f360ef369f8">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-media-compat-24.2.1_30d46cfa8628d7c6980ce004699183ef55634839\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\support-v4\24.2.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.1"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-v4-24.2.1_417e05cfb88f370d6cab2621bd12c9d8793d8532\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Zach\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\24.2.1\support-annotations-24.2.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.1"
+        sha1="8de3aafecbdf98a61db6427f008f2d515bcd2544">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\support-annotations-24.2.1_eb0e79ad5d2253d0fe10392b4a822cdd997f594c\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.1"
+        sha1="eaeae8e74ca08f176d6f99964f496722285955ad">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_b919fd65d42a3a61f73abd88c0308e2a8443b34d\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\24.2.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.1"
+        sha1="7521486d9bfd2cd9e756e0cf75ed7d97f2ce2d3b">
+        <dex dex="C:\Users\Zach\Google Drive\Projects\Android\IncomeOutcome\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-recyclerview-v7-24.2.1_402600c4857b0146d5307f33e402ee67785ad737\classes.dex" />
     </item>
 
 </items>

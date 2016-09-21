@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -25,24 +26,13 @@ public class ActivitySettings extends AppCompatActivity
 {
     Toolbar toolbar;
 
-    //Settings population
-    LinearLayout mainLayout;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        final Boolean mIsLargeLayout = false; //TODO Handle this in values
-
-
         //Find Views
         toolbar = (Toolbar) findViewById(R.id.toolbar_settings);
-
-        //Populate settings
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ViewGroup insertPoint = (ViewGroup) findViewById(R.id.settings_layout);
-
 
         //Toolbar setup
         setSupportActionBar(toolbar);
@@ -55,73 +45,71 @@ public class ActivitySettings extends AppCompatActivity
                 onBackPressed();
             }
         });
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
 
 
+        //Populate settings
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ViewGroup insertPoint = (ViewGroup) findViewById(R.id.settings_layout);
 
+        insertPoint.removeAllViews();
 
         //Setting Categories
         CardSettings profilesPeopleCategories = new CardSettings(this, inflater, insertPoint, 0, R.layout.row_layout_setting_card, getString(R.string.title_settings_profilespeoplecategories));
         //Manage profiles
-            profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_account_white_24dp, getString(R.string.title_manageprofiles), null,
-                    new View.OnClickListener() { @Override public void onClick(View v) {
-                        //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentManageProfiles(), mIsLargeLayout);
-                        startActivity(new Intent(ActivitySettings.this, ActivityManageProfiles.class));
-                    }}
-            ));
+        profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_account_white_24dp, getString(R.string.title_manageprofiles), null,
+                new View.OnClickListener() { @Override public void onClick(View v) {
+                    //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentManageProfiles(), mIsLargeLayout);
+                    startActivity(new Intent(ActivitySettings.this, ActivityManageProfiles.class));
+                }}
+        ));
         //Manage people
-            profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_face_white_24dp, getString(R.string.title_managepeople), null,
-                    new View.OnClickListener() { @Override public void onClick(View v) {
-                        //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentManagePeople(), mIsLargeLayout);
-                        startActivity(new Intent(ActivitySettings.this, ActivityManagePeople.class));
-                    }}
-            ));
+        profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_face_white_24dp, getString(R.string.title_managepeople), null,
+                new View.OnClickListener() { @Override public void onClick(View v) {
+                    //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentManagePeople(), mIsLargeLayout);
+                    startActivity(new Intent(ActivitySettings.this, ActivityManagePeople.class));
+                }}
+        ));
         //Manage categories
-            profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_view_list_white_24dp, getString(R.string.title_managecategories), null,
-                    new View.OnClickListener() { @Override public void onClick(View v) {
-                        //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentManageCategories(), mIsLargeLayout);
-                        startActivity(new Intent(ActivitySettings.this, ActivityManageCategories.class));
-                    }}
-            ));
+        profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_view_list_white_24dp, getString(R.string.title_managecategories), null,
+                new View.OnClickListener() { @Override public void onClick(View v) {
+                    //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentManageCategories(), mIsLargeLayout);
+                    startActivity(new Intent(ActivitySettings.this, ActivityManageCategories.class));
+                }}
+        ));
 
         CardSettings database = new CardSettings(this, inflater, insertPoint, 1, R.layout.row_layout_setting_card, getString(R.string.title_settings_database));
         //Import and Export
-            database.AddSetting(new Setting(inflater, R.drawable.ic_file_white_24dp, getString(R.string.title_settings_importexport), getString(R.string.subtitle_settings_importexport),
-                    new View.OnClickListener() { @Override public void onClick(View v) {
-                        if (ProfileManager.isStoragePermissionGranted(ActivitySettings.this)) {
-                            //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentDatabaseImport(), mIsLargeLayout);
-                            startActivity(new Intent(ActivitySettings.this, ActivityDatabaseImport.class));
-                        }
-                        else {
-                            if (ActivityCompat.shouldShowRequestPermissionRationale(ActivitySettings.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-                                ProfileManager.OpenDialogFragment(ActivitySettings.this, DialogFragmentPermissionReasoning.newInstance(ActivitySettings.this, new int[]{ R.string.tt_permission_writestorage1 }, new int[]{ R.string.tt_permission_writestorage2 }, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }), true);
-                            } else {
-                                //Request permission
-                                ActivityCompat.requestPermissions(ActivitySettings.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                            }
-                        }
-                    }}
-            ));
+        database.AddSetting(new Setting(inflater, R.drawable.ic_file_white_24dp, getString(R.string.title_settings_importexport), getString(R.string.subtitle_settings_importexport),
+                new View.OnClickListener() { @Override public void onClick(View v) {
+                    ImportClick();
+                }}
+        ));
         //Delete all data
-            database.AddSetting(new Setting(inflater, R.drawable.ic_delete_white_24dp, getString(R.string.title_settrings_deletedata), getString(R.string.subtitle_settings_deletedata),
-                    new View.OnClickListener() { @Override public void onClick(View v) {
-                        ProfileManager.OpenDialogFragment(ActivitySettings.this, DialogFragmentDeleteData.newInstance(ActivitySettings.this, new ProfileManager.CallBack() { @Override public void call() {
+        database.AddSetting(new Setting(inflater, R.drawable.ic_delete_white_24dp, getString(R.string.title_settrings_deletedata), getString(R.string.subtitle_settings_deletedata),
+                new View.OnClickListener() { @Override public void onClick(View v) {
+                    ProfileManager.OpenDialogFragment(ActivitySettings.this, DialogFragmentDeleteData.newInstance(ActivitySettings.this, new ProfileManager.CallBack() { @Override public void call() {
 
-                        }}), true);
-                    }}));
+                    }}), true);
+                }}));
         //Load default categories
-            database.AddSetting(new Setting(inflater, R.drawable.ic_database_plus_white_24dp, getString(R.string.title_settings_defaultcategories), getString(R.string.subtitle_settings_defaultcategories), new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new AlertDialog.Builder(ActivitySettings.this).setTitle(R.string.confirm_areyousure_deleteall)
-                            .setPositiveButton(R.string.action_continue, new DialogInterface.OnClickListener() {
-                                @Override public void onClick(DialogInterface dialog, int which) {
-                                    ProfileManager.getInstance().RemoveAllCategories();
-                                    ProfileManager.getInstance().LoadDefaultCategories(ActivitySettings.this);
-                                }})
-                            .setNegativeButton(R.string.action_cancel, null)
-                            .create().show();
-                }
-            }));
+        database.AddSetting(new Setting(inflater, R.drawable.ic_database_plus_white_24dp, getString(R.string.title_settings_defaultcategories), getString(R.string.subtitle_settings_defaultcategories), new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(ActivitySettings.this).setTitle(R.string.confirm_areyousure_deleteall)
+                        .setPositiveButton(R.string.action_continue, new DialogInterface.OnClickListener() {
+                            @Override public void onClick(DialogInterface dialog, int which) {
+                                ProfileManager.getInstance().RemoveAllCategories(ActivitySettings.this);
+                                ProfileManager.getInstance().LoadDefaultCategories(ActivitySettings.this);
+                            }})
+                        .setNegativeButton(R.string.action_cancel, null)
+                        .create().show();
+            }
+        }));
         if (ProfileManager.isDebugMode(this)) {
             CardSettings debug = new CardSettings(this, inflater, insertPoint, 2, R.layout.row_layout_setting_card, "Debug");
             //View Database
@@ -136,44 +124,13 @@ public class ActivitySettings extends AppCompatActivity
             debug.AddSetting(new Setting(inflater, R.drawable.ic_clear_white_24dp, getString(R.string.title_settings_importmytab), getString(R.string.subtitle_settings_importmytab), new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (ProfileManager.isStoragePermissionGranted(ActivitySettings.this)) {
-                        new AlertDialog.Builder(ActivitySettings.this).setTitle(R.string.confirm_areyousure_deleteall)
-                            .setPositiveButton(R.string.action_continue, new DialogInterface.OnClickListener() {
-                                @Override public void onClick(DialogInterface dialog, int which) {
-                                    String result = MyTabConversion.load(ActivitySettings.this);
-                                    if (!result.equals("")){
-                                        ProfileManager.PrintUser(ActivitySettings.this, "Error:" + result);
-                                    }
-                                    else {
-                                        ProfileManager.PrintUser(ActivitySettings.this, "Tab Data successfully loaded");
-                                    }
-                                }})
-                            .setNegativeButton(R.string.action_cancel, null)
-                            .create().show();
-                    }
-                    else {
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(ActivitySettings.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-                            ProfileManager.OpenDialogFragment(ActivitySettings.this, DialogFragmentPermissionReasoning.newInstance(ActivitySettings.this, new int[]{ R.string.tt_permission_writestorage3 }, new int[]{ R.string.tt_permission_writestorage4 }, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }), true);
-                        } else {
-                            //Request permission
-                            ActivityCompat.requestPermissions(ActivitySettings.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                        }
-                    }
+                    MyTabImportClick();
                 }
             }));
             CardView c = (CardView) debug.getView().findViewById(R.id.row_layout_settingscard);
             if (c != null) { c.setBackgroundColor(Color.YELLOW); }
         }
-
-
-
-
-        //Insert categories
-        //profilesPeopleCategories.insert(insertPoint, 0);
-        //database.insert(insertPoint, 1);
-        //debug.insert(insertPoint, 2);
     }
-
 
     @Override
     public void onBackPressed()
@@ -184,24 +141,61 @@ public class ActivitySettings extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case 1: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivity(new Intent(ActivitySettings.this, ActivityDatabaseImport.class));
-                }
-                return;
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            switch (requestCode) {
+                case 1: //Import/Export
+                    ImportClick();
+                    break;
+                case 2: //Import MyTab
+                    MyTabImportClick();
+                    break;
             }
         }
     }
 
+    public void ImportClick(){
+        if (ProfileManager.isStoragePermissionGranted(ActivitySettings.this) || Build.VERSION.SDK_INT < 23) {
+            Intent intent = new Intent(ActivitySettings.this, ActivityDatabaseImport.class);
+            startActivity(intent);
+        }
+        else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                int titleID = R.string.tt_permission_writestorage1;
+                int subTitleID = R.string.tt_permission_writestorage2;
+                String[] permissions = new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE };
+                ProfileManager.OpenDialogFragment(this, DialogFragmentPermissionReasoning.newInstance(ActivitySettings.this, titleID, subTitleID, permissions, 1), true);
+            } else {
+                //Request permission
+                ActivitySettings.this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+        }
+    }
 
-    //Return results from child activities
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data != null) {
-            switch (requestCode) {
-                case 1:
-                    break;
+    public void MyTabImportClick(){
+        if (ProfileManager.isStoragePermissionGranted(ActivitySettings.this) || Build.VERSION.SDK_INT < 23) {
+            new AlertDialog.Builder(ActivitySettings.this).setTitle(R.string.confirm_areyousure_deleteall)
+                    .setPositiveButton(R.string.action_continue, new DialogInterface.OnClickListener() {
+                        @Override public void onClick(DialogInterface dialog, int which) {
+                            String result = MyTabConversion.load(ActivitySettings.this);
+                            if (!result.equals("")){
+                                ProfileManager.PrintUser(ActivitySettings.this, "Error:" + result);
+                            }
+                            else {
+                                ProfileManager.PrintUser(ActivitySettings.this, "Tab Data successfully loaded");
+                            }
+                        }})
+                    .setNegativeButton(R.string.action_cancel, null)
+                    .create().show();
+        }
+        else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(ActivitySettings.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                int titleID = R.string.tt_permission_writestorage3;
+                int subTitleID = R.string.tt_permission_writestorage4;
+                String[] permissions = new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE };
+                ProfileManager.OpenDialogFragment(ActivitySettings.this, DialogFragmentPermissionReasoning.newInstance(ActivitySettings.this, titleID, subTitleID, permissions, 2), true);
+            } else {
+                //Request permission
+                ActivitySettings.this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
             }
         }
     }

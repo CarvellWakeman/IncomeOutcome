@@ -30,6 +30,7 @@ import java.util.Map;
 
 public class CardVersus extends Card
 {
+    Context _context;
     int _profileID;
 
     int monthsBackMax = 20;
@@ -49,6 +50,7 @@ public class CardVersus extends Card
 
     public CardVersus(ViewGroup insertPoint, int index, int profileID, Context context, LayoutInflater inflater, int layout){
         super(context, inflater, layout, insertPoint, index);
+        _context = context;
         _profileID = profileID;
 
         //Title
@@ -138,7 +140,7 @@ public class CardVersus extends Card
             LocalDate origStart = _profile.GetStartTime();
             LocalDate origEnd = _profile.GetEndTime();
 
-            _profile.TimePeriodMinus(monthsBack-1);
+            _profile.TimePeriodMinus(context, monthsBack-1);
 
             int nonNullPeriods = 0;
             final ArrayList<Transaction> pastTransactionPeriods = new ArrayList<>();
@@ -151,14 +153,14 @@ public class CardVersus extends Card
                 tran = _profile.CalculatePeriodTotalBetweenDates(context);
                 pastTransactionPeriods.add(tran);
                 if (tran != null) { nonNullPeriods++; }
-                _profile.TimePeriodPlus(1);
+                _profile.TimePeriodPlus(context, 1);
             }
 
 
 
             //Reset time periods back to original dates
-            _profile.SetStartTime(origStart);
-            _profile.SetEndTime(origEnd);
+            _profile.SetStartTime(context, origStart);
+            _profile.SetEndTime(context, origEnd);
 
 
             if (_profile.GetTransactionsSize() > 0 && nonNullPeriods > 0) {

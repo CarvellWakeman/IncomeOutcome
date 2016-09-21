@@ -843,13 +843,13 @@ public class ActivityNewTransaction extends AppCompatActivity
 
                     //If EditUpdate, call pr.UpdateTransaction()
                     if (_editState == EDIT_STATE.EditUpdate) {
-                        pr.UpdateTransaction(newTr);
+                        pr.UpdateTransaction(this, newTr);
                     }
                     else if (_editState == EDIT_STATE.EditGhost && originalTr != null) { //If EditGhost, originalTr.AddChild(), newTr.SetParent() (Blacklist taken care of by AddChild()
-                        pr.CloneTransaction(originalTr, newTr);
+                        pr.CloneTransaction(this, originalTr, newTr);
                     }
                     else if (_editState == EDIT_STATE.Duplicate || _editState == EDIT_STATE.NewTransaction) { //Else, call pr.AddTransaction()
-                        pr.AddTransaction(newTr);
+                        pr.AddTransaction(this, newTr);
                     }
 
                     //Finish()

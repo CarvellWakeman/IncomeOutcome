@@ -2,6 +2,7 @@ package carvellwakeman.incomeoutcome;
 
         import android.app.DatePickerDialog;
         import android.app.Dialog;
+        import android.content.Context;
         import android.content.DialogInterface;
         import android.graphics.Color;
         import android.os.Bundle;
@@ -13,8 +14,9 @@ package carvellwakeman.incomeoutcome;
         import android.widget.*;
         import org.joda.time.LocalDate;
 
-public class DialogFragmentPaidBack extends DialogFragment {
-
+public class DialogFragmentPaidBack extends DialogFragment
+{
+    Context _parent;
     ProfileManager.CallBack _callBack;
 
     Profile _profile;
@@ -29,9 +31,10 @@ public class DialogFragmentPaidBack extends DialogFragment {
     Button button_negative;
 
 
-    static DialogFragmentPaidBack newInstance(ProfileManager.CallBack callBack, Profile profile) {
+    static DialogFragmentPaidBack newInstance(Context parent, ProfileManager.CallBack callBack, Profile profile) {
         DialogFragmentPaidBack fg = new DialogFragmentPaidBack();
         fg._callBack = callBack;
+        fg._parent = parent;
         Bundle args = new Bundle();
         args.putSerializable("profile", profile);
         fg.setArguments(args);
@@ -89,13 +92,13 @@ public class DialogFragmentPaidBack extends DialogFragment {
             public void onClick(View v) {
                 if (_profile != null){
                     if (radioButton_today.isChecked()) { //Today
-                        _profile.UpdatePaidBackInTimeFrame(new LocalDate(), true);
+                        _profile.UpdatePaidBackInTimeFrame(_parent, new LocalDate(), true);
                     }
                     else if (radioButton_date.isChecked()) { //A date
-                        _profile.UpdatePaidBackInTimeFrame(date, true);
+                        _profile.UpdatePaidBackInTimeFrame(_parent, date, true);
                     }
                     else if (radioButton_never.isChecked()) { //Never
-                        _profile.UpdatePaidBackInTimeFrame(null, true);
+                        _profile.UpdatePaidBackInTimeFrame(_parent, null, true);
                     }
 
                     //_parent.elementsAdapter.notifyDataSetChanged();

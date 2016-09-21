@@ -173,13 +173,13 @@ public class ActivityManagePeople extends AppCompatActivity {
 
                 if (!str.equals("")) {
                     //Update other person
-                    ProfileManager.getInstance().UpdateOtherPerson(old_otherperson, str);
+                    ProfileManager.getInstance().UpdateOtherPerson(ActivityManagePeople.this, old_otherperson, str);
 
                     //Delete old person if they exist (For editing)
-                    ProfileManager.getInstance().RemoveOtherPerson(old_otherperson);
+                    ProfileManager.getInstance().RemoveOtherPerson(ActivityManagePeople.this, old_otherperson);
 
                     //Add new person (Edit or new)
-                    ProfileManager.getInstance().AddOtherPerson(str);
+                    ProfileManager.getInstance().AddOtherPerson(ActivityManagePeople.this, str);
 
                     adapter.notifyDataSetChanged();
 
@@ -219,7 +219,7 @@ public class ActivityManagePeople extends AppCompatActivity {
                     .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ProfileManager.getInstance().RemoveOtherPerson(name);
+                            ProfileManager.getInstance().RemoveOtherPerson(ActivityManagePeople.this, name);
                             adapter.notifyDataSetChanged();
                             dialogFragment.dismiss();
                             dialog.dismiss();

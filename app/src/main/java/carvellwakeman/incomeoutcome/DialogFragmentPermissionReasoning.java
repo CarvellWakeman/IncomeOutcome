@@ -1,9 +1,11 @@
 package carvellwakeman.incomeoutcome;
 
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,10 +20,11 @@ import java.util.Arrays;
 
 public class DialogFragmentPermissionReasoning extends DialogFragment
 {
-    AppCompatActivity parent;
+    int requestCode;
+    Activity parent;
 
-    int[] titleResourceIDs;
-    int[] subtitleResourceIDs;
+    int titleResourceID;
+    int subtitleResourceID;
 
     String[] permissions;
 
@@ -32,12 +35,13 @@ public class DialogFragmentPermissionReasoning extends DialogFragment
     Button button_negative;
 
 
-    static DialogFragmentPermissionReasoning newInstance(AppCompatActivity parent, int[] titleResourceIDs, int[] subtitleResourceIDs, String[] permissions) {
+    static DialogFragmentPermissionReasoning newInstance(Activity parent, int titleResourceID, int subtitleResourceID, String[] permissions, int reqCode) {
         DialogFragmentPermissionReasoning fg = new DialogFragmentPermissionReasoning();
         fg.parent = parent;
-        fg.titleResourceIDs = titleResourceIDs;
-        fg.subtitleResourceIDs = subtitleResourceIDs;
+        fg.titleResourceID = titleResourceID;
+        fg.subtitleResourceID = subtitleResourceID;
         fg.permissions = permissions;
+        fg.requestCode = reqCode;
 
         return fg;
     }
@@ -53,21 +57,17 @@ public class DialogFragmentPermissionReasoning extends DialogFragment
         button_positive = (Button) view.findViewById(R.id.button_dialogdr_positive);
         button_negative = (Button) view.findViewById(R.id.button_dialogdr_negative);
 
-        if (titleResourceIDs.length>0){ textView_title.setText(titleResourceIDs[0]); }
-        if (subtitleResourceIDs.length>0){ textView_subtitle.setText(subtitleResourceIDs[0]); }
+        if (titleResourceID > 0){ textView_title.setText(titleResourceID); }
+        if (subtitleResourceID > 0){ textView_subtitle.setText(subtitleResourceID); }
 
         button_positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Request permission
-                if (permissions.length>0){ ActivityCompat.requestPermissions(parent, new String[]{permissions[0]}, 1); }
-
-                if (titleResourceIDs.length>0){ titleResourceIDs = Arrays.copyOfRange(titleResourceIDs, 1, titleResourceIDs.length); }
-                if (subtitleResourceIDs.length>0){ subtitleResourceIDs = Arrays.copyOfRange(subtitleResourceIDs, 1, subtitleResourceIDs.length); }
-                if (permissions.length>0){ permissions = Arrays.copyOfRange(permissions, 1, permissions.length); }
-
-                if (permissions.length > 0) {
-                    ProfileManager.OpenDialogFragment(parent, DialogFragmentPermissionReasoning.newInstance(parent, titleResourceIDs, subtitleResourceIDs, permissions), true); //TODO: Handle mIsLargeDisplay
+                //Request permissions
+                for (int i = 0; i < permissions.length; i++){
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        parent.requestPermissions(new String[]{permissions[i]}, requestCode);
+                    }
                 }
 
                 dismiss();

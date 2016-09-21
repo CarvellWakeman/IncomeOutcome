@@ -228,11 +228,11 @@ public class ActivityManageCategories extends AppCompatActivity {
                         editingCategory.SetColor(GetColor());
 
                         //Update old category
-                        ProfileManager.getInstance().UpdateCategory(old, editingCategory);
+                        ProfileManager.getInstance().UpdateCategory(this, old, editingCategory);
                     }
                     else {
                         //Add new category
-                        ProfileManager.getInstance().AddCategory(str, GetColor());
+                        ProfileManager.getInstance().AddCategory(this, str, GetColor());
                     }
 
                     adapter.notifyDataSetChanged();
@@ -322,7 +322,7 @@ public class ActivityManageCategories extends AppCompatActivity {
             new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle).setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ProfileManager.getInstance().RemoveCategory(cr);
+                    ProfileManager.getInstance().RemoveCategory(ActivityManageCategories.this, cr);
                     adapter.notifyDataSetChanged();
                     dialogFragment.dismiss();
                     dialog.dismiss();
