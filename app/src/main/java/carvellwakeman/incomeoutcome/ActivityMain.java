@@ -133,9 +133,9 @@ public class ActivityMain extends AppCompatActivity
 
         //Suggest the user add a profile if none exist
         if (profileManager.GetProfileCount()==0){
-            versusCard.getView().setVisibility(View.GONE);
-            expensesCard.getView().setVisibility(View.GONE);
-            incomeCard.getView().setVisibility(View.GONE);
+            versusCard.getBase().setVisibility(View.GONE);
+            expensesCard.getBase().setVisibility(View.GONE);
+            incomeCard.getBase().setVisibility(View.GONE);
             button_suggestaddprofile.setVisibility(View.VISIBLE);
         }
 
@@ -166,15 +166,15 @@ public class ActivityMain extends AppCompatActivity
 
         //Suggest the user add a profile if none exist
         if (profileManager.GetProfileCount()==0){
-            versusCard.getView().setVisibility(View.GONE);
-            expensesCard.getView().setVisibility(View.GONE);
-            incomeCard.getView().setVisibility(View.GONE);
+            versusCard.getBase().setVisibility(View.GONE);
+            expensesCard.getBase().setVisibility(View.GONE);
+            incomeCard.getBase().setVisibility(View.GONE);
             button_suggestaddprofile.setVisibility(View.VISIBLE);
         }
         else {
-            versusCard.getView().setVisibility(View.VISIBLE);
-            expensesCard.getView().setVisibility(View.VISIBLE);
-            incomeCard.getView().setVisibility(View.VISIBLE);
+            versusCard.getBase().setVisibility(View.VISIBLE);
+            expensesCard.getBase().setVisibility(View.VISIBLE);
+            incomeCard.getBase().setVisibility(View.VISIBLE);
             button_suggestaddprofile.setVisibility(View.GONE);
         }
     }

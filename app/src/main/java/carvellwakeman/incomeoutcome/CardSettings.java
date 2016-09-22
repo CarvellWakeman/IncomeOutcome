@@ -20,11 +20,11 @@ public class CardSettings extends Card
         settingsCount = 0;
 
         //Set Title
-        TextView tv = (TextView) v.findViewById(R.id.row_layout_settingscard_title);
+        TextView tv = (TextView) getBase().findViewById(R.id.row_layout_settingscard_title);
         tv.setText(title);
 
         //Set Body
-        body = (LinearLayout) v.findViewById(R.id.row_layout_settingscard_layout);
+        body = (LinearLayout) getBase().findViewById(R.id.row_layout_settingscard_layout);
     }
 
     public void AddSetting(Setting setting) {

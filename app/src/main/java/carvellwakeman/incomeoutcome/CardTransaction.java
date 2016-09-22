@@ -64,14 +64,14 @@ public class CardTransaction extends Card
         int keyTypeArray = (activityType==0 ? R.array.keytype_array_ex : R.array.keytype_array_in);
 
         //Title
-        textView_title = (TextView) v.findViewById(R.id.textView_cardTransaction_title);
+        textView_title = (TextView) getBase().findViewById(R.id.textView_cardTransaction_title);
         textView_title.setText(title);
 
         //No Data notice
-        textView_nodata = (TextView) v.findViewById(R.id.textView_cardTransaction_nodata);
+        textView_nodata = (TextView) getBase().findViewById(R.id.textView_cardTransaction_nodata);
 
         //Show More switch
-        switch_showLegend = (android.support.v7.widget.SwitchCompat) v.findViewById(R.id.switch_cardTransaction);
+        switch_showLegend = (android.support.v7.widget.SwitchCompat) getBase().findViewById(R.id.switch_cardTransaction);
         switch_showLegend.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -80,7 +80,7 @@ public class CardTransaction extends Card
         });
 
         //Spinner keytype
-        spinner_keyType = (Spinner) v.findViewById(R.id.spinner_cardTransaction);
+        spinner_keyType = (Spinner) getBase().findViewById(R.id.spinner_cardTransaction);
         if (activityType==0) {
             ArrayAdapter adapter = ArrayAdapter.createFromResource(context, keyTypeArray, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(R.layout.spinner_dropdown_list_primary);
@@ -103,7 +103,7 @@ public class CardTransaction extends Card
         else { spinner_keyType.setVisibility(View.GONE); }
 
         //View details button
-        button_viewDetails = (Button) v.findViewById(R.id.button_cardTransaction_viewdetails);
+        button_viewDetails = (Button) getBase().findViewById(R.id.button_cardTransaction_viewdetails);
 
         button_viewDetails.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,10 +127,10 @@ public class CardTransaction extends Card
         });
 
         //Parent layout
-        cardView = (CardView) v.findViewById(R.id.cardTransaction);
+        cardView = (CardView) getBase().findViewById(R.id.cardTransaction);
 
         //Pie chart
-        chart = (PieChart) v.findViewById(R.id.pieChart_cardTransaction);
+        chart = (PieChart) getBase().findViewById(R.id.pieChart_cardTransaction);
 
         chart.setDescription("");
 
@@ -232,7 +232,7 @@ public class CardTransaction extends Card
                 //relativeLayout_controls.setVisibility(View.GONE);
                 //textView_nodata.setVisibility(View.VISIBLE);
                 String transactionType = ProfileManager.getString(activityType==0 ? R.string.format_nodata_viewdetails_expense : R.string.misc_income);
-                button_viewDetails.setText(String.format(context.getString(R.string.format_nodata_viewdetails), transactionType));
+                button_viewDetails.setText(String.format(_context.getString(R.string.format_nodata_viewdetails), transactionType));
             }
         }
 

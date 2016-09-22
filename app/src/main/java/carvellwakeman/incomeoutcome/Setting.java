@@ -11,25 +11,28 @@ public class Setting
 {
     View v;
 
+    TextView tv;
+    TextView stv;
+    ImageView iv;
+
     public Setting(LayoutInflater inflater, int icon, String title, String subtitle, View.OnClickListener listener)
     {
         //Populate settings
         v = inflater.inflate(R.layout.row_layout_setting, null);
 
-        //Set Icon
-        ImageView iv = (ImageView) v.findViewById(R.id.row_layout_setting_icon);
-        iv.setImageResource(icon);
+        //Icon
+        iv = (ImageView) v.findViewById(R.id.row_layout_setting_icon);
 
-        //Set Title
-        TextView tv = (TextView) v.findViewById(R.id.row_layout_setting_title);
-        tv.setText(title);
+        //Title
+        tv = (TextView) v.findViewById(R.id.row_layout_setting_title);
 
-        //Set Subtitle
-        if (subtitle != null && !subtitle.equals("")) {
-            TextView stv = (TextView) v.findViewById(R.id.row_layout_setting_subtitle);
-            stv.setVisibility(View.VISIBLE);
-            stv.setText(subtitle);
-        }
+        //Suttitle
+        stv = (TextView) v.findViewById(R.id.row_layout_setting_subtitle);
+
+        //Set data
+        SetIcon(icon);
+        SetTitle(title);
+        SetSubTitle(subtitle);
 
         //Set listener
         v.setOnClickListener(listener);
@@ -39,6 +42,14 @@ public class Setting
     public View getView()
     {
         return v;
+    }
+
+    public void SetIcon(int icon){ iv.setImageResource(icon); }
+
+    public void SetTitle(String title){ tv.setText(title); }
+    public void SetSubTitle(String subtitle){
+        if (subtitle != null && !subtitle.equals("")) { stv.setVisibility(View.VISIBLE); } else { stv.setVisibility(View.GONE); }
+        stv.setText(subtitle);
     }
 
 

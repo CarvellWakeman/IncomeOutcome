@@ -53,7 +53,7 @@ public class ActivitySettings extends AppCompatActivity
 
 
         //Populate settings
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = getLayoutInflater();//(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)
         ViewGroup insertPoint = (ViewGroup) findViewById(R.id.settings_layout);
 
         insertPoint.removeAllViews();
@@ -127,7 +127,7 @@ public class ActivitySettings extends AppCompatActivity
                     MyTabImportClick();
                 }
             }));
-            CardView c = (CardView) debug.getView().findViewById(R.id.row_layout_settingscard);
+            CardView c = (CardView) debug.getBase().findViewById(R.id.row_layout_settingscard);
             if (c != null) { c.setBackgroundColor(Color.YELLOW); }
         }
     }
@@ -166,7 +166,9 @@ public class ActivitySettings extends AppCompatActivity
                 ProfileManager.OpenDialogFragment(this, DialogFragmentPermissionReasoning.newInstance(ActivitySettings.this, titleID, subTitleID, permissions, 1), true);
             } else {
                 //Request permission
-                ActivitySettings.this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                if (Build.VERSION.SDK_INT >= 23) { //Unnecessary logic call to make the compiler shut up
+                    ActivitySettings.this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                }
             }
         }
     }
@@ -195,7 +197,9 @@ public class ActivitySettings extends AppCompatActivity
                 ProfileManager.OpenDialogFragment(ActivitySettings.this, DialogFragmentPermissionReasoning.newInstance(ActivitySettings.this, titleID, subTitleID, permissions, 2), true);
             } else {
                 //Request permission
-                ActivitySettings.this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                if (Build.VERSION.SDK_INT >= 23) { //Unnecessary logic call to make the compiler shut up
+                    ActivitySettings.this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                }
             }
         }
     }

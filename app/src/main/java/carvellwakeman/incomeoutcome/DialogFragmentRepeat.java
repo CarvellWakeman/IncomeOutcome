@@ -24,7 +24,7 @@ import org.joda.time.LocalDate;
 
 public class DialogFragmentRepeat extends DialogFragment
 {
-    FragmentTimePeriod _parent;
+    ActivityNewTransaction _parent;
     TimePeriod _timePeriod;
 
     //Dates
@@ -52,7 +52,7 @@ public class DialogFragmentRepeat extends DialogFragment
     Button button_positive;
 
 
-    static DialogFragmentRepeat newInstance(FragmentTimePeriod parent, TimePeriod tp) {
+    static DialogFragmentRepeat newInstance(ActivityNewTransaction parent, TimePeriod tp) {
         DialogFragmentRepeat fg = new DialogFragmentRepeat();
         fg._parent = parent;
         fg._timePeriod = new TimePeriod(tp);

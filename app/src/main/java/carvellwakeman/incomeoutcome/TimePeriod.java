@@ -113,7 +113,9 @@ public class TimePeriod implements java.io.Serializable
         dateOfYear = copy.GetDateOfYear();
 
         // Blacklist dates
-        blacklistDates = copy.GetBlacklistDates();
+        blacklistDates = new ArrayList<>();
+        _blacklistDatesQueue = new ArrayList<>();
+        blacklistDates.addAll(copy.GetBlacklistDates());
     }
     public TimePeriod(LocalDate _date)
     {
@@ -164,15 +166,26 @@ public class TimePeriod implements java.io.Serializable
     }
 
     public ArrayList<BlacklistDate> GetBlacklistDates() { return blacklistDates; }
-    public BlacklistDate GetBlacklistDate(int index){ if (index >= 0 && blacklistDates.size() > 0){ return blacklistDates.get(index); } else { return null; } }
+    public BlacklistDate GetBlacklistDate(int index){
+        if (blacklistDates!=null && index >= 0 && blacklistDates.size() > 0){ return blacklistDates.get(index); }
+        return null;
+    }
+    public int GetBlacklistDatesCount() {
+        if (blacklistDates!=null){ return blacklistDates.size(); }
+        return -1;
+    }
+    public int GetBlacklistDatesCountWithoutQueue() {
+        if (blacklistDates != null && _blacklistDatesQueue != null) { return blacklistDates.size() - _blacklistDatesQueue.size(); }
+        return -1;
+    }
 
-    public int GetBlacklistDatesCount() { return blacklistDates.size(); }
-    public int GetBlacklistDatesCountWithoutQueue() { return blacklistDates.size() - _blacklistDatesQueue.size(); }
 
     public String GetBlacklistDateString(int index) { //*Excluding _blacklistDatesQueue
-        if (blacklistDates.get(index) != null){
-            if (!_blacklistDatesQueue.contains(blacklistDates.get(index))){
-                return blacklistDates.get(index).date.toString(ProfileManager.simpleDateFormat) + (blacklistDates.get(index).edited ? " (edited)" : " (deleted)");
+        if (blacklistDates!=null) {
+            if (blacklistDates.get(index) != null) {
+                if (!_blacklistDatesQueue.contains(blacklistDates.get(index))) {
+                    return blacklistDates.get(index).date.toString(ProfileManager.simpleDateFormat) + (blacklistDates.get(index).edited ? " (edited)" : " (deleted)");
+                }
             }
         }
 
@@ -575,7 +588,7 @@ public class TimePeriod implements java.io.Serializable
         //Short-Circuit if repeat type is NEVER
         if (repeatFrequency == Repeat.NEVER) { return ProfileManager.getString(R.string.repeat_never); }
 
-        String repeatTypeString = GetEveryNFormatted(GetRepeatFrequency());
+        String repeatTypeString = ProfileManager.getString(R.string.repeats) + GetEveryNFormatted(GetRepeatFrequency());
 
         //Repeat Frequency
         switch (repeatFrequency){

@@ -54,17 +54,17 @@ public class CardVersus extends Card
         _profileID = profileID;
 
         //Title
-        textView_title = (TextView) v.findViewById(R.id.textView_cardVersus_title);
+        textView_title = (TextView) getBase().findViewById(R.id.textView_cardVersus_title);
 
         //No Data notice
-        textView_nodata = (TextView) v.findViewById(R.id.textView_cardVersus_nodata);
+        textView_nodata = (TextView) getBase().findViewById(R.id.textView_cardVersus_nodata);
 
         //Parent layout
-        cardView = (CardView) v.findViewById(R.id.cardVersus);
+        cardView = (CardView) getBase().findViewById(R.id.cardVersus);
 
         //Control buttons
-        button_monthsBackUp = (ImageView) v.findViewById(R.id.button_cardVersus_up);
-        button_monthsBackDown = (ImageView) v.findViewById(R.id.button_cardVersus_down);
+        button_monthsBackUp = (ImageView) getBase().findViewById(R.id.button_cardVersus_up);
+        button_monthsBackDown = (ImageView) getBase().findViewById(R.id.button_cardVersus_down);
 
         button_monthsBackUp.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
@@ -84,7 +84,7 @@ public class CardVersus extends Card
             }});
 
         //Pie chart
-        chart = (HorizontalBarChart) v.findViewById(R.id.barChart_cardVersus);
+        chart = (HorizontalBarChart) getBase().findViewById(R.id.barChart_cardVersus);
 
         chart.setDescription("");
 
@@ -140,7 +140,7 @@ public class CardVersus extends Card
             LocalDate origStart = _profile.GetStartTime();
             LocalDate origEnd = _profile.GetEndTime();
 
-            _profile.TimePeriodMinus(context, monthsBack-1);
+            _profile.TimePeriodMinus(_context, monthsBack-1);
 
             int nonNullPeriods = 0;
             final ArrayList<Transaction> pastTransactionPeriods = new ArrayList<>();
@@ -150,17 +150,17 @@ public class CardVersus extends Card
                 _profile.SetShowAll(false);
                 _profile.CalculateTimeFrame(null);
                 _profile.SetShowAll(b);
-                tran = _profile.CalculatePeriodTotalBetweenDates(context);
+                tran = _profile.CalculatePeriodTotalBetweenDates(_context);
                 pastTransactionPeriods.add(tran);
                 if (tran != null) { nonNullPeriods++; }
-                _profile.TimePeriodPlus(context, 1);
+                _profile.TimePeriodPlus(_context, 1);
             }
 
 
 
             //Reset time periods back to original dates
-            _profile.SetStartTime(context, origStart);
-            _profile.SetEndTime(context, origEnd);
+            _profile.SetStartTime(_context, origStart);
+            _profile.SetEndTime(_context, origEnd);
 
 
             if (_profile.GetTransactionsSize() > 0 && nonNullPeriods > 0) {

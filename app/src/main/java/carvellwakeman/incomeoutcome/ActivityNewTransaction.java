@@ -10,6 +10,8 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -44,9 +46,6 @@ public class ActivityNewTransaction extends AppCompatActivity
     LocalDate _cloneDate;
     LocalDate _paidBack;
 
-    //String _blacklist_parentID;
-    //LocalDate _blacklistDate;
-    //Expense clone;
 
     //Helper variables
     Double tCost;
@@ -58,11 +57,16 @@ public class ActivityNewTransaction extends AppCompatActivity
     //Adapters
     ArrayAdapter<String> otherPeopleAdapter;
     ArrayAdapter<String> categoryAdapter;
+    AdapterBlacklistDates blacklistAdapter;
 
-    //Fragments
-    FragmentManager fragmentManager;
-    FragmentTimePeriod fragment_timePeriod;
 
+    //Time Period
+    TimePeriod _timePeriod;
+    LocalDate startDate;
+
+    Card fTimePeriod;
+    Setting dateTP;
+    Setting repeatTP;
 
     //Views
     Toolbar toolbar;
@@ -93,6 +97,7 @@ public class ActivityNewTransaction extends AppCompatActivity
     CardView cardView_splitPercentage;
     CardView cardView_category;
     CardView cardView_description;
+    CardView cardView_blacklist;
 
     CheckBox checkBox_paidBack;
 
@@ -100,6 +105,9 @@ public class ActivityNewTransaction extends AppCompatActivity
     FrameLayout frameLayout_timePeriod;
 
     DiscreteSeekBar discreteSeekBar_split;
+
+    RecyclerView recyclerView_blacklistDates;
+
 
 
     boolean noInfiniteLoopPlease = true;
@@ -133,6 +141,7 @@ public class ActivityNewTransaction extends AppCompatActivity
         cardView_cost = (CardView) findViewById(R.id.card_newTransaction_cost);
         cardView_category = (CardView) findViewById(R.id.card_newTransaction_category);
         cardView_description = (CardView) findViewById(R.id.card_newTransaction_description);
+        cardView_blacklist = (CardView) findViewById(R.id.card_timeperiod_blacklist);
 
         linearLayout_splitCheckbox = (LinearLayout) findViewById(R.id.linearLayout_newTransaction_splitCostCheckBox);
         frameLayout_timePeriod = (FrameLayout) findViewById(R.id.frameLayout_timePeriod);
@@ -312,11 +321,48 @@ public class ActivityNewTransaction extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
+        //Blacklist
+        recyclerView_blacklistDates = (RecyclerView) findViewById(R.id.recyclerView_blacklistDates);
+
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(NpaLinearLayoutManager.VERTICAL);
+        llm.scrollToPosition(0);
+        recyclerView_blacklistDates.setLayoutManager(llm);
+
+
+
         //Set TimePeriod fragment
-        fragment_timePeriod = new FragmentTimePeriod();
-        fragmentManager = getFragmentManager();
+        LayoutInflater inflater = getLayoutInflater();//(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)
+
+        fTimePeriod = new Card(this, inflater, frameLayout_timePeriod, 0);
+        dateTP = new Setting(inflater, R.drawable.ic_calendar_white_24dp, getString(R.string.time_setdate), null,
+                new View.OnClickListener() { @Override public void onClick(View v) {
+                    //Hide soft keyboard
+                    ProfileManager.hideSoftKeyboard(ActivityNewTransaction.this, v);
+
+                    //Open date picker dialog
+                    if (startDate == null) { startDate = new LocalDate(); }
+                    new DatePickerDialog(ActivityNewTransaction.this, datePicker2, startDate.getYear(), startDate.getMonthOfYear()-1, startDate.getDayOfMonth()).show();
+                }}
+        );
+        repeatTP = new Setting(inflater, R.drawable.ic_repeat_white_24dp, getString(R.string.repeat), null,
+                new View.OnClickListener() { @Override public void onClick(View v) {
+                    DialogFragmentRepeat dfr = DialogFragmentRepeat.newInstance(ActivityNewTransaction.this, _timePeriod);
+                    ProfileManager.OpenDialogFragment(ActivityNewTransaction.this, dfr, true);
+                }}
+        );
+        fTimePeriod.AddView(dateTP.getView());
+        fTimePeriod.AddView(repeatTP.getView());
+
+        //Default timeperiod data
+        if (startDate == null) { startDate = new LocalDate(); }
+        if (_timePeriod == null) { _timePeriod = new TimePeriod(startDate); }
+        SetDateButtonTitle();
+
+        //fragment_timePeriod = new FragmentTimePeriod();
+        //fragmentManager = getFragmentManager();
         //FragmentTransaction fragmentTransaction = ;
-        fragmentManager.beginTransaction().replace(R.id.frameLayout_timePeriod, fragment_timePeriod).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+        //fragmentManager.beginTransaction().replace(R.id.frameLayout_timePeriod, fragment_timePeriod).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
         //fragmentTransaction.addToBackStack(null);
         //fragmentTransaction.commit();
 
@@ -495,6 +541,34 @@ public class ActivityNewTransaction extends AppCompatActivity
         }
     };
 
+    //Date picker dialog listener
+    DatePickerDialog.OnDateSetListener datePicker2 = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
+        {
+            //Set date
+            startDate = new LocalDate(year, monthOfYear+1, dayOfMonth);
+
+            //Time Period
+            _timePeriod.SetDate(startDate);
+
+            _timePeriod.SetRepeatDayOfMonth(1);
+            _timePeriod.SetDateOfYear(null);
+
+            switch(_timePeriod.GetRepeatFrequency()){
+                case MONTHLY:
+                    _timePeriod.SetRepeatDayOfMonth(startDate.getDayOfMonth());
+                    break;
+                case YEARLY:
+                    _timePeriod.SetDateOfYear(startDate);
+                    break;
+            }
+
+            //Format button text
+            SetDateButtonTitle();
+        }
+    };
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -587,11 +661,16 @@ public class ActivityNewTransaction extends AppCompatActivity
 
                     //Copy time period (If no clone date was provided)
                     if (_cloneDate == null) {
-                        fragment_timePeriod.SetTimePeriod(tr.GetTimePeriod());
+                        SetTimePeriod(tr.GetTimePeriod());
                     }
                     else {
-                        fragment_timePeriod.SetTimePeriod(new TimePeriod(_cloneDate));
+                        SetTimePeriod(new TimePeriod(_cloneDate));
                     }
+
+                    //Blacklist cardview
+                    blacklistAdapter = new AdapterBlacklistDates(this, GetTimePeriod());
+                    recyclerView_blacklistDates.setAdapter(blacklistAdapter);
+                    if (GetTimePeriod()!=null && GetTimePeriod().GetBlacklistDatesCount()>0) { cardView_blacklist.setVisibility(View.VISIBLE); }
 
 
                     //Copy editText_cost
@@ -698,7 +777,7 @@ public class ActivityNewTransaction extends AppCompatActivity
             SetChildrenEnabled(cardView_category, false);
             SetChildrenEnabled(cardView_description, false);
             //SetChildrenEnabled(fragment_timePeriod.linearLayout_parent, false);
-            fragment_timePeriod.SetEnabled(false);
+            SetChildrenEnabled(fTimePeriod.getBase(), false);
         } else {
             checkBox_paidBack.setText(getString(R.string.confirm_paidback));
 
@@ -707,8 +786,22 @@ public class ActivityNewTransaction extends AppCompatActivity
             SetChildrenEnabled(cardView_category, true);
             SetChildrenEnabled(cardView_description, true);
             //SetChildrenEnabled(fragment_timePeriod.linearLayout_parent, true);
-            fragment_timePeriod.SetEnabled(true);
+            SetChildrenEnabled(fTimePeriod.getBase(), true);
         }
+    }
+
+
+    //Time Period
+    public void SetTimePeriod(TimePeriod tp){
+        _timePeriod = new TimePeriod(tp);
+        startDate = tp.GetDate();
+        SetDateButtonTitle();
+    }
+    public TimePeriod GetTimePeriod(){ return _timePeriod; }
+
+    public void SetDateButtonTitle(){
+        if (dateTP != null) { dateTP.SetTitle( startDate.toString(ProfileManager.simpleDateFormat) ); }
+        if (repeatTP != null) { repeatTP.SetTitle( _timePeriod.GetRepeatStringShort() ); }
     }
 
 
@@ -816,7 +909,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                     newTr.SetDescription(editText_description.getText().toString());
 
                     //Set Time Period
-                    newTr.SetTimePeriod(fragment_timePeriod.GetTimePeriod());
+                    newTr.SetTimePeriod(GetTimePeriod());
 
                     //Set Split value
                     if (checkBox_split.isChecked() && spinner_otherPeople.getSelectedItem() != null) {
