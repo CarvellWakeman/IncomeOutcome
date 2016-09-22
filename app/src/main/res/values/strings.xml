@@ -87,6 +87,8 @@
     <string name="misc_expense">Expense</string>
     <string name="misc_income">Income</string>
     <string name="misc_all">All</string>
+    <string name="misc_on"> on </string>
+    <string name="misc_onday"> on day </string>
 
     <!-- Placeholders -->
     <string name="placeholder_title">Title</string>
@@ -183,6 +185,7 @@
     <string name="action_cancel">CANCEL</string>
     <string name="action_select">SELECT</string>
     <string name="action_continue">CONTINUE</string>
+    <string name="action_done">DONE</string>
     <string name="action_save">SAVE</string>
     <string name="action_new">NEW</string>
     <string name="action_import">IMPORT</string>
@@ -224,6 +227,7 @@
     <string name="time_winter">Winter, </string>
     <string name="time_spring">Spring, </string>
     <string name="time_fall">Autumn, </string>
+    <string name="time_starts">Starts </string>
     <string name="time_started">Started </string>
 
     <!-- Sort & Filter -->
@@ -249,16 +253,25 @@
 
 
     <!-- Repeat Info -->
+    <string name="repeat_never">Repeat: Never</string>
     <string name="repeat">Repeat</string>
+    <string name="repeats">Repeats</string>
     <string name="repeat_every">Every</string>
+    <string name="repeat_everylower">every</string>
     <string name="repeat_occurevery">Occur Every</string>
-    <string name="repeat_days">day(s)</string>
-    <string name="repeat_weeks">week(s) on</string>
-    <string name="repeat_months">month(s) on day</string>
-    <string name="repeat_years">year(s) on</string>
-    <string name="repeat_times">time(s)</string>
+    <string name="repeat_day">day</string>
+    <string name="repeat_days">days</string>
+    <string name="repeat_week">week</string>
+    <string name="repeat_weeks">weeks</string>
+    <string name="repeat_month">month</string>
+    <string name="repeat_months">months</string>
+    <string name="repeat_year">year</string>
+    <string name="repeat_years">years</string>
+    <string name="repeat_event">event</string>
+    <string name="repeat_events">events</string>
 
     <string name="repeat_until">Repeat Until</string>
+    <string name="repeat_until_format">\nuntil </string>
 
     <string name="repeat_mon">Mon</string>
     <string name="repeat_tue">Tue</string>
@@ -267,6 +280,11 @@
     <string name="repeat_fri">Fri</string>
     <string name="repeat_sat">Sat</string>
     <string name="repeat_sun">Sun</string>
+
+
+    <string name="repeat_forever">Forever</string>
+    <string name="until">Until</string>
+    <string name="repeat_for">For</string>
 
     <!-- Key Type array -->
     <string-array name="keytype_array_ex">
@@ -281,11 +299,11 @@
 
     <!-- Repeat arrays -->
     <string-array name="repeat_array">
-        <item>Never</item>
-        <item>Daily</item>
-        <item>Weekly</item>
-        <item>Monthly</item>
-        <item>Yearly</item>
+        <item>DOES NOT REPEAT</item>
+        <item>REPEAT DAILY</item>
+        <item>REPEAT WEEKLY</item>
+        <item>REPEAT MONTHLY</item>
+        <item>REPEAT YEARLY</item>
     </string-array>
 
     <string-array name="period_array">
@@ -298,7 +316,7 @@
     <string-array name="repeat_until">
         <item>Forever</item>
         <item>Until a date</item>
-        <item>n times</item>
+        <item>For a number of events</item>
     </string-array>
 
     <string-array name="days_of_week">

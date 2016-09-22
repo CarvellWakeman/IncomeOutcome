@@ -125,16 +125,20 @@ public class TimePeriod implements java.io.Serializable
     //Blacklist
     public void AddBlacklistDate(LocalDate date, Boolean edited){ blacklistDates.add(new BlacklistDate(date, edited)); }
     public void FlushBlacklistDateQueue(){
-        for (int i = 0; i < _blacklistDatesQueue.size(); i++) {
-            //Remove objects from queue
-            blacklistDates.remove(_blacklistDatesQueue.get(i));
+        if (_blacklistDatesQueue !=  null) {
+            for (int i = 0; i < _blacklistDatesQueue.size(); i++) {
+                //Remove objects from queue
+                blacklistDates.remove(_blacklistDatesQueue.get(i));
+            }
         }
     }
     public void QueueBlacklistDateRemoval(LocalDate date) {
-        for (int i = 0; i < blacklistDates.size(); i++) {
-            if (blacklistDates.get(i).date.compareTo(date) == 0) {
-                //Queue blacklist date for deletion
-                _blacklistDatesQueue.add(blacklistDates.get(i));
+        if (blacklistDates != null) {
+            for (int i = 0; i < blacklistDates.size(); i++) {
+                if (blacklistDates.get(i).date.compareTo(date) == 0) {
+                    //Queue blacklist date for deletion
+                    _blacklistDatesQueue.add(blacklistDates.get(i));
+                }
             }
         }
     }
@@ -143,15 +147,19 @@ public class TimePeriod implements java.io.Serializable
         FlushBlacklistDateQueue();
     }
     //public void ClearBlacklistDates(){ blacklistDates.clear(); }
-    public void ClearBlacklistQueue() { _blacklistDatesQueue.clear(); }
+    public void ClearBlacklistQueue() { if (_blacklistDatesQueue != null){ _blacklistDatesQueue.clear(); } }
 
     public String GetBlacklistDatesSaving(){
         String str = "";
-        for (int i = 0; i < blacklistDates.size(); i++) {
-            str += blacklistDates.get(i).date.toString(ProfileManager.simpleDateFormatSaving) + "|" + (blacklistDates.get(i).edited ? 1 : 0) + ",";
+
+        if (blacklistDates != null) {
+            for (int i = 0; i < blacklistDates.size(); i++) {
+                str += blacklistDates.get(i).date.toString(ProfileManager.simpleDateFormatSaving) + "|" + (blacklistDates.get(i).edited ? 1 : 0) + ",";
+            }
+            //Remove last comma
+            if (str.length() > 0) { str = str.substring(0, str.length() - 1); }
         }
-        //Remove last comma
-        if (str.length() > 0) { str = str.substring(0, str.length()-1); }
+
         return str;
     }
 
@@ -477,7 +485,7 @@ public class TimePeriod implements java.io.Serializable
     public String GetDateFormatted()
     {
         if (date != null) { return date.toString(ProfileManager.simpleDateFormat); }
-        else { return "No Date"; }
+        else { return ProfileManager.getString(R.string.time_nodate); }
     }
     public String GetRepeatUntilDateFormatted()
     {
@@ -495,71 +503,112 @@ public class TimePeriod implements java.io.Serializable
                 case NEVER:
                     return "";
                 case DAILY:
-                    return " every " + String.valueOf(repeatEveryN) + " days";
+                    return " " + ProfileManager.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + ProfileManager.getString(R.string.repeat_days);
                 case WEEKLY:
-                    return " every " + String.valueOf(repeatEveryN) + " weeks";
+                    return " " + ProfileManager.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + ProfileManager.getString(R.string.repeat_weeks);
                 case MONTHLY:
-                    return " every " + String.valueOf(repeatEveryN) + " months";
+                    return " " + ProfileManager.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + ProfileManager.getString(R.string.repeat_months);
                 case YEARLY:
-                    return " every " + String.valueOf(repeatEveryN) + " years";
+                    return " " + ProfileManager.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + ProfileManager.getString(R.string.repeat_years);
                 default:
                     return "";
             }
         }
     }
     public String GetRepeatDaysOfWeek() {
-        String str = " on" + (repeatDayOfWeek[0] ? " Mon," : "")
-                + (repeatDayOfWeek[1] ? " Tues," : "")
-                + (repeatDayOfWeek[2] ? " Wed," : "")
-                + (repeatDayOfWeek[3] ? " Thur," : "")
-                + (repeatDayOfWeek[4] ? " Fri," : "")
-                + (repeatDayOfWeek[5] ? " Sat," : "")
-                + (repeatDayOfWeek[6] ? " Sun" : "");
+        String str = ProfileManager.getString(R.string.misc_on)
+
+                + (repeatDayOfWeek[0] ? " " + ProfileManager.getString(R.string.repeat_mon) + "," : "")
+                + (repeatDayOfWeek[1] ? " " + ProfileManager.getString(R.string.repeat_tue) + "," : "")
+                + (repeatDayOfWeek[2] ? " " + ProfileManager.getString(R.string.repeat_wed) + "," : "")
+                + (repeatDayOfWeek[3] ? " " + ProfileManager.getString(R.string.repeat_thur) + "," : "")
+                + (repeatDayOfWeek[4] ? " " + ProfileManager.getString(R.string.repeat_fri) + "," : "")
+                + (repeatDayOfWeek[5] ? " " + ProfileManager.getString(R.string.repeat_sat) + "," : "")
+                + (repeatDayOfWeek[6] ? " " + ProfileManager.getString(R.string.repeat_sun) + "" : "");
         //Remove last comma
         if (str.charAt(str.length()-1) == ','){ str = str.substring(0, str.length()-1); }
         return str;
     }
 
-    public String GetDayOfMonthFormatted(){ return " on day " + String.valueOf(repeatDayOfMonth); }
-    public String GetRepeatYear(){ return " on " + dateOfYear.toString(ProfileManager.simpleDateFormatNoYear); }
+    public String GetDayOfMonthFormatted(){ return ProfileManager.getString(R.string.misc_onday) + " " + String.valueOf(repeatDayOfMonth); }
+    public String GetRepeatYear(){ return ProfileManager.getString(R.string.misc_on) + " " + dateOfYear.toString(ProfileManager.simpleDateFormatNoYear); }
 
-    public String GetRepeatString(Repeat type, RepeatUntil until){
+    public String GetRepeatString(){
         //Short-Circuit if repeat type is NEVER
-        if (type == Repeat.NEVER) { return GetDateFormatted(); }
+        if (repeatFrequency == Repeat.NEVER) { return GetDateFormatted(); }
 
-        String tense = (date.compareTo(LocalDate.now()) <= 0 ? "Started " : "Starts ");
-        String repeatTypeString = tense + GetDateFormatted() + "\nRepeats" + GetEveryNFormatted(GetRepeatFrequency());
+        String tense = ProfileManager.getString(date.compareTo(LocalDate.now()) <= 0 ? R.string.time_started : R.string.time_starts);
+        String repeatTypeString = tense + " " + GetDateFormatted() + "\n" + ProfileManager.getString(R.string.repeats) + " " + GetEveryNFormatted(GetRepeatFrequency());
 
         //Repeat Frequency
-        switch (type){
+        switch (repeatFrequency){
             case WEEKLY:
-                repeatTypeString += GetRepeatDaysOfWeek();
+                repeatTypeString += " " + GetRepeatDaysOfWeek();
                 break;
             case MONTHLY:
-                repeatTypeString += GetDayOfMonthFormatted();
+                repeatTypeString += " " +GetDayOfMonthFormatted();
                 break;
             case YEARLY:
-                repeatTypeString += GetRepeatYear();
+                repeatTypeString += " " +GetRepeatYear();
                 break;
         }
 
         //Repeat Until
-        switch (until)
+        switch (repeatUntil)
         {
             case FOREVER:
-                repeatTypeString += ", forever";
+                repeatTypeString += ", " + ProfileManager.getString(R.string.repeat_forever);
                 break;
             case DATE:
-                repeatTypeString += ",\nuntil " + GetRepeatUntilDateFormatted();
+                repeatTypeString += ",\n" + ProfileManager.getString(R.string.until) + " " + GetRepeatUntilDateFormatted();
                 break;
             case TIMES:
-                repeatTypeString += "," + GetRepeatANumberOfTimes() + " times";
+                repeatTypeString += ", " + GetRepeatANumberOfTimes() + " " + ProfileManager.getString(R.string.repeat_events);
                 break;
         }
 
         //Return
         return repeatTypeString;
     }
+
+    public String GetRepeatStringShort(){
+        //Short-Circuit if repeat type is NEVER
+        if (repeatFrequency == Repeat.NEVER) { return ProfileManager.getString(R.string.repeat_never); }
+
+        String repeatTypeString = GetEveryNFormatted(GetRepeatFrequency());
+
+        //Repeat Frequency
+        switch (repeatFrequency){
+            case WEEKLY:
+                repeatTypeString += "; " + GetRepeatDaysOfWeek();
+                break;
+            case MONTHLY:
+                repeatTypeString += "; " +GetDayOfMonthFormatted();
+                break;
+            case YEARLY:
+                repeatTypeString += "; " +GetRepeatYear();
+                break;
+        }
+
+        //Repeat Until
+        switch (repeatUntil)
+        {
+            case FOREVER:
+                repeatTypeString += "; " + ProfileManager.getString(R.string.repeat_forever);
+                break;
+            case DATE:
+                repeatTypeString += "; " + ProfileManager.getString(R.string.until) + " " + GetRepeatUntilDateFormatted();
+                break;
+            case TIMES:
+                repeatTypeString += "; " + GetRepeatANumberOfTimes() + " " + ProfileManager.getString(R.string.repeat_events);
+                break;
+        }
+
+        //Return
+        return repeatTypeString;
+    }
+
+
 
 
     //Equals

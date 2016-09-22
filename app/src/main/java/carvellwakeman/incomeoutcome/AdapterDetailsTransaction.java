@@ -181,7 +181,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                         holder.expandCard.setVisibility(View.VISIBLE);
 
                         //Repeat Text
-                        holder.repeat.setText(parent_tp.GetRepeatString(parent_tp.GetRepeatFrequency(), parent_tp.GetRepeatUntil()));
+                        holder.repeat.setText(parent_tp.GetRepeatString());
 
                         if (parent_tp.GetFirstOccurrence().compareTo(tp.GetDate()) == 0 || parent.GetID() == transaction.GetID()) {
                             //Indent

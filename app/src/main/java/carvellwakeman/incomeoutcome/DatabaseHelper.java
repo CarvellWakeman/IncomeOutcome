@@ -625,6 +625,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public void DeleteTable(String tableName){
         if (isTableExists(tableName, false)){
             database.delete(tableName, null, null);
+            database.execSQL("ALTER TABLE " + tableName + " AUTO_INCREMENT = 1");
             //database.execSQL(tableName);
         } //else { ProfileManager.Print(tableName + " not found"); }
     }

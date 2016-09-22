@@ -698,7 +698,7 @@ public class ActivityNewTransaction extends AppCompatActivity
             SetChildrenEnabled(cardView_category, false);
             SetChildrenEnabled(cardView_description, false);
             //SetChildrenEnabled(fragment_timePeriod.linearLayout_parent, false);
-            fragment_timePeriod.SetChildrenEnabled(false);
+            fragment_timePeriod.SetEnabled(false);
         } else {
             checkBox_paidBack.setText(getString(R.string.confirm_paidback));
 
@@ -707,7 +707,7 @@ public class ActivityNewTransaction extends AppCompatActivity
             SetChildrenEnabled(cardView_category, true);
             SetChildrenEnabled(cardView_description, true);
             //SetChildrenEnabled(fragment_timePeriod.linearLayout_parent, true);
-            fragment_timePeriod.SetChildrenEnabled(true);
+            fragment_timePeriod.SetEnabled(true);
         }
     }
 

@@ -22,6 +22,7 @@
     <item name="white" type="color">#FFFFFF</item>
     <item name="black" type="color">#212121</item>
     <item name="gray" type="color">#757575</item>
+    <item name="vltgray" type="color">#EEEEEE</item>
     <item name="ltgray" type="color">#FFCCCCCC</item>
     <item name="turquoise" type="color">#009688</item>
 

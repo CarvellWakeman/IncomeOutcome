@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/linearLayout_repeatspinner"
+        android:layout_height="@dimen/toolbar_size"
+        android:layout_width="match_parent">
+        <Spinner
+            android:id="@+id/spinner_repeatFrequency"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:theme="@style/MaterialTheme"
+            android:layout_marginStart="@dimen/cardview_default_margin"
+            android:layout_marginTop="@dimen/cardview_default_margin"
+            android:layout_marginBottom="@dimen/cardview_default_margin"
+            android:layout_marginEnd="@dimen/cardview_default_margin" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/linearLayout_repeatspinner"
+        android:background="@color/vltgray" >
+
+        <!-- Shared between all repeats -->
+        <RelativeLayout
+            android:id="@+id/relativeLayout_repeat_everyn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dp"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp">
+
+            <EditText
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:imeOptions="actionDone"
+                android:id="@+id/editText_repeateveryn"
+                android:theme="@style/Base.Theme.AppCompat.Light"
+                android:layout_toEndOf="@+id/textView_every"
+                android:text="@string/format_one"
+                android:gravity="center_horizontal"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/repeat_every"
+                android:id="@+id/textView_every"
+                android:gravity="center_vertical"
+                android:layout_alignTop="@+id/editText_repeateveryn"
+                android:layout_alignBottom="@+id/editText_repeateveryn"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/repeat_days"
+                android:id="@+id/textView_repeatType"
+                android:layout_toEndOf="@+id/editText_repeateveryn"
+                android:gravity="center_vertical"
+                android:layout_alignTop="@+id/editText_repeateveryn"
+                android:layout_alignBottom="@+id/editText_repeateveryn"
+                android:textColor="@color/black" />
+
+        </RelativeLayout>
+
+        <!-- Special section for Weekly -->
+        <RelativeLayout
+            android:id="@+id/relativeLayout_repeat_weekly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/repeat_mon"
+                android:id="@+id/checkBox_repeatWeekly_mon"
+                android:checked="true" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/repeat_tue"
+                android:id="@+id/checkBox_repeatWeekly_tues"
+                android:layout_toEndOf="@+id/checkBox_repeatWeekly_mon"
+                android:layout_alignBottom="@+id/checkBox_repeatWeekly_mon" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/repeat_wed"
+                android:id="@+id/checkBox_repeatWeekly_wed"
+                android:layout_toEndOf="@+id/checkBox_repeatWeekly_tues"
+                android:layout_alignBottom="@+id/checkBox_repeatWeekly_tues" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/repeat_thur"
+                android:id="@+id/checkBox_repeatWeekly_thur"
+                android:layout_below="@+id/checkBox_repeatWeekly_mon"
+                android:layout_alignStart="@+id/checkBox_repeatWeekly_mon" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/repeat_fri"
+                android:id="@+id/checkBox_repeatWeekly_fri"
+                android:layout_alignTop="@+id/checkBox_repeatWeekly_thur"
+                android:layout_alignStart="@+id/checkBox_repeatWeekly_tues" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/repeat_sat"
+                android:id="@+id/checkBox_repeatWeekly_sat"
+                android:layout_alignTop="@+id/checkBox_repeatWeekly_fri"
+                android:layout_toEndOf="@+id/checkBox_repeatWeekly_tues" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/repeat_sun"
+                android:id="@+id/checkBox_repeatWeekly_sun"
+                android:layout_below="@+id/checkBox_repeatWeekly_thur"
+                android:layout_alignStart="@+id/checkBox_repeatWeekly_thur" />
+
+        </RelativeLayout>
+
+        <!-- Repeat Until -->
+        <RelativeLayout
+            android:id="@+id/relativeLayout_repeat_until"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp">
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner_repeatUntil"
+
+                android:layout_alignParentStart="true"
+                android:theme="@style/MaterialTheme" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_repeatUntil"
+                style="@style/FlatButtonTheme"
+                android:text="@string/time_setdate"
+                android:layout_alignTop="@+id/spinner_repeatUntil"
+                android:layout_toEndOf="@+id/spinner_repeatUntil"
+                android:layout_alignBottom="@+id/spinner_repeatUntil"
+                android:visibility="gone" />
+
+            <EditText
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/editText_repeatNumberOccurences"
+                android:layout_gravity="center_horizontal|top"
+                android:theme="@style/Base.Theme.AppCompat.Light"
+                android:text="@string/format_one"
+                android:layout_marginStart="10dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_alignTop="@+id/spinner_repeatUntil"
+                android:layout_toEndOf="@+id/spinner_repeatUntil"
+                android:layout_alignBottom="@+id/spinner_repeatUntil"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/repeat_event"
+                android:gravity="center_vertical"
+                android:layout_alignBottom="@+id/editText_repeatNumberOccurences"
+                android:layout_alignTop="@+id/editText_repeatNumberOccurences"
+                android:layout_toEndOf="@+id/editText_repeatNumberOccurences"
+                android:visibility="gone"
+                android:id="@+id/textView_repeatnumbertimes" />
+
+        </RelativeLayout>
+
+        <!-- Done -->
+        <Button
+            android:layout_width="match_parent"
+            style="@style/FlatButtonTheme"
+            android:text="@string/action_done"
+            android:id="@+id/button_dialogrep_positive"
+            android:layout_height="56dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -41,12 +41,7 @@
     </style>
 
 
-    <!-- Button Themes -->
-    <style name="RaisedButtonTheme" parent="android:style/Widget.Material.Button">
-        <!--<item name="android:background">@drawable/selectable_item_background</item>-->
-        <item name="android:background">@drawable/raised_button_background</item>
-        <item name="android:textColor">@drawable/selector_button_enabled</item>
-    </style>
+
 
     <!-- Checkbox Themes -->
     <style name="WhiteCheckboxTheme" parent="Theme.AppCompat">
@@ -58,11 +53,23 @@
         <item name="colorControlActivated">@color/black</item>
     </style>
 
+
+    <!-- Button Themes -->
+    <style name="RaisedButtonTheme" parent="android:style/Widget.Material.Button">
+        <!--<item name="android:background">@drawable/selectable_item_background</item>-->
+        <item name="android:background">@drawable/raised_button_background</item>
+        <item name="android:textColor">@drawable/selector_button_enabled</item>
+    </style>
     <!-- ?android:attr/borderlessButtonStyle -->
     <style name="FlatButtonTheme" parent="@style/Widget.AppCompat.Button.Borderless">
         <!--<item name="android:background">@drawable/selectable_item_background</item>-->
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
         <item name="android:textColor">@drawable/selector_button_enabled</item>
+    </style>
+    <style name="FlatButtonThemeBlack" parent="@style/Widget.AppCompat.Button.Borderless">
+        <!--<item name="android:background">@drawable/selectable_item_background</item>-->
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
 

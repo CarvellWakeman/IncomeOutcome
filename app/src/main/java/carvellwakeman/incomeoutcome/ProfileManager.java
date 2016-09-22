@@ -264,6 +264,13 @@ public class ProfileManager
     //Dialog fragment manager
     public static void OpenDialogFragment(Activity caller, DialogFragment fragment, boolean openAsDialogFragment){
         if (openAsDialogFragment) { // The device is using a large layout, so show the fragment as a dialog
+            FragmentTransaction ft = caller.getFragmentManager().beginTransaction();
+            Fragment prev = caller.getFragmentManager().findFragmentByTag("dialog");
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            ft.addToBackStack(null);
+
             fragment.show(caller.getFragmentManager(), "dialog");
             //FragmentTransaction ft = fragmentManager.beginTransaction();
             //ft.add(fragment, null);
@@ -756,8 +763,10 @@ public class ProfileManager
     //Hide Soft Keyboard
     public static void hideSoftKeyboard(Activity act, View v)
     {
-        InputMethodManager imm = (InputMethodManager)act.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        if (v != null) {
+            InputMethodManager imm = (InputMethodManager) act.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
     }
 
     //Color parsing
