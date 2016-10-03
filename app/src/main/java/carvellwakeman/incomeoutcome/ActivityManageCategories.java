@@ -189,6 +189,26 @@ public class ActivityManageCategories extends AppCompatActivity {
             }
         });
 
+
+        LayoutInflater inflater = getLayoutInflater();
+
+        Card DefaultCategories = new Card(this, inflater, layout_edit, 0);
+        Setting loadDefCat = new Setting(inflater, R.drawable.ic_database_plus_white_24dp, getString(R.string.title_settings_defaultcategories), getString(R.string.subtitle_settings_defaultcategories),
+                new View.OnClickListener() { @Override public void onClick(View v) {
+                    new AlertDialog.Builder(ActivityManageCategories.this).setTitle(R.string.confirm_areyousure_deleteall)
+                            .setPositiveButton(R.string.action_continue, new DialogInterface.OnClickListener() {
+                                @Override public void onClick(DialogInterface dialog, int which) {
+                                    ProfileManager.getInstance().RemoveAllCategories(ActivityManageCategories.this);
+                                    ProfileManager.getInstance().LoadDefaultCategories(ActivityManageCategories.this);
+                                    adapter.notifyDataSetChanged();
+                                }})
+                            .setNegativeButton(R.string.action_cancel, null)
+                            .create().show();
+                }}
+        );
+        DefaultCategories.AddView(loadDefCat.getView());
+
+
     }
 
 

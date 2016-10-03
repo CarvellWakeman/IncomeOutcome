@@ -243,15 +243,18 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                     totalsAdapter.notifyDataSetChanged();
                 }}, _profile), true);
                 return true;
+            default:
+                SortFilterOptions.Run(this, _profile, item, activityType,
+                        new ProfileManager.CallBack() { @Override public void call() {
+                            _profile.CalculateTimeFrame(activityType);
+                            _profile.CalculateTotalsInTimeFrame(activityType, keyType);
+                            elementsAdapter.notifyDataSetChanged();
+                            totalsAdapter.notifyDataSetChanged();
+                        }});
+                break;
         }
 
-        SortFilterOptions.Run(this, _profile, item, activityType,
-            new ProfileManager.CallBack() { @Override public void call() {
-                _profile.CalculateTimeFrame(activityType);
-                _profile.CalculateTotalsInTimeFrame(activityType, keyType);
-                elementsAdapter.notifyDataSetChanged();
-                totalsAdapter.notifyDataSetChanged();
-            }});
+
         return true;
     }
 

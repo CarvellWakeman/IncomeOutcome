@@ -1,6 +1,5 @@
 package carvellwakeman.incomeoutcome;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -9,9 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Set;
 
 public class AdapterTransactionTotals extends RecyclerView.Adapter<AdapterTransactionTotals.TransactionTotalsViewHolder>
 {
@@ -48,7 +45,7 @@ public class AdapterTransactionTotals extends RecyclerView.Adapter<AdapterTransa
     @Override
     public TransactionTotalsViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout_transaction_total, parent, false);
+        View itemView = LayoutInflater.from(context).inflate(R.layout.row_layout_transaction_total, parent, false);
 
         return new TransactionTotalsViewHolder(itemView);
     }

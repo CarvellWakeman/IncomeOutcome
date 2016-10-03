@@ -223,7 +223,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
 
     //View Holder class
-    public class TransactionViewHolder extends RecyclerView.ViewHolder implements PopupMenu.OnMenuItemClickListener
+    public class TransactionViewHolder extends RecyclerView.ViewHolder implements PopupMenu.OnMenuItemClickListener, View.OnLongClickListener
     {
         ImageView colorbar;
         LinearLayout indent;
@@ -297,23 +297,10 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
             overflow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    PopupMenu popup = new PopupMenu(activity, overflow);
-                    MenuInflater inflater = popup.getMenuInflater();
-
-                    Transaction tran = GetTransactionParent(GetTransaction(getAdapterPosition()));
-                    if (tran != null) {
-                        TimePeriod tp = tran.GetTimePeriod();
-                        if (tp != null){
-                            overflowMenu = (tp.DoesRepeat() ? R.menu.transaction_overflow_repeat : R.menu.transaction_overflow_single);
-                        } else { overflowMenu = R.menu.transaction_overflow_single; }
-
-                        inflater.inflate(overflowMenu, popup.getMenu());
-                        popup.setOnMenuItemClickListener(TransactionViewHolder.this);
-                        popup.show();
-                    }
-
+                   OpenOverflowMenu();
                 }
             });
+            cv.setOnLongClickListener(this);
         }
 
         //Overflow menu
@@ -364,6 +351,28 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
             }
 
             return false;
+        }
+
+        @Override
+        public boolean onLongClick(View v){
+            OpenOverflowMenu();
+            return true;
+        }
+        public void OpenOverflowMenu(){
+            PopupMenu popup = new PopupMenu(activity, overflow);
+            MenuInflater inflater = popup.getMenuInflater();
+
+            Transaction tran = GetTransactionParent(GetTransaction(getAdapterPosition()));
+            if (tran != null) {
+                TimePeriod tp = tran.GetTimePeriod();
+                if (tp != null){
+                    overflowMenu = (tp.DoesRepeat() ? R.menu.transaction_overflow_repeat : R.menu.transaction_overflow_single);
+                } else { overflowMenu = R.menu.transaction_overflow_single; }
+
+                inflater.inflate(overflowMenu, popup.getMenu());
+                popup.setOnMenuItemClickListener(TransactionViewHolder.this);
+                popup.show();
+            }
         }
 
         //More Info (expand card)

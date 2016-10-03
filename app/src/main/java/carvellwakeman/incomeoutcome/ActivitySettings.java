@@ -89,27 +89,14 @@ public class ActivitySettings extends AppCompatActivity
                     ImportClick();
                 }}
         ));
-        //Delete all data
+        //Delete data
         database.AddSetting(new Setting(inflater, R.drawable.ic_delete_white_24dp, getString(R.string.title_settrings_deletedata), getString(R.string.subtitle_settings_deletedata),
                 new View.OnClickListener() { @Override public void onClick(View v) {
                     ProfileManager.OpenDialogFragment(ActivitySettings.this, DialogFragmentDeleteData.newInstance(ActivitySettings.this, new ProfileManager.CallBack() { @Override public void call() {
 
                     }}), true);
                 }}));
-        //Load default categories
-        database.AddSetting(new Setting(inflater, R.drawable.ic_database_plus_white_24dp, getString(R.string.title_settings_defaultcategories), getString(R.string.subtitle_settings_defaultcategories), new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new AlertDialog.Builder(ActivitySettings.this).setTitle(R.string.confirm_areyousure_deleteall)
-                        .setPositiveButton(R.string.action_continue, new DialogInterface.OnClickListener() {
-                            @Override public void onClick(DialogInterface dialog, int which) {
-                                ProfileManager.getInstance().RemoveAllCategories(ActivitySettings.this);
-                                ProfileManager.getInstance().LoadDefaultCategories(ActivitySettings.this);
-                            }})
-                        .setNegativeButton(R.string.action_cancel, null)
-                        .create().show();
-            }
-        }));
+
         if (ProfileManager.isDebugMode(this)) {
             CardSettings debug = new CardSettings(this, inflater, insertPoint, 2, R.layout.row_layout_setting_card, "Debug");
             //View Database

@@ -623,11 +623,15 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public void DeleteTransactions() { DeleteTable(TABLE_TRANSACTIONS); }
     public void DeleteProfiles() { DeleteTable(TABLE_SETTINGS_PROFILES); }
     public void DeleteTable(String tableName){
-        if (isTableExists(tableName, false)){
-            database.delete(tableName, null, null);
-            database.execSQL("ALTER TABLE " + tableName + " AUTO_INCREMENT = 1");
+        //if (isTableExists(tableName, false)){
+            //database.beginTransaction();
+            //database.execSQL("ALTER TABLE " + tableName + " AUTO_INCREMENT = 1");
+            //database.delete(tableName, null, null);
+            SQLExecuteMultiple(database, "DROP TABLE IF EXISTS " + tableName);
+            //database.setTransactionSuccessful();
+            //database.endTransaction();
             //database.execSQL(tableName);
-        } //else { ProfileManager.Print(tableName + " not found"); }
+        //} //else { ProfileManager.Print(tableName + " not found"); }
     }
 
 
@@ -723,7 +727,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                         loadTransactions();
 
 
-                        //ProfileManager.PrintLong(activityContext, importFile.getName() + " imported");
+                        //ProfileManager.PrintUser(activityContext, importFile.getName() + " imported");
                     }
                 }
             }

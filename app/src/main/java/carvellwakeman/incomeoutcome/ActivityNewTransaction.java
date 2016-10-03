@@ -915,6 +915,9 @@ public class ActivityNewTransaction extends AppCompatActivity
                     if (checkBox_split.isChecked() && spinner_otherPeople.getSelectedItem() != null) {
                         newTr.SetIPaid(switch_paidBy.isChecked());
                         newTr.SetSplitValue(spinner_otherPeople.getSelectedItem().toString(), sCost);
+                    } else {
+                        newTr.SetIPaid(true);
+                        newTr.SetSplitValue(null, 0.0d);
                     }
 
                     //Set paidback

@@ -790,15 +790,15 @@ public class ProfileManager
     public static boolean isStoragePermissionGranted(Context ac) {
         if (Build.VERSION.SDK_INT >= 23) {
             if (PermissionChecker.checkSelfPermission(ac, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                Log.v("PERMISSIONS","External Write Storage permission is granted");
+                //Log.v("PERMISSIONS","External Write Storage permission is granted");
                 return true;
             } else {
-                Log.v("PERMISSIONS", "External Write Storage permission is not granted");
+                //Log.v("PERMISSIONS", "External Write Storage permission is not granted");
                 return false;
             }
         }
         else { //permission is automatically granted on sdk<23 upon installation
-            Log.v("PERMISSIONS","Permission is granted by default");
+            //Log.v("PERMISSIONS","Permission is granted by default");
             return true;
         }
     }
@@ -965,7 +965,8 @@ public class ProfileManager
             //databaseHelper.importDatabase(file, backup);
             //(new DatabaseBackgroundHelper()).execute(0, file, backup);
             GenericAsyncTask.RunDBTask(new CallBack() {
-                @Override public void call() { databaseHelper.importDatabase(file, backup); }
+                @Override
+                public void call() { databaseHelper.importDatabase(file, backup); }
             });
         }
     }

@@ -64,10 +64,10 @@
     <!-- Setting subtitles -->
     <string name="subtitle_settings_defaultcategories">Erase all existing categories, load defaults</string>
     <string name="subtitle_settings_deletealldata">Erase all data permanently \n(excluding exported data)</string>
-    <string name="subtitle_settings_deletedata">Select data to delete\n*(Excluding exported data)</string>
+    <string name="subtitle_settings_deletedata">Select specific data to delete</string>
     <string name="subtitle_settings_import">Erase all current data and import new data</string>
     <string name="subtitle_settings_export">Export all current data to an external file</string>
-    <string name="subtitle_settings_importexport">Erase all current data and import new data\nExport all current data to an external file</string>
+    <string name="subtitle_settings_importexport">Import new data\nExport current data</string>
     <string name="subtitle_settings_importmytab">Erase all current data and import data from the MyTab app</string>
 
 

@@ -77,7 +77,7 @@ public class DialogFragmentTransferTransaction extends DialogFragment
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 ProfileManager.getInstance().RemoveProfile(_parent, current);
-                                _parent.finish();
+                                if (_parent.adapter != null) { _parent.adapter.notifyDataSetChanged(); }
                                 dismiss();
                             }})
                         .setNegativeButton(R.string.action_cancel, null)

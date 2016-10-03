@@ -174,7 +174,7 @@
                     android:text="@string/info_description"
                     android:id="@+id/transaction_row_description"
                     android:textStyle="italic"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:layout_alignParentEnd="true" />
 
             </RelativeLayout>
@@ -196,14 +196,7 @@
                 android:padding="16dp"
                 android:id="@+id/transaction_row_relativelayout_date">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/transaction_row_calendaricon"
-                    android:src="@drawable/ic_calendar_white_18dp"
-                    android:tint="@color/black"
 
-                    android:layout_alignParentStart="true" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -213,8 +206,7 @@
                     android:id="@+id/transaction_row_date"
                     android:maxLines="1"
                     android:scrollHorizontally="true"
-                    android:layout_alignTop="@+id/transaction_row_calendaricon"
-                    android:layout_alignBottom="@+id/transaction_row_calendaricon"
+                    android:layout_alignParentTop="true"
                     android:layout_toEndOf="@+id/transaction_row_calendaricon"
                     android:layout_toStartOf="@+id/transaction_row_expand"
                     android:layout_marginStart="8dp" />
@@ -235,11 +227,24 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/transaction_row_calendaricon"
+                    android:src="@drawable/ic_calendar_white_18dp"
+                    android:tint="@color/black"
+
+                    android:layout_alignParentStart="true"
+                    android:layout_alignTop="@id/transaction_row_date"
+                    android:layout_alignBottom="@id/transaction_row_repeat"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:id="@+id/transaction_row_expand"
                     android:src="@drawable/ic_keyboard_arrow_down_white_24dp"
                     android:tint="@color/black"
 
-                    android:layout_alignParentEnd="true" />
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignTop="@id/transaction_row_date"
+                    android:layout_alignBottom="@id/transaction_row_repeat" />
             </RelativeLayout>
 
 

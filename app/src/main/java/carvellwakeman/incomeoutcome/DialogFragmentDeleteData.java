@@ -64,7 +64,7 @@ public class DialogFragmentDeleteData extends DialogFragment {
                                 @Override public void onClick(DialogInterface dialog, int which) {
                                     ProfileManager.getInstance().DBDelete(_parent);
                                     ProfileManager.getInstance().ClearAllObjects();
-                                    ProfileManager.getInstance().GetDatabaseHelper().TryCreateDatabase();
+                                    //ProfileManager.getInstance().GetDatabaseHelper().TryCreateDatabase();
                                     if (_callBack != null) { _callBack.call(); }
                                     DialogFragmentDeleteData.this.dismiss();
                                     dismiss();

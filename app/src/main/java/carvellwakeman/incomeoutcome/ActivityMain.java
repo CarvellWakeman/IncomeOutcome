@@ -236,7 +236,7 @@ public class ActivityMain extends AppCompatActivity
         if (data != null) {}
 
         //Refresh graphs if we return to this page. Not the most efficient, but simple
-        RefreshOverview();
+        //RefreshOverview();
     }
 
 
