@@ -85,18 +85,6 @@
 
                     </android.support.design.widget.TextInputLayout>
 
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        style="@style/FlatButtonTheme"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="@string/tt_add_to_split"
-                        android:id="@+id/button_newTransaction_splitNotice"
-                        android:textStyle="italic"
-                        android:visibility="gone"
-                        android:layout_weight="1"  />
-
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
@@ -117,6 +105,7 @@
                             android:layout_weight="3"
                             android:layout_gravity="bottom"
                             android:visibility="visible" />
+
                         <!-- carvellwakeman.incomeoutcome.NoDefaultSpinner -->
                         <Spinner
                             android:layout_width="0dp"
@@ -125,6 +114,17 @@
                             android:layout_weight="5"
                             android:visibility="gone"
                             android:theme="@style/MaterialTheme"/>
+
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/FlatButtonTheme"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="@string/tt_add_to_split"
+                            android:id="@+id/button_newTransaction_splitNotice"
+                            android:textStyle="italic"
+                            android:visibility="gone" />
 
                     </LinearLayout>
 

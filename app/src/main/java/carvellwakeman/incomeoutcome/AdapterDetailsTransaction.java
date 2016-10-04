@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.view.animation.Transformation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -247,15 +249,17 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
         ImageView overflow;
         ImageView expandCard;
+        ImageView repeatIcon;
 
         int overflowMenu;
-        Boolean moreInfo;
+        boolean moreInfo;
 
 
         public TransactionViewHolder(View itemView)
         {
             super(itemView);
 
+            //Set moreinfo to true initially
             moreInfo = false;
 
             colorbar = (ImageView) itemView.findViewById(R.id.transaction_row_colorbar);
@@ -270,6 +274,8 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
             date = (TextView) itemView.findViewById(R.id.transaction_row_date);
             repeat = (TextView) itemView.findViewById(R.id.transaction_row_repeat);
+
+            repeatIcon = (ImageView) itemView.findViewById(R.id.transaction_row_repeaticon);
 
             cost = (TextView) itemView.findViewById(R.id.transaction_row_cost);
 
@@ -301,6 +307,8 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                 }
             });
             cv.setOnLongClickListener(this);
+
+            moreInfoOff();
         }
 
         //Overflow menu
@@ -358,6 +366,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
             OpenOverflowMenu();
             return true;
         }
+
         public void OpenOverflowMenu(){
             PopupMenu popup = new PopupMenu(activity, overflow);
             MenuInflater inflater = popup.getMenuInflater();
@@ -377,32 +386,85 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
         //More Info (expand card)
         public void toggleMoreInfo(){
-            moreInfo = !moreInfo;
-            if (moreInfo) { moreInfoOn(); } else { moreInfoOff(); }
+            //moreInfo = !moreInfo;
+            if (!moreInfo) { moreInfoOn(); } else { moreInfoOff(); }
         }
         public void moreInfoOn() {
-            RotateAnimation rot = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            rot.setDuration(200);
-            rot.setFillAfter(true);
-            expandCard.startAnimation(rot);
+            if (!moreInfo) {
+                moreInfo = true;
 
-            moreInfo = true;
-            if (!repeat.getText().toString().equals("")) {
-                repeat.setVisibility(View.VISIBLE);
+                RotateAnimation rot = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                rot.setDuration(200);
+                rot.setFillAfter(true);
+                expandCard.startAnimation(rot);
+
+                //int initialHeight = dateBox.getHeight();
+
+                if (!repeat.getText().toString().equals("")) {
+                    repeat.setVisibility(View.VISIBLE);
+                    repeatIcon.setVisibility(View.VISIBLE);
+                }
+                if (!description.getText().toString().equals("")) {
+                    description.setVisibility(View.VISIBLE);
+                }
             }
-            if (!description.getText().toString().equals("")) {
-                description.setVisibility(View.VISIBLE);
-            }
+
+            //expand(initialHeight, dateBox);
         }
         public void moreInfoOff() {
-            RotateAnimation rot = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            rot.setDuration(200);
-            rot.setFillAfter(true);
-            expandCard.startAnimation(rot);
+            if (moreInfo) {
+                moreInfo = false;
 
-            moreInfo = false;
-            repeat.setVisibility(View.GONE);
-            description.setVisibility(View.GONE);
+                RotateAnimation rot = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                rot.setDuration(200);
+                //rot.setFillAfter(true);
+                expandCard.startAnimation(rot);
+
+                //int initialHeight = dateBox.getHeight();
+
+                repeat.setVisibility(View.GONE);
+                repeatIcon.setVisibility(View.GONE);
+                description.setVisibility(View.GONE);
+            }
+
+            //collapse(initialHeight, dateBox);
+        }
+        public void expand(final int initialHeight, final View v) {
+            v.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            final int targetHeight = v.getMeasuredHeight();
+
+            v.getLayoutParams().height = initialHeight;
+
+            Animation a = new Animation() {
+                @Override
+                protected void applyTransformation(float interpolatedTime, Transformation t) {
+                    v.getLayoutParams().height = initialHeight + (int)( (targetHeight-initialHeight) * interpolatedTime);
+                    v.requestLayout();
+                }
+            };
+
+            a.setDuration(1000);
+            v.startAnimation(a);
+        }
+        public void collapse(final int initialHeight, final View v) {
+            //Set initial height (This call is made after the view has changed size)
+            //v.getLayoutParams().height = initialHeight;
+
+            //Set the target size
+            final int targetHeight = v.getMeasuredHeight();
+            //ProfileManager.Print(App.GetContext(), "targetHeight:" + targetHeight);
+
+            Animation a = new Animation() {
+                @Override
+                protected void applyTransformation(float interpolatedTime, Transformation t) {
+                    //v.getLayoutParams().height = initialHeight - (int)((targetHeight - initialHeight) * (1-interpolatedTime));
+                    //v.requestLayout();
+                }
+            };
+            if (targetHeight > 0) {
+                a.setDuration(1000);
+                //v.startAnimation(a);
+            }
         }
     }
 }

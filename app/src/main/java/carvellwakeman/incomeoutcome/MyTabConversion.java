@@ -52,9 +52,9 @@ public class MyTabConversion {
                 //Create profile to house MyTab loaded objects
                 Profile myTabProfile = new Profile("MyTabData");
                 if (_tabs.get(0) != null) {
-                    myTabProfile.SetStartTime(ac, new LocalDate(_tabs.get(0).GetDateStart()));
-                    myTabProfile.SetEndTime(ac, new LocalDate(_tabs.get(0).GetDateEnd()));
-                    myTabProfile.SetPeriod(ac, new Period(0,1,0,0,0,0,0,0)); //1 Month
+                    myTabProfile.SetStartTimeDontSave(new LocalDate(_tabs.get(0).GetDateStart()));
+                    myTabProfile.SetEndTimeDontSave(new LocalDate(_tabs.get(0).GetDateEnd()));
+                    myTabProfile.SetPeriodDontSave(new Period(0,1,0,0,0,0,0,0)); //1 Month
                 }
                 else { return "Bad Data Received"; }
 
@@ -63,6 +63,10 @@ public class MyTabConversion {
                 ProfileManager.getInstance().ClearAllObjects();
                 ProfileManager.getInstance().DBDelete(ac);
 
+
+                //Add new profile
+                ProfileManager.getInstance().AddProfile(ac, myTabProfile);
+                ProfileManager.getInstance().SelectProfile(ac, myTabProfile);
 
                 //Convert between Tab/MyTabTransaction objects into Profile/Transaction objects
                 for (Tab tab : _tabs) {
@@ -96,12 +100,6 @@ public class MyTabConversion {
                         }
                     }
                 }
-
-
-                //Add new profile and its data
-                //ProfileManager.getInstance().LoadDefaultCategories(ac);
-                ProfileManager.getInstance().AddProfile(ac, myTabProfile);
-                ProfileManager.getInstance().SelectProfile(ac, myTabProfile);
             }
             else {
                 return "No Tab Data Found";

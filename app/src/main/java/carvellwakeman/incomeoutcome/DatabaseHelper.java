@@ -619,6 +619,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
         DeleteTable(TABLE_INCOME);
         DeleteTable(TABLE_TRANSACTIONS);
         DeleteTable(TABLE_TIMEPERIODS);
+
+        //Recreate
+        TryCreateDatabase(database);
     }
     public void DeleteTransactions() { DeleteTable(TABLE_TRANSACTIONS); }
     public void DeleteProfiles() { DeleteTable(TABLE_SETTINGS_PROFILES); }

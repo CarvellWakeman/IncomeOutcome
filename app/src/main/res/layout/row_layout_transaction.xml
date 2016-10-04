@@ -194,8 +194,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/transaction_row_divider"
                 android:padding="16dp"
+                android:animateLayoutChanges="true"
                 android:id="@+id/transaction_row_relativelayout_date">
-
 
 
                 <TextView
@@ -222,7 +222,8 @@
                     android:layout_toStartOf="@+id/transaction_row_expand"
                     android:layout_below="@+id/transaction_row_date"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp" />
+                    android:layout_marginTop="4dp"
+                    android:visibility="gone" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -232,8 +233,19 @@
                     android:tint="@color/black"
 
                     android:layout_alignParentStart="true"
-                    android:layout_alignTop="@id/transaction_row_date"
-                    android:layout_alignBottom="@id/transaction_row_repeat"/>
+                    android:layout_alignTop="@id/transaction_row_date" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/transaction_row_repeaticon"
+                    android:src="@drawable/ic_repeat_white_18dp"
+                    android:tint="@color/black"
+
+                    android:layout_alignParentStart="true"
+                    android:layout_alignTop="@id/transaction_row_repeat"
+                    android:layout_alignBottom="@id/transaction_row_repeat"
+                    android:visibility="gone" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -243,8 +255,7 @@
                     android:tint="@color/black"
 
                     android:layout_alignParentEnd="true"
-                    android:layout_alignTop="@id/transaction_row_date"
-                    android:layout_alignBottom="@id/transaction_row_repeat" />
+                    android:layout_centerVertical="true" />
             </RelativeLayout>
 
 

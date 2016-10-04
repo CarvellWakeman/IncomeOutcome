@@ -110,31 +110,37 @@ public class Profile implements java.io.Serializable
     public String GetDateFormatted()
     {
         if (_endTime != null && _startTime != null && !_showAll) {
-            if (_endTime.getDayOfYear() == _endTime.dayOfYear().getMaximumValue() && _startTime.getDayOfYear() == _startTime.dayOfYear().getMinimumValue()){ //Yearly
+            //Yearly
+            if (_endTime.getDayOfYear() == _endTime.dayOfYear().getMaximumValue() && _startTime.getDayOfYear() == _startTime.dayOfYear().getMinimumValue()){
                 return _startTime.toString(ProfileManager.simpleDateFormatJustYear);
             }
-            else if (_startTime.getMonthOfYear()==_endTime.getMonthOfYear() &&  _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue() && _startTime.getDayOfMonth() == _startTime.dayOfMonth().getMinimumValue()) { //Monthly
+            //Monthly
+            else if (_startTime.getMonthOfYear()==_endTime.getMonthOfYear() &&  _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue() && _startTime.getDayOfMonth() == _startTime.dayOfMonth().getMinimumValue()) {
                 return _startTime.toString(ProfileManager.simpleDateFormatNoDay);
             }
 
-
+            //Seasonally (Winter)
             else if (_startTime.getMonthOfYear()==DateTimeConstants.DECEMBER && _startTime.getDayOfMonth() == 1 &&
-                    _endTime.getMonthOfYear()==DateTimeConstants.FEBRUARY && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){ //Seasonally (Winter)
+                    _endTime.getMonthOfYear()==DateTimeConstants.FEBRUARY && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){
                 return ProfileManager.getString(R.string.time_winter) + _startTime.getYear() + "-" + _endTime.getYear();
             }
+            //Seasonally (Spring)
             else if (_startTime.getMonthOfYear()==DateTimeConstants.MARCH && _startTime.getDayOfMonth() == 1 &&
-                    _endTime.getMonthOfYear()==DateTimeConstants.MAY && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){ //Seasonally (Spring)
+                    _endTime.getMonthOfYear()==DateTimeConstants.MAY && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){
                 return ProfileManager.getString(R.string.time_spring) + _startTime.getYear();
             }
+            //Seasonally (Summer)
             else if (_startTime.getMonthOfYear()==DateTimeConstants.JUNE && _startTime.getDayOfMonth() == 1 &&
-                    _endTime.getMonthOfYear()==DateTimeConstants.AUGUST && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){ //Seasonally (Summer)
+                    _endTime.getMonthOfYear()==DateTimeConstants.AUGUST && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){
                 return ProfileManager.getString(R.string.time_summer) + _startTime.getYear();
             }
+            //Seasonally (Fall)
             else if (_startTime.getMonthOfYear()==DateTimeConstants.SEPTEMBER && _startTime.getDayOfMonth() == 1 &&
-                    _endTime.getMonthOfYear()==DateTimeConstants.NOVEMBER && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){ //Seasonally (Fall)
+                    _endTime.getMonthOfYear()==DateTimeConstants.NOVEMBER && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){
                 return ProfileManager.getString(R.string.time_fall) + _startTime.getYear();
             }
 
+            //Same Day
             else if (_startTime.equals(_endTime)) {
                 return _startTime.toString(ProfileManager.simpleDateFormat);
             }

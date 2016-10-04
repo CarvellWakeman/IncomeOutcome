@@ -121,8 +121,9 @@
     <string name="tt_permission_writestorage2">In order for this app to export or import data from an external directory, you must grant it permission to access and modify external files.</string>
     <string name="tt_permission_writestorage3">Access files request</string>
     <string name="tt_permission_writestorage4">To import a MyTab save file, you must grant this app permission to view the external save file</string>
-    <string name="tt_add_to_split">Click here to add a person to split this transaction with</string>
+    <string name="tt_add_to_split">Add a person to split this transaction with</string>
     <string name="tt_add_to_category">Add a category</string>
+    <string name="tt_loading">Loading</string>
 
     <!-- Information -->
     <string name="info_title_value">%1$s %2$s</string>

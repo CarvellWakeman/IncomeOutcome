@@ -33,6 +33,8 @@ public class ActivityMain extends AppCompatActivity
     ImageView button_prevPeriod;
     CheckBox checkbox_showall;
 
+    LinearLayout progress_loadingData;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,14 @@ public class ActivityMain extends AppCompatActivity
         //Initialize the profile manager
         profileManager = ProfileManager.getInstance();
         profileManager.initialize(this, new ProfileManager.CallBack() {
-            @Override public void call() { RefreshOverview(); }
+            @Override public void call() {
+                if (versusCard!=null){ versusCard.getBase().setVisibility(View.VISIBLE); }
+                if (incomeCard!=null){ incomeCard.getBase().setVisibility(View.VISIBLE); }
+                if (expensesCard!=null){ expensesCard.getBase().setVisibility(View.VISIBLE); }
+                if (progress_loadingData!=null){ progress_loadingData.setVisibility(View.GONE); }
+
+                RefreshOverview();
+            }
         });
 
         //Toolbar menus
@@ -72,6 +81,9 @@ public class ActivityMain extends AppCompatActivity
         button_nextPeriod = (ImageView) findViewById(R.id.button_nextPeriod);
         button_prevPeriod = (ImageView) findViewById(R.id.button_prevPeriod);
         checkbox_showall = (CheckBox) findViewById(R.id.checkbox_showall);
+
+        //Loading
+        progress_loadingData = (LinearLayout) findViewById(R.id.progress_database_loading);
 
         button_nextPeriod.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
@@ -122,22 +134,16 @@ public class ActivityMain extends AppCompatActivity
 
         //Cards
         versusCard = new CardVersus(insertPoint, 0, _profileID, this, inflater, R.layout.card_versus);
-
         expensesCard = new CardTransaction(insertPoint, 1, _profileID, 0, 2, getString(R.string.header_expenses_summary), this, inflater, R.layout.card_transaction);
         incomeCard = new CardTransaction(insertPoint, 2, _profileID, 1, 1, getString(R.string.header_income_summary), this, inflater, R.layout.card_transaction);
 
+        versusCard.getBase().setVisibility(View.GONE);
+        expensesCard.getBase().setVisibility(View.GONE);
+        incomeCard.getBase().setVisibility(View.GONE);
 
         //versusCard.insert(insertPoint, 0);
         //expensesCard.insert(insertPoint, 1);
         //incomeCard.insert(insertPoint, 2);
-
-        //Suggest the user add a profile if none exist
-        if (profileManager.GetProfileCount()==0){
-            versusCard.getBase().setVisibility(View.GONE);
-            expensesCard.getBase().setVisibility(View.GONE);
-            incomeCard.getBase().setVisibility(View.GONE);
-            button_suggestaddprofile.setVisibility(View.VISIBLE);
-        }
 
         //Ask for permissions
         //ProfileManager.OpenDialogFragment(this, DialogFragmentPermissionReasoning.newInstance(this, new int[]{ R.string.tt_permission_writestorage1 }, new int[]{ R.string.tt_permission_writestorage2 }, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }), true);
@@ -161,21 +167,6 @@ public class ActivityMain extends AppCompatActivity
 
             //ProfileManager.Print(ActivityMain.this, "Size:" + _profile.GetTransactionsSize());
             RefreshOverview();
-        }
-
-
-        //Suggest the user add a profile if none exist
-        if (profileManager.GetProfileCount()==0){
-            versusCard.getBase().setVisibility(View.GONE);
-            expensesCard.getBase().setVisibility(View.GONE);
-            incomeCard.getBase().setVisibility(View.GONE);
-            button_suggestaddprofile.setVisibility(View.VISIBLE);
-        }
-        else {
-            versusCard.getBase().setVisibility(View.VISIBLE);
-            expensesCard.getBase().setVisibility(View.VISIBLE);
-            incomeCard.getBase().setVisibility(View.VISIBLE);
-            button_suggestaddprofile.setVisibility(View.GONE);
         }
     }
 
@@ -242,6 +233,19 @@ public class ActivityMain extends AppCompatActivity
 
     //Refresh overview
     public void RefreshOverview(){
+        //Suggest the user add a profile if none exist
+        if (profileManager.GetProfileCount()==0){
+            versusCard.getBase().setVisibility(View.GONE);
+            expensesCard.getBase().setVisibility(View.GONE);
+            incomeCard.getBase().setVisibility(View.GONE);
+            button_suggestaddprofile.setVisibility(View.VISIBLE);
+            progress_loadingData.setVisibility(View.GONE);
+        }
+        else {
+            button_suggestaddprofile.setVisibility(View.GONE);
+        }
+
+
         _profile = profileManager.GetCurrentProfile();
         if (_profile != null) {
             _profileID = _profile.GetID();
