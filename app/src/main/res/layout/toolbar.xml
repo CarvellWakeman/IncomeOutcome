@@ -4,9 +4,8 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="?android:attr/actionBarSize"
     android:background="@color/colorPrimary"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    android:minHeight="?android:attr/actionBarSize"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-    app:title="@string/app_name">
-    </android.support.v7.widget.Toolbar>
+    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:title="@string/app_name"></android.support.v7.widget.Toolbar>

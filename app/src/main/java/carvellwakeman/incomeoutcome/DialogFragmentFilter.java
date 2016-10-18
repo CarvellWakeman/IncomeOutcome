@@ -22,6 +22,8 @@ public class DialogFragmentFilter extends DialogFragment
 
     ArrayAdapter adapter;
 
+    int titleString;
+
     TextView textView_title;
 
     Spinner spinner_filter;
@@ -30,12 +32,13 @@ public class DialogFragmentFilter extends DialogFragment
     Button button_negative;
 
 
-    static DialogFragmentFilter newInstance(ProfileManager.CallBack callBack, Profile profile, ProfileManager.FILTER_METHODS method) {
+    static DialogFragmentFilter newInstance(ProfileManager.CallBack callBack, Profile profile, ProfileManager.FILTER_METHODS method, int title) {
         DialogFragmentFilter fg = new DialogFragmentFilter();
         fg._callBack = callBack;
         Bundle args = new Bundle();
         args.putSerializable("profile", profile);
         args.putSerializable("method", method);
+        args.putInt("title", title);
         fg.setArguments(args);
 
         return fg;
@@ -50,6 +53,7 @@ public class DialogFragmentFilter extends DialogFragment
 
         _profile = (Profile) getArguments().getSerializable("profile");
         filterMethod = (ProfileManager.FILTER_METHODS) getArguments().getSerializable("method");
+        titleString = getArguments().getInt("title");
 
         textView_title = (TextView) view.findViewById(R.id.textView_dialogtt_title);
 
@@ -58,6 +62,8 @@ public class DialogFragmentFilter extends DialogFragment
         button_positive = (Button) view.findViewById(R.id.button_dialogtt_positive);
         button_negative = (Button) view.findViewById(R.id.button_dialogtt_negative);
 
+        //Set title
+        textView_title.setText(titleString);
 
         //Populate spinner
         ArrayAdapter<String> adapter = null;

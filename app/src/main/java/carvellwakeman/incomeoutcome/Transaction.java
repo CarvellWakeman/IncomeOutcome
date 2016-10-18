@@ -3,6 +3,7 @@ package carvellwakeman.incomeoutcome;
 
 import org.joda.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class Transaction implements java.io.Serializable
@@ -175,16 +176,37 @@ public class Transaction implements java.io.Serializable
         else { return GetSplitWith(); }
     }
 
+    //Generate random transaction
+    public static Transaction GenerateRandom(){
+        Random rand = new Random();
+
+        TRANSACTION_TYPE[] types = TRANSACTION_TYPE.values();
+        TRANSACTION_TYPE TranType = types[rand.nextInt(2)];
+        ArrayList<Category> categories = ProfileManager.getInstance().GetCategories();
+        LocalDate beginning = new LocalDate(2000,1,1);
+
+        Transaction tr = new Transaction(TranType);
+
+        tr.SetSourceName("Source" + rand.nextInt());
+        if (categories!=null && categories.size()>0) { tr.SetCategory(categories.get(rand.nextInt(categories.size())).GetTitle()); }
+        tr.SetDescription(String.valueOf(rand.nextInt()));
+        tr.SetValue( (rand.nextInt(1000) * rand.nextDouble()) );
+        tr.SetTimePeriod(new TimePeriod(beginning.plusDays(rand.nextInt(12000))));
+
+        //Todo: Split, repeating
+
+        return tr;
+    }
 
 
     //Mutators
-    public void SetType(TRANSACTION_TYPE ttype){ type = ttype; }
-    public void SetID(int id){ _uniqueID = id; } //TODO Should not be used outside of loading
-    public void SetParentID(int id){ _parentID = id; }
+    public void SetType(TRANSACTION_TYPE ttype) { type = ttype; }
+    public void SetID(int id) { _uniqueID = id; } //TODO Should not be used outside of loading
+    public void SetParentID(int id) { _parentID = id; }
     public void SetSourceName(String name) { _sourcename = name; }
     public void SetCategory(String category) { _category = category; }
     public void SetDescription(String desc) { _description = desc; }
-    public void SetValue(Double val){ value = val; }
+    public void SetValue(Double val) { value = val; }
     public void SetStatic(boolean isStatic) { staticValue = isStatic; }
     public void SetTimePeriod(TimePeriod tp) { when = tp; }
 

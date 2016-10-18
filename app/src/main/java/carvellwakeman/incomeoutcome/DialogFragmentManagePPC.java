@@ -77,9 +77,9 @@ public class DialogFragmentManagePPC extends DialogFragment
 
         //Set subtitle
         textView_subtitle.setText(_subtitle);
-        if (_subtitle.equals("")) { textView_subtitle.setVisibility(View.GONE); }
+        if (_subtitle!=null && _subtitle.equals("")) { textView_subtitle.setVisibility(View.GONE); }
 
-        //Edit profile
+        //Edit
         button_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,7 +87,7 @@ public class DialogFragmentManagePPC extends DialogFragment
             }
         });
 
-        //Select profile
+        //Select
         button_select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,7 +95,7 @@ public class DialogFragmentManagePPC extends DialogFragment
             }
         });
 
-        //Delete profile
+        //Delete
         button_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

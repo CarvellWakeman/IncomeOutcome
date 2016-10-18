@@ -1,9 +1,9 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
     style="?android:attr/spinnerDropDownItemStyle"
-    android:maxLines="1"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:ellipsize="marquee"
     android:background="@color/colorPrimary"
-    android:textColor="@color/white"/>
+    android:ellipsize="marquee"
+    android:maxLines="1"
+    android:textColor="@color/white" />

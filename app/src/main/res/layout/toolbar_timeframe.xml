@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.AppBarLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/app_bar_layout"
     android:layout_width="match_parent"
@@ -10,20 +9,21 @@
         android:id="@+id/collapsing_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:contentScrim="?attr/colorPrimary"
         app:layout_scrollFlags="scroll|exitUntilCollapsed"
-        app:titleEnabled="false"
-        app:contentScrim="?attr/colorPrimary">
+        app:titleEnabled="false">
 
         <RelativeLayout
+            android:id="@+id/relativeLayout_toolbarPeriod"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="?attr/actionBarSize"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
             android:paddingBottom="8dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
 
             app:layout_collapseMode="pin"
-            app:layout_collapseParallaxMultiplier="0.7" >
+            app:layout_collapseParallaxMultiplier="0.7">
 
 
             <ImageView
@@ -32,69 +32,71 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_toStartOf="@+id/button_nextPeriod"
-                android:src="@drawable/ic_arrow_left_white_24dp"
                 android:background="@drawable/ripple_borderless_api19"
-                android:padding="8dp" />
+                android:padding="8dp"
+                android:src="@drawable/ic_arrow_left_white_24dp" />
 
             <ImageView
                 android:id="@+id/button_nextPeriod"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:src="@drawable/ic_arrow_right_white_24dp"
                 android:background="@drawable/ripple_borderless_api19"
-                android:padding="8dp" />
+                android:padding="8dp"
+                android:src="@drawable/ic_arrow_right_white_24dp" />
 
             <CheckBox
                 android:id="@+id/checkbox_showall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tt_showall"
+                android:layout_alignBottom="@id/button_prevPeriod"
+                android:layout_alignTop="@id/button_prevPeriod"
+                android:layout_centerVertical="true"
                 android:maxLines="1"
                 android:scrollHorizontally="true"
-                android:layout_centerVertical="true"
-                android:theme="@style/WhiteCheckboxTheme"
+                android:text="@string/tt_showall"
                 android:textColor="@color/white"
-                android:layout_alignTop="@id/button_prevPeriod"
-                android:layout_alignBottom="@id/button_prevPeriod" />
+                android:theme="@style/WhiteCheckboxTheme" />
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@+id/button_nextPeriod">
+                android:layout_below="@+id/button_nextPeriod"
+                android:orientation="horizontal">
 
                 <FrameLayout
                     android:id="@+id/frameLayout_filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:layout_marginStart="8dp">
+                    android:layout_marginStart="8dp"
+                    android:visibility="gone">
+
                     <TextView
                         android:id="@+id/textView_filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
                         android:background="@drawable/rounded_corner"
-                        android:text="@string/filter"
-                        android:layout_margin="8dp" />
+                        android:text="@string/filter" />
 
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|top">
+
                         <ImageView
-                            android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
-                            android:background="@drawable/closex"
-                            android:alpha="0.7" />
+                            android:layout_height="wrap_content"
+                            android:alpha="0.7"
+                            android:background="@drawable/closex" />
 
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:layout_gravity="center"
                             android:alpha="0.7"
-                            android:background="@drawable/ic_clear_white_24dp"/>
+                            android:background="@drawable/ic_clear_white_24dp" />
                     </FrameLayout>
 
                 </FrameLayout>
@@ -105,41 +107,44 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:visibility="gone">
+
                     <TextView
                         android:id="@+id/textView_sort"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/rounded_corner"
                         android:layout_margin="8dp"
+                        android:background="@drawable/rounded_corner"
                         android:paddingEnd="16dp"
                         android:text="@string/sort" />
 
 
                     <ImageView
                         android:id="@+id/imageView_sortUpDown"
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:tint="@color/black"
-                        android:alpha="0.7"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|end"
                         android:layout_marginEnd="4dp"
-                        android:src="@drawable/ic_keyboard_arrow_up_white_24dp" />
+                        android:alpha="0.7"
+                        android:src="@drawable/ic_keyboard_arrow_up_white_24dp"
+                        android:tint="@color/black" />
 
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|top">
+
                         <ImageView
-                            android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
-                            android:background="@drawable/closex"
-                            android:alpha="0.7" />
+                            android:layout_height="wrap_content"
+                            android:alpha="0.7"
+                            android:background="@drawable/closex" />
+
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:layout_gravity="center"
                             android:alpha="0.7"
-                            android:background="@drawable/ic_clear_white_24dp"/>
+                            android:background="@drawable/ic_clear_white_24dp" />
                     </FrameLayout>
                 </FrameLayout>
 
@@ -148,17 +153,15 @@
         </RelativeLayout>
 
 
-        <android.support.v7.widget.Toolbar
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:layout_collapseMode="pin"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:layout_collapseMode="pin">
-        </android.support.v7.widget.Toolbar>
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"></android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.CollapsingToolbarLayout>
 </android.support.design.widget.AppBarLayout>

@@ -1,6 +1,5 @@
 package carvellwakeman.incomeoutcome;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,6 +28,7 @@ public class ActivityMain extends AppCompatActivity
 
     Button button_suggestaddprofile;
 
+    RelativeLayout relativeLayout_period;
     ImageView button_nextPeriod;
     ImageView button_prevPeriod;
     CheckBox checkbox_showall;
@@ -49,6 +49,7 @@ public class ActivityMain extends AppCompatActivity
                 if (incomeCard!=null){ incomeCard.getBase().setVisibility(View.VISIBLE); }
                 if (expensesCard!=null){ expensesCard.getBase().setVisibility(View.VISIBLE); }
                 if (progress_loadingData!=null){ progress_loadingData.setVisibility(View.GONE); }
+                if (relativeLayout_period!=null){ relativeLayout_period.setVisibility(View.VISIBLE); }
 
                 RefreshOverview();
             }
@@ -67,6 +68,7 @@ public class ActivityMain extends AppCompatActivity
         }
         //Find Views
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.app_name);
 
         button_suggestaddprofile = (Button) findViewById(R.id.button_suggest_addprofile);
 
@@ -78,6 +80,8 @@ public class ActivityMain extends AppCompatActivity
         });
 
         //Period management
+        relativeLayout_period = (RelativeLayout) findViewById(R.id.relativeLayout_toolbarPeriod);
+        relativeLayout_period.setVisibility(View.GONE);
         button_nextPeriod = (ImageView) findViewById(R.id.button_nextPeriod);
         button_prevPeriod = (ImageView) findViewById(R.id.button_prevPeriod);
         checkbox_showall = (CheckBox) findViewById(R.id.checkbox_showall);
@@ -124,7 +128,7 @@ public class ActivityMain extends AppCompatActivity
         //toolbar.setNavigationOnClickListener(new View.OnClickListener() { @Override public void onClick(View v) { onBackPressed(); } });
         for(int m : toolbar_menus){ toolbar.inflateMenu(m); }
         setSupportActionBar(toolbar);
-        ToolbarTitleUpdate();
+        //ToolbarTitleUpdate();
 
 
         //Card inflater
@@ -148,14 +152,18 @@ public class ActivityMain extends AppCompatActivity
         //Ask for permissions
         //ProfileManager.OpenDialogFragment(this, DialogFragmentPermissionReasoning.newInstance(this, new int[]{ R.string.tt_permission_writestorage1 }, new int[]{ R.string.tt_permission_writestorage2 }, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }), true);
 
+        //Check app version for update, display changelog
+        if (!App.GetVersion(this).equals(App.GetLastVersion())){
+            App.SetLastVersion(this);
+            ProfileManager.OpenDialogFragment(this, DialogFragmentChangelog.newInstance(), true);
+        }
     }
 
     @Override
     public void onStart(){
         super.onStart();
-
-
-        RefreshOverview();
+        
+        //RefreshOverview();
     }
 
     @Override
@@ -165,7 +173,6 @@ public class ActivityMain extends AppCompatActivity
         if (_profile != null) {
             checkbox_showall.setChecked(_profile.GetShowAll());
 
-            //ProfileManager.Print(ActivityMain.this, "Size:" + _profile.GetTransactionsSize());
             RefreshOverview();
         }
     }
@@ -227,22 +234,27 @@ public class ActivityMain extends AppCompatActivity
         if (data != null) {}
 
         //Refresh graphs if we return to this page. Not the most efficient, but simple
-        //RefreshOverview();
+        RefreshOverview();
     }
 
 
     //Refresh overview
     public void RefreshOverview(){
         //Suggest the user add a profile if none exist
-        if (profileManager.GetProfileCount()==0){
+        if (profileManager.GetCurrentProfile()==null){
             versusCard.getBase().setVisibility(View.GONE);
             expensesCard.getBase().setVisibility(View.GONE);
             incomeCard.getBase().setVisibility(View.GONE);
             button_suggestaddprofile.setVisibility(View.VISIBLE);
             progress_loadingData.setVisibility(View.GONE);
+            relativeLayout_period.setVisibility(View.GONE);
         }
         else {
+            versusCard.getBase().setVisibility(View.VISIBLE);
+            expensesCard.getBase().setVisibility(View.VISIBLE);
+            incomeCard.getBase().setVisibility(View.VISIBLE);
             button_suggestaddprofile.setVisibility(View.GONE);
+            relativeLayout_period.setVisibility(View.VISIBLE);
         }
 
 

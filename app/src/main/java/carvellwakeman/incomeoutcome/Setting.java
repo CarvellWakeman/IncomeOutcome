@@ -5,17 +5,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class Setting
 {
     View v;
 
+    LinearLayout base;
     TextView tv;
     TextView stv;
     ImageView iv;
 
-    public Setting(LayoutInflater inflater, int icon, String title, String subtitle, View.OnClickListener listener)
+    public Setting(LayoutInflater inflater, Integer icon, String title, String subtitle, View.OnClickListener listener)
     {
         //Populate settings
         v = inflater.inflate(R.layout.row_layout_setting, null);
@@ -30,12 +32,17 @@ public class Setting
         stv = (TextView) v.findViewById(R.id.row_layout_setting_subtitle);
 
         //Set data
-        SetIcon(icon);
+        if (icon!=null) { SetIcon(icon); } else { iv.setVisibility(View.GONE); }
         SetTitle(title);
         SetSubTitle(subtitle);
 
         //Set listener
-        v.setOnClickListener(listener);
+        if (listener != null) {
+            v.setOnClickListener(listener);
+        } else {
+            v.setClickable(false);
+            v.setFocusable(false);
+        }
     }
 
 
@@ -50,6 +57,10 @@ public class Setting
     public void SetSubTitle(String subtitle){
         if (subtitle != null && !subtitle.equals("")) { stv.setVisibility(View.VISIBLE); } else { stv.setVisibility(View.GONE); }
         stv.setText(subtitle);
+    }
+
+    public void SetPadding(int T, int B, int S, int E){
+        v.setPadding(S,T,E,B);
     }
 
 

@@ -55,9 +55,19 @@ public class Profile implements java.io.Serializable
         //GetTotalCostPerPersonInTimeFrame();
         //GetTotalIncomePerSourceInTimeFrame();
 
+        //Default period (1 month)
+        _period = new Period(0,1,0,0,0,0,0,0);
+        SetStartTimeDontSave(LocalDate.now().withDayOfMonth(1));
+
         //TODO: Necessary?
         //CalculateTotalsInTimeFrame(0);
         //CalculateTotalsInTimeFrame(1);
+    }
+
+    public void GenerateRandom(Context ac, int n){
+        for (int i = 0; i < n; i++){
+            AddTransaction(ac, Transaction.GenerateRandom());
+        }
     }
 
     public void ClearAllObjects(){
@@ -77,8 +87,10 @@ public class Profile implements java.io.Serializable
     }
 
     public void RemoveAll(Context ac){
-        for (int i = 0; i < Transactions.size(); i++){
-            RemoveTransaction(ac, Transactions.get(i), true);
+        ArrayList<Transaction> temp = new ArrayList<>(Transactions);
+
+        for (int i = 0; i < temp.size(); i++){
+            RemoveTransaction(ac, temp.get(i), true);
         }
     }
 

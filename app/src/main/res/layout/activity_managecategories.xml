@@ -12,11 +12,11 @@
         <include layout="@layout/toolbar_editcategory" />
 
         <LinearLayout
-            android:orientation="vertical"
+            android:id="@+id/linearLayout_dialog_editcategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/linearLayout_dialog_editcategory"
             android:layout_below="@+id/toolbar_top"
+            android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <android.support.v7.widget.RecyclerView
@@ -34,9 +34,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
-        android:src="@drawable/ic_plus_white_24dp"
-        android:scaleType="center" />
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:scaleType="center"
+        android:src="@drawable/ic_plus_white_24dp" />
 
 </RelativeLayout>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.AppBarLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/appbarlayout"
     android:layout_width="match_parent"
@@ -11,100 +10,98 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
-        app:titleEnabled="false"
-        app:contentScrim="?attr/colorPrimary">
+        app:contentScrim="?attr/colorPrimary"
+        app:titleEnabled="false">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="?attr/actionBarSize"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
             android:paddingBottom="8dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
 
             app:layout_collapseMode="pin"
-            app:layout_collapseParallaxMultiplier="0.7" >
+            app:layout_collapseParallaxMultiplier="0.7">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/TIL_dialog_categoryname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:theme="@style/Base.Theme.AppCompat.Light"
                 android:layout_marginTop="8dp"
-                android:focusableInTouchMode="true">
+                android:focusableInTouchMode="true"
+                android:theme="@style/Base.Theme.AppCompat.Light">
 
                 <EditText
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/tt_categoryname"
-                    android:maxLines="1"
                     android:inputType="textCapWords"
+                    android:maxLines="1"
                     android:textColor="@color/white" />
 
             </android.support.design.widget.TextInputLayout>
 
             <ImageView
+                android:id="@+id/imageView_dialogcat"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:id="@+id/imageView_dialogcat"
                 android:layout_below="@+id/TIL_dialog_categoryname"
                 android:src="@drawable/square" />
 
             <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/seekBar_dialogcat_red"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/imageView_dialogcat"
-                app:dsb_progressColor="@color/red"
+                android:layout_marginTop="20dp"
                 app:dsb_indicatorColor="@color/red"
-                app:dsb_rippleColor="@color/red"
-                app:dsb_value="50"
-                app:dsb_min="0"
-                app:dsb_max="100"
                 app:dsb_indicatorFormatter="%s%%"
-                android:layout_marginTop="20dp" />
+                app:dsb_max="100"
+                app:dsb_min="0"
+                app:dsb_progressColor="@color/red"
+                app:dsb_rippleColor="@color/red"
+                app:dsb_value="50" />
 
             <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/seekBar_dialogcat_green"
-                android:layout_below="@+id/seekBar_dialogcat_red"
-                app:dsb_progressColor="@color/green"
-                app:dsb_indicatorColor="@color/green"
-                app:dsb_rippleColor="@color/green"
-                app:dsb_value="50"
-                app:dsb_min="0"
-                app:dsb_max="100"
-                app:dsb_indicatorFormatter="%s%%"/>
-
-            <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/seekBar_dialogcat_blue"
-                android:layout_below="@+id/seekBar_dialogcat_green"
-                app:dsb_progressColor="@color/blue"
-                app:dsb_indicatorColor="@color/blue"
-                app:dsb_rippleColor="@color/blue"
-                app:dsb_value="50"
-                app:dsb_min="0"
+                android:layout_below="@+id/seekBar_dialogcat_red"
+                app:dsb_indicatorColor="@color/green"
+                app:dsb_indicatorFormatter="%s%%"
                 app:dsb_max="100"
-                app:dsb_indicatorFormatter="%s%%" />
+                app:dsb_min="0"
+                app:dsb_progressColor="@color/green"
+                app:dsb_rippleColor="@color/green"
+                app:dsb_value="50" />
+
+            <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                android:id="@+id/seekBar_dialogcat_blue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/seekBar_dialogcat_green"
+                app:dsb_indicatorColor="@color/blue"
+                app:dsb_indicatorFormatter="%s%%"
+                app:dsb_max="100"
+                app:dsb_min="0"
+                app:dsb_progressColor="@color/blue"
+                app:dsb_rippleColor="@color/blue"
+                app:dsb_value="50" />
 
 
         </RelativeLayout>
 
 
-        <android.support.v7.widget.Toolbar
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:layout_collapseMode="pin"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:layout_collapseMode="pin">
-        </android.support.v7.widget.Toolbar>
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"></android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.CollapsingToolbarLayout>
 </android.support.design.widget.AppBarLayout>

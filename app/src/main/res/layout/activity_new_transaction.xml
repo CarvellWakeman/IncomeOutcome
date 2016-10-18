@@ -1,69 +1,70 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
 
-    <include android:id="@+id/toolbar"
+    <include
+        android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:fillViewport="false"
+        android:orientation="vertical"
         android:theme="@style/Base.Theme.AppCompat.Light">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:focusableInTouchMode="true">
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
             <!-- Paid Back -->
             <android.support.v7.widget.CardView
+                android:id="@+id/card_newTransaction_paidBack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/card_newTransaction_paidBack"
-                card_view:cardCornerRadius="@dimen/cardview_default_radius"
-                card_view:cardUseCompatPadding="true"
-                card_view:cardElevation="@dimen/cardview_default_elevation"
-                card_view:contentPadding="@dimen/cardview_default_padding"
-                android:layout_marginStart="@dimen/cardview_default_margin"
                 android:layout_marginEnd="@dimen/cardview_default_margin"
+                android:layout_marginStart="@dimen/cardview_default_margin"
                 android:layout_marginTop="@dimen/cardview_default_margin"
-                android:visibility="gone">
+                android:visibility="gone"
+                card_view:cardCornerRadius="@dimen/cardview_default_radius"
+                card_view:cardElevation="@dimen/cardview_default_elevation"
+                card_view:cardUseCompatPadding="true"
+                card_view:contentPadding="@dimen/cardview_default_padding">
 
                 <CheckBox
+                    android:id="@+id/checkBox_newTransaction_paidback"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/confirm_paidback"
-                    android:id="@+id/checkBox_newTransaction_paidback"
-                    android:checked="false" />
+                    android:checked="false"
+                    android:text="@string/confirm_paidback" />
 
             </android.support.v7.widget.CardView>
 
             <!-- Cost -->
             <android.support.v7.widget.CardView
+                android:id="@+id/card_newTransaction_cost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/card_newTransaction_cost"
-                card_view:cardCornerRadius="@dimen/cardview_default_radius"
-                card_view:cardUseCompatPadding="true"
-                card_view:cardElevation="@dimen/cardview_default_elevation"
-                card_view:contentPadding="@dimen/cardview_default_padding"
-                android:layout_marginStart="@dimen/cardview_default_margin"
                 android:layout_marginEnd="@dimen/cardview_default_margin"
-                android:layout_marginTop="@dimen/cardview_default_margin">
+                android:layout_marginStart="@dimen/cardview_default_margin"
+                android:layout_marginTop="@dimen/cardview_default_margin"
+                card_view:cardCornerRadius="@dimen/cardview_default_radius"
+                card_view:cardElevation="@dimen/cardview_default_elevation"
+                card_view:cardUseCompatPadding="true"
+                card_view:contentPadding="@dimen/cardview_default_padding">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/TIL_newTransaction_cost"
@@ -74,55 +75,55 @@
                         <EditText
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
-                            android:imeOptions="actionNext"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
                             android:hint="@string/header_cost"
-                            android:textColorHint="@android:color/transparent"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
                             android:maxLines="1"
-                            android:inputType="number" />
+                            android:textColorHint="@android:color/transparent" />
 
                     </android.support.design.widget.TextInputLayout>
 
                     <LinearLayout
-                        android:orientation="horizontal"
+                        android:id="@+id/linearLayout_newTransaction_splitCostCheckBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:weightSum="8"
-                        android:id="@+id/linearLayout_newTransaction_splitCostCheckBox"
+                        android:orientation="horizontal"
                         android:theme="@style/Base.Theme.AppCompat.Light"
-                        android:visibility="gone">
+                        android:visibility="gone"
+                        android:weightSum="8">
 
                         <CheckBox
+                            android:id="@+id/checkBox_newTransaction_splitEnabled"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:text="@string/action_splitcost"
-                            android:id="@+id/checkBox_newTransaction_splitEnabled"
-                            android:theme="@style/BlackCheckboxTheme"
-                            android:textColor="@color/black"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:layout_weight="3"
                             android:layout_gravity="bottom"
+                            android:layout_weight="3"
+                            android:text="@string/action_splitcost"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@color/black"
+                            android:theme="@style/BlackCheckboxTheme"
                             android:visibility="visible" />
 
                         <!-- carvellwakeman.incomeoutcome.NoDefaultSpinner -->
                         <Spinner
+                            android:id="@+id/spinner_newTransaction_otherpeople"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:id="@+id/spinner_newTransaction_otherpeople"
                             android:layout_weight="5"
-                            android:visibility="gone"
-                            android:theme="@style/MaterialTheme"/>
+                            android:theme="@style/MaterialTheme"
+                            android:visibility="gone" />
 
 
                         <Button
+                            android:id="@+id/button_newTransaction_splitNotice"
+                            style="@style/FlatButtonTheme"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            style="@style/FlatButtonTheme"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
                             android:text="@string/tt_add_to_split"
-                            android:id="@+id/button_newTransaction_splitNotice"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
                             android:textStyle="italic"
                             android:visibility="gone" />
 
@@ -134,17 +135,17 @@
 
             <!-- Split -->
             <android.support.v7.widget.CardView
+                android:id="@+id/card_newTransaction_split"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/card_newTransaction_split"
-                card_view:cardCornerRadius="@dimen/cardview_default_radius"
-                card_view:cardUseCompatPadding="true"
-                card_view:cardElevation="@dimen/cardview_default_elevation"
-                card_view:contentPadding="@dimen/cardview_default_padding"
-                android:layout_marginStart="@dimen/cardview_default_margin"
                 android:layout_marginEnd="@dimen/cardview_default_margin"
+                android:layout_marginStart="@dimen/cardview_default_margin"
                 android:layout_marginTop="@dimen/cardview_default_margin"
-                android:visibility="gone">
+                android:visibility="gone"
+                card_view:cardCornerRadius="@dimen/cardview_default_radius"
+                card_view:cardElevation="@dimen/cardview_default_elevation"
+                card_view:cardUseCompatPadding="true"
+                card_view:contentPadding="@dimen/cardview_default_padding">
 
                 <TableLayout
                     android:layout_width="match_parent"
@@ -154,79 +155,79 @@
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:weightSum="10"
                         android:layout_marginEnd="5dp"
-                        android:layout_marginStart="5dp">
+                        android:layout_marginStart="5dp"
+                        android:weightSum="10">
 
                         <TextView
+                            android:id="@+id/textView_newTransaction_split"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="@string/tt_percentage_split"
-                            android:id="@+id/textView_newTransaction_split"
                             android:layout_marginStart="5dp"
-                            android:layout_weight="10" />
+                            android:layout_weight="10"
+                            android:text="@string/tt_percentage_split"
+                            android:textAppearance="?android:attr/textAppearanceSmall" />
 
                         <android.support.v7.widget.SwitchCompat
+                            android:id="@+id/switch_paidBy"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/switch_paidBy"
+                            android:layout_weight="9"
                             android:checked="true"
-                            android:text="@string/tt_ipaid"
-                            android:visibility="visible"
                             android:gravity="center_vertical|end"
+                            android:text="@string/tt_ipaid"
                             android:textOff="@string/tt_theypaid"
                             android:textOn="@string/tt_ipaid"
-                            android:layout_weight="9" />
+                            android:visibility="visible" />
 
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:weightSum="2"
+                        android:layout_marginEnd="5dp"
                         android:layout_marginStart="5dp"
-                        android:layout_marginEnd="5dp">
+                        android:weightSum="2">
 
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/TIL_newTransaction_PersonACost"
-                            android:layout_height="wrap_content"
                             android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1">
 
                             <EditText
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:inputType="number"
-                                android:imeOptions="actionNext"
-                                android:ems="10"
-                                android:maxLines="1"
-                                android:minLines="1"
-                                android:digits=".0123456789"
-                                android:layout_alignParentStart="true"
                                 android:layout_alignParentEnd="true"
-                                android:hint="@string/tt_yourcost" />
+                                android:layout_alignParentStart="true"
+                                android:digits=".0123456789"
+                                android:ems="10"
+                                android:hint="@string/tt_yourcost"
+                                android:imeOptions="actionNext"
+                                android:inputType="number"
+                                android:maxLines="1"
+                                android:minLines="1" />
 
                         </android.support.design.widget.TextInputLayout>
 
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/TIL_newTransaction_PersonBCost"
-                            android:layout_height="wrap_content"
                             android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1">
 
                             <EditText
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:inputType="number"
-                                android:imeOptions="actionNext"
-                                android:ems="10"
-                                android:maxLines="1"
-                                android:minLines="1"
-                                android:digits=".0123456789"
-                                android:layout_alignParentStart="true"
                                 android:layout_alignParentEnd="true"
-                                android:hint="@string/tt_theircost" />
+                                android:layout_alignParentStart="true"
+                                android:digits=".0123456789"
+                                android:ems="10"
+                                android:hint="@string/tt_theircost"
+                                android:imeOptions="actionNext"
+                                android:inputType="number"
+                                android:maxLines="1"
+                                android:minLines="1" />
 
                         </android.support.design.widget.TextInputLayout>
                     </TableRow>
@@ -234,43 +235,41 @@
                     <TableRow
                         android:layout_width="fill_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="5dp">
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="5dp">
 
                         <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                            android:id="@+id/seekBar_newTransaction"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/seekBar_newTransaction"
-                            app:dsb_progressColor="@color/colorAccent"
+                            android:layout_weight="1"
                             app:dsb_indicatorColor="@color/colorAccent"
-                            app:dsb_rippleColor="@color/colorAccent"
-                            app:dsb_value="50"
-                            app:dsb_min="0"
-                            app:dsb_max="100"
                             app:dsb_indicatorFormatter="%s%%"
-                            android:layout_weight="1" />
+                            app:dsb_max="100"
+                            app:dsb_min="0"
+                            app:dsb_progressColor="@color/colorAccent"
+                            app:dsb_rippleColor="@color/colorAccent"
+                            app:dsb_value="50" />
 
                     </TableRow>
 
                 </TableLayout>
 
 
-
-
             </android.support.v7.widget.CardView>
 
             <!-- Category and Source -->
             <android.support.v7.widget.CardView
+                android:id="@+id/card_newTransaction_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/card_newTransaction_category"
-                card_view:cardCornerRadius="@dimen/cardview_default_radius"
-                card_view:cardUseCompatPadding="true"
-                card_view:cardElevation="@dimen/cardview_default_elevation"
-                card_view:contentPadding="@dimen/cardview_default_padding"
-                android:layout_marginStart="@dimen/cardview_default_margin"
                 android:layout_marginEnd="@dimen/cardview_default_margin"
-                android:layout_marginTop="@dimen/cardview_default_margin">
+                android:layout_marginStart="@dimen/cardview_default_margin"
+                android:layout_marginTop="@dimen/cardview_default_margin"
+                card_view:cardCornerRadius="@dimen/cardview_default_radius"
+                card_view:cardElevation="@dimen/cardview_default_elevation"
+                card_view:cardUseCompatPadding="true"
+                card_view:contentPadding="@dimen/cardview_default_padding">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -279,37 +278,37 @@
                     android:padding="5dp">
 
                     <TextView
+                        android:id="@+id/textView_newTransaction_source"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="@string/title_sourcecategory"
-                        android:id="@+id/textView_newTransaction_source"
                         android:layout_marginStart="5dp"
+                        android:text="@string/title_sourcecategory"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
                         android:visibility="gone" />
 
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:weightSum="9" >
+                        android:orientation="horizontal"
+                        android:weightSum="9">
 
                         <Button
-                            style="@style/FlatButtonTheme"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="@string/tt_add_to_category"
                             android:id="@+id/button_newTransaction_categorynotice"
-                            android:textStyle="italic"
-                            android:visibility="gone"
-                            android:layout_weight="2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
-                        <carvellwakeman.incomeoutcome.NoDefaultSpinner
+                            style="@style/FlatButtonTheme"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:text="@string/tt_add_to_category"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textStyle="italic"
+                            android:visibility="gone" />
+
+                        <carvellwakeman.incomeoutcome.NoDefaultSpinner
                             android:id="@+id/spinner_newTransaction_categories"
-                            android:spinnerMode="dropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_weight="3"
+                            android:spinnerMode="dropdown"
                             android:theme="@style/MaterialTheme"
                             android:visibility="gone" />
 
@@ -322,15 +321,15 @@
                             <EditText
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:inputType="textCapSentences"
-                                android:layout_below="@+id/editText_newTransaction_name"
-                                android:layout_alignParentStart="true"
                                 android:layout_alignEnd="@+id/editText_newTransaction_name"
-                                android:maxLines="1"
-                                android:imeOptions="actionNext"
+                                android:layout_alignParentStart="true"
+                                android:layout_below="@+id/editText_newTransaction_name"
                                 android:hint="@string/info_source"
-                                android:minLines="1"
-                                android:maxLength="30" />
+                                android:imeOptions="actionNext"
+                                android:inputType="textCapSentences"
+                                android:maxLength="30"
+                                android:maxLines="1"
+                                android:minLines="1" />
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
@@ -340,16 +339,16 @@
 
             <!-- Description -->
             <android.support.v7.widget.CardView
+                android:id="@+id/card_newTransaction_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/card_newTransaction_description"
-                card_view:cardCornerRadius="@dimen/cardview_default_radius"
-                card_view:cardUseCompatPadding="true"
-                card_view:cardElevation="@dimen/cardview_default_elevation"
-                card_view:contentPadding="@dimen/cardview_default_padding"
-                android:layout_marginStart="@dimen/cardview_default_margin"
                 android:layout_marginEnd="@dimen/cardview_default_margin"
-                android:layout_marginTop="@dimen/cardview_default_margin">
+                android:layout_marginStart="@dimen/cardview_default_margin"
+                android:layout_marginTop="@dimen/cardview_default_margin"
+                card_view:cardCornerRadius="@dimen/cardview_default_radius"
+                card_view:cardElevation="@dimen/cardview_default_elevation"
+                card_view:cardUseCompatPadding="true"
+                card_view:contentPadding="@dimen/cardview_default_padding">
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/TIL_newTransaction_description"
@@ -360,13 +359,13 @@
                     <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textCapSentences|textMultiLine"
-                        android:layout_below="@+id/editText_newTransaction_name"
-                        android:layout_alignParentStart="true"
                         android:layout_alignEnd="@+id/editText_newTransaction_name"
-                        android:maxLines="4"
-                        android:imeOptions="actionNext"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/editText_newTransaction_name"
                         android:hint="@string/info_description"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:maxLines="4"
                         android:minLines="1" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -374,40 +373,40 @@
 
             <!-- Time Period -->
             <FrameLayout
+                android:id="@+id/frameLayout_timePeriod"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/cardview_default_margin"
-                android:id="@+id/frameLayout_timePeriod"/>
+                android:layout_marginTop="@dimen/cardview_default_margin" />
 
             <!-- BlackList -->
             <android.support.v7.widget.CardView
+                android:id="@+id/card_timeperiod_blacklist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/card_timeperiod_blacklist"
-                card_view:cardCornerRadius="@dimen/cardview_default_radius"
-                card_view:cardUseCompatPadding="true"
-                card_view:cardElevation="@dimen/cardview_default_elevation"
-                card_view:contentPadding="@dimen/cardview_default_padding"
-                android:layout_marginStart="@dimen/cardview_default_margin"
                 android:layout_marginEnd="@dimen/cardview_default_margin"
+                android:layout_marginStart="@dimen/cardview_default_margin"
+                android:layout_marginTop="@dimen/cardview_default_margin"
                 android:theme="@style/Base.Theme.AppCompat.Light"
                 android:visibility="gone"
-                android:layout_marginTop="@dimen/cardview_default_margin">
+                card_view:cardCornerRadius="@dimen/cardview_default_radius"
+                card_view:cardElevation="@dimen/cardview_default_elevation"
+                card_view:cardUseCompatPadding="true"
+                card_view:contentPadding="@dimen/cardview_default_padding">
 
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp">
+                    android:orientation="vertical"
+                    android:paddingEnd="5dp"
+                    android:paddingStart="5dp">
 
                     <TextView
                         android:id="@+id/textView_blacklist"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:text="@string/subtitle_blacklist"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:layout_marginTop="5dp" />
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/recyclerView_blacklistDates"

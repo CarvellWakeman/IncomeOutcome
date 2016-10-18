@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    style="@style/SelectableItemForeground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    style="@style/SelectableItemForeground"
     android:clickable="true"
+    android:orientation="horizontal"
     android:paddingBottom="10dp">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/cardVersus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/cardVersus"
 
-        card_view:cardCornerRadius="@dimen/cardview_default_radius"
-        card_view:cardUseCompatPadding="true"
-        card_view:cardElevation="@dimen/cardview_default_elevation"
-        card_view:contentPadding="16dp"
-        android:layout_marginStart="@dimen/cardview_default_halfmargin"
+        android:layout_marginBottom="@dimen/cardview_default_halfmargin"
         android:layout_marginEnd="@dimen/cardview_default_halfmargin"
-        android:layout_marginBottom="@dimen/cardview_default_halfmargin">
+        android:layout_marginStart="@dimen/cardview_default_halfmargin"
+        card_view:cardCornerRadius="@dimen/cardview_default_radius"
+        card_view:cardElevation="@dimen/cardview_default_elevation"
+        card_view:cardUseCompatPadding="true"
+        card_view:contentPadding="16dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="@string/header_versus_summary"
+                android:id="@+id/textView_cardVersus_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView_cardVersus_title"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
-                android:layout_marginBottom="8dp" />
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="8dp"
+                android:text="@string/header_versus_summary" />
 
             <com.github.mikephil.charting.charts.HorizontalBarChart
                 android:id="@+id/barChart_cardVersus"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:layout_marginBottom="8dp"
                 android:layout_below="@+id/textView_cardVersus_title"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="8dp" />
 
             <TextView
                 android:id="@+id/textView_cardVersus_nodata"
@@ -48,10 +48,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/barChart_cardVersus"
                 android:layout_marginTop="20dp"
-                android:text="@string/tt_nodata"
-                android:textStyle="normal|italic"
-                android:textSize="20sp"
                 android:gravity="center_horizontal"
+                android:text="@string/tt_nodata"
+                android:textSize="20sp"
+                android:textStyle="normal|italic"
                 android:visibility="gone" />
 
 
@@ -59,29 +59,28 @@
                 android:id="@+id/button_cardVersus_up"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_keyboard_arrow_up_white_24dp"
-                android:clickable="true"
-                android:tint="@color/black"
-                android:padding="8dp"
                 android:layout_alignParentEnd="true"
-                android:background="@drawable/ripple_api19"
                 android:layout_below="@id/barChart_cardVersus"
-                android:visibility="gone"/>
+                android:background="@drawable/ripple_api19"
+                android:clickable="true"
+                android:padding="8dp"
+                android:src="@drawable/ic_keyboard_arrow_up_white_24dp"
+                android:tint="@color/black"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/button_cardVersus_down"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:src="@drawable/ic_keyboard_arrow_down_white_24dp"
-                android:tint="@color/black"
-                android:padding="8dp"
-                android:layout_toStartOf="@+id/button_cardVersus_up"
                 android:layout_alignTop="@+id/button_cardVersus_up"
                 android:layout_marginEnd="8dp"
+                android:layout_toStartOf="@+id/button_cardVersus_up"
                 android:background="@drawable/ripple_api19"
-                android:visibility="gone"/>
-
+                android:clickable="true"
+                android:padding="8dp"
+                android:src="@drawable/ic_keyboard_arrow_down_white_24dp"
+                android:tint="@color/black"
+                android:visibility="gone" />
 
 
         </RelativeLayout>

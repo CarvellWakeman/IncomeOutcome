@@ -16,28 +16,28 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/info_nobackup"
                 android:id="@+id/button_dialogin_backup"
                 style="@style/RaisedButtonTheme"
-                android:enabled="false"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="16dp"/>
-
-            <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/title_DBExport"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:enabled="false"
+                android:text="@string/info_nobackup" />
+
+            <Button
                 android:id="@+id/button_dialogex_export"
                 style="@style/RaisedButtonTheme"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/title_DBExport" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/dialog_recyclerView_files"

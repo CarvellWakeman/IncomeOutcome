@@ -4,41 +4,40 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/linearLayout_dialog"
+        style="@style/SelectableItemForeground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/frameLayout"
-        style="@style/SelectableItemForeground"
-        android:id="@+id/linearLayout_dialog"
-        android:paddingStart="24dp"
-        android:paddingTop="15dp"
+        android:orientation="vertical"
+        android:paddingBottom="15dp"
         android:paddingEnd="10dp"
-        android:paddingBottom="15dp">
+        android:paddingStart="24dp"
+        android:paddingTop="15dp">
 
         <TextView
+            android:id="@+id/textView_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/textView_dialog"
+            android:layout_gravity="start"
             android:text="@string/placeholder_text"
-            android:layout_gravity="start" />
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
     </LinearLayout>
 
 
-    <FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/frameLayout"
+        style="@style/SelectableItemForeground"
         android:layout_width="42dp"
         android:layout_height="wrap_content"
-        style="@style/SelectableItemForeground"
-        android:clickable="true"
-        android:focusable="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/frameLayout"
         android:layout_alignBottom="@+id/linearLayout_dialog"
+        android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/linearLayout_dialog"
-        android:layout_marginEnd="24dp">
+        android:layout_marginEnd="24dp"
+        android:clickable="true"
+        android:focusable="true">
 
         <ImageView
             android:id="@+id/imageView_dialog"
@@ -47,7 +46,7 @@
             android:layout_gravity="center"
             android:scaleType="centerInside"
             android:src="@drawable/ic_clear_white_24dp"
-            android:tint="@color/gray"  />
+            android:tint="@color/gray" />
     </FrameLayout>
 
 </RelativeLayout>

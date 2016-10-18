@@ -889,7 +889,7 @@ public class ProfileManager
             else { }//Print("Error removing person from database"); }
         }
     }
-    public void DBRemoveSettingProfile(Context ac, final Profile pr){
+    public void DBRemoveSettingProfile(final Context ac, final Profile pr){
         if (isStoragePermissionGranted(ac) && databaseHelper != null) {
             if (pr != null) { //databaseHelper.removeProfileSetting(pr)
                 //Print("Profile removed from database");
@@ -897,6 +897,9 @@ public class ProfileManager
                 GenericAsyncTask.RunDBTask(new CallBack() {
                     @Override
                     public void call() { databaseHelper.removeProfileSetting(pr); }
+                }, new CallBack() {
+                    @Override
+                    public void call() { ProfileManager.PrintUser(ac, getString(R.string.notice_deletesuccess) + " " + pr.GetName()); }
                 });
             }
             else { }//Print("Error removing profile from database"); }

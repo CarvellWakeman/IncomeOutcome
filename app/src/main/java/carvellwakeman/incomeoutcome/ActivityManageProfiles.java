@@ -337,7 +337,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
         final Profile pr = ProfileManager.getInstance().GetProfileByID(Integer.valueOf(id));
         if (pr != null) {
             if (pr.GetTransactionsSize() > 0) {
-                ProfileManager.OpenDialogFragment(this, DialogFragmentTransferTransaction.newInstance(this, pr), true); //TODO: Handle mIsLargeDisplay
+                ProfileManager.OpenDialogFragment(this, DialogFragmentTransferTransaction.newInstance(this, dialogFragment, pr), true); //TODO: Handle mIsLargeDisplay
             }
             else {
                 new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle)
@@ -397,15 +397,16 @@ public class ActivityManageProfiles extends AppCompatActivity {
     public void UpdatePeriod(){
         if (editingprofile != null) {
             Period pe = editingprofile.GetPeriod();
+            if (pe != null) {
+                int YEARS = pe.getYears();
+                int MONTHS = pe.getMonths();
+                int WEEKS = pe.getWeeks();
+                int DAYS = pe.getDays();
 
-            int YEARS = pe.getYears();
-            int MONTHS = pe.getMonths();
-            int WEEKS = pe.getWeeks();
-            int DAYS = pe.getDays();
-
-            editText_period.setText(String.valueOf(Math.max(Math.max(YEARS, Math.max(MONTHS, Math.max(WEEKS, DAYS))), 1)));
-            int index = (DAYS > 0 ? 0 : WEEKS > 0 ? 1 : MONTHS > 0 ? 2 : YEARS > 0 ? 3 : 0);
-            spinner_period.setSelection(index);
+                editText_period.setText(String.valueOf(Math.max(Math.max(YEARS, Math.max(MONTHS, Math.max(WEEKS, DAYS))), 1)));
+                int index = (DAYS > 0 ? 0 : WEEKS > 0 ? 1 : MONTHS > 0 ? 2 : YEARS > 0 ? 3 : 0);
+                spinner_period.setSelection(index);
+            }
         }
     }
 

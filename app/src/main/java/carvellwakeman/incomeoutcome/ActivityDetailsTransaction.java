@@ -203,6 +203,8 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
             //No data, display message
             CheckShowNoDataNotice();
+
+            CheckHideRecyclerviews();
         }
     }
 
@@ -284,6 +286,11 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         if (elementsAdapter.getItemCount()==0) { textView_nodata.setVisibility(View.VISIBLE); } else { textView_nodata.setVisibility(View.GONE); }
     }
 
+    public void CheckHideRecyclerviews(){
+        if (_profile.GetTransactionTotals().size() <= 0) { totalsView.setVisibility(View.GONE); } else { totalsView.setVisibility(View.VISIBLE); }
+        if (_profile.GetTransactionsSize() <= 0) { elementsView.setVisibility(View.GONE); } else { elementsView.setVisibility(View.VISIBLE); }
+    }
+
     public void SetToolbarTitle(){
         if (getSupportActionBar() != null) {
             if (activityType == 0) { getSupportActionBar().setTitle(R.string.title_expenses); }
@@ -297,8 +304,10 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         _profile.CalculateTotalsInTimeFrame(activityType, keyType);
         if (totalsAdapter != null) { totalsAdapter.notifyDataSetChanged(); }
         if (elementsAdapter != null) { elementsAdapter.notifyDataSetChanged(); }
+
         SetToolbarTitle();
         CheckShowNoDataNotice();
+        CheckHideRecyclerviews();
     }
 
     public void UpdateAdapters(){

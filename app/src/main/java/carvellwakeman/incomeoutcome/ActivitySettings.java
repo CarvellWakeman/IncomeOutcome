@@ -7,8 +7,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Path;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +21,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import org.apache.commons.io.FileUtils;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.RandomAccessFile;
 import java.util.Arrays;
 
 
@@ -58,8 +69,11 @@ public class ActivitySettings extends AppCompatActivity
 
         insertPoint.removeAllViews();
 
+        //IndexCount
+        int indexCount = 0;
+
         //Setting Categories
-        CardSettings profilesPeopleCategories = new CardSettings(this, inflater, insertPoint, 0, R.layout.row_layout_setting_card, getString(R.string.title_settings_profilespeoplecategories));
+        CardSettings profilesPeopleCategories = new CardSettings(this, inflater, insertPoint, indexCount++, R.layout.row_layout_setting_card, getString(R.string.title_settings_profilespeoplecategories));
         //Manage profiles
         profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_account_white_24dp, getString(R.string.title_manageprofiles), null,
                 new View.OnClickListener() { @Override public void onClick(View v) {
@@ -82,7 +96,7 @@ public class ActivitySettings extends AppCompatActivity
                 }}
         ));
 
-        CardSettings database = new CardSettings(this, inflater, insertPoint, 1, R.layout.row_layout_setting_card, getString(R.string.title_settings_database));
+        CardSettings database = new CardSettings(this, inflater, insertPoint, indexCount++, R.layout.row_layout_setting_card, getString(R.string.title_settings_database));
         //Import and Export
         database.AddSetting(new Setting(inflater, R.drawable.ic_file_white_24dp, getString(R.string.title_settings_importexport), getString(R.string.subtitle_settings_importexport),
                 new View.OnClickListener() { @Override public void onClick(View v) {
@@ -97,10 +111,21 @@ public class ActivitySettings extends AppCompatActivity
                     }}), true);
                 }}));
 
+        CardSettings about = new CardSettings(this, inflater, insertPoint, indexCount++, R.layout.row_layout_setting_card, getString(R.string.title_settings_about));
+        final String whatsNew = String.format(getString(R.string.subtitle_settings_changelog), App.GetVersion(ActivitySettings.this));
+        //Changelog
+        about.AddSetting(new Setting(inflater, R.drawable.ic_update_white_24dp, getString(R.string.title_settings_changelog), whatsNew,
+                new View.OnClickListener() { @Override public void onClick(View v) {
+                    ProfileManager.OpenDialogFragment(ActivitySettings.this, DialogFragmentChangelog.newInstance(), true);
+                }}
+        ));
+
+
+        //Debug card
         if (ProfileManager.isDebugMode(this)) {
-            CardSettings debug = new CardSettings(this, inflater, insertPoint, 2, R.layout.row_layout_setting_card, "Debug");
+            CardSettings debug = new CardSettings(this, inflater, insertPoint, indexCount, R.layout.row_layout_setting_card, "Debug");
             //View Database
-            debug.AddSetting(new Setting(inflater, R.drawable.ic_database_white_24dp, "View Database", "View and edit current database details", new View.OnClickListener() {
+            debug.AddSetting(new Setting(inflater, R.drawable.ic_database_white_24dp, getString(R.string.title_settings_viewdatabase), getString(R.string.subtitle_settings_viewdatabase), new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent dbmanager = new Intent(ActivitySettings.this, AndroidDatabaseManager.class);
@@ -114,6 +139,66 @@ public class ActivitySettings extends AppCompatActivity
                     MyTabImportClick();
                 }
             }));
+            //Insert 1000 dummy data points
+            debug.AddSetting(new Setting(inflater, R.drawable.ic_plus_white_24dp, getString(R.string.title_settings_fakedata), "", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                //Add new profile
+                Profile pr = ProfileManager.getInstance().GetProfileByName("DummyData");
+                if (pr == null) {
+                    pr = new Profile("DummyData");
+                    ProfileManager.getInstance().AddProfile(ActivitySettings.this, pr);
+                }
+
+                pr.GenerateRandom(ActivitySettings.this, 1000);
+
+                ProfileManager.getInstance().SelectProfile(ActivitySettings.this, pr);
+                ProfileManager.Print(ActivitySettings.this, "Adding 1000 transactions");
+                }
+            }));
+            /*
+            //Completely unrelated thing
+            debug.AddSetting(new Setting(inflater, R.drawable.ic_calendar_white_24dp, "Replace DateCreated with DateModified", "", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //try {
+                        if (ProfileManager.isStoragePermissionGranted(ActivitySettings.this)){
+                            File pic = new File(Environment.getExternalStorageDirectory() + "/DCIM/Restored/", "IMG_20161011_125619.jpg");
+
+                            String[] splitTitle = pic.getName().split("_");
+                            String IMG = splitTitle[0];
+                            String day = splitTitle[1];
+                            String time = splitTitle[2].replace(".jpg", "").replace(".png","").replace(".mp4","");
+
+                            DateTimeFormatter dayFormatter = DateTimeFormat.forPattern("yyyyMMdd");
+                            DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("HHmmss");
+                            if (IMG.equals("IMG")){
+                                if (!day.equals("")){
+                                    DateTime day2 = dayFormatter.parseDateTime(day);
+                                    if (!time.equals("")){
+                                        DateTime time2 = timeFormatter.parseDateTime(time);
+
+                                        LocalDateTime origTime = new LocalDateTime(day2.getYear(), day2.getMonthOfYear(), day2.getDayOfMonth(), time2.getHourOfDay(), time2.getMinuteOfHour(), time2.getSecondOfMinute());
+
+                                        ProfileManager.Print(ActivitySettings.this, "Setting LastModified to:" + origTime.toString("MMMM dd, yyyy: HH:mm:ss"));
+
+
+                                        //boolean result = pic.setLastModified(origTime.toDateTime().getMillis());
+                                        //ProfileManager.Print(ActivitySettings.this, "Result:" + result);
+                                    }
+                                }
+                            }
+                            else {
+                                ProfileManager.Print(ActivitySettings.this, "File is not of type IMG_");
+                            }
+                        }
+
+                    //} catch (Exception e) {
+                    //    ProfileManager.Print(ActivitySettings.this, e.getMessage());
+                    //}
+                }
+            }));
+            */
             CardView c = (CardView) debug.getBase().findViewById(R.id.row_layout_settingscard);
             if (c != null) { c.setBackgroundColor(Color.YELLOW); }
         }
@@ -194,3 +279,4 @@ public class ActivitySettings extends AppCompatActivity
 
 
 }
+

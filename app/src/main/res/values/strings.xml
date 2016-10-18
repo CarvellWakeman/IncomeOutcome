@@ -59,7 +59,13 @@
     <string name="title_settings_deletepeople">Delete People</string>
     <string name="title_settings_deletecategories">Delete Categories</string>
     <string name="title_settings_importbackup">Import Secret Backup</string>
+
+    <string name="title_settings_about">About</string>
+    <string name="title_settings_changelog">Change log</string>
+
+    <string name="title_settings_viewdatabase">View Database</string>
     <string name="title_settings_importmytab">Import MyTab Save File</string>
+    <string name="title_settings_fakedata">Add random data (1000 transactions)</string>
 
     <!-- Setting subtitles -->
     <string name="subtitle_settings_defaultcategories">Erase all existing categories, load defaults</string>
@@ -68,6 +74,10 @@
     <string name="subtitle_settings_import">Erase all current data and import new data</string>
     <string name="subtitle_settings_export">Export all current data to an external file</string>
     <string name="subtitle_settings_importexport">Import new data\nExport current data</string>
+
+    <string name="subtitle_settings_changelog">What\'s new in version %1$s</string>
+
+    <string name="subtitle_settings_viewdatabase">View and edit current database details</string>
     <string name="subtitle_settings_importmytab">Erase all current data and import data from the MyTab app</string>
 
 
@@ -81,6 +91,12 @@
     <string name="header_income_summary">Income Summary</string>
     <string name="header_split_summary">Split Summary</string>
 
+    <string name="header_note">Notes</string>
+    <string name="header_add">Added</string>
+    <string name="header_change">Changed</string>
+    <string name="header_remove">Removed</string>
+    <string name="header_fix">Fixes</string>
+
     <!-- Misc -->
     <string name="misc_transactoins">Transactions</string>
     <string name="misc_transactoin">Transaction</string>
@@ -92,6 +108,7 @@
 
     <!-- Placeholders -->
     <string name="placeholder_title">Title</string>
+    <string name="placeholder_Unknown">Unknown</string>
     <string name="placeholder_subtitle">Subtitle</string>
     <string name="placeholder_text">Text</string>
     <string name="placeholder_filename">File Name</string>
@@ -145,6 +162,9 @@
     <string name="info_domwarning">* Some months are limited to 28/29/30 days. The last day of the month will be chosen in these cases.</string>
     <string name="info_selected">Selected</string>
     <string name="info_total_newline">Total\n</string>
+
+    <!-- Notice -->
+    <string name="notice_deletesuccess">Successfully Deleted</string>
 
     <!-- Formatting -->
     <string name="item_delimiter">,</string>
@@ -243,7 +263,7 @@
     <string name="filter_category">Filter by category</string>
     <string name="filter_source">Filter by source</string>
     <string name="filter_whopaid">Filter by who paid</string>
-    <string name="filter_splitwith">Filter by cost split</string>
+    <string name="filter_splitwith">Filter by transaction split</string>
 
     <string name="date">Date</string>
     <string name="cost">Cost</string>

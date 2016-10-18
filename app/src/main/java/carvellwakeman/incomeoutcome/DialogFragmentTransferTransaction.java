@@ -17,6 +17,7 @@ import android.widget.*;
 public class DialogFragmentTransferTransaction extends DialogFragment
 {
     ActivityManageProfiles _parent;
+    DialogFragmentManagePPC _dialog;
     Profile current;
 
     AdapterTransferTransaction adapter;
@@ -30,9 +31,10 @@ public class DialogFragmentTransferTransaction extends DialogFragment
     NpaLinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
 
-    static DialogFragmentTransferTransaction newInstance(ActivityManageProfiles parent, Profile current) {
+    static DialogFragmentTransferTransaction newInstance(ActivityManageProfiles parent, DialogFragmentManagePPC dialog, Profile current) {
         DialogFragmentTransferTransaction fg = new DialogFragmentTransferTransaction();
         fg._parent = parent;
+        fg._dialog = dialog;
         Bundle args = new Bundle();
         args.putSerializable("profile", current);
         fg.setArguments(args);
@@ -78,6 +80,7 @@ public class DialogFragmentTransferTransaction extends DialogFragment
                             public void onClick(DialogInterface dialog, int which) {
                                 ProfileManager.getInstance().RemoveProfile(_parent, current);
                                 if (_parent.adapter != null) { _parent.adapter.notifyDataSetChanged(); }
+                                _dialog.dismiss();
                                 dismiss();
                             }})
                         .setNegativeButton(R.string.action_cancel, null)

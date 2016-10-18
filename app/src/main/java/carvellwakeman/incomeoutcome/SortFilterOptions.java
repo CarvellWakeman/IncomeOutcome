@@ -30,7 +30,7 @@ public class SortFilterOptions {
         _activityType = activityType;
         _callBack = callBack;
 
-        boolean upDown = false;
+        boolean upDown;
 
         switch (item.getItemId())
         {
@@ -117,16 +117,16 @@ public class SortFilterOptions {
 
 
             case R.id.toolbar_filter_category:
-                Filter(ProfileManager.FILTER_METHODS.CATEGORY);
+                Filter(ProfileManager.FILTER_METHODS.CATEGORY, R.string.filter_category);
                 break;
             case R.id.toolbar_filter_source:
-                Filter(ProfileManager.FILTER_METHODS.SOURCE);
+                Filter(ProfileManager.FILTER_METHODS.SOURCE, R.string.filter_source);
                 break;
             case R.id.toolbar_filter_paidby:
-                Filter(ProfileManager.FILTER_METHODS.PAIDBY);
+                Filter(ProfileManager.FILTER_METHODS.PAIDBY, R.string.filter_whopaid);
                 break;
             case R.id.toolbar_filter_splitwith:
-                Filter(ProfileManager.FILTER_METHODS.SPLITWITH);
+                Filter(ProfileManager.FILTER_METHODS.SPLITWITH, R.string.filter_splitwith);
                 break;
         }
 
@@ -135,12 +135,12 @@ public class SortFilterOptions {
     public static void Sort(ProfileManager.SORT_METHODS method){
         _profile.SetSortMethod(method);
     }
-    public static void Filter(ProfileManager.FILTER_METHODS method){
+    public static void Filter(ProfileManager.FILTER_METHODS method, int title){
         if (method == ProfileManager.FILTER_METHODS.NONE){
             _profile.SetFilterMethod(ProfileManager.FILTER_METHODS.NONE, null);
             if (_callBack!=null) {Call("", false, null);}
         } else {
-            ProfileManager.OpenDialogFragment(_caller, DialogFragmentFilter.newInstance(_callBack, _profile, method), true);
+            ProfileManager.OpenDialogFragment(_caller, DialogFragmentFilter.newInstance(_callBack, _profile, method, title), true);
         }
     }
 
@@ -184,7 +184,7 @@ public class SortFilterOptions {
                 @Override
                 public void onClick(View v) {
                     FL_FILTER.setVisibility(View.GONE);
-                    Filter(ProfileManager.FILTER_METHODS.NONE);
+                    Filter(ProfileManager.FILTER_METHODS.NONE, R.string.filter);
                     _callBack.call();
                 }
             });
