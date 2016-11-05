@@ -722,7 +722,7 @@ public class ActivityNewTransaction extends AppCompatActivity
     //EXPENSES ONLY
     public void UpdateSplitClick()
     {
-        //Change checkbox text
+        //ChangelogChange checkbox text
         checkBox_split.setText((checkBox_split.isChecked() ? "Split Cost with" : "Split Cost"));
 
         //Make Visible or Gone if split is checked or not

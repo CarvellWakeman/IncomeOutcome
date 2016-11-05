@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class Change {
+public class ChangelogChange {
     //Constants
     static String VERSION_INDICATOR = "ver ";
 
@@ -36,7 +36,7 @@ public class Change {
     Pattern p;
     Matcher m;
 
-    public Change(){}
+    public ChangelogChange(){}
 
     //FORM:
     //Ver #.#.# CHANNEL DATE
@@ -93,7 +93,7 @@ public class Change {
                 subtractions.add(line.replace(m.group(), "").trim());
                 return;
             }
-            //Change
+            //ChangelogChange
             p = Pattern.compile(REGEX_CHANGE, Pattern.CASE_INSENSITIVE);
             m = p.matcher(line);
             if (m.find()) {

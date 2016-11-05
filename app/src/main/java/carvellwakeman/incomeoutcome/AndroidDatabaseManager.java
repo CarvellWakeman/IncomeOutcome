@@ -52,7 +52,7 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 
 // all global variables
 	
-	//in the below line Change the text 'yourCustomSqlHelper' with your custom sqlitehelper class name.
+	//in the below line ChangelogChange the text 'yourCustomSqlHelper' with your custom sqlitehelper class name.
 	//Do not change the variable name dbm
 	DatabaseHelper dbm;
 	TableLayout tableLayout;
@@ -72,7 +72,7 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 		super.onCreate(savedInstanceState);
 		
 
-		//in the below line Change the text 'yourCustomSqlHelper' with your custom sqlitehelper class name
+		//in the below line ChangelogChange the text 'yourCustomSqlHelper' with your custom sqlitehelper class name
 		dbm = new DatabaseHelper(AndroidDatabaseManager.this);
 		
 		mainscrollview = new ScrollView(AndroidDatabaseManager.this);
@@ -763,7 +763,7 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 		Cursor c2=indexInfo.maincursor;
 	// a spinner which gives options to update or delete the row which user has selected
   	  ArrayList<String> spinnerArray = new ArrayList<String>();
-  	    spinnerArray.add("Click Here to Change this row");
+  	    spinnerArray.add("Click Here to ChangelogChange this row");
   	    spinnerArray.add("Update this row");
   	    spinnerArray.add("Delete this row");
 

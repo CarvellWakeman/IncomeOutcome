@@ -4,7 +4,7 @@
     <item android:id="@+id/toolbar_filter"
         android:icon="@drawable/ic_filter_white_24dp"
         android:title="@string/filter"
-        app:showAsAction="never"
+        app:showAsAction="ifRoom"
         android:orderInCategory="2" >
 
         <menu>
@@ -16,7 +16,7 @@
                 android:title="@string/filter_source" />
             <item
                 android:id="@+id/toolbar_filter_paidby"
-                android:title="@string/filter_whopaid" />
+                android:title="@string/filter_paidby" />
             <item
                 android:id="@+id/toolbar_filter_splitwith"
                 android:title="@string/filter_splitwith" />

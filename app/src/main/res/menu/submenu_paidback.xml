@@ -5,5 +5,5 @@
         android:icon="@drawable/ic_check_white_24dp"
         android:title="@string/action_setpaidback"
         app:showAsAction="never"
-        android:orderInCategory="3" />
+        android:orderInCategory="0" />
 </menu>

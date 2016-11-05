@@ -12,9 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
-import org.joda.time.LocalDate;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,7 +32,7 @@ public class DialogFragmentChangelog extends DialogFragment
 
     Button button_positive;
 
-    List<Change> changeList = new ArrayList<>();
+    List<ChangelogChange> changeList = new ArrayList<>();
 
     static DialogFragmentChangelog newInstance() {
         DialogFragmentChangelog fg = new DialogFragmentChangelog();
@@ -98,14 +96,14 @@ public class DialogFragmentChangelog extends DialogFragment
     public void readChangelog(InputStream is){
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
-        Change change = null;
+        ChangelogChange change = null;
         String line;
         try {
             while ((line = reader.readLine()) != null) {
                 //Check if line is a title line
-                if (line.toLowerCase().contains(Change.VERSION_INDICATOR)) {
+                if (line.toLowerCase().contains(ChangelogChange.VERSION_INDICATOR)) {
                     //Make a new change
-                    change = new Change();
+                    change = new ChangelogChange();
                     changeList.add(change);
 
                     change.ParseTitleString(line);

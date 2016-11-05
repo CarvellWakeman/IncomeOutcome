@@ -17,7 +17,7 @@
         <!-- You can also set colorControlNormal, colorControlActivated
              colorControlHighlight and colorSwitchThumbNormal. -->
 
-        <!--Change datepickerdialog theme-->
+        <!--ChangelogChange datepickerdialog theme-->
         <item name="android:datePickerDialogTheme">@style/DatePickerDialogTheme</item>
         <item name="android:alertDialogStyle">@style/AlertDialogCustom</item>
 

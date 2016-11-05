@@ -13,9 +13,9 @@ import java.util.List;
 public class AdapterChangelog extends RecyclerView.Adapter<AdapterChangelog.ChangeViewHolder>
 {
     Activity _parent;
-    List<Change> changeList;
+    List<ChangelogChange> changeList;
 
-    public AdapterChangelog(Activity parent, List<Change> changes) {
+    public AdapterChangelog(Activity parent, List<ChangelogChange> changes) {
         _parent = parent;
         changeList = changes;
     }
@@ -30,7 +30,7 @@ public class AdapterChangelog extends RecyclerView.Adapter<AdapterChangelog.Chan
     @Override
     public void onBindViewHolder(final ChangeViewHolder holder, int position)
     {
-        Change change = changeList.get(position);
+        ChangelogChange change = changeList.get(position);
 
         if (change != null){
             LayoutInflater inflater = _parent.getLayoutInflater();

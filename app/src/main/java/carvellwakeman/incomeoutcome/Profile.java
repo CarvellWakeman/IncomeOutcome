@@ -514,13 +514,15 @@ public class Profile implements java.io.Serializable
 
     //Transfer
     public void TransferTransaction(Context ac, Transaction transaction, Profile moveTo){
-        UpdateTransaction(ac, transaction, moveTo);
-        moveTo.AddTransactionDontSave(transaction);
-        RemoveTransaction(ac, transaction, true);
+        //UpdateTransaction(ac, transaction, moveTo); //TODO: Necessary?
+        moveTo.AddTransaction(ac, new Transaction(transaction));
+        this.RemoveTransaction(ac, transaction, true);
     }
     public void TransferAllTransactions(Context ac, Profile moveTo){
-        for (int i = 0; i < Transactions.size(); i++){
-            TransferTransaction(ac, Transactions.get(i), moveTo);
+        ArrayList<Transaction> temp = new ArrayList<>(Transactions);
+
+        for (int i = 0; i < temp.size(); i++){
+            TransferTransaction(ac, temp.get(i), moveTo);
         }
     }
 
@@ -618,6 +620,9 @@ public class Profile implements java.io.Serializable
                     };
                     break;
             }
+        }
+        else {
+            SetSortMethod(ProfileManager.SORT_METHODS.DATE_DOWN);
         }
     }
 

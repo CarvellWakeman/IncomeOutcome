@@ -336,11 +336,11 @@ public class ActivityManageProfiles extends AppCompatActivity {
     public void RemoveProfile(String id, final DialogFragmentManagePPC dialogFragment){
         final Profile pr = ProfileManager.getInstance().GetProfileByID(Integer.valueOf(id));
         if (pr != null) {
-            if (pr.GetTransactionsSize() > 0) {
+            if (pr.GetTransactionsSize() > 0 && ProfileManager.getInstance().GetProfileCount() > 1) {
                 ProfileManager.OpenDialogFragment(this, DialogFragmentTransferTransaction.newInstance(this, dialogFragment, pr), true); //TODO: Handle mIsLargeDisplay
             }
             else {
-                new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle)
+                new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletetransactions)
                         .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

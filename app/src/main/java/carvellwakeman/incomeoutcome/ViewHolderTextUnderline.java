@@ -16,6 +16,7 @@ public class ViewHolderTextUnderline extends RecyclerView.ViewHolder implements 
 
     TextView title;
     TextView subTitle;
+    TextView subTitle2;
 
     public ViewHolderTextUnderline(View itemView)
     {
@@ -26,6 +27,7 @@ public class ViewHolderTextUnderline extends RecyclerView.ViewHolder implements 
         secondaryIcon = (ImageView) itemView.findViewById(R.id.row_layout_text_secondicon);
         title = (TextView) itemView.findViewById(R.id.row_layout_text_title);
         subTitle = (TextView) itemView.findViewById(R.id.row_layout_text_subtitle);
+        subTitle2 = (TextView) itemView.findViewById(R.id.row_layout_text_subtitle2);
 
         //Short and long click listeners for the expenses context menu
         base.setOnClickListener(this);

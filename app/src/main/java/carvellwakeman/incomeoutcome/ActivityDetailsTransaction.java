@@ -48,6 +48,8 @@ public class ActivityDetailsTransaction extends AppCompatActivity
     ImageView button_prevPeriod;
     CheckBox checkbox_showall;
 
+    ProfileManager.CallBack sortFilterCallBack;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,15 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
         //Get the intent that opened this activity
         Intent intent = getIntent();
+
+        //Callback for sorting and filtering
+        sortFilterCallBack = new ProfileManager.CallBack() { @Override public void call() {
+            _profile.CalculateTimeFrame(activityType);
+            _profile.CalculateTotalsInTimeFrame(activityType, keyType);
+            elementsAdapter.notifyDataSetChanged();
+            totalsAdapter.notifyDataSetChanged();
+            CheckShowNoDataNotice();
+        }};
 
 
         //Determine if this is an expense or income activity
@@ -205,6 +216,10 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             CheckShowNoDataNotice();
 
             CheckHideRecyclerviews();
+
+            //Sort and filter bubbles
+            SortFilterOptions.DisplayFilter(this, _profile.GetFilterMethod(), _profile.GetFilterData(), sortFilterCallBack);
+            SortFilterOptions.DisplaySort(this, _profile.GetSortMethod(), sortFilterCallBack);
         }
     }
 
@@ -222,7 +237,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
     {
         for(int m : toolbar_menus){ getMenuInflater().inflate(m, menu); }
 
-        for (int i = 0; i < menu.size(); i++) { menu.getItem(i).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM); }
+        //for (int i = 0; i < menu.size(); i++) { menu.getItem(i).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM); }
 
         return true;
     }
@@ -246,13 +261,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                 }}, _profile), true);
                 return true;
             default:
-                SortFilterOptions.Run(this, _profile, item, activityType,
-                        new ProfileManager.CallBack() { @Override public void call() {
-                            _profile.CalculateTimeFrame(activityType);
-                            _profile.CalculateTotalsInTimeFrame(activityType, keyType);
-                            elementsAdapter.notifyDataSetChanged();
-                            totalsAdapter.notifyDataSetChanged();
-                        }});
+                SortFilterOptions.Run(this, _profile, item, sortFilterCallBack);
                 break;
         }
 

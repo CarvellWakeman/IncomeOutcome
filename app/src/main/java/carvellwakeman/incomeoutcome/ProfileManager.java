@@ -91,6 +91,7 @@ public class ProfileManager
         CATEGORY_DOWN,
         SOURCE_DOWN
     }
+    static HashMap<SORT_METHODS, String> sortSubtitles = new HashMap<>();
 
     enum FILTER_METHODS
     {
@@ -102,6 +103,8 @@ public class ProfileManager
         CATEGORY,
         SOURCE
     }
+    static HashMap<FILTER_METHODS, Integer> filterTitles = new HashMap<>();
+    static HashMap<FILTER_METHODS, String> filterSubtitles = new HashMap<>();
 
     //Constructor and Init
     private ProfileManager(){}
@@ -109,6 +112,33 @@ public class ProfileManager
 
     public void initialize(final Context ac, final CallBack databaseLoadingCallback)
     {
+        //Sort and Filter methods string titles
+        sortSubtitles.put(SORT_METHODS.DATE_UP, getString(R.string.sort) + ":" + getString(R.string.date));
+        sortSubtitles.put(SORT_METHODS.DATE_DOWN, getString(R.string.sort) + ":" + getString(R.string.date));
+        sortSubtitles.put(SORT_METHODS.COST_UP, getString(R.string.sort) + ":" + getString(R.string.cost));
+        sortSubtitles.put(SORT_METHODS.COST_DOWN, getString(R.string.sort) + ":" + getString(R.string.cost));
+        sortSubtitles.put(SORT_METHODS.PAIDBY_UP, getString(R.string.sort) + ":" + getString(R.string.paidby));
+        sortSubtitles.put(SORT_METHODS.PAIDBY_DOWN, getString(R.string.sort) + ":" + getString(R.string.paidby));
+        sortSubtitles.put(SORT_METHODS.CATEGORY_UP, getString(R.string.sort) + ":" + getString(R.string.category));
+        sortSubtitles.put(SORT_METHODS.CATEGORY_DOWN, getString(R.string.sort) + ":" + getString(R.string.category));
+        sortSubtitles.put(SORT_METHODS.SOURCE_UP, getString(R.string.sort) + ":" + getString(R.string.source));
+        sortSubtitles.put(SORT_METHODS.SOURCE_DOWN, getString(R.string.sort) + ":" + getString(R.string.source));
+
+        filterSubtitles.put(FILTER_METHODS.NONE, getString(R.string.filter) + ":");
+        filterSubtitles.put(FILTER_METHODS.DATE, getString(R.string.filter) + ":");
+        filterSubtitles.put(FILTER_METHODS.CATEGORY, getString(R.string.filter) + ":");
+        filterSubtitles.put(FILTER_METHODS.PAIDBY, getString(R.string.filter) + ":");
+        filterSubtitles.put(FILTER_METHODS.SPLITWITH, getString(R.string.filter) + ":");
+        filterSubtitles.put(FILTER_METHODS.SOURCE, getString(R.string.filter) + ":");
+
+        filterTitles.put(FILTER_METHODS.NONE, R.string.filter_none);
+        filterTitles.put(FILTER_METHODS.DATE, R.string.filter_date);
+        filterTitles.put(FILTER_METHODS.COST, R.string.filter_cost);
+        filterTitles.put(FILTER_METHODS.CATEGORY, R.string.filter_category);
+        filterTitles.put(FILTER_METHODS.PAIDBY, R.string.filter_paidby);
+        filterTitles.put(FILTER_METHODS.SPLITWITH, R.string.filter_splitwith);
+        filterTitles.put(FILTER_METHODS.SOURCE, R.string.filter_source);
+
         //MainActivityInstance = ac;
         //MainActivityContext = ac.getBaseContext();
 
@@ -191,45 +221,45 @@ public class ProfileManager
         //AddCategory(MainActivityContext.getString(R.string.select_category), 0, true);
 
         //Default _categories
-        AddCategory(ac, "Groceries", Color.argb(255, 0, 0, 255));
-        AddCategory(ac, "Fast Food", Color.argb(255, 0, 20, 200));
-        AddCategory(ac, "Restaurant", Color.argb(255, 50, 50, 150));
-        AddCategory(ac, "Snacks", Color.argb(255, 50, 80, 150));
+        AddOrUpdateCategory(ac, "Groceries", Color.argb(255, 0, 0, 255));
+        AddOrUpdateCategory(ac, "Fast Food", Color.argb(255, 0, 20, 200));
+        AddOrUpdateCategory(ac, "Restaurant", Color.argb(255, 50, 50, 150));
+        AddOrUpdateCategory(ac, "Snacks", Color.argb(255, 50, 80, 150));
 
-        AddCategory(ac, "Rent", Color.argb(255, 200, 0, 0));
-        AddCategory(ac, "Mortgage", Color.argb(255, 180, 30, 0));
-        AddCategory(ac, "ATM Withdrawal", Color.argb(255, 150, 50, 0));
+        AddOrUpdateCategory(ac, "Rent", Color.argb(255, 200, 0, 0));
+        AddOrUpdateCategory(ac, "Mortgage", Color.argb(255, 180, 30, 0));
+        AddOrUpdateCategory(ac, "ATM Withdrawal", Color.argb(255, 150, 50, 0));
 
-        AddCategory(ac, "Electricity", Color.argb(255, 250, 255, 30));
-        AddCategory(ac, "Sewer", Color.argb(255, 165, 165, 60));
-        AddCategory(ac, "Water", Color.argb(255, 36, 174, 212));
-        AddCategory(ac, "Garbage", Color.argb(255, 62, 105, 54));
-        AddCategory(ac, "Internet", Color.argb(255, 50, 50, 150));
-        AddCategory(ac, "Entertainment", Color.argb(255, 180, 255, 120));
+        AddOrUpdateCategory(ac, "Electricity", Color.argb(255, 250, 255, 30));
+        AddOrUpdateCategory(ac, "Sewer", Color.argb(255, 165, 165, 60));
+        AddOrUpdateCategory(ac, "Water", Color.argb(255, 36, 174, 212));
+        AddOrUpdateCategory(ac, "Garbage", Color.argb(255, 62, 105, 54));
+        AddOrUpdateCategory(ac, "Internet", Color.argb(255, 50, 50, 150));
+        AddOrUpdateCategory(ac, "Entertainment", Color.argb(255, 180, 255, 120));
 
-        AddCategory(ac, "Gasoline", Color.argb(255, 150, 0, 150));
-        AddCategory(ac, "Travel", Color.argb(255, 230, 50, 255));
-        AddCategory(ac, "Vehicle", Color.argb(255, 85, 0, 80));
+        AddOrUpdateCategory(ac, "Gasoline", Color.argb(255, 150, 0, 150));
+        AddOrUpdateCategory(ac, "Travel", Color.argb(255, 230, 50, 255));
+        AddOrUpdateCategory(ac, "Vehicle", Color.argb(255, 85, 0, 80));
 
-        AddCategory(ac, "Office Supplies", Color.argb(255, 255, 180, 80));
-        AddCategory(ac, "Home Supplies", Color.argb(255, 255, 100, 40));
-        AddCategory(ac, "Kitchen Supplies", Color.argb(255, 255, 50, 20));
-        AddCategory(ac, "Home Improvement", Color.argb(255, 50, 0, 255));
-        AddCategory(ac, "Home Repair", Color.argb(255, 115, 80, 255));
-        AddCategory(ac, "Pet", Color.argb(255, 200, 255, 200));
+        AddOrUpdateCategory(ac, "Office Supplies", Color.argb(255, 255, 180, 80));
+        AddOrUpdateCategory(ac, "Home Supplies", Color.argb(255, 255, 100, 40));
+        AddOrUpdateCategory(ac, "Kitchen Supplies", Color.argb(255, 255, 50, 20));
+        AddOrUpdateCategory(ac, "Home Improvement", Color.argb(255, 50, 0, 255));
+        AddOrUpdateCategory(ac, "Home Repair", Color.argb(255, 115, 80, 255));
+        AddOrUpdateCategory(ac, "Pet", Color.argb(255, 200, 255, 200));
 
-        AddCategory(ac, "Hobbies", Color.argb(255, 30, 200, 80));
-        AddCategory(ac, "Second-Hand", Color.argb(255, 15, 140, 50));
-        AddCategory(ac, "Clothing/Jewelry", Color.argb(255, 20, 200, 5));
+        AddOrUpdateCategory(ac, "Hobbies", Color.argb(255, 30, 200, 80));
+        AddOrUpdateCategory(ac, "Second-Hand", Color.argb(255, 15, 140, 50));
+        AddOrUpdateCategory(ac, "Clothing/Jewelry", Color.argb(255, 20, 200, 5));
 
-        AddCategory(ac, "Gifts", Color.argb(255, 0, 255, 255));
+        AddOrUpdateCategory(ac, "Gifts", Color.argb(255, 0, 255, 255));
 
-        AddCategory(ac, "Medical", Color.argb(255, 130, 0, 40));
-        AddCategory(ac, "Prescription", Color.argb(255, 180, 45, 50));
-        AddCategory(ac, "Health & Beauty", Color.argb(255, 100, 0, 200));
-        AddCategory(ac, "Personal", Color.argb(255, 216, 66, 216));
+        AddOrUpdateCategory(ac, "Medical", Color.argb(255, 130, 0, 40));
+        AddOrUpdateCategory(ac, "Prescription", Color.argb(255, 180, 45, 50));
+        AddOrUpdateCategory(ac, "Health & Beauty", Color.argb(255, 100, 0, 200));
+        AddOrUpdateCategory(ac, "Personal", Color.argb(255, 216, 66, 216));
 
-        AddCategory(ac, "Other", Color.argb(255, 140, 140, 140));
+        AddOrUpdateCategory(ac, "Other", Color.argb(255, 140, 140, 140));
 
         //MainActivityInstance.UpdateProfileList(false);
         //MainActivityInstance.SetSelection(GetProfileIndex(GetCurrentProfile()));
@@ -263,22 +293,25 @@ public class ProfileManager
 
     //Dialog fragment manager
     public static void OpenDialogFragment(Activity caller, DialogFragment fragment, boolean openAsDialogFragment){
-        if (openAsDialogFragment) { // The device is using a large layout, so show the fragment as a dialog
-            FragmentTransaction ft = caller.getFragmentManager().beginTransaction();
-            Fragment prev = caller.getFragmentManager().findFragmentByTag("dialog");
-            if (prev != null) {
-                ft.remove(prev);
-            }
-            ft.addToBackStack(null);
+        if (fragment != null) {
+            if (openAsDialogFragment) { // The device is using a large layout, so show the fragment as a dialog
+                FragmentTransaction ft = caller.getFragmentManager().beginTransaction();
+                Fragment prev = caller.getFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                ft.addToBackStack(null);
 
-            fragment.show(caller.getFragmentManager(), "dialog");
-            //FragmentTransaction ft = fragmentManager.beginTransaction();
-            //ft.add(fragment, null);
-            //ft.commitAllowingStateLoss();
-        } else { // The device is smaller, so show the fragment fullscreen
-            FragmentTransaction transaction = caller.getFragmentManager().beginTransaction();
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            transaction.add(android.R.id.content, fragment).addToBackStack(null).commit();
+                fragment.show(caller.getFragmentManager(), "dialog");
+                //FragmentTransaction ft = fragmentManager.beginTransaction();
+                //ft.add(fragment, null);
+                //ft.commitAllowingStateLoss();
+            }
+            else { // The device is smaller, so show the fragment fullscreen
+                FragmentTransaction transaction = caller.getFragmentManager().beginTransaction();
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                transaction.add(android.R.id.content, fragment).addToBackStack(null).commit();
+            }
         }
     }
 
@@ -625,7 +658,7 @@ public class ProfileManager
     }
 
     //Get category by index
-    public Boolean HasCategory(String category){
+    public boolean HasCategory(String category){
         if (_categories != null) {
             for (int i = 0; i < _categories.size(); i++) {
                 if (_categories.get(i).GetTitle().equals(category)) {
@@ -635,11 +668,11 @@ public class ProfileManager
         }
         return false;
     }
-    public Category GetCategory(String category)
+    public Category GetCategory(String title)
     {
         if (_categories != null) {
             for (int i = 0; i < _categories.size(); i++) {
-                if (_categories.get(i).GetTitle().equals(category)) {
+                if (_categories.get(i).GetTitle().equals(title)) {
                     return _categories.get(i);
                 }
             }
@@ -715,6 +748,15 @@ public class ProfileManager
             }
             DBInsertSetting(ac, category, true);
         }
+    }
+
+    //Add or update category
+    public void AddOrUpdateCategory(Context ac, String title, int color){
+        Category g = GetCategory(title);
+        if (g != null){
+            g.SetColor(color);
+        }
+        else { AddCategory(ac, title, color); }
     }
 
     //Clear All

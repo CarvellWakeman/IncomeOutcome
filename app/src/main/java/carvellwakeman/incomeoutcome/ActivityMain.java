@@ -35,6 +35,7 @@ public class ActivityMain extends AppCompatActivity
 
     LinearLayout progress_loadingData;
 
+    ProfileManager.CallBack sortFilterCallBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,11 @@ public class ActivityMain extends AppCompatActivity
                 RefreshOverview();
             }
         });
+
+        //Sort filter callback
+        sortFilterCallBack = new ProfileManager.CallBack() { @Override public void call() {
+            RefreshOverview();
+        }};
 
         //Toolbar menus
         toolbar_menus = new ArrayList<>();
@@ -157,6 +163,7 @@ public class ActivityMain extends AppCompatActivity
             App.SetLastVersion(this);
             ProfileManager.OpenDialogFragment(this, DialogFragmentChangelog.newInstance(), true);
         }
+
     }
 
     @Override
@@ -174,6 +181,12 @@ public class ActivityMain extends AppCompatActivity
             checkbox_showall.setChecked(_profile.GetShowAll());
 
             RefreshOverview();
+        }
+
+        //Sort and filter bubbles
+        if (_profile != null) {
+            SortFilterOptions.DisplayFilter(this, _profile.GetFilterMethod(), _profile.GetFilterData(), sortFilterCallBack);
+            SortFilterOptions.DisplaySort(this, ProfileManager.SORT_METHODS.DATE_DOWN, sortFilterCallBack); //Sorting is irrelevant on main activity
         }
     }
 
@@ -209,10 +222,7 @@ public class ActivityMain extends AppCompatActivity
                 return true;
         }
 
-        SortFilterOptions.Run(this, _profile, item, -1,
-            new ProfileManager.CallBack() { @Override public void call() {
-                RefreshOverview();
-            }});
+        SortFilterOptions.Run(this, _profile, item, sortFilterCallBack);
 
         return true;
     }

@@ -1,6 +1,7 @@
 package carvellwakeman.incomeoutcome;
 
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.graphics.Color;
@@ -32,7 +33,7 @@ public class DialogFragmentFilter extends DialogFragment
     Button button_negative;
 
 
-    static DialogFragmentFilter newInstance(ProfileManager.CallBack callBack, Profile profile, ProfileManager.FILTER_METHODS method, int title) {
+    static DialogFragmentFilter newInstance(Activity caller, Profile profile, ProfileManager.FILTER_METHODS method, int title, ProfileManager.CallBack callBack) {
         DialogFragmentFilter fg = new DialogFragmentFilter();
         fg._callBack = callBack;
         Bundle args = new Bundle();
@@ -40,6 +41,38 @@ public class DialogFragmentFilter extends DialogFragment
         args.putSerializable("method", method);
         args.putInt("title", title);
         fg.setArguments(args);
+
+        switch (method) {
+            case CATEGORY:
+                if (ProfileManager.getInstance().GetCategoriesCount() == 0) { ProfileManager.PrintUser(caller, ProfileManager.getString(R.string.tt_nocategories) ); return null; }
+                fg.adapter = new ArrayAdapter<>(caller, R.layout.spinner_dropdown_title, ProfileManager.getInstance().GetCategoriesString());
+                break;
+            case SOURCE:
+                if (profile != null) {
+                    ArrayList<String> sources = new ArrayList<>();
+                    for (int i = 0; i < profile.GetTransactionsSize(); i++) {
+                        if (!sources.contains(profile.GetTransactionAtIndex(i).GetSourceName())) {
+                            if (profile.GetTransactionAtIndex(i).GetSourceName() != null) {
+                                if (!profile.GetTransactionAtIndex(i).GetSourceName().equals("")) {
+                                    sources.add(profile.GetTransactionAtIndex(i).GetSourceName());
+                                }
+                            }
+                        }
+                    }
+                    if (sources.size() == 0) { ProfileManager.PrintUser(caller, ProfileManager.getString(R.string.tt_nosources) ); return null; }
+                    fg.adapter = new ArrayAdapter<>(caller, R.layout.spinner_dropdown_title, sources);
+                }
+                break;
+            case PAIDBY:
+                fg.adapter = new ArrayAdapter<>(caller, R.layout.spinner_dropdown_title, ProfileManager.getInstance().GetOtherPeopleIncludingMe());
+                break;
+            case SPLITWITH:
+                if (ProfileManager.getInstance().GetOtherPeopleCount() == 0) { ProfileManager.PrintUser(caller, ProfileManager.getString(R.string.tt_nopeople) ); return null; }
+                fg.adapter = new ArrayAdapter<>(caller, R.layout.spinner_dropdown_title, ProfileManager.getInstance().GetOtherPeople());
+                break;
+        }
+
+
 
         return fg;
     }
@@ -66,29 +99,6 @@ public class DialogFragmentFilter extends DialogFragment
         textView_title.setText(titleString);
 
         //Populate spinner
-        ArrayAdapter<String> adapter = null;
-        switch (filterMethod) {
-            case CATEGORY:
-                adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_title, ProfileManager.getInstance().GetCategoriesString());
-                break;
-            case SOURCE:
-                if (_profile != null) {
-                    ArrayList<String> sources = new ArrayList<>();
-                    for (int i = 0; i < _profile.GetTransactionsSize(); i++) {
-                        if (!sources.contains(_profile.GetTransactionAtIndex(i).GetSourceName())) {
-                            sources.add(_profile.GetTransactionAtIndex(i).GetSourceName());
-                        }
-                    }
-                    adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_title, sources);
-                }
-                break;
-            case PAIDBY:
-                adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_title, ProfileManager.getInstance().GetOtherPeopleIncludingMe());
-                break;
-            case SPLITWITH:
-                adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_title, ProfileManager.getInstance().GetOtherPeople());
-                break;
-        }
         if (adapter != null) {
             adapter.setDropDownViewResource(R.layout.spinner_dropdown_list_primary);
             spinner_filter.setAdapter(adapter);
@@ -100,31 +110,10 @@ public class DialogFragmentFilter extends DialogFragment
             public void onClick(View v) {
                 if (_profile != null) {
                     _profile.SetFilterMethod(filterMethod, spinner_filter.getSelectedItem());
+                    SortFilterOptions.DisplayFilter(getActivity(), filterMethod, spinner_filter.getSelectedItem(), _callBack);
 
-                    switch (filterMethod) {
-                        case NONE:
-                            if (_callBack != null) {SortFilterOptions.Call("", false, null);}
-                            break;
-                        case CATEGORY:
-                            if (_callBack != null) {
-                                SortFilterOptions.Call("", false, ProfileManager.getString(R.string.filter) + ":" + String.valueOf(spinner_filter.getSelectedItem()));
-                            }
-                            break;
-                        case SOURCE:
-                            if (_callBack != null) {
-                                SortFilterOptions.Call("", false, ProfileManager.getString(R.string.filter) + ":" + String.valueOf(spinner_filter.getSelectedItem()));
-                            }
-                            break;
-                        case PAIDBY:
-                            if (_callBack != null) {
-                                SortFilterOptions.Call("", false, ProfileManager.getString(R.string.filter) + ":" + ProfileManager.getString(R.string.info_paidby) + " " + String.valueOf(spinner_filter.getSelectedItem()));
-                            }
-                            break;
-                        case SPLITWITH:
-                            if (_callBack != null) {
-                                SortFilterOptions.Call("", false, ProfileManager.getString(R.string.filter) + ":" + ProfileManager.getString(R.string.splitwith) + " " + String.valueOf(spinner_filter.getSelectedItem()));
-                            }
-                            break;
+                    if (_callBack != null){
+                        _callBack.call();
                     }
                 }
                 dismiss();

@@ -13,197 +13,171 @@ import java.util.SortedMap;
 
 public class SortFilterOptions {
 
-    static MenuItem lastMenuItem = null;
+    //static MenuItem lastMenuItem = null;
 
-    static Activity _caller;
     static Profile _profile;
     static MenuItem _item;
-    static int _activityType;
-    static ProfileManager.CallBack _callBack;
 
     static {}
 
-    public static void Run(Activity caller, Profile profile, MenuItem item, int activityType, ProfileManager.CallBack callBack){
-        _caller = caller;
+    //DisplayFilterSort(ProfileManager.getString(R.string.sort) + ":" + ProfileManager.getString(R.string.category), upDown, "");
+    public static void Run(Activity caller, Profile profile, MenuItem item, ProfileManager.CallBack callBack){
         _profile = profile;
         _item = item;
-        _activityType = activityType;
-        _callBack = callBack;
-
-        boolean upDown;
 
         switch (item.getItemId())
         {
             case R.id.toolbar_sort_category:
                 if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.CATEGORY_UP) {
-                    //item.setIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
-                    Sort(ProfileManager.SORT_METHODS.CATEGORY_DOWN);
-                    upDown = true;
+                    Sort(caller, ProfileManager.SORT_METHODS.CATEGORY_DOWN, callBack);
                 } else {
-                    upDown = false;
-                    //item.setIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
-                    Sort(ProfileManager.SORT_METHODS.CATEGORY_UP);
+                    Sort(caller, ProfileManager.SORT_METHODS.CATEGORY_UP, callBack);
                 }
-                if (lastMenuItem!=null && lastMenuItem.getIcon()!=null && item != lastMenuItem) { lastMenuItem.setIcon(null); }
-                lastMenuItem = item;
-                //if (item.getIcon() != null){ item.getIcon().setColorFilter(ProfileManager.getColor(R.color.black), PorterDuff.Mode.MULTIPLY); }
-                _profile.CalculateTimeFrame(activityType);
-                if (_callBack!=null) {Call(ProfileManager.getString(R.string.sort) + ":" + ProfileManager.getString(R.string.category), upDown, "");}
+                if (callBack != null) { callBack.call(); }
                 break;
             case R.id.toolbar_sort_source:
                 if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.SOURCE_UP) {
-                    upDown = true;
-                    //item.setIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
-                    Sort(ProfileManager.SORT_METHODS.SOURCE_DOWN);
+                    Sort(caller, ProfileManager.SORT_METHODS.SOURCE_DOWN, callBack);
                 } else {
-                    upDown = false;
-                    //item.setIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
-                    Sort(ProfileManager.SORT_METHODS.SOURCE_UP);
+                    Sort(caller, ProfileManager.SORT_METHODS.SOURCE_UP, callBack);
                 }
-                if (lastMenuItem!=null && lastMenuItem.getIcon()!=null && item != lastMenuItem) { lastMenuItem.setIcon(null); }
-                lastMenuItem = item;
-                //if (item.getIcon() != null){ item.getIcon().setColorFilter(ProfileManager.getColor(R.color.black), PorterDuff.Mode.MULTIPLY); }
-                _profile.CalculateTimeFrame(activityType);
-                if (_callBack!=null) {Call(ProfileManager.getString(R.string.sort) + ":" + ProfileManager.getString(R.string.source), upDown, "");}
+                if (callBack != null) { callBack.call(); }
                 break;
             case R.id.toolbar_sort_cost:
                 if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.COST_UP) {
-                    upDown = true;
-                    //item.setIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
-                    Sort(ProfileManager.SORT_METHODS.COST_DOWN);
+                    Sort(caller, ProfileManager.SORT_METHODS.COST_DOWN, callBack);
                 } else {
-                    upDown = false;
-                    //item.setIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
-                    Sort(ProfileManager.SORT_METHODS.COST_UP);
+                    Sort(caller, ProfileManager.SORT_METHODS.COST_UP, callBack);
                 }
-                if (lastMenuItem!=null && lastMenuItem.getIcon()!=null && item != lastMenuItem) { lastMenuItem.setIcon(null); }
-                lastMenuItem = item;
-                //if (item.getIcon() != null){ item.getIcon().setColorFilter(ProfileManager.getColor(R.color.black), PorterDuff.Mode.MULTIPLY); }
-                _profile.CalculateTimeFrame(activityType);
-                if (_callBack!=null) {Call(ProfileManager.getString(R.string.sort) + ":" + ProfileManager.getString(R.string.cost), upDown, "");}
+                if (callBack != null) { callBack.call(); }
                 break;
             case R.id.toolbar_sort_date:
                 if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.DATE_UP) {
-                    //item.setIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
-                    upDown=true;
-                    Sort(ProfileManager.SORT_METHODS.DATE_DOWN);
+                    Sort(caller, ProfileManager.SORT_METHODS.DATE_DOWN, callBack);
                 } else {
-                    upDown=false;
-                    //item.setIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
-                    Sort(ProfileManager.SORT_METHODS.DATE_UP);
+                    Sort(caller, ProfileManager.SORT_METHODS.DATE_UP, callBack);
                 }
-                if (_callBack!=null) {Call(ProfileManager.getString(R.string.sort) + ":" + ProfileManager.getString(R.string.date), upDown, "");}
-                if (lastMenuItem!=null && lastMenuItem.getIcon()!=null && item != lastMenuItem) { lastMenuItem.setIcon(null); }
-                lastMenuItem = item;
-                //if (item.getIcon() != null){ item.getIcon().setColorFilter(ProfileManager.getColor(R.color.black), PorterDuff.Mode.MULTIPLY); }
-                _profile.CalculateTimeFrame(activityType);
+                if (callBack != null) { callBack.call(); }
                 break;
             case R.id.toolbar_sort_paidby:
                 if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.PAIDBY_UP) {
-                    upDown = true;
-                    //item.setIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
-                    Sort(ProfileManager.SORT_METHODS.PAIDBY_DOWN);
+                    Sort(caller, ProfileManager.SORT_METHODS.PAIDBY_DOWN, callBack);
                 } else {
-                    upDown = false;
-                    //item.setIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
-                    Sort(ProfileManager.SORT_METHODS.PAIDBY_UP);
+                    Sort(caller, ProfileManager.SORT_METHODS.PAIDBY_UP, callBack);
                 }
-                if (lastMenuItem!=null && lastMenuItem.getIcon()!=null && item != lastMenuItem) { lastMenuItem.setIcon(null); }
-                lastMenuItem = item;
-                //if (item.getIcon() != null){ item.getIcon().setColorFilter(ProfileManager.getColor(R.color.black), PorterDuff.Mode.MULTIPLY); }
-                _profile.CalculateTimeFrame(activityType);
-                if (_callBack!=null) {Call(ProfileManager.getString(R.string.sort) + ":" + ProfileManager.getString(R.string.whopaid), upDown, "");}
+                if (callBack != null) { callBack.call(); }
                 break;
 
 
             case R.id.toolbar_filter_category:
-                Filter(ProfileManager.FILTER_METHODS.CATEGORY, R.string.filter_category);
+                //DisplayFilter(ProfileManager.FILTER_METHODS.CATEGORY);
+                Filter(caller, ProfileManager.FILTER_METHODS.CATEGORY, callBack);
                 break;
             case R.id.toolbar_filter_source:
-                Filter(ProfileManager.FILTER_METHODS.SOURCE, R.string.filter_source);
+                //DisplayFilter(ProfileManager.FILTER_METHODS.SOURCE);
+                Filter(caller, ProfileManager.FILTER_METHODS.SOURCE, callBack);
                 break;
             case R.id.toolbar_filter_paidby:
-                Filter(ProfileManager.FILTER_METHODS.PAIDBY, R.string.filter_whopaid);
+                //DisplayFilter(ProfileManager.FILTER_METHODS.PAIDBY);
+                Filter(caller, ProfileManager.FILTER_METHODS.PAIDBY, callBack);
                 break;
             case R.id.toolbar_filter_splitwith:
-                Filter(ProfileManager.FILTER_METHODS.SPLITWITH, R.string.filter_splitwith);
+                //DisplayFilter(ProfileManager.FILTER_METHODS.SPLITWITH);
+                Filter(caller, ProfileManager.FILTER_METHODS.SPLITWITH, callBack);
                 break;
         }
 
 
     }
-    public static void Sort(ProfileManager.SORT_METHODS method){
+    public static void Sort(Activity caller, ProfileManager.SORT_METHODS method, ProfileManager.CallBack callBack){
         _profile.SetSortMethod(method);
+
+        DisplaySort(caller, method, callBack);
     }
-    public static void Filter(ProfileManager.FILTER_METHODS method, int title){
+    public static void Filter(Activity caller, ProfileManager.FILTER_METHODS method, ProfileManager.CallBack callBack){
         if (method == ProfileManager.FILTER_METHODS.NONE){
             _profile.SetFilterMethod(ProfileManager.FILTER_METHODS.NONE, null);
-            if (_callBack!=null) {Call("", false, null);}
         } else {
-            ProfileManager.OpenDialogFragment(_caller, DialogFragmentFilter.newInstance(_callBack, _profile, method, title), true);
+            ProfileManager.OpenDialogFragment(caller, DialogFragmentFilter.newInstance(caller, _profile, method, ProfileManager.filterTitles.get(method), callBack), true);
         }
     }
 
-    public static void Call(String sort, boolean sortUp, String filter){
-        final FrameLayout FL_SORT = (FrameLayout) _caller.findViewById(R.id.frameLayout_sort);;
-        final FrameLayout FL_FILTER = (FrameLayout) _caller.findViewById(R.id.frameLayout_filter);
-        TextView TV_SORT = null;
-        TextView TV_FILTER = null;
-        ImageView IV_SORT = null;
+    //public static void DisplayFilterSort(String sort, boolean sortUp, String filter){
+    public static void DisplaySort(Activity caller, ProfileManager.SORT_METHODS sort, final ProfileManager.CallBack callBack) {
+        if (caller != null) {
+            final FrameLayout FL_SORT = (FrameLayout) caller.findViewById(R.id.frameLayout_sort);
+            if (FL_SORT != null) {
+                final TextView TV_SORT = (TextView) FL_SORT.findViewById(R.id.textView_sort);
+                ImageView IV_SORT = (ImageView) FL_SORT.findViewById(R.id.imageView_sortUpDown);
 
+                if (TV_SORT != null && IV_SORT != null) {
+                    FL_SORT.setVisibility(View.VISIBLE);
 
-        if (FL_SORT!=null){
-            FL_SORT.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FL_SORT.setVisibility(View.GONE);
-                    Sort(ProfileManager.SORT_METHODS.DATE_DOWN);
-                    _callBack.call();
-                }
-            });
-            TV_SORT = (TextView) FL_SORT.findViewById(R.id.textView_sort);
-            if (TV_SORT!=null){
-                if (sort != null) {
-                    if (!sort.equals("")) {
+                    FL_SORT.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            TV_SORT.setText("");
+                            FL_SORT.setVisibility(View.GONE);
+                            _profile.SetSortMethod(ProfileManager.SORT_METHODS.DATE_DOWN);
+                            callBack.call();
+                        }
+                    });
+
+                    if (sort != null && sort != ProfileManager.SORT_METHODS.DATE_DOWN) {
                         FL_SORT.setVisibility(View.VISIBLE);
-                        TV_SORT.setText(sort);
+                        TV_SORT.setText(ProfileManager.sortSubtitles.get(sort));
+
+                        if (sort.toString().contains("_DOWN")) {
+                            IV_SORT.setImageResource(R.drawable.ic_keyboard_arrow_down_white_24dp);
+                        }
+                        else if (sort.toString().contains("_UP")) {
+                            IV_SORT.setImageResource(R.drawable.ic_keyboard_arrow_up_white_24dp);
+                        }
+                    }
+                    else {
+                        FL_SORT.setVisibility(View.GONE);
                     }
                 }
-                else {
-                    FL_SORT.setVisibility(View.GONE);
-                }
-            }
-            IV_SORT = (ImageView) FL_SORT.findViewById(R.id.imageView_sortUpDown);
-            if (IV_SORT!=null){
-                if (sortUp) { IV_SORT.setImageResource(R.drawable.ic_keyboard_arrow_down_white_24dp); }
-                else { IV_SORT.setImageResource(R.drawable.ic_keyboard_arrow_up_white_24dp); }
             }
         }
-        if (FL_FILTER!=null){
-            FL_FILTER.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FL_FILTER.setVisibility(View.GONE);
-                    Filter(ProfileManager.FILTER_METHODS.NONE, R.string.filter);
-                    _callBack.call();
-                }
-            });
-            TV_FILTER = (TextView) FL_FILTER.findViewById(R.id.textView_filter);
-            if (TV_FILTER!=null){
-                if (filter!=null) {
-                    if (!filter.equals("")) {
+    }
+    public static void DisplayFilter(Activity caller, ProfileManager.FILTER_METHODS filter, Object data, final ProfileManager.CallBack callBack) {
+        if (caller != null) {
+            final FrameLayout FL_FILTER = (FrameLayout) caller.findViewById(R.id.frameLayout_filter);
+            if (FL_FILTER != null) {
+                final TextView TV_FILTER = (TextView) FL_FILTER.findViewById(R.id.textView_filter);
+                if (TV_FILTER != null) {
+                    FL_FILTER.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            TV_FILTER.setText("");
+                            FL_FILTER.setVisibility(View.GONE);
+                            _profile.SetFilterMethod(ProfileManager.FILTER_METHODS.NONE, null);
+                            callBack.call();
+                        }
+                    });
+
+                    if (filter != null && filter != ProfileManager.FILTER_METHODS.NONE) {
                         FL_FILTER.setVisibility(View.VISIBLE);
-                        TV_FILTER.setText(filter);
+                        String info = "";
+                        switch (filter) {
+                            case PAIDBY:
+                                info = ProfileManager.getString(R.string.info_paidby) + " " + String.valueOf(data);
+                                break;
+                            case SPLITWITH:
+                                info = ProfileManager.getString(R.string.splitwith) + " " + String.valueOf(data);
+                                break;
+                            default:
+                                info = String.valueOf(data);
+                        }
+                        TV_FILTER.setText(ProfileManager.filterSubtitles.get(filter) + info);
                     }
-                }
-                else {
-                    FL_FILTER.setVisibility(View.GONE);
+                    else {
+                        FL_FILTER.setVisibility(View.GONE);
+                    }
                 }
             }
         }
-
-        _callBack.call();
-
     }
 
 }

@@ -110,6 +110,9 @@ public class CardTransaction extends Card
             public void onClick(View view) {
                 Profile _profile = ProfileManager.getInstance().GetProfileByID(_profileID);
                 if (_profile != null) {
+                    //_profile.SetFilterMethod(ProfileManager.FILTER_METHODS.NONE, null);
+                    //_profile.SetSortMethod(ProfileManager.SORT_METHODS.DATE_DOWN);
+
                     _profile.CalculateTimeFrame(activityType);
                     _profile.CalculateTotalsInTimeFrame(activityType, activityType);
 
