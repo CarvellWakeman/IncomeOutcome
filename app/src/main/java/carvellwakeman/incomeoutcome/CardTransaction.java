@@ -186,7 +186,7 @@ public class CardTransaction extends Card
 
         //SetExpanded(true);
 
-        //SetExpanded(false);
+        SetExpanded(false);
     }
 
     public void SetProfileID(int profileID){ _profileID = profileID; }

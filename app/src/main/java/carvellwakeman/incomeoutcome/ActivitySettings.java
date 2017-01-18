@@ -37,6 +37,8 @@ public class ActivitySettings extends AppCompatActivity
 {
     Toolbar toolbar;
 
+    Boolean tempDebugMode = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,18 +113,29 @@ public class ActivitySettings extends AppCompatActivity
                     }}), true);
                 }}));
 
+        //Changelog
         CardSettings about = new CardSettings(this, inflater, insertPoint, indexCount++, R.layout.row_layout_setting_card, getString(R.string.title_settings_about));
         final String whatsNew = String.format(getString(R.string.subtitle_settings_changelog), App.GetVersion(ActivitySettings.this));
-        //Changelog
-        about.AddSetting(new Setting(inflater, R.drawable.ic_update_white_24dp, getString(R.string.title_settings_changelog), whatsNew,
+        Setting changelog = new Setting(inflater, R.drawable.ic_update_white_24dp, getString(R.string.title_settings_changelog), whatsNew,
                 new View.OnClickListener() { @Override public void onClick(View v) {
                     ProfileManager.OpenDialogFragment(ActivitySettings.this, DialogFragmentChangelog.newInstance(), true);
                 }}
-        ));
+        );
+        changelog.SetLongClickListener(new View.OnLongClickListener(){
+            @Override public boolean onLongClick(View v) {
+                if (!tempDebugMode && !ProfileManager.isDebugMode(ActivitySettings.this)) {
+                    tempDebugMode = true;
+                    recreate();
+                }
+                return true;
+            }
+        });
+        about.AddSetting(changelog);
+
 
 
         //Debug card
-        if (ProfileManager.isDebugMode(this)) {
+        if (ProfileManager.isDebugMode(this) || tempDebugMode) {
             CardSettings debug = new CardSettings(this, inflater, insertPoint, indexCount, R.layout.row_layout_setting_card, "Debug");
             //View Database
             debug.AddSetting(new Setting(inflater, R.drawable.ic_database_white_24dp, getString(R.string.title_settings_viewdatabase), getString(R.string.subtitle_settings_viewdatabase), new View.OnClickListener() {

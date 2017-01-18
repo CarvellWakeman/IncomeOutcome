@@ -45,6 +45,9 @@ public class Setting
         }
     }
 
+    public void SetLongClickListener(View.OnLongClickListener listener){
+        v.setOnLongClickListener(listener);
+    }
 
     public View getView()
     {
