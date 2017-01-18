@@ -58,7 +58,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/linearLayout_date"
+<<<<<<< HEAD
         android:clickable="false"
+=======
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
         android:orientation="vertical"
         android:paddingBottom="8dp"
         android:visibility="gone">
@@ -75,7 +78,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/frameLayout_note"
+<<<<<<< HEAD
         android:clickable="false"
+=======
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
         android:orientation="vertical"
         android:paddingBottom="8dp"
         android:visibility="gone">
@@ -93,7 +99,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/frameLayout_add"
+<<<<<<< HEAD
         android:clickable="false"
+=======
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
         android:orientation="vertical"
         android:paddingBottom="8dp"
         android:visibility="gone">
@@ -111,7 +120,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/frameLayout_change"
+<<<<<<< HEAD
         android:clickable="false"
+=======
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
         android:orientation="vertical"
         android:paddingBottom="8dp"
         android:visibility="gone">
@@ -128,7 +140,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/frameLayout_remove"
+<<<<<<< HEAD
         android:clickable="false"
+=======
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
         android:orientation="vertical"
         android:paddingBottom="8dp"
         android:visibility="gone">

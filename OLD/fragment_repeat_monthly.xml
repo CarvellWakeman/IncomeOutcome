@@ -1,0 +1,74 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RepeatDaily"
+    android:theme="@style/Base.Theme.AppCompat.Light">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Every"
+        android:id="@+id/textView_every"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:gravity="center_vertical"
+        android:layout_above="@+id/editText_repeatMonthly2"
+        android:layout_marginLeft="5dp" />
+
+    <EditText
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editText_repeatMonthly"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_alignParentTop="true"
+        android:theme="@style/Base.Theme.AppCompat.Light"
+        android:layout_toEndOf="@+id/textView_every"
+        android:numeric="integer"
+        android:text="1"
+        android:gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="month(s)"
+        android:id="@+id/textView2"
+        android:layout_toEndOf="@+id/editText_repeatMonthly"
+        android:layout_alignParentTop="true"
+        android:gravity="center_vertical"
+        android:layout_above="@+id/editText_repeatMonthly2" />
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="On day"
+        android:id="@+id/textView3"
+        android:gravity="center_vertical"
+        android:layout_alignTop="@+id/editText_repeatMonthly2"
+        android:layout_alignStart="@+id/textView_every"
+        android:layout_alignBottom="@+id/editText_repeatMonthly2" />
+
+    <EditText
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editText_repeatMonthly2"
+        android:layout_gravity="center_horizontal|top"
+        android:theme="@style/Base.Theme.AppCompat.Light"
+        android:numeric="integer"
+        android:text="1"
+        android:layout_below="@+id/editText_repeatMonthly"
+        android:layout_toEndOf="@+id/textView3"
+        android:layout_marginLeft="5dp"
+        android:gravity="center_horizontal" />
+
+
+</RelativeLayout>

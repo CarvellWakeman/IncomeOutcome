@@ -25,7 +25,10 @@ import java.util.List;
 public class DialogFragmentChangelog extends DialogFragment
 {
     TextView textView_title;
+<<<<<<< HEAD
     TextView textView_nodata;
+=======
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
 
     AdapterChangelog adapter;
     NpaLinearLayoutManager linearLayoutManager;
@@ -54,8 +57,11 @@ public class DialogFragmentChangelog extends DialogFragment
 
         textView_title = (TextView) view.findViewById(R.id.textView_dialogtt_title);
 
+<<<<<<< HEAD
         textView_nodata = (TextView) view.findViewById(R.id.textView_changelog_nodata);
 
+=======
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
         recyclerView_changes = (RecyclerView) view.findViewById(R.id.recyclerView_changelog);
 
         button_positive = (Button) view.findViewById(R.id.button_dialogtt_positive);
@@ -72,6 +78,7 @@ public class DialogFragmentChangelog extends DialogFragment
             readChangelog(inputStream);
         } catch (IOException ex){ ex.printStackTrace(); }
 
+<<<<<<< HEAD
         //Visibilitiy
         if (changeList.size() > 0){
             //Set adapter
@@ -89,6 +96,17 @@ public class DialogFragmentChangelog extends DialogFragment
             textView_nodata.setVisibility(View.VISIBLE);
         }
 
+=======
+        //Set adapter
+        adapter = new AdapterChangelog(getActivity(), changeList);
+        recyclerView_changes.setAdapter(adapter);
+
+        //LinearLayoutManager for RecyclerView
+        linearLayoutManager = new NpaLinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(NpaLinearLayoutManager.VERTICAL);
+        linearLayoutManager.scrollToPosition(0);
+        recyclerView_changes.setLayoutManager(linearLayoutManager);
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
 
 
         //Positive

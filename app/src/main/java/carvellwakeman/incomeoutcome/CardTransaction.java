@@ -15,11 +15,19 @@ import android.widget.*;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
+<<<<<<< HEAD
 import com.github.mikephil.charting.data.*;
 import com.github.mikephil.charting.formatter.DefaultValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.FSize;
+=======
+import com.github.mikephil.charting.data.DataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.DefaultValueFormatter;
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import java.util.ArrayList;
@@ -138,7 +146,10 @@ public class CardTransaction extends Card
         chart.setDescription("");
 
         chart.setHighlightPerTapEnabled(true);
+<<<<<<< HEAD
         chart.setTouchEnabled(true);
+=======
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
         chart.setDrawHoleEnabled(true);
         chart.setDrawCenterText(true);
         chart.setRotationEnabled(true);
@@ -153,12 +164,15 @@ public class CardTransaction extends Card
         chart.setTransparentCircleRadius(58f);
         chart.setCenterTextSize(22);
 
+<<<<<<< HEAD
         //Clicking on slices
         MarkerViewTransaction mv = new MarkerViewTransaction(context, R.layout.marker_layout, chart);
         chart.setMarkerView(mv);
 
 
 
+=======
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
         //Legend
         Legend l = chart.getLegend();
         l.setPosition(Legend.LegendPosition.LEFT_OF_CHART_CENTER);
@@ -172,7 +186,11 @@ public class CardTransaction extends Card
         //SetData();
 
         //Contract the card view
+<<<<<<< HEAD
         SetExpanded(true);
+=======
+        SetExpanded(false);
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
     }
 
     public void SetProfileID(int profileID){ _profileID = profileID; }
@@ -246,7 +264,11 @@ public class CardTransaction extends Card
             }
         }
 
+<<<<<<< HEAD
         SetExpanded(true);
+=======
+        SetExpanded(isExpanded);
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
 
         chart.animateY(1400, Easing.EasingOption.EaseInSine);
         chart.spin(2000, 0, 360, Easing.EasingOption.EaseOutSine);

@@ -59,10 +59,13 @@ public class Profile implements java.io.Serializable
         _period = new Period(0,1,0,0,0,0,0,0);
         SetStartTimeDontSave(LocalDate.now().withDayOfMonth(1));
 
+<<<<<<< HEAD
         //Default sorting
         //sortMethod = ProfileManager.SORT_METHODS.DATE_DOWN;
         SetSortMethod(null);
 
+=======
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
         //TODO: Necessary?
         //CalculateTotalsInTimeFrame(0);
         //CalculateTotalsInTimeFrame(1);
@@ -296,7 +299,10 @@ public class Profile implements java.io.Serializable
     public void UpdateTransaction(Context ac, Transaction transaction) { UpdateTransaction(ac, transaction, this); }
 
     public void CloneTransaction(Context ac, Transaction oldTr, Transaction newTr){
+<<<<<<< HEAD
         ProfileManager.Print(ac, "CLONE_TRANSACTION" + oldTr.GetSourceName());
+=======
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
         AddTransaction(ac, newTr);
 
         //Set child relationship
@@ -387,18 +393,27 @@ public class Profile implements java.io.Serializable
     }
     public Transaction GetParentTransactionFromTimeFrameTransaction(Transaction transaction){
         if (transaction != null) {
+<<<<<<< HEAD
             //Transaction TF = GetTransactionInTimeFrame(transaction.GetID());
             Transaction TF = transaction;
             if (TF.IsChild()) {
+=======
+            Transaction TF = GetTransactionInTimeFrame(transaction.GetID());
+            if (TF != null && TF.IsChild()) {
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
                 return GetTransaction(TF.GetParentID());
             }
             else {
                 return transaction;
             }
         }
+<<<<<<< HEAD
         else {
             return null;
         }
+=======
+        return null;
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
     }
 
     //Get period total cost between two dates
@@ -723,7 +738,11 @@ public class Profile implements java.io.Serializable
                                 if (Transactions.get(i).GetTimePeriod().GetDate().equals(occ.get(ii))) {
                                     Transactions_timeFrame.add(Transactions.get(i));
                                 }
+<<<<<<< HEAD
                                 else { //Make ghost transactions
+=======
+                                else {
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
                                     Transaction temp = new Transaction(Transactions.get(i), new TimePeriod(occ.get(ii)));
                                     temp.SetParentID(Transactions.get(i).GetID());
                                     Transactions_timeFrame.add(temp);

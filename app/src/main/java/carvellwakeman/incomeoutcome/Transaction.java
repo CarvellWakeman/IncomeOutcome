@@ -109,7 +109,12 @@ public class Transaction implements java.io.Serializable
     public String GetValueFormatted() { return (staticValue ? "" : "~") + ProfileManager.currencyFormat.format(GetValue()); }
 
     public int GetParentID() { return _parentID; }
+<<<<<<< HEAD
     public boolean IsChild(){ return GetParentID() != 0; }
+=======
+    public boolean IsChild(){ return GetParentID() != 0;
+    }
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
     public ArrayList<Integer> GetChildren() { return children; }
     public ArrayList<Integer> GetChildrenCopy() {
         ArrayList<Integer> newList = new ArrayList<>();

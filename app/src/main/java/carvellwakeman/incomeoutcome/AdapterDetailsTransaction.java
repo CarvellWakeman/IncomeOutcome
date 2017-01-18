@@ -382,9 +382,12 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                 popup.setOnMenuItemClickListener(TransactionViewHolder.this);
                 popup.show();
             }
+<<<<<<< HEAD
             else {
                 ProfileManager.PrintUser(activity, ProfileManager.getString(R.string.error_transaction_not_found));
             }
+=======
+>>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
         }
 
         //More Info (expand card)
