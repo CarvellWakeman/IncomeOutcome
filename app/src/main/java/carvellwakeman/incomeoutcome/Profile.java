@@ -59,6 +59,10 @@ public class Profile implements java.io.Serializable
         _period = new Period(0,1,0,0,0,0,0,0);
         SetStartTimeDontSave(LocalDate.now().withDayOfMonth(1));
 
+        //Default sorting
+        //sortMethod = ProfileManager.SORT_METHODS.DATE_DOWN;
+        SetSortMethod(null);
+
         //TODO: Necessary?
         //CalculateTotalsInTimeFrame(0);
         //CalculateTotalsInTimeFrame(1);

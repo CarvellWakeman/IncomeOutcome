@@ -3,7 +3,6 @@ TODO
 *[BUGFIX] Transaction parentID sometimes set to non-zero even when transaction has no parent. Clone Transaction? Result:overflow menu won't open
 -Medium
 *[BUGFIX] Versus Card not showing values when an even number of periods are shown
-*[BUGFIX] Re-sort transactions after a new one is added
 -Low
 *[BUGFIX] Crash when scrolling updwards on transaction details recyclerview
 *[BUGFIX] Permissions revoked on runtime leaves import activity empty

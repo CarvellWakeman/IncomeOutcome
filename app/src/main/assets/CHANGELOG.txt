@@ -1,11 +1,13 @@
 Ver 1.0.5 ALPHA 2017-01-17
-*[BUGFIX] Filters disappear when transaction details activity is closed
+#[BUGFIX] Filters disappear when transaction details activity is closed
 *[BUGFIX] Transfering transactions to another profile while deleting only transfers half of the transactions
-*[BUGFIX] Transfered transactions are not saved
+#[BUGFIX] Transfered transactions are not saved
+*[BUGFIX] Re-sort transactions after a new one is added
 
-*[CHANGE] Error displayed when changelog is missing
+*[CHANGE] Updated target SDK to Android 7.1S
+#[CHANGE] Error displayed when changelog is missing
 *[CHANGE] Filters and sorting is persistent across activities
-*[CHANGE] If there are no profiles to transfer transactions to, don't ask the user to pick one
+#[CHANGE] If there are no profiles to transfer transactions to, don't ask the user to pick one
 *[CHANGE] Load default categories no longer deletes all existing categories, it only adds or resets default categories
 
 *[ADD] Import files now include dates
