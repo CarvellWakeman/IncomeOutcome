@@ -335,41 +335,6 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         CheckShowNoDataNotice();
     }
 
-<<<<<<< HEAD
-=======
-
-    //Edit an expense
-    /*public void editExpense(Expense expense, String profileID, Boolean isParent)
-    {
-        Intent intent = new Intent(ExpenseActivity.this, NewExpenseActivity.class);
-        if (_profile != null) {
-            intent.putExtra("profile", profileID);
-
-            if (isParent) {
-                intent.putExtra("expense", expense.GetID());
-                startActivityForResult(intent, 1);
-            }
-            else {
-                // Clone expense's parent into a new expense, except for the parent's timePeriod
-                Expense exp = _profile.GetParentExpenseFromTimeFrameExpense(expense);
-                Expense ne = new Expense(exp);
-                ne.SetParentID(exp.toString());
-                ne.SetTimePeriod(new TimePeriod(expense.GetTimePeriod().GetDate()));
-                ProfileManager.Print("CopiedParentID 1:" + ne.GetParentID());
-
-                // Edit new clone expense
-                intent.putExtra("clone", ne);
-                intent.putExtra("blacklist_parent", exp.toString());
-                intent.putExtra("blacklist_date", expense.GetTimePeriod().GetDate());
-                startActivityForResult(intent, 2); //we're basically creating a new expense, so code 0
-            }
-        }
-        else{
-            ProfileManager.Print("Could not edit expense, could not find profile.");
-        }
-    }
-    */
->>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
     public void duplicateTransaction(Transaction tran, int profileID){
         Intent intent = new Intent(ActivityDetailsTransaction.this, ac_editing_activity);
         if (profileID != -1) {

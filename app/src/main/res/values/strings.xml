@@ -129,10 +129,7 @@
     <string name="tt_categoryname">Category Name</string>
     <string name="tt_displaydata">Display Data </string>
     <string name="tt_nodata">No Data</string>
-<<<<<<< HEAD
     <string name="tt_changelog_nocdata">No Changelog Found</string>
-=======
->>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
     <string name="tt_nocategories">No Categories Found</string>
     <string name="tt_nosources">No Sources Found</string>
     <string name="tt_nopeople">No Other People Found</string>
@@ -149,12 +146,9 @@
     <string name="tt_add_to_category">Add a category</string>
     <string name="tt_loading">Loading</string>
 
-<<<<<<< HEAD
     <!-- ERROR -->
     <string name="error_transaction_not_found">Transaction not found</string>
 
-=======
->>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
     <!-- Information -->
     <string name="info_title_value">%1$s %2$s</string>
     <string name="info_income_summary_value">Earned %1$s</string>

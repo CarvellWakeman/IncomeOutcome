@@ -68,11 +68,7 @@ public class MyTabConversion {
                 ProfileManager.getInstance().AddProfile(ac, myTabProfile);
                 ProfileManager.getInstance().SelectProfile(ac, myTabProfile);
 
-<<<<<<< HEAD
                 //Convert between Tab<->MyTabTransaction objects into Profile<->Transaction objects
-=======
-                //Convert between Tab/MyTabTransaction objects into Profile/Transaction objects
->>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
                 for (Tab tab : _tabs) {
                     if (tab != null && tab._transactions != null) {
                         for (MyTabTransaction tran : tab._transactions) {
@@ -92,13 +88,9 @@ public class MyTabConversion {
                                 NewTransaction.SetTimePeriod(new TimePeriod(new LocalDate(tran.GetDate())));
 
                                 //EXPENSE ONLY Mutators
-<<<<<<< HEAD
                                 if (tran.GetCostB() != 0.0f && !tran.GetPersonAPaid()){
                                     NewTransaction.SetSplitValue(tab.GetPersonB(), Double.parseDouble(Float.toString(tran.GetCostB())));
                                 }
-=======
-                                NewTransaction.SetSplitValue(tab.GetPersonB(), Double.parseDouble(Float.toString(tran.GetCostB())));
->>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
                                 if (!ProfileManager.getInstance().HasOtherPerson(tab.GetPersonB())) {
                                     ProfileManager.getInstance().AddOtherPerson(ac, tab.GetPersonB());
                                 }

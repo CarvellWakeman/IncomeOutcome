@@ -44,10 +44,7 @@ public class AdapterChangelog extends RecyclerView.Adapter<AdapterChangelog.Chan
             holder.fl_note.removeViews(1,holder.fl_note.getChildCount()-1);
             for (int i = 0; i < change.notes.size(); i++){
                 Setting setting = new Setting(inflater, R.drawable.ic_exclamation_white_18dp, change.notes.get(i), null, null);
-<<<<<<< HEAD
                 setting.getView().setClickable(false);
-=======
->>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
                 setting.SetPadding(0,0,0,0);
                 holder.fl_note.addView( setting.getView(), i+1);
             }

@@ -98,11 +98,7 @@ public class ActivitySettings extends AppCompatActivity
 
         CardSettings database = new CardSettings(this, inflater, insertPoint, indexCount++, R.layout.row_layout_setting_card, getString(R.string.title_settings_database));
         //Import and Export
-<<<<<<< HEAD
         database.AddSetting(new Setting(inflater, R.drawable.ic_file_white_24dp, getString(R.string.title_settings_importexport), null,
-=======
-        database.AddSetting(new Setting(inflater, R.drawable.ic_file_white_24dp, getString(R.string.title_settings_importexport), getString(R.string.subtitle_settings_importexport),
->>>>>>> a3d022a145349e1e5b377c7e8b74a1eeaac3a875
                 new View.OnClickListener() { @Override public void onClick(View v) {
                     ImportClick();
                 }}
