@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/linearLayout_dialogcat_colorbar"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/linearLayout_dialog"
+        android:layout_alignTop="@+id/linearLayout_dialog"
+        android:layout_marginBottom="1dp"
+        android:layout_marginTop="1dp"
+        android:background="#FFFFFF"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout_dialog"
+        style="@style/SelectableItemForeground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/frameLayout"
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+        android:paddingEnd="10dp"
+        android:paddingStart="24dp"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:id="@+id/textView_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="@string/placeholder_text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/frameLayout"
+        style="@style/SelectableItemForeground"
+        android:layout_width="42dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/linearLayout_dialog"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/linearLayout_dialog"
+        android:layout_marginEnd="24dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/imageView_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_clear_white_24dp"
+            android:tint="@color/gray" />
+    </FrameLayout>
+
+</RelativeLayout>

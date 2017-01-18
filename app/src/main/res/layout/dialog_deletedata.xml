@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:id="@+id/textView_dialogpb_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/action_delete"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView_dialogpb_title"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp">
+
+        <RadioButton
+            android:id="@+id/radioButton_deleteall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/title_settings_deletealldata" />
+
+        <RadioButton
+            android:id="@+id/radioButton_deletetransactions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_settings_deletetransactions" />
+
+        <RadioButton
+            android:id="@+id/radiobutton_deletepeople"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_settings_deletepeople" />
+
+        <RadioButton
+            android:id="@+id/radiobutton_deletecategories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_settings_deletecategories" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/button_dialogpb_negative"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/button_dialogpb_positive"
+        android:layout_alignParentBottom="false"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toStartOf="@+id/button_dialogpb_positive"
+        android:text="@string/action_cancel"
+        android:textColor="#2195f2"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/button_dialogpb_positive"
+        style="@style/FlatButtonTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/radioGroup"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/action_ok" />
+
+
+</RelativeLayout>

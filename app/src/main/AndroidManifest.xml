@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="carvellwakeman.incomeoutcome" xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- Required to act as a custom watch face.
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> -->
+
+    <application
+        android:supportsRtl="true"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_incomeoutcome"
+        android:name="App"
+        android:label="@string/app_name"
+        android:theme="@style/MaterialTheme">
+
+        <activity android:name=".ActivityMain" android:label="Income Outcome" android:launchMode="singleTop" android:configChanges="keyboardHidden|orientation|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+        <activity android:name=".ActivityDetailsTransaction" android:label="@string/app_name"
+            android:launchMode="singleTop"/>
+
+        <activity android:name=".ActivityNewTransaction" android:label="@string/title_newtransaction"
+            android:launchMode="singleTop"/>
+
+        <activity android:name=".ActivitySettings" android:label="@string/title_settings"
+            android:launchMode="singleTop"/>
+        <activity android:name=".ActivityManageProfiles" android:label="@string/title_manageprofiles"
+            android:launchMode="singleTop"/>
+        <activity android:name=".ActivityManagePeople" android:label="@string/title_managepeople"
+            android:launchMode="singleTop"/>
+        <activity android:name=".ActivityManageCategories" android:label="@string/title_managecategories"
+            android:launchMode="singleTop"/>
+        <activity android:name=".ActivityDatabaseImport" android:label="@string/title_importdatabase"
+            android:launchMode="singleTop"/>
+
+
+        <activity android:name=".AndroidDatabaseManager" android:theme="@style/Theme.AppCompat.Light"/>
+
+    </application>
+
+</manifest>

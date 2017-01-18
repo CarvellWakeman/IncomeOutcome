@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/appbarlayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.design.widget.CollapsingToolbarLayout
+        android:id="@+id/collapsing_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        app:contentScrim="?attr/colorPrimary"
+        app:titleEnabled="false">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:paddingBottom="8dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+
+            app:layout_collapseMode="pin"
+            app:layout_collapseParallaxMultiplier="0.7">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/TIL_dialogmpr_profilename"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:focusableInTouchMode="true"
+                android:theme="@style/Base.Theme.AppCompat.Light">
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/tt_profilename"
+                    android:inputType="textCapWords"
+                    android:maxLines="1"
+                    android:textColor="@color/white" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout_editprofile_period"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/TIL_dialogmpr_profilename"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/editText_profile_period"
+                    android:layout_alignTop="@+id/editText_profile_period"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/repeat_occurevery"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/white" />
+
+                <EditText
+                    android:id="@+id/editText_profile_period"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_toEndOf="@+id/textView"
+                    android:digits="1234567890"
+                    android:ems="10"
+                    android:gravity="center_horizontal"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:text="@string/format_one"
+                    android:textColor="@color/white"
+                    android:theme="@style/Base.Theme.AppCompat.Light" />
+
+                <Spinner
+                    android:id="@+id/spinner_profile_period"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/editText_profile_period"
+                    android:theme="@style/MaterialTheme" />
+
+            </RelativeLayout>
+
+
+            <Button
+                android:id="@+id/button_dialogmpr_startdate"
+                style="@style/RaisedButtonTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/relativeLayout_editprofile_period"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginEnd="4dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/time_startlower" />
+
+            <CheckBox
+                android:id="@+id/checkbox_override_enddate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/button_dialogmpr_startdate"
+                android:layout_marginEnd="4dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/tt_override_enddate"
+                android:textColor="@color/white"
+                android:theme="@style/WhiteCheckboxTheme" />
+
+
+            <Button
+                android:id="@+id/button_dialogmpr_enddate"
+                style="@style/RaisedButtonTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/checkbox_override_enddate"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/time_endlower"
+                android:visibility="gone" />
+
+
+        </RelativeLayout>
+
+
+        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"></android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.CollapsingToolbarLayout>
+</android.support.design.widget.AppBarLayout>

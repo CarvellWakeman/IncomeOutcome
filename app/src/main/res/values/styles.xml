@@ -1,0 +1,92 @@
+<resources>
+
+    <!-- My Main Theme -->
+    <style name="MaterialTheme" parent="Theme.AppCompat.Light">
+        <item name="windowNoTitle">true</item>
+        <!--We will be using the toolbar so no need to show ActionBar-->
+        <item name="windowActionBar">false</item>
+        <!-- Set theme colors from http://www.google.com/design/spec/style/color.html#color-color-palette-->
+        <!-- colorPrimary is used for the default action bar background -->
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!-- colorPrimaryDark is used for the status bar -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!-- colorAccent is used as the default value for colorControlActivated
+             which is used to tint widgets -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- You can also set colorControlNormal, colorControlActivated
+             colorControlHighlight and colorSwitchThumbNormal. -->
+
+        <!--ChangelogChange datepickerdialog theme-->
+        <item name="android:datePickerDialogTheme">@style/DatePickerDialogTheme</item>
+        <item name="android:alertDialogStyle">@style/AlertDialogCustom</item>
+
+        <!--Widgets-->
+        <item name="android:spinnerStyle">@style/SpinnerTheme</item>
+        <item name="discreteSeekBarStyle">@style/Widget.DiscreteSeekBar</item>
+
+
+    </style>
+
+
+    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!--Date Picker Dialog Theme, change accent color to the app's accent color-->
+    <style name="DatePickerDialogTheme" parent="android:Theme.Material.Dialog">
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <!-- No need to override 'datePickerStyle', do so for more customization-->
+        <!-- <item name="android:datePickerStyle">@style/MyDatePickerStyle</item> -->
+    </style>
+
+
+
+
+    <!-- Checkbox Themes -->
+    <style name="WhiteCheckboxTheme" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlActivated">@color/white</item>
+    </style>
+    <style name="BlackCheckboxTheme" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@color/black</item>
+        <item name="colorControlActivated">@color/black</item>
+    </style>
+
+
+    <!-- Button Themes -->
+    <style name="RaisedButtonTheme" parent="android:style/Widget.Material.Button">
+        <!--<item name="android:background">@drawable/selectable_item_background</item>-->
+        <item name="android:background">@drawable/raised_button_background</item>
+        <item name="android:textColor">@drawable/selector_button_enabled</item>
+    </style>
+    <!-- ?android:attr/borderlessButtonStyle -->
+    <style name="FlatButtonTheme" parent="@style/Widget.AppCompat.Button.Borderless">
+        <!--<item name="android:background">@drawable/selectable_item_background</item>-->
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
+        <item name="android:textColor">@drawable/selector_button_enabled</item>
+    </style>
+    <style name="FlatButtonThemeBlack" parent="@style/Widget.AppCompat.Button.Borderless">
+        <!--<item name="android:background">@drawable/selectable_item_background</item>-->
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+
+    <!-- Spinner Themes -->
+    <style name="SpinnerTheme" parent="Widget.AppCompat.Spinner">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+
+
+    <!-- Ripple selection foreground -->
+    <style name="SelectableItemForeground">
+        <!--<item name="android:foreground">?attr/selectableItemBackground</item>-->
+    </style>
+    <style name="SelectableItemBackground">
+        <!--<item name="android:background">?attr/selectableItemBackground</item>-->
+    </style>
+
+
+</resources>

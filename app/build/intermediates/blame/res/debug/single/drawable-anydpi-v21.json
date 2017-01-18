@@ -1,0 +1,102 @@
+[
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\calendar.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\calendar.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\file_import.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\file_import.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\database_plus.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\database_plus.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\repeat.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\repeat.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\database_minus.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\database_minus.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\file_export.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\file_export.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\dots_vertical.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\dots_vertical.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\arrow_left.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\arrow_left.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\account.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\account.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\check.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\check.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\settings.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\settings.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\file.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\file.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\minus.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\minus.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\exclamation.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\exclamation.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\cash.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\cash.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\filter.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\filter.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\delete.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\delete.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\plus.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\plus.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\export.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\export.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\database.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\database.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\arrow_right.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\arrow_right.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\update.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\update.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\bug.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\bug.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\account_multiple.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\account_multiple.xml"
+    },
+    {
+        "merged": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\view_list.xml",
+        "source": "C:\\Users\\Zach\\Google Drive\\Projects\\Android\\IncomeOutcome\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\view_list.xml"
+    }
+]

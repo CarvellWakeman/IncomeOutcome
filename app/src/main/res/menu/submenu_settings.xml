@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="carvellwakeman.incomeoutcome">
+
+    <!-- Settings -->
+    <item android:id="@+id/toolbar_action_settings"
+        android:title="@string/title_settings"
+        android:icon="@drawable/ic_settings_white_24dp"
+        app:showAsAction="always"
+        android:orderInCategory="100"/>
+
+</menu>

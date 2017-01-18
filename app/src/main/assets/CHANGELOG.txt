@@ -1,0 +1,73 @@
+Ver 1.0.5 ALPHA 2017-01-17
+*[BUGFIX] Filters disappear when transaction details activity is closed
+*[BUGFIX] Transfering transactions to another profile while deleting only transfers half of the transactions
+*[BUGFIX] Transfered transactions are not saved
+
+*[CHANGE] Error displayed when changelog is missing
+*[CHANGE] Filters and sorting is persistent across activities
+*[CHANGE] If there are no profiles to transfer transactions to, don't ask the user to pick one
+*[CHANGE] Load default categories no longer deletes all existing categories, it only adds or resets default categories
+
+*[ADD] Import files now include dates
+
+
+Ver 1.0.4 ALPHA 2016-10-17
+-Still working on how the changelog should be worded. It still uses dev lingo more than it should. WIP!
+*[BUGFIX] ALL transactions are now removed when deleting a profile
+*[BUGFIX] When editing a transaction, the persion the transaction was split with is saved properly
+*[BUGFIX] Filter by Category no longer ignores some transactions
+*[BUGFIX] Sort and Filter bubbles play more nicely with lower DPI screens
+*[BUGFIX] OnPermissionGranted now checks where the permission was granted from
+
+*[CHANGE] Toolbar timeperiod controls hide when no profile is selected
+*[CHANGE] Some animations added to transactions
+*[CHANGE] Long holding a transaction now opens its settings overflow menu
+*[CHANGE] Load Default Categories setting moved to Manage Categories activity
+*[CHANGE] Redesigned repeat layout in new transaction activity
+*[CHANGE] When viewing all transactions, reoccurrences are shown from the first occurrence up until today
+*[CHANGE] Show All checkbox is unchecked if Prev or Next period buttons are clicked
+*[CHANGE] Filter by "who paid" now includes "you" as an option
+*[CHANGE] Filter dialog has more descriptive title
+
+*[ADD] Add changelog to Settings. It opens when a new version of the app is first opened
+*[ADD] Loading indicator is now shown while the database loads in the background
+
+
+Ver 1.0.3 ALPHA 2016-09-14
+*[ADD] Sort and filter options now display themselves on the toolbar when applied
+*[ADD] New filter and sort option
+*[BUGFIX] Sort and Filter bubbles play more nicely with lower DPI screens
+*[BUGFIX] Overview activity not initially displaying data
+*[BUGFIX] Recalculating time period keeps sorting and filter applied
+*[BUGFIX] CardVersus not drawing correctly when ShowAll is checked
+*[BUGFIX] ShowAll checkbox should be checked in Details Activity if it was checked in the overview page (And Vice Versa)
+*[BUGFIX] CardVersus not showing 5 months when only one month has transactions
+*[BUGFIX] Details transaction objects sometimes not showing an expand button when they should be
+*[BUGFIX] Details transaction objects sometimes showing paidBack string when they were not paid back.
+*[CHANGE] AsyncTask Database Operations rewritten to be more generic
+*[CHANGE] Delete All Data in settings changed to a selector for each kind of data
+*[CHANGE] Sort by paidby should account for various otherpeople paying for the transaction, not just if you paid or not
+*[CHANGE] Overview activity now shows paid back and Filter options
+*[CHANGE] Overview page is now cleaner and emptier when there is no data
+*[CHANGE] Switch Compat now used to produce nicer switches in API 19
+*[CHANGE] AlertDialogs in Settings changed Positive button from "DELTE" to "CONTINUE"
+*[CHANGE] Show period data in DialogFragmentManagePPC for profile
+*[CHANGE] Decrease margins in details and overview activity
+*[ADD] Clear filter and Reset sorting buttons added to toolbar when Filter or Sort is applied
+*[ADD] Filter by: Who you split transactions with & Who paid for the transactions
+
+
+Ver 1.0.2 ALPHA 2016-09-08
+*[BUGFIX] Profiles/Categories edited when the user indicated they were making a new one
+*[ADD] Override end date button, profiles automatically change start date to the precision level of the period. (IE: Yearly Period with StartDate set to March 4th 2014 will become StartDate January 1st 2014)
+
+
+Ver 1.0.1 ALPHA 2016-09-08
+*[CHANGE] Settings>Database>Load Default Categories Now has a confirmation alert dialog
+*[BUGFIX] French translation accidently included in english strings file
+
+
+Ver 1.0 ALPHA 2016-09-08
+-Initial Release to play store (Alpha Testing)
+-Current State:Overview of Transaction objects, Income, Expense, Settings page. Manage Profiles, People, and Categories
+*[CHANGE/BUGFIX/ADD/REMOVE] 105 Items, unlisted

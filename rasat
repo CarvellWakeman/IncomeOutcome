@@ -1,0 +1,335 @@
+[33mcommit a3d022a145349e1e5b377c7e8b74a1eeaac3a875[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Fri Nov 4 23:05:33 2016 -0700
+
+    UNRELEASED
+    *[BUGFIX] Filters disappear when transaction details activity is closed
+    *[BUGFIX] Transfering transactions to another profile while deleting only transfers half of the transactions
+    *[BUGFIX] Transfered transactions are not saved
+    
+    *[CHANGE] Filters and sorting is persistent across activities
+    *[CHANGE] If there are no profiles to transfer transactions to, don't ask the user to pick one
+    *[CHANGE] Load default categories no longer deletes all existing categories, it only adds or resets default categories
+    
+    *[ADD] Import files now include dates
+
+[33mcommit a352d8eb9aef624e187a347c239c9a430e4659e8[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Mon Oct 17 23:04:28 2016 -0700
+
+    Ver 1.0.4 ALPHA 2016-10-17
+
+[33mcommit d9f120c8c0d0fe810f99129a1db738f1b00fc13d[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Mon Oct 3 22:32:52 2016 -0700
+
+    UNRELEASED
+    *[BUGFIX] When editing a transaction, the persion the transaction was split with is saved properly
+    *[BUGFIX] Filter by Category ignoring some transactions
+    *[BUGFIX] Sort and Filter bubbles play more nicely with lower DPI screens
+    *[BUGFIX] OnPermissionGranted needs to check where the permission was granted from
+    
+    *[CHANGE] Transaction animations partially added
+    *[CHANGE] Long holding a transaction now opens its settings menu
+    *[CHANGE] Load Default Categories setting moved to Manage Categories activity
+    *[CHANGE] Remade repeat screen in new transaction activity
+    *[CHANGE] Repeating transactions shown as endDate = today when ShowAll is checked
+    *[CHANGE] Show All checkbox unchecked if Prev or Next period buttons are clicked
+    *[CHANGE] Filter by who paid now includes "you" as an option
+    
+    *[ADD] Loading indicator is now shown when loading database
+
+[33mcommit a53e2054a50e78ae456d06a47f9e35e684d6c4a8[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Sun Oct 2 23:15:54 2016 -0700
+
+    UNRELEASED
+    *[BUGFIX] When editing a transaction, the persion the transaction was split with is saved properly
+    *[BUGFIX] Filter by Category ignoring some transactions
+    *[BUGFIX] Sort and Filter bubbles play more nicely with lower DPI screens
+    *[BUGFIX] OnPermissionGranted needs to check where the permission was granted from
+    
+    *[CHANGE] Long holding a transaction now opens its settings menu
+    *[CHANGE] Load Default Categories setting moved to Manage Categories activity
+    *[CHANGE] Remade repeat screen in new transaction activity
+    *[CHANGE] Repeating transactions shown as endDate = today when ShowAll is checked
+    *[CHANGE] Show All checkbox unchecked if Prev or Next period buttons are clicked
+    *[CHANGE] Filter by who paid now includes "you" as an option
+
+[33mcommit af99dab636357903206d7e6c27eec53d0a267fed[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Wed Sep 21 21:57:44 2016 -0700
+
+    UNRELEASED
+    *[CHANGE] Remade repeat screen in new transaction activity
+    *[BUGFIX] Sort and Filter bubbles play more nicely with lower DPI screens
+    *[BUGFIX] OnPermissionGranted needs to check where the permission was granted from
+
+[33mcommit 3593f242f24dd16871556843ac3854468742946a[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Wed Sep 21 19:18:18 2016 -0700
+
+    UNRELEASED
+    *[CHANGE] Remade repeat screen in new transaction activity
+    *[BUGFIX] Sort and Filter bubbles play more nicely with lower DPI screens
+    *[BUGFIX] OnPermissionGranted needs to check where the permission was granted from
+
+[33mcommit d59c90c73165566c1bd9b36299978f6d5104a948[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Tue Sep 20 22:28:08 2016 -0700
+
+    UNRELEASED
+    *[BUGFIX] Sort and Filter bubbles play more nicely with lower DPI screens
+    *[BUGFIX] OnPermissionGranted needs to check where the permission was granted from
+
+[33mcommit 7f7f58178a7e5e2d0011d45dbd01b3b40e418472[m
+Author: Carvell Wakeman <lerew.zach@gmail.com>
+Date:   Wed Sep 14 15:30:30 2016 -0700
+
+    UNRELEASED
+    *[BUGFIX] Overview activity not initially displaying data
+    *[BUGFIX] Recalculating time period keeps sorting and filter applied
+    *[BUGFIX] CardVersus not drawing correctly when ShowAll is checked
+    *[BUGFIX] ShowAll checkbox should be checked in Details Activity if it was checked in the overview page (And Vice Versa)
+    *[BUGFIX] CardVersus not showing 5 months when only one month has transactions
+    *[BUGFIX] Details transaction objects sometimes not showing an expand button when they should be
+    *[BUGFIX] Details transaction objects sometimes showing paidBack string when they were not paid back.
+    
+    *[CHANGE] AsyncTask Database Operations rewritten to be more generic
+    *[CHANGE] Delete All Data in settings changed to a selector for each kind of data
+    *[CHANGE] Sort by paidby should account for various otherpeople paying for the transaction, not just if you paid or not
+    *[CHANGE] Overview activity now shows paid back and Filter options
+    *[CHANGE] Overview page is now cleaner and emptier when there is no data
+    *[CHANGE] Switch Compat now used to produce nicer switches in API 19
+    *[CHANGE] AlertDialogs in Settings changed Positive button from "DELTE" to "CONTINUE"
+    *[CHANGE] Show period data in DialogFragmentManagePPC for profile
+    *[CHANGE] Decrease margins in details and overview activity
+    
+    *[ADD] Clear filter and Reset sorting buttons added to toolbar when Filter or Sort is applied
+    *[ADD] Filter by: Who you split transactions with & Who paid for the transactions
+
+[33mcommit 5d987ea3124c1b57dc33efb2c8425ac0817e3b79[m
+Author: Carvell Wakeman <lerew.zach@gmail.com>
+Date:   Tue Sep 13 23:37:29 2016 -0700
+
+    UNRELEASED
+    *[BUGFIX] Overview activity not initially displaying data
+    *[BUGFIX] Recalculating time period keeps sorting and filter applied
+    *[BUGFIX] CardVersus not drawing correctly when ShowAll is checked
+    *[BUGFIX] ShowAll checkbox should be checked in Details Activity if it was checked in the overview page (And Vice Versa)
+    *[BUGFIX] CardVersus not showing 5 months when only one month has transactions
+    *[BUGFIX] Details transaction objects sometimes not showing an expand button when they should be
+    *[BUGFIX] Details transaction objects sometimes showing paidBack string when they were not paid back.
+    *[CHANGE] Overview activity now shows paid back and Filter options
+    *[CHANGE] Overview page is now cleaner and emptier when there is no data
+    *[CHANGE] Switch Compat now used to produce nicer switches in API 19
+    *[CHANGE] AlertDialogs in Settings changed Positive button from "DELTE" to "CONTINUE"
+    *[CHANGE] Show period data in DialogFragmentManagePPC for profile
+    *[CHANGE] Decrease margins in details and overview activity
+    *[ADD] Clear filter and Reset sorting buttons added to toolbar when Filter or Sort is applied
+
+[33mcommit d0183b1eff6ce93077ff2be073f5e312deb8d27e[m
+Author: Carvell Wakeman <lerew.zach@gmail.com>
+Date:   Sun Sep 11 23:09:41 2016 -0700
+
+    UNRELEASED
+    *[BUGFIX] ShowAll checkbox should be checked in Details Activity if it was checked in the overview page (And Vice Versa)
+    *[BUGFIX] CardVersus not showing 5 months when only one month has transactions
+    *[BUGFIX] Details transaction objects sometimes not showing an expand button when they should be
+    *[BUGFIX] Details transaction objects sometimes showing paidBack string when they were not paid back.
+    *[CHANGE] Overview page is now cleaner and emptier when there is no data
+    *[CHANGE] Switch Compat now used to produce nicer switches in API 19
+    *[CHANGE] AlertDialogs in Settings changed Positive button from "DELTE" to "CONTINUE"
+    *[CHANGE] Show period data in DialogFragmentManagePPC for profile
+    *[CHANGE] Decrease margins in details and overview activity
+
+[33mcommit 5048b74a75db7f5e3ff5e8891cd32433c971b49e[m
+Author: Carvell Wakeman <lerew.zach@gmail.com>
+Date:   Sun Sep 11 22:28:51 2016 -0700
+
+    UNRELEASED
+    *[BUGFIX] CardVersus not showing 5 months when only one month has transactions
+    *[BUGFIX] Details transaction objects sometimes not showing an expand button when they should be
+    *[BUGFIX] Details transaction objects sometimes showing paidBack string when they were not paid back.
+    *[CHANGE] Overview page is now cleaner and emptier when there is no data
+    *[CHANGE] Switch Compat now used to produce nicer switches in API 19
+    *[CHANGE] AlertDialogs in Settings changed Positive button from "DELTE" to "CONTINUE"
+    *[CHANGE] Show period data in DialogFragmentManagePPC for profile
+    *[CHANGE] Decrease margins in details and overview activity
+
+[33mcommit 1cffad9485bd971ab3d634d02c856b2c407de432[m
+Author: Carvell Wakeman <lerew.zach@gmail.com>
+Date:   Sat Sep 10 10:23:35 2016 -0700
+
+    UNRELEASED
+    *[CHANGE] Overview page is now cleaner and emptier when there is no data
+    *[CHANGE] Switch Compat now used to produce nicer switches in API 19
+    *[CHANGE] AlertDialogs in Settings changed Positive button from "DELTE" to "CONTINUE"
+    *[CHANGE] Show period data in DialogFragmentManagePPC for profile
+    *[CHANGE] Decrease margins in details and overview activity
+    *[BUGFIX] Details transaction objects sometimes not showing an expand button when they should be
+    *[BUGFIX] Details transaction objects sometimes showing paidBack string when they were not paid back.
+
+[33mcommit ebb793acabef3cbb2c20d8eed2e029992cfbe9d6[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Thu Sep 8 23:50:22 2016 -0700
+
+    Ver 1.0.2 ALPHA 2016-09-08
+    *[BUGFIX] Profiles/Categories edited when the user indicated they were making a new one
+    *[ADD] Override end date button, profiles automatically change start date to the precision level of the period. (IE: Yearly Period with StartDate set to March 4th 2014 will become StartDate January 1st 2014)
+
+[33mcommit 19a1267bb0df299a18c6e8598dc73a1933c18f38[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Thu Sep 8 23:46:45 2016 -0700
+
+    Ver 1.0.2 ALPHA 2016-09-08
+    *[BUGFIX] Profiles/Categories edited when the user indicated they were making a new one
+    *[ADD] Override end date button, profiles automatically change start date to the precision level of the period. (IE: Yearly Period with StartDate set to March 4th 2014 will become StartDate January 1st 2014)
+
+[33mcommit 569b2f441ad094f2a3759b53ee33b30434904633[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Thu Sep 8 20:53:16 2016 -0700
+
+    Play Store Alpha Release Ver 1.0
+
+[33mcommit f8c514452b60773849fe5df4e6b8d70ff59b008f[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Wed Sep 7 22:45:48 2016 -0700
+
+    MyTab Save File Conversion
+
+[33mcommit 5253b37cd29200ee6cafeca10f383e282c4bef4c[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Wed Sep 7 15:42:45 2016 -0700
+
+    Play store beta third pass,
+    Database operations now Asynchronous
+
+[33mcommit d4bc25d656793240fb12d01eab655abb8fb7b5b2[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Tue Sep 6 22:34:59 2016 -0700
+
+    Play store beta second pass (Lint > Performance Next)
+
+[33mcommit b8a48a4eb0b359cec1bf0be8d4c5d5b8610e485c[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Mon Sep 5 21:12:59 2016 -0700
+
+    Play store beta first pass
+
+[33mcommit 68cb85d7167b1ced07b6497975c6c81b7d68cf7a[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Fri Sep 2 02:48:22 2016 -0700
+
+    Settings menu sub activities redesigned completely,
+    Permission callbacks supported,
+    Tutorial aspects added,
+    Minor text changes
+
+[33mcommit 17e09d350677412f68e8b49b3145781898e9d7e1[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Thu Sep 1 01:39:15 2016 -0700
+
+    Overview and transaction details activity now have period changing buttons in the toolbar
+
+[33mcommit 4b0d1db72f161389baa90f6c0ae8c0373973ccc0[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Wed Aug 31 17:25:53 2016 -0700
+
+    Overview activity replaces main activity,
+    Parts of various layouts moved to get rid of MainActivity debug views
+
+[33mcommit 97e777dc6619aea94c1b72579ef8d5fc32150f21[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Wed Aug 31 00:04:39 2016 -0700
+
+    overview activity nearing completion
+
+[33mcommit 101365e905147c0ea3efb2f0f0a42580c85687e1[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Thu Aug 25 21:52:11 2016 -0700
+
+    Transaction details layout rewritten, transactionDetailsActivity modified, Overview supports toolbar guestures
+
+[33mcommit d3547c2a5eb1837d7b746a0adaf7b4552d26803d[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Thu Aug 25 13:41:50 2016 -0700
+
+    Overview activity first pass
+
+[33mcommit 0af5ea00d468c0a70d5e1fa609034788dd73af5d[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Sun Jul 31 10:34:56 2016 -0700
+
+    Sorting and Filtering of transactions
+
+[33mcommit d22c4ed39539e51a53f75d84e436c831e4c8828f[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Wed Jul 20 19:16:49 2016 -0700
+
+    Expense and Income objects merged along with all of their respective activities.
+    Database updated to version 6
+    Child activities that are modified back to their original state (IE: Just like their parent minus ID, ParentID, Children, and TimePeriod) are removed automatically, their blacklist date in their parent also removed.
+
+[33mcommit babe4f07d03c9e727f7c4ac11fd9b727be5a88d3[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Wed Jul 13 22:41:20 2016 -0700
+
+    PaidBack dialogfragment available on expense details activity
+
+[33mcommit dea19cbbde0dc281098d5eabad126386c258e892[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Wed Jul 13 17:04:23 2016 -0700
+
+    Profiles now support time frames. View transactions every N (Days, Weeks, Months, Years)
+
+[33mcommit 5a08e16ecde8ceeb08adb2e180bf4f46d4897df1[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Wed Jul 13 16:45:57 2016 -0700
+
+    Profiles now support time frames. View transactions every N (Days, Weeks, Months, Years)
+
+[33mcommit f6dfe155199c4a45439332538ef465bf10adf559[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Wed Jul 13 14:49:02 2016 -0700
+
+    Profiles now support time frames. View transactions every N (Days, Weeks, Months, Years)
+
+[33mcommit 3c9b0cd689f8fe85c7b60ac2057d9bb6797ea33f[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Fri Jul 8 22:04:09 2016 -0700
+
+    Now has all features present in MyTabs, and more!
+    Transaction Details activity now has a "Paid Back" menu item that sets the paid back date of all transactions in that list
+    Transaction children are now handled properly
+
+[33mcommit d1f0ec1f44864ab1d5988dfed67c17c85b511c9e[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Fri Jul 8 20:50:20 2016 -0700
+
+    Now has all features present in MyTabs, and more!
+    Transaction Details activity now has a "Paid Back" menu item that sets the paid back date of all transactions in that list
+    Transaction children are now handled properly
+
+[33mcommit 3645237cda13d6c2491c30dde2b66c9bf79218d0[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Fri Jul 8 20:45:49 2016 -0700
+
+    Now has all features present in MyTabs, and more!
+    Transaction Details activity now has a "Paid Back" menu item that sets the paid back date of all transactions in that list
+    Transaction children are now handled properly
+
+[33mcommit 5323a91963c3f73fc3e4c0f488bfae6bd671b181[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Fri Jul 8 20:45:44 2016 -0700
+
+    Now has all features present in MyTabs, and more!
+    Transaction Details activity now has a "Paid Back" menu item that sets the paid back date of all transactions in that list
+    Transaction children are now handled properly
+
+[33mcommit c4379078e3682d1036e401de41823d1ad868f563[m
+Author: Zach Lerew <lerewz@oregonstate.edu>
+Date:   Fri Jul 8 10:50:53 2016 -0700
+
+    Expense and Income list activities now support swiping on the toolbar to advance by month.
+    Export activity now supports overriding existing databases using a switch to confirm action
