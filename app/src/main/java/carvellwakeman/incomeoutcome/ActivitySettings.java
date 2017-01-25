@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -30,7 +31,9 @@ import org.joda.time.format.DateTimeFormatter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 
 public class ActivitySettings extends AppCompatActivity
@@ -75,12 +78,12 @@ public class ActivitySettings extends AppCompatActivity
         int indexCount = 0;
 
         //Setting Categories
-        CardSettings profilesPeopleCategories = new CardSettings(this, inflater, insertPoint, indexCount++, R.layout.row_layout_setting_card, getString(R.string.title_settings_profilespeoplecategories));
+        CardSettings profilesPeopleCategories = new CardSettings(this, inflater, insertPoint, indexCount++, R.layout.row_layout_setting_card, Helper.getString(R.string.title_settings_budgetspeoplecategories));
         //Manage profiles
-        profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_account_white_24dp, getString(R.string.title_manageprofiles), null,
+        profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_account_white_24dp, getString(R.string.title_managebudgets), null,
                 new View.OnClickListener() { @Override public void onClick(View v) {
                     //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentManageProfiles(), mIsLargeLayout);
-                    startActivity(new Intent(ActivitySettings.this, ActivityManageProfiles.class));
+                    //startActivity(new Intent(ActivitySettings.this, ActivityManageProfiles.class));
                 }}
         ));
         //Manage people
@@ -93,7 +96,7 @@ public class ActivitySettings extends AppCompatActivity
         //Manage categories
         profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_view_list_white_24dp, getString(R.string.title_managecategories), null,
                 new View.OnClickListener() { @Override public void onClick(View v) {
-                    //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentManageCategories(), mIsLargeLayout);
+                    //Helper.OpenDialogFragment(ActivitySettings.this, new DialogFragmentManageCategories(), mIsLargeLayout);
                     startActivity(new Intent(ActivitySettings.this, ActivityManageCategories.class));
                 }}
         ));
@@ -108,9 +111,7 @@ public class ActivitySettings extends AppCompatActivity
         //Delete data
         database.AddSetting(new Setting(inflater, R.drawable.ic_delete_white_24dp, getString(R.string.title_settrings_deletedata), getString(R.string.subtitle_settings_deletedata),
                 new View.OnClickListener() { @Override public void onClick(View v) {
-                    ProfileManager.OpenDialogFragment(ActivitySettings.this, DialogFragmentDeleteData.newInstance(ActivitySettings.this, new ProfileManager.CallBack() { @Override public void call() {
-
-                    }}), true);
+                    Helper.OpenDialogFragment(ActivitySettings.this, DialogFragmentDeleteData.newInstance(ActivitySettings.this, null), true);
                 }}));
 
         //Changelog
@@ -118,12 +119,12 @@ public class ActivitySettings extends AppCompatActivity
         final String whatsNew = String.format(getString(R.string.subtitle_settings_changelog), App.GetVersion(ActivitySettings.this));
         Setting changelog = new Setting(inflater, R.drawable.ic_update_white_24dp, getString(R.string.title_settings_changelog), whatsNew,
                 new View.OnClickListener() { @Override public void onClick(View v) {
-                    ProfileManager.OpenDialogFragment(ActivitySettings.this, DialogFragmentChangelog.newInstance(), true);
+                    //Helper.OpenDialogFragment(ActivitySettings.this, DialogFragmentChangelog.newInstance(), true);
                 }}
         );
         changelog.SetLongClickListener(new View.OnLongClickListener(){
             @Override public boolean onLongClick(View v) {
-                if (!tempDebugMode && !ProfileManager.isDebugMode(ActivitySettings.this)) {
+                if (!tempDebugMode && !Helper.isDebugMode(ActivitySettings.this)) {
                     tempDebugMode = true;
                     recreate();
                 }
@@ -135,7 +136,7 @@ public class ActivitySettings extends AppCompatActivity
 
 
         //Debug card
-        if (ProfileManager.isDebugMode(this) || tempDebugMode) {
+        if (Helper.isDebugMode(this) || tempDebugMode) {
             CardSettings debug = new CardSettings(this, inflater, insertPoint, indexCount, R.layout.row_layout_setting_card, "Debug");
             //View Database
             debug.AddSetting(new Setting(inflater, R.drawable.ic_database_white_24dp, getString(R.string.title_settings_viewdatabase), getString(R.string.subtitle_settings_viewdatabase), new View.OnClickListener() {
@@ -156,19 +157,89 @@ public class ActivitySettings extends AppCompatActivity
             debug.AddSetting(new Setting(inflater, R.drawable.ic_plus_white_24dp, getString(R.string.title_settings_fakedata), "", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                //Add new profile
-                Profile pr = ProfileManager.getInstance().GetProfileByName("DummyData");
-                if (pr == null) {
-                    pr = new Profile("DummyData");
-                    ProfileManager.getInstance().AddProfile(ActivitySettings.this, pr);
+                //Add new budget
+                Budget br = BudgetManager.getInstance().GetBudget("DummyData");
+                if (br == null) {
+                    br = new Budget("DummyData");
+                    BudgetManager.getInstance().AddBudget(br);
                 }
 
-                pr.GenerateRandom(ActivitySettings.this, 1000);
+                for (int i = 0; i < 1000; i++){
+                    Random rand = new Random();
 
-                ProfileManager.getInstance().SelectProfile(ActivitySettings.this, pr);
-                ProfileManager.Print(ActivitySettings.this, "Adding 1000 transactions");
+                    new_Transaction.TRANSACTION_TYPE[] types =new_Transaction. TRANSACTION_TYPE.values();
+                    new_Transaction.TRANSACTION_TYPE TranType = types[rand.nextInt(2)];
+                    ArrayList<Category> categories = CategoryManager.getInstance().GetCategories();
+                    LocalDate beginning = new LocalDate(2000,1,1);
+
+                    new_Transaction tr = new new_Transaction(TranType);
+
+                    tr.SetSource("Source" + rand.nextInt());
+                    if (categories!=null && categories.size()>0) { tr.SetCategory(categories.get(rand.nextInt(categories.size())).GetTitle()); }
+                    tr.SetDescription(String.valueOf(rand.nextInt()));
+                    tr.SetValue( (rand.nextInt(1000) * rand.nextDouble()) );
+                    tr.SetTimePeriod(new TimePeriod(beginning.plusDays(rand.nextInt(12000))));
+
+                    br.AddTransaction(tr);
+                }
+
+                //ProfileManager.getInstance().SelectProfile(ActivitySettings.this, pr);
+                Helper.Print(ActivitySettings.this, "Adding 1000 transactions");
                 }
             }));
+
+            debug.AddSetting(new Setting(inflater, R.drawable.ic_exclamation_white_24dp, "Structure rewrite testing", "", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Initialize budget manager
+                    BudgetManager bm = BudgetManager.getInstance();
+                    bm.initialize();
+
+                    //Create new budgets
+                    Budget b1 = new Budget("MyBudget");
+                    b1.SetStartDate(new LocalDate(2017,1,1));
+                    b1.SetEndDate(new LocalDate(2017,1,31));
+                    bm.AddBudget(b1);
+
+                    //Create new transactions
+                    new_Transaction t1 = new new_Transaction();
+                    t1.SetValue(10.0d);
+                    t1.SetSource("The Store");
+                    t1.SetDescription("We bought some things");
+                    t1.SetCategory("Things");
+                        TimePeriod tp1 = new TimePeriod();
+                        tp1.SetDate(new LocalDate(2017,1,1));
+                        tp1.SetRepeatFrequency(Repeat.WEEKLY);
+                        tp1.SetRepeatEveryN(1);
+                        tp1.SetRepeatDayOfWeekFromBinary("1010000");
+                        tp1.SetRepeatUntil(RepeatUntil.FOREVER);
+                        //tp1.SetRepeatANumberOfTimes(4);
+                    t1.SetTimePeriod(tp1);
+                    b1.AddTransaction(t1);
+
+
+                    ArrayList<Budget> bs = bm.GetBudgets();
+                    for (int i = 0; i < bs.size(); i++){
+                        Helper.PrintLong(ActivitySettings.this, "Budget:" +
+                                "\nName:" + bs.get(i).GetName() +
+                                "\nStartDate:" + bs.get(i).GetStartDate().toString(Helper.getString(R.string.date_format)) +
+                                "\nEndDate:" + bs.get(i).GetEndDate().toString(Helper.getString(R.string.date_format)) +
+                                "\nPeriod:" + bs.get(i).GetPeriod().toString()
+                        );
+
+                        ArrayList<new_Transaction> ts = bs.get(i).GetTransactions(bs.get(i).GetStartDate(), bs.get(i).GetEndDate(), new_Transaction.TRANSACTION_TYPE.Expense);
+                        for (int ii = 0; ii < ts.size(); ii++){
+                            Helper.PrintLong(ActivitySettings.this, "\nValue:" + String.valueOf(ts.get(ii).GetValue()) +
+                                    "\nSource:" + ts.get(ii).GetSource() +
+                                    "\nDescription:" + ts.get(ii).GetDescription() +
+                                    "\nCategory:" + ts.get(ii).GetCategory() +
+                                    "\nOccured:" + ts.get(ii).GetTimePeriod().GetDate().toString(Helper.getString(R.string.date_format))
+                            );
+                        }
+                    }
+                }
+            }));
+
             /*
             //Completely unrelated thing
             debug.AddSetting(new Setting(inflater, R.drawable.ic_calendar_white_24dp, "Replace DateCreated with DateModified", "", new View.OnClickListener() {
@@ -239,7 +310,7 @@ public class ActivitySettings extends AppCompatActivity
     }
 
     public void ImportClick(){
-        if (ProfileManager.isStoragePermissionGranted(ActivitySettings.this) || Build.VERSION.SDK_INT < 23) {
+        if (Helper.isStoragePermissionGranted() || Build.VERSION.SDK_INT < 23) {
             Intent intent = new Intent(ActivitySettings.this, ActivityDatabaseImport.class);
             startActivity(intent);
         }
@@ -248,7 +319,7 @@ public class ActivitySettings extends AppCompatActivity
                 int titleID = R.string.tt_permission_writestorage1;
                 int subTitleID = R.string.tt_permission_writestorage2;
                 String[] permissions = new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE };
-                ProfileManager.OpenDialogFragment(this, DialogFragmentPermissionReasoning.newInstance(ActivitySettings.this, titleID, subTitleID, permissions, 1), true);
+                Helper.OpenDialogFragment(this, DialogFragmentPermissionReasoning.newInstance(ActivitySettings.this, titleID, subTitleID, permissions, 1), true);
             } else {
                 //Request permission
                 if (Build.VERSION.SDK_INT >= 23) { //Unnecessary logic call to make the compiler shut up
@@ -259,16 +330,16 @@ public class ActivitySettings extends AppCompatActivity
     }
 
     public void MyTabImportClick(){
-        if (ProfileManager.isStoragePermissionGranted(ActivitySettings.this) || Build.VERSION.SDK_INT < 23) {
+        if (Helper.isStoragePermissionGranted() || Build.VERSION.SDK_INT < 23) {
             new AlertDialog.Builder(ActivitySettings.this).setTitle(R.string.confirm_areyousure_deleteall)
                     .setPositiveButton(R.string.action_continue, new DialogInterface.OnClickListener() {
                         @Override public void onClick(DialogInterface dialog, int which) {
                             String result = MyTabConversion.load(ActivitySettings.this);
                             if (!result.equals("")){
-                                ProfileManager.PrintUser(ActivitySettings.this, "Error:" + result);
+                                Helper.PrintUser(ActivitySettings.this, "Error:" + result);
                             }
                             else {
-                                ProfileManager.PrintUser(ActivitySettings.this, "Tab Data successfully loaded");
+                                Helper.PrintUser(ActivitySettings.this, "Tab Data successfully loaded");
                             }
                         }})
                     .setNegativeButton(R.string.action_cancel, null)
@@ -279,7 +350,7 @@ public class ActivitySettings extends AppCompatActivity
                 int titleID = R.string.tt_permission_writestorage3;
                 int subTitleID = R.string.tt_permission_writestorage4;
                 String[] permissions = new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE };
-                ProfileManager.OpenDialogFragment(ActivitySettings.this, DialogFragmentPermissionReasoning.newInstance(ActivitySettings.this, titleID, subTitleID, permissions, 2), true);
+                Helper.OpenDialogFragment(ActivitySettings.this, DialogFragmentPermissionReasoning.newInstance(ActivitySettings.this, titleID, subTitleID, permissions, 2), true);
             } else {
                 //Request permission
                 if (Build.VERSION.SDK_INT >= 23) { //Unnecessary logic call to make the compiler shut up

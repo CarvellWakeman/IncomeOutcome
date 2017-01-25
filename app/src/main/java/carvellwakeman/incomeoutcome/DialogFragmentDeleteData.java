@@ -1,7 +1,6 @@
 package carvellwakeman.incomeoutcome;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -13,15 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.RadioButton;
-import org.joda.time.LocalDate;
 
 public class DialogFragmentDeleteData extends DialogFragment {
 
     Activity _parent;
-    ProfileManager.CallBack _callBack;
+    CallBack _callBack;
 
     RadioButton radioButton_deleteall;
     RadioButton radioButton_deletetransactions;
@@ -32,7 +28,7 @@ public class DialogFragmentDeleteData extends DialogFragment {
     Button button_negative;
 
 
-    static DialogFragmentDeleteData newInstance(Activity caller, ProfileManager.CallBack callBack) {
+    static DialogFragmentDeleteData newInstance(Activity caller, CallBack callBack) {
         DialogFragmentDeleteData fg = new DialogFragmentDeleteData();
         fg._callBack = callBack;
         fg._parent = caller;
@@ -62,9 +58,12 @@ public class DialogFragmentDeleteData extends DialogFragment {
                     new AlertDialog.Builder(_parent).setTitle(R.string.confirm_areyousure_deleteall)
                             .setPositiveButton(R.string.action_deleteall, new DialogInterface.OnClickListener() {
                                 @Override public void onClick(DialogInterface dialog, int which) {
-                                    ProfileManager.getInstance().DBDelete(_parent);
-                                    ProfileManager.getInstance().ClearAllObjects();
-                                    //ProfileManager.getInstance().GetDatabaseHelper().TryCreateDatabase();
+                                    BudgetManager.getInstance().RemoveAllBudgets();
+                                    CategoryManager.getInstance().RemoveAllCategories();
+                                    OtherPersonManager.getInstance().RemoveAllOtherPerson();
+
+                                    DatabaseManager.getInstance().deleteAllTableContent();
+
                                     if (_callBack != null) { _callBack.call(); }
                                     DialogFragmentDeleteData.this.dismiss();
                                     dismiss();
@@ -72,12 +71,15 @@ public class DialogFragmentDeleteData extends DialogFragment {
                             .setNegativeButton(R.string.action_cancel, null)
                             .create().show();
                 }
-                else if (radioButton_deletetransactions.isChecked()){ //Delete profiles and transactions
+                else if (radioButton_deletetransactions.isChecked()){ //Delete budgets and transactions
                     new AlertDialog.Builder(_parent).setTitle(R.string.confirm_areyousure_deletesingle)
                             .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                                 @Override public void onClick(DialogInterface dialog, int which) {
-                                    ProfileManager.getInstance().RemoveAllProfilesAndTransactions(_parent);
-                                    ProfileManager.getInstance().DBDeleteTransactionsAndProfiles(_parent);
+                                    BudgetManager.getInstance().RemoveAllBudgets();
+                                    DatabaseManager.getInstance().deleteTableContent(DatabaseManager.TABLE_SETTINGS_BUDGETS);
+                                    DatabaseManager.getInstance().deleteTableContent(DatabaseManager.TABLE_TRANSACTIONS);
+                                    DatabaseManager.getInstance().deleteTableContent(DatabaseManager.TABLE_TIMEPERIODS);
+
                                     if (_callBack != null) { _callBack.call(); }
                                     DialogFragmentDeleteData.this.dismiss();
                                     dismiss();
@@ -89,7 +91,9 @@ public class DialogFragmentDeleteData extends DialogFragment {
                     new AlertDialog.Builder(_parent).setTitle(R.string.confirm_areyousure_deletesingle)
                             .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                                 @Override public void onClick(DialogInterface dialog, int which) {
-                                    ProfileManager.getInstance().RemoveAllPeople(_parent);
+                                    OtherPersonManager.getInstance().RemoveAllOtherPerson();
+                                    DatabaseManager.getInstance().deleteTableContent(DatabaseManager.TABLE_SETTINGS_OTHERPEOPLE);
+
                                     if (_callBack != null) { _callBack.call(); }
                                     DialogFragmentDeleteData.this.dismiss();
                                     dismiss();
@@ -101,7 +105,9 @@ public class DialogFragmentDeleteData extends DialogFragment {
                     new AlertDialog.Builder(_parent).setTitle(R.string.confirm_areyousure_deletesingle)
                             .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                                 @Override public void onClick(DialogInterface dialog, int which) {
-                                    ProfileManager.getInstance().RemoveAllCategories(_parent);
+                                    CategoryManager.getInstance().RemoveAllCategories();
+                                    DatabaseManager.getInstance().deleteTableContent(DatabaseManager.TABLE_SETTINGS_CATEGORIES);
+
                                     if (_callBack != null) { _callBack.call(); }
                                     DialogFragmentDeleteData.this.dismiss();
                                     dismiss();

@@ -1,13 +1,12 @@
 package carvellwakeman.incomeoutcome;
 
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,8 +20,6 @@ import org.joda.time.LocalDate;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import static carvellwakeman.incomeoutcome.ProfileManager.Print;
 
 public class ActivityDatabaseImport extends AppCompatActivity {
 
@@ -59,7 +56,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
         //View view = inflater.inflate(R.layout.dialog_importdatabase, container, false);
         //view.setBackgroundColor(Color.WHITE);
 
-        if (ProfileManager.isStoragePermissionGranted(this)) {
+        if (Helper.isStoragePermissionGranted()) {
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             appBarLayout = (AppBarLayout) findViewById(R.id.appbarlayout);
             AppBarLayoutExpanded(false);
@@ -102,7 +99,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
 
 
             //Setup backup restore button if there is a backup
-            if (ProfileManager.getInstance().DoesBackupExist(this)) {
+            if (DatabaseManager.getInstance().doesBackupExist()) {
                 button_restorebackup.setEnabled(true);
                 button_restorebackup.setText(R.string.info_backupnotice);
             }
@@ -114,7 +111,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                     new AlertDialog.Builder(ActivityDatabaseImport.this).setTitle(R.string.confirm_areyousure_deleteall).setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ProfileManager.getInstance().DBImportBackup(ActivityDatabaseImport.this);
+                            DatabaseManager.getInstance().importDatabase(DatabaseManager.getInstance().EXPORT_BACKUP, false);
                             finish();
                         }
                     }).setNegativeButton(R.string.confirm_no, null).create().show();
@@ -142,7 +139,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
             });
 
             //editText_filename.setText(ProfileManager.getString(R.string.placeholder_exportfilename) + (new LocalDate()).toString(ProfileManager.simpleDateFormatSaving));
-            editText_filename.setText(getString(R.string.format_exportfilename, (new LocalDate()).toString(ProfileManager.simpleDateFormatSaving)));
+            editText_filename.setText(getString(R.string.format_exportfilename, (new LocalDate()).toString(Helper.getString(R.string.date_format_saving))));
 
             switch_override.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -153,8 +150,10 @@ public class ActivityDatabaseImport extends AppCompatActivity {
 
             //Causes crash, + unneccessary call for onCreate()
             //existingDatabases = ProfileManager.getInstance().GetImportDatabaseFilesString(this);
+        } else {
+            Helper.PrintUser(this, Helper.getString(R.string.error_permission_storage));
+            finish();
         }
-        else { finish(); }
     }
 
     @Override
@@ -187,10 +186,10 @@ public class ActivityDatabaseImport extends AppCompatActivity {
             case R.id.toolbar_export: //EXPORT button
                 String str = editText_filename.getText().toString();
                 if (!str.equals("")) {
-                    ProfileManager.getInstance().DBExport(this, str);
+                    DatabaseManager.getInstance().exportDatabase(str);
                     ToggleMenu(false);
-                    ProfileManager.hideSoftKeyboard(this, editText_filename);
-                    existingDatabases = ProfileManager.getInstance().GetImportDatabaseFilesString(this);
+                    Helper.hideSoftKeyboard(this, editText_filename);
+                    existingDatabases = DatabaseManager.getInstance().getImportableDatabasesString();
                     UpdateAdapter();
                 }
                 return true;
@@ -202,16 +201,19 @@ public class ActivityDatabaseImport extends AppCompatActivity {
     //Import Database
     public void DBImport(final String path, final DialogFragmentManagePPC dialogFragment){
 
-        final File file = ProfileManager.getInstance().GetDatabaseByPath(this, path);
+        final File file = DatabaseManager.getInstance().getDatabaseByPath(path);
         final int version = SQLiteDatabase.openDatabase(file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
-        final int currentVersion = ProfileManager.getInstance().GetNewestDatabaseVersion(this);
+        final int currentVersion = DatabaseManager.getInstance().getVersion();
 
         if (version <= currentVersion) { //Version check
             new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deleteall)
                     .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ProfileManager.getInstance().DBImport(ActivityDatabaseImport.this, file);
+                            DatabaseManager.getInstance().importDatabase(file, true);
+                            DatabaseManager.getInstance().loadSettings();
+                            //DatabaseManager.getInstance().loadTransactions();
+
                             dialogFragment.dismiss();
                             finish();
                             dialog.dismiss();
@@ -220,7 +222,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                     .create().show();
         }
         else {
-            ProfileManager.PrintUser(this, "ERROR: Selected database is a newer version than this app supports.");
+            Helper.PrintUser(this, Helper.getString(R.string.error_database_version_newer));
         }
     }
     public void DBDelete(final String path, final DialogFragmentManagePPC dialogFragment){
@@ -229,10 +231,10 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (path != null) {
-                            ProfileManager.getInstance().DBDeleteByPath(ActivityDatabaseImport.this, path);
+                            DatabaseManager.getInstance().getDatabaseByPath(path).delete();
                             UpdateAdapter();
 
-                            Print(ActivityDatabaseImport.this, "File Deleted");
+                            Helper.PrintUser(ActivityDatabaseImport.this, Helper.getString(R.string.notice_filedelete));
 
                             CheckCanExport();
 
@@ -265,7 +267,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
 
 
     public void CheckCanExport(){
-        existingDatabases = ProfileManager.getInstance().GetImportDatabaseFilesString(this);
+        existingDatabases = DatabaseManager.getInstance().getImportableDatabasesString();
 
         String str = editText_filename.getText().toString();
 
@@ -297,7 +299,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
         button_export.setVisible(exportState);
 
         //Toolbar subtitle
-        toolbar.setSubtitle( (exportState ? ProfileManager.getInstance().GetExportDirectory(this) : "") );
+        toolbar.setSubtitle( (exportState ? DatabaseManager.getInstance().getExportDirectory() : "") );
 
         //Set title
         toolbar.setTitle( (exportState ? R.string.title_DBExport : R.string.title_importdatabase) );

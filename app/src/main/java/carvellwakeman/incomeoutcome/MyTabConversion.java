@@ -20,7 +20,7 @@ public class MyTabConversion {
     private static String tabsFilename = "Tabs.xml";
 
     public static String load(Context ac){
-        if (ProfileManager.isStoragePermissionGranted(ac)){
+        if (Helper.isStoragePermissionGranted()){
             ArrayList<Tab> _tabs = new ArrayList<>();
 
             //Find MyTab file
@@ -50,38 +50,38 @@ public class MyTabConversion {
 
             if (_tabs != null && _tabs.size() > 0) {
                 //Create profile to house MyTab loaded objects
-                Profile myTabProfile = new Profile("MyTabData");
+                Budget br = new Budget("MyTabData");
                 if (_tabs.get(0) != null) {
-                    myTabProfile.SetStartTimeDontSave(new LocalDate(_tabs.get(0).GetDateStart()));
-                    myTabProfile.SetEndTimeDontSave(new LocalDate(_tabs.get(0).GetDateEnd()));
-                    myTabProfile.SetPeriodDontSave(new Period(0,1,0,0,0,0,0,0)); //1 Month
+                    br.SetStartDate(new LocalDate(_tabs.get(0).GetDateStart()));
+                    br.SetEndDate(new LocalDate(_tabs.get(0).GetDateEnd()));
+                    br.SetPeriod(new Period(0,1,0,0,0,0,0,0)); //1 Month
                 }
                 else { return "Bad Data Received"; }
 
 
                 //Clear database and objects
-                ProfileManager.getInstance().ClearAllObjects();
-                ProfileManager.getInstance().DBDelete(ac);
+                //ProfileManager.getInstance().ClearAllObjects();
+                //ProfileManager.getInstance().DBDelete(ac);
 
 
-                //Add new profile
-                ProfileManager.getInstance().AddProfile(ac, myTabProfile);
-                ProfileManager.getInstance().SelectProfile(ac, myTabProfile);
+                //Add new budget
+                BudgetManager.getInstance().AddBudget(br);
+                //ProfileManager.getInstance().SelectProfile(br);
 
                 //Convert between Tab<->MyTabTransaction objects into Profile<->Transaction objects
                 for (Tab tab : _tabs) {
                     if (tab != null && tab._transactions != null) {
                         for (MyTabTransaction tran : tab._transactions) {
                             if (tran != null) {
-                                Transaction NewTransaction = new Transaction();
+                                new_Transaction NewTransaction = new new_Transaction();
 
                                 //Mutators
-                                NewTransaction.SetType(Transaction.TRANSACTION_TYPE.Expense);
-                                NewTransaction.SetSourceName(tran.GetCompany());
+                                NewTransaction.SetType(new_Transaction.TRANSACTION_TYPE.Expense);
+                                NewTransaction.SetSource(tran.GetCompany());
                                 NewTransaction.SetCategory(tran.GetCategory());
-                                if (!ProfileManager.getInstance().HasCategory(tran.GetCategory())) {
+                                if (CategoryManager.getInstance().GetCategory(tran.GetCategory()) != null) {
                                     Category cat = new Category(tran.GetCategory(), CategoryColors.getColor(tran.GetCategory()));
-                                    ProfileManager.getInstance().AddCategory(ac, cat);
+                                    CategoryManager.getInstance().AddCategory(cat);
                                 }
                                 NewTransaction.SetDescription(tran.GetDescription());
                                 NewTransaction.SetValue(Double.parseDouble(Float.toString(tran.GetCost())));
@@ -89,15 +89,15 @@ public class MyTabConversion {
 
                                 //EXPENSE ONLY Mutators
                                 if (tran.GetCostB() != 0.0f && !tran.GetPersonAPaid()){
-                                    NewTransaction.SetSplitValue(tab.GetPersonB(), Double.parseDouble(Float.toString(tran.GetCostB())));
+                                    NewTransaction.SetSplit(tab.GetPersonB(), Double.parseDouble(Float.toString(tran.GetCostB())));
                                 }
-                                if (!ProfileManager.getInstance().HasOtherPerson(tab.GetPersonB())) {
-                                    ProfileManager.getInstance().AddOtherPerson(ac, tab.GetPersonB());
+                                if (!OtherPersonManager.getInstance().HasOtherPerson(tab.GetPersonB())) {
+                                    OtherPersonManager.getInstance().AddOtherPerson(tab.GetPersonB());
                                 }
-                                NewTransaction.SetIPaid(tran.GetPersonAPaid());
+                                NewTransaction.SetPaidBy( (tran.GetPersonAPaid() ? Helper.getString(R.string.format_me) : tab.GetPersonB()) );
                                 NewTransaction.SetPaidBack((tab.GetDatePaid() == null ? null : new LocalDate(tab.GetDatePaid())));
 
-                                myTabProfile.AddTransaction(ac, NewTransaction);
+                                br.AddTransaction(NewTransaction);
                             }
                         }
                     }
@@ -152,7 +152,7 @@ class CategoryColors {
     }
     public static int getColor(String name){
         if (categoryColors.get(name) != null){ return categoryColors.get(name); }
-        else { return ProfileManager.ColorFromString(name); }
+        else { return Helper.ColorFromString(name); }
     }
 }
 

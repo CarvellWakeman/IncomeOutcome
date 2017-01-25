@@ -1,15 +1,14 @@
 package carvellwakeman.incomeoutcome;
 
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
-import android.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.*;
@@ -19,7 +18,6 @@ import android.text.TextWatcher;
 import android.view.*;
 import android.widget.*;
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
-import org.joda.time.Period;
 
 public class ActivityManageCategories extends AppCompatActivity {
     Boolean menustate = true;
@@ -40,7 +38,7 @@ public class ActivityManageCategories extends AppCompatActivity {
 
     ImageView imageView_colorindicator;
     TextInputLayout TIL;
-    EditText editText_categoryname;
+    EditText editText_name;
 
     LinearLayout layout_edit;
     //LinearLayout layout_add;
@@ -97,18 +95,18 @@ public class ActivityManageCategories extends AppCompatActivity {
 
 
         TIL.setErrorEnabled(true);
-        editText_categoryname = TIL.getEditText();
+        editText_name = TIL.getEditText();
 
-        editText_categoryname.addTextChangedListener(new TextWatcher() {
+        editText_name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String str = editText_categoryname.getText().toString();
+                String str = editText_name.getText().toString();
 
                 if (!str.equals("")) {
-                    if (!ProfileManager.getInstance().HasCategory(str)) {
+                    if (CategoryManager.getInstance().GetCategory(str) == null) {
                         CheckCanSave();
                         TIL.setError("");
                     }
@@ -161,7 +159,7 @@ public class ActivityManageCategories extends AppCompatActivity {
         });
 
 
-        //Set profiles adapter
+        //Set adapter
         adapter = new AdapterManageCategories(this);
         recyclerView.setAdapter(adapter);
 
@@ -192,11 +190,14 @@ public class ActivityManageCategories extends AppCompatActivity {
 
         LayoutInflater inflater = getLayoutInflater();
 
+        //Default categories button
         Card DefaultCategories = new Card(this, inflater, layout_edit, 0);
         Setting loadDefCat = new Setting(inflater, R.drawable.ic_database_plus_white_24dp, getString(R.string.title_settings_defaultcategories), getString(R.string.subtitle_settings_defaultcategories),
                 new View.OnClickListener() { @Override public void onClick(View v) {
-                    //ProfileManager.getInstance().RemoveAllCategories(ActivityManageCategories.this);
-                    ProfileManager.getInstance().LoadDefaultCategories(ActivityManageCategories.this);
+                    CategoryManager.getInstance().RemoveAllCategories();
+                    DatabaseManager.getInstance().deleteTableContent(DatabaseManager.TABLE_SETTINGS_CATEGORIES);
+                    CategoryManager.getInstance().LoadDefaultCategories();
+                    for (Category cat : CategoryManager.getInstance().GetCategories()) { DatabaseManager.getInstance().insertSetting(cat, true); }
                     adapter.notifyDataSetChanged();
                 }}
         );
@@ -232,30 +233,41 @@ public class ActivityManageCategories extends AppCompatActivity {
                 else { ClearAddMenu(); ToggleMenus(true); }
                 return true;
             case R.id.toolbar_save: //SAVE button
-                String str = editText_categoryname.getText().toString();
+                String newCategory = editText_name.getText().toString();
 
-                if (!str.equals("")) {
-                    if (editingCategory != null) {
-                        String old = editingCategory.GetTitle();
-
-                        editingCategory.SetTitle(str);
+                if (!newCategory.equals("")) {
+                    //New category
+                    if (editingCategory == null){
+                        editingCategory = new Category(newCategory, GetColor());
+                    } else { //Update category
+                        editingCategory.SetTitle(newCategory);
                         editingCategory.SetColor(GetColor());
 
-                        //Update old category
-                        ProfileManager.getInstance().UpdateCategory(this, old, editingCategory);
+                        //Update budget transactions
+                        for (Budget budget : BudgetManager.getInstance().GetBudgets()) {
+                            for (new_Transaction transaction : budget.GetTransactions(new_Transaction.TRANSACTION_TYPE.Expense)){
+
+                                //Update category
+                                if (transaction.GetCategory().equals(editingCategory.GetTitle())) {
+                                    transaction.SetCategory(newCategory);
+                                }
+
+                                //Update database
+                                DatabaseManager.getInstance().insert(budget, transaction, true);
+                            }
+                        }
                     }
-                    else {
-                        //Add new category
-                        ProfileManager.getInstance().AddCategory(this, str, GetColor());
-                    }
+
+                    //Add or update old category
+                    CategoryManager.getInstance().AddCategory(editingCategory);
+                    DatabaseManager.getInstance().insertSetting(editingCategory, true);
 
                     adapter.notifyDataSetChanged();
 
                     ClearAddMenu();
                     ToggleMenus(true);
-                    ProfileManager.hideSoftKeyboard(this, editText_categoryname);
+                    Helper.hideSoftKeyboard(this, editText_name);
                 }
-                //finish();
                 return true;
             default:
                 return false;
@@ -270,11 +282,9 @@ public class ActivityManageCategories extends AppCompatActivity {
     //Check if the user is allowed to save
     public void CheckCanSave()
     {
-        String name = editText_categoryname.getText().toString();
+        String name = editText_name.getText().toString();
 
-        if (ProfileManager.getInstance().HasCategory(name)){
-            editingCategory = ProfileManager.getInstance().GetCategory(name);
-        }
+        editingCategory = CategoryManager.getInstance().GetCategory(name);
 
         if (editingCategory != null) {
             if (editingCategory.GetColor() == GetSeekbarColor() && //Check color
@@ -299,7 +309,7 @@ public class ActivityManageCategories extends AppCompatActivity {
 
     //Edit category
     public void EditCategory(final String id, DialogFragmentManagePPC dialogFragment){
-        Category cr = ProfileManager.getInstance().GetCategory(id);
+        Category cr = CategoryManager.getInstance().GetCategory(Integer.valueOf(id));
         if (cr != null) {
             editingCategory = cr;
 
@@ -309,7 +319,7 @@ public class ActivityManageCategories extends AppCompatActivity {
             toolbar.setTitle(R.string.title_editcategory);
 
             //Load information
-            editText_categoryname.setText(cr.GetTitle());
+            editText_name.setText(cr.GetTitle());
 
             int red = Color.red(cr.GetColor());
             int green = Color.green(cr.GetColor());
@@ -331,12 +341,15 @@ public class ActivityManageCategories extends AppCompatActivity {
     //Delete category
     public void DeleteCategory(final String id, final DialogFragmentManagePPC dialogFragment)
     {
-        final Category cr = ProfileManager.getInstance().GetCategory(id);
+        final Category cr = CategoryManager.getInstance().GetCategory(Integer.valueOf(id));
         if (cr != null) {
             new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle).setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ProfileManager.getInstance().RemoveCategory(ActivityManageCategories.this, cr);
+                    CategoryManager.getInstance().RemoveCategory(cr);
+
+                    DatabaseManager.getInstance().removeCategorySetting(cr.GetTitle());
+
                     adapter.notifyDataSetChanged();
                     dialogFragment.dismiss();
                     dialog.dismiss();
@@ -379,7 +392,7 @@ public class ActivityManageCategories extends AppCompatActivity {
         editingCategory = null;
 
         //Reset old state
-        editText_categoryname.setText("");
+        editText_name.setText("");
         seekBar_red.setProgress(50);
         seekBar_green.setProgress(50);
         seekBar_blue.setProgress(50);

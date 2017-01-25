@@ -35,7 +35,7 @@
                 <EditText
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/tt_profilename"
+                    android:hint="@string/tt_budgetname"
                     android:inputType="textCapWords"
                     android:maxLines="1"
                     android:textColor="@color/white" />
@@ -138,7 +138,7 @@
             android:background="@color/colorPrimary"
             app:layout_collapseMode="pin"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"></android.support.v7.widget.Toolbar>
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     </android.support.design.widget.CollapsingToolbarLayout>
 </android.support.design.widget.AppBarLayout>

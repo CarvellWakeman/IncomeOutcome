@@ -10,8 +10,7 @@ public class AdapterManageCategories extends RecyclerView.Adapter<AdapterManageC
 {
     ActivityManageCategories parent;
 
-    public AdapterManageCategories(ActivityManageCategories _parent)
-    {
+    public AdapterManageCategories(ActivityManageCategories _parent) {
         parent = _parent;
     }
 
@@ -27,11 +26,11 @@ public class AdapterManageCategories extends RecyclerView.Adapter<AdapterManageC
     public void onBindViewHolder(final CategoryViewHolder holder, int position)
     {
         //Category
-        Category cr = ProfileManager.getInstance().GetCategoryByIndex(position);
+        Category cr = CategoryManager.getInstance().GetCategories().get(position);
         if (cr != null) {
             //Textview
             holder.title.setText(cr.GetTitle());
-            holder.icon.setImageDrawable(ProfileManager.getDrawable(R.drawable.ic_view_list_white_24dp));
+            holder.icon.setImageDrawable(Helper.getDrawable(R.drawable.ic_view_list_white_24dp));
             holder.icon.setColorFilter(cr.GetColor());
             holder.secondaryIcon.setVisibility(View.GONE);
         }
@@ -39,7 +38,7 @@ public class AdapterManageCategories extends RecyclerView.Adapter<AdapterManageC
 
     @Override public int getItemCount()
     {
-        return ProfileManager.getInstance().GetCategoriesCount();
+        return CategoryManager.getInstance().GetCategoriesCount();
     }
 
 
@@ -49,13 +48,13 @@ public class AdapterManageCategories extends RecyclerView.Adapter<AdapterManageC
 
         @Override
         public void onClick(View v) {
-            Category cr = ProfileManager.getInstance().GetCategoryByIndex(getAdapterPosition());
+            Category cr = CategoryManager.getInstance().GetCategories().get(getAdapterPosition());
             if (cr != null) {
 
-                ProfileManager.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, cr.GetTitle(), "", cr.GetTitle(),
-                        new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.EditCategory(data, dialogFragment); } },
+                Helper.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, cr.GetTitle(), "", String.valueOf(cr.GetID()),
+                        new ParentCallBack() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.EditCategory(data, dialogFragment); } },
                         null,
-                        new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeleteCategory(data, dialogFragment); } }),
+                        new ParentCallBack() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeleteCategory(data, dialogFragment); } }),
                         true); //TODO: Handle mIsLargeDisplay
             }
         }

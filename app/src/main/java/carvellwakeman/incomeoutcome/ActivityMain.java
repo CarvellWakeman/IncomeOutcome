@@ -13,20 +13,18 @@ import java.util.ArrayList;
 
 public class ActivityMain extends AppCompatActivity
 {
-    ProfileManager profileManager;
+    //TODO: Convert ActivityMain to use Budgets and new_Transactions, follow the trail of errors and redesign each interface
+    //ProfileManager profileManager;
 
     ArrayList<Integer> toolbar_menus;
 
     Toolbar toolbar;
 
-    int _profileID;
-    Profile _profile;
-
     CardVersus versusCard;
     CardTransaction expensesCard;
     CardTransaction incomeCard;
 
-    Button button_suggestaddprofile;
+    Button button_suggestaddbudget;
 
     RelativeLayout relativeLayout_period;
     ImageView button_nextPeriod;
@@ -35,31 +33,72 @@ public class ActivityMain extends AppCompatActivity
 
     LinearLayout progress_loadingData;
 
-    ProfileManager.CallBack sortFilterCallBack;
+
+
+    int _selectedBudgetID;
+
+    //Managers
+    DatabaseManager databaseManager;
+    BudgetManager budgetManager;
+    CategoryManager categoryManager;
+    OtherPersonManager otherPersonManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Initialize the profile manager
-        profileManager = ProfileManager.getInstance();
-        profileManager.initialize(this, new ProfileManager.CallBack() {
-            @Override public void call() {
-                if (versusCard!=null){ versusCard.getBase().setVisibility(View.VISIBLE); }
-                if (incomeCard!=null){ incomeCard.getBase().setVisibility(View.VISIBLE); }
-                if (expensesCard!=null){ expensesCard.getBase().setVisibility(View.VISIBLE); }
-                if (progress_loadingData!=null){ progress_loadingData.setVisibility(View.GONE); }
-                if (relativeLayout_period!=null){ relativeLayout_period.setVisibility(View.VISIBLE); }
+        //Initialize Budget manager
+        budgetManager = BudgetManager.getInstance();
+        budgetManager.initialize();
 
-                RefreshOverview();
+        //Initialize category manager
+        categoryManager = CategoryManager.getInstance();
+        categoryManager.initialize();
+
+        //Initialize otherperson manager
+        otherPersonManager = OtherPersonManager.getInstance();
+        otherPersonManager.initialize();
+
+        //Initialize the Database
+        databaseManager = DatabaseManager.getInstance();
+        databaseManager.initialize();
+
+        //Load data from database
+        databaseManager.runDBTask(
+            new CallBack() {
+                @Override public void call() {
+                    databaseManager.loadSettings();
+                    databaseManager.loadTransactions();
+                }
+            },
+            null,
+            new CallBack[]{
+                new CallBack() {
+                    @Override public void call() {
+                        if (versusCard!=null){ versusCard.getBase().setVisibility(View.VISIBLE); }
+                        if (incomeCard!=null){ incomeCard.getBase().setVisibility(View.VISIBLE); }
+                        if (expensesCard!=null){ expensesCard.getBase().setVisibility(View.VISIBLE); }
+                        if (progress_loadingData!=null){ progress_loadingData.setVisibility(View.GONE); }
+                        if (relativeLayout_period!=null){ relativeLayout_period.setVisibility(View.VISIBLE); }
+
+                        RefreshOverview();
+                    }
+                }
             }
-        });
+        );
+
+        //Selected budget
+        Budget _budget = budgetManager.GetSelectedBudget();
+        if (_budget != null){ _selectedBudgetID = _budget.GetID(); }
+        else { _selectedBudgetID = 0; }
+
+
 
         //Sort filter callback
-        sortFilterCallBack = new ProfileManager.CallBack() { @Override public void call() {
-            RefreshOverview();
-        }};
+        //sortFilterCallBack = new CallBack() { @Override public void call() {
+        //    RefreshOverview();
+        //}};
 
         //Toolbar menus
         toolbar_menus = new ArrayList<>();
@@ -68,20 +107,21 @@ public class ActivityMain extends AppCompatActivity
         toolbar_menus.add(R.menu.submenu_paidback);
 
         //Set our activity's data
-        _profile = profileManager.GetCurrentProfile();
-        if (_profile != null) {
-            _profileID = _profile.GetID();
-        }
+        //_profile = profileManager.GetCurrentProfile();
+        //if (_profile != null) {
+            //_profileID = _profile.GetID();
+        //}
+
         //Find Views
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
 
-        button_suggestaddprofile = (Button) findViewById(R.id.button_suggest_addprofile);
+        button_suggestaddbudget = (Button) findViewById(R.id.button_suggest_addprofile);
 
-        button_suggestaddprofile.setOnClickListener(new View.OnClickListener() {
+        button_suggestaddbudget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(ActivityMain.this, ActivityManageProfiles.class));
+            //    startActivity(new Intent(ActivityMain.this, ActivityManageProfiles.class));
             }
         });
 
@@ -95,34 +135,38 @@ public class ActivityMain extends AppCompatActivity
         //Loading
         progress_loadingData = (LinearLayout) findViewById(R.id.progress_database_loading);
 
+        //Period forward/back
         button_nextPeriod.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                if (_profile != null){
+                Budget _budget = budgetManager.GetBudget(_selectedBudgetID);
+                if (_budget != null){
                     checkbox_showall.setChecked(false);
-                    _profile.TimePeriodPlus(ActivityMain.this, 1);
+                    _budget.MoveTimePeriod(1);
                     RefreshOverview();
                 }
             }
         });
         button_prevPeriod.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                if (_profile != null){
+                Budget _budget = budgetManager.GetBudget(_selectedBudgetID);
+                if (_budget != null){
                     checkbox_showall.setChecked(false);
-                    _profile.TimePeriodMinus(ActivityMain.this, 1);
+                    _budget.MoveTimePeriod(-1);
                     RefreshOverview();
                 }
             }
         });
         checkbox_showall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (_profile != null){
+                Budget _budget = budgetManager.GetBudget(_selectedBudgetID);
+                if (_budget != null){
                     //if (b){
                     //    storedStartTime = _profile.GetStartTime();
                     //    storedEndTime = _profile.GetEndTime();
                     //}
                     //_profile.SetStartTime( (b ? null : storedStartTime) );
                     //_profile.SetEndTime( (b ? null : storedEndTime) );
-                    _profile.SetShowAll(b);
+                    //_budget.SetShowAll(b);
                     RefreshOverview();
                 }
             }
@@ -143,9 +187,9 @@ public class ActivityMain extends AppCompatActivity
 
 
         //Cards
-        versusCard = new CardVersus(insertPoint, 0, _profileID, this, inflater, R.layout.card_versus);
-        expensesCard = new CardTransaction(insertPoint, 1, _profileID, 0, 2, getString(R.string.header_expenses_summary), this, inflater, R.layout.card_transaction);
-        incomeCard = new CardTransaction(insertPoint, 2, _profileID, 1, 1, getString(R.string.header_income_summary), this, inflater, R.layout.card_transaction);
+        versusCard = new CardVersus(insertPoint, 0, _selectedBudgetID, this, inflater, R.layout.card_versus);
+        expensesCard = new CardTransaction(insertPoint, 1, _selectedBudgetID, 0, getString(R.string.header_expenses_summary), this, inflater, R.layout.card_transaction);
+        incomeCard = new CardTransaction(insertPoint, 2, _selectedBudgetID, 1, getString(R.string.header_income_summary), this, inflater, R.layout.card_transaction);
 
         versusCard.getBase().setVisibility(View.GONE);
         expensesCard.getBase().setVisibility(View.GONE);
@@ -160,8 +204,8 @@ public class ActivityMain extends AppCompatActivity
 
         //Check app version for update, display changelog
         if (!App.GetVersion(this).equals(App.GetLastVersion())){
-            App.SetLastVersion(this);
-            ProfileManager.OpenDialogFragment(this, DialogFragmentChangelog.newInstance(), true);
+            //App.SetLastVersion(this);
+            //Helper.OpenDialogFragment(this, DialogFragmentChangelog.newInstance(), true);
         }
 
     }
@@ -177,16 +221,17 @@ public class ActivityMain extends AppCompatActivity
     public void onResume(){
         super.onResume();
 
-        if (_profile != null) {
-            checkbox_showall.setChecked(_profile.GetShowAll());
+        Budget _budget = budgetManager.GetBudget(_selectedBudgetID);
 
-            RefreshOverview();
-        }
+        //if (_selectedBudgetID != 0) {
+        //    checkbox_showall.setChecked(_profile.GetShowAll());
+        //    RefreshOverview();
+        //}
 
         //Sort and filter bubbles
-        if (_profile != null) {
-            SortFilterOptions.DisplayFilter(this, _profile.GetFilterMethod(), _profile.GetFilterData(), sortFilterCallBack);
-            SortFilterOptions.DisplaySort(this, ProfileManager.SORT_METHODS.DATE_DOWN, sortFilterCallBack); //Sorting is irrelevant on main activity
+        if (_budget != null) {
+            //SortFilterOptions.DisplayFilter(this, _profile.GetFilterMethod(), _profile.GetFilterData(), sortFilterCallBack);
+            //SortFilterOptions.DisplaySort(this, ProfileManager.SORT_METHODS.DATE_DOWN, sortFilterCallBack); //Sorting is irrelevant on main activity
         }
     }
 
@@ -216,13 +261,13 @@ public class ActivityMain extends AppCompatActivity
                 startActivityForResult(intent, 0);
                 return true;
             case R.id.toolbar_paidback: //Expense only
-                ProfileManager.OpenDialogFragment(ActivityMain.this, DialogFragmentPaidBack.newInstance(ActivityMain.this, new ProfileManager.CallBack() { @Override public void call() {
-                    RefreshOverview();
-                }}, _profile), true);
+                //ProfileManager.OpenDialogFragment(ActivityMain.this, DialogFragmentPaidBack.newInstance(ActivityMain.this, new ProfileManager.CallBack() { @Override public void call() {
+                //    RefreshOverview();
+                //}}, _profile), true);
                 return true;
         }
 
-        SortFilterOptions.Run(this, _profile, item, sortFilterCallBack);
+        //SortFilterOptions.Run(this, _profile, item, sortFilterCallBack);
 
         return true;
     }
@@ -250,35 +295,31 @@ public class ActivityMain extends AppCompatActivity
 
     //Refresh overview
     public void RefreshOverview(){
+        Budget _budget = budgetManager.GetBudget(_selectedBudgetID);
+
         //Suggest the user add a profile if none exist
-        if (profileManager.GetCurrentProfile()==null){
+        if (_budget != null){
             versusCard.getBase().setVisibility(View.GONE);
             expensesCard.getBase().setVisibility(View.GONE);
             incomeCard.getBase().setVisibility(View.GONE);
-            button_suggestaddprofile.setVisibility(View.VISIBLE);
+            button_suggestaddbudget.setVisibility(View.VISIBLE);
             progress_loadingData.setVisibility(View.GONE);
             relativeLayout_period.setVisibility(View.GONE);
+
+            versusCard.SetBudgetID(_selectedBudgetID);
+            expensesCard.SetBudgetID(_selectedBudgetID);
+            incomeCard.SetBudgetID(_selectedBudgetID);
+
+            versusCard.SetData();
+            expensesCard.SetData();
+            incomeCard.SetData();
         }
         else {
             versusCard.getBase().setVisibility(View.VISIBLE);
             expensesCard.getBase().setVisibility(View.VISIBLE);
             incomeCard.getBase().setVisibility(View.VISIBLE);
-            button_suggestaddprofile.setVisibility(View.GONE);
+            button_suggestaddbudget.setVisibility(View.GONE);
             relativeLayout_period.setVisibility(View.VISIBLE);
-        }
-
-
-        _profile = profileManager.GetCurrentProfile();
-        if (_profile != null) {
-            _profileID = _profile.GetID();
-
-            versusCard.SetProfileID(_profileID);
-            expensesCard.SetProfileID(_profileID);
-            incomeCard.SetProfileID(_profileID);
-
-            versusCard.SetData();
-            expensesCard.SetData();
-            incomeCard.SetData();
         }
 
         ToolbarTitleUpdate();
@@ -287,9 +328,11 @@ public class ActivityMain extends AppCompatActivity
     //Toolbar title update
     public void ToolbarTitleUpdate(){
         if (getSupportActionBar() != null) {
-            if (_profile != null) {
-                getSupportActionBar().setTitle(_profile.GetName() + " " + getString(R.string.title_overview));
-                getSupportActionBar().setSubtitle(_profile.GetDateFormatted());
+            Budget _budget = budgetManager.GetBudget(_selectedBudgetID);
+
+            if (_budget != null) {
+                getSupportActionBar().setTitle(_budget.GetName() + " " + getString(R.string.title_overview));
+                getSupportActionBar().setSubtitle(_budget.GetDateFormatted());
             }
             else {
                 getSupportActionBar().setTitle(R.string.title_overview);

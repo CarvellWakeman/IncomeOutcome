@@ -8,8 +8,10 @@ TODO
 *[BUGFIX] Permissions revoked on runtime leaves import activity empty
 *[BUGFIX] Some MyTab import expenses are not split
 
-*[CHANGE] Database operations use service/intentservice instead of AsyncTask
-*[CHANGE] App colors
+*[CHANGE] When adding a transaction, the keyboard hides when any element that does not use it is clicked
+*[CHANGE] DatabaseHelper contains method runDBTask which runs DB tasks Asynchronously, don't expose GenericAsyncTask
+*[CHANGE] Database operations use service/intentservice instead of AsyncTask (why?)
+*[CHANGE] App theme colors
 *[CHANGE] Transaction card has legend view by default, clicking a slice of the chart brings up the title of the transaction
 *[CHANGE] Overview activity FAB, an easy way to add transactions?
 *[CHANGE] Profiles represented as budgets
@@ -19,11 +21,10 @@ TODO
 *[CHANGE] DialogFragmentManagePPC windows shrunk to wrap content
 
 *[ADD] Overview of category/source
-*[ADD] Category: Parking, membership
 *[ADD] Rate in playstore button on Changelog
 *[ADD] Notification of progress when async deleting data
 *[ADD] Android 7.1 app shortcuts
-*[ADD] Testing framework suite
+*[ADD] Testing framework
 *[ADD] Tool to convert repeating individual transactions
 *[ADD] Row layout transaction repeat icon added below calendar icon
 *[ADD] Row Layout Transaction expand animation
@@ -40,6 +41,7 @@ TODO
 
 
 UNRELEASED
+#[ADD] Category: Parking, membership
 
 
 
@@ -54,3 +56,5 @@ Ver #.#.# CHANNEL YYYY-MM-DD
 *[ADD] This is an addition
 
 *[DEL] This is a deletion
+
+#[ADD] This is an addition that is not displayed to the user

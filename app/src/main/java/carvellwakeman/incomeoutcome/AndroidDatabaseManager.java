@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -30,7 +29,6 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
-import carvellwakeman.incomeoutcome.DatabaseHelper;
 
 public class AndroidDatabaseManager extends Activity implements OnItemClickListener {
 
@@ -54,7 +52,7 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 	
 	//in the below line ChangelogChange the text 'yourCustomSqlHelper' with your custom sqlitehelper class name.
 	//Do not change the variable name dbm
-	DatabaseHelper dbm;
+	DatabaseManager dbm;
 	TableLayout tableLayout;
 	TableRow.LayoutParams tableRowParams;
 	HorizontalScrollView hsv;
@@ -73,7 +71,7 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 		
 
 		//in the below line ChangelogChange the text 'yourCustomSqlHelper' with your custom sqlitehelper class name
-		dbm = new DatabaseHelper(AndroidDatabaseManager.this);
+		dbm = DatabaseManager.getInstance();
 		
 		mainscrollview = new ScrollView(AndroidDatabaseManager.this);
 		

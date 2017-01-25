@@ -1,13 +1,14 @@
 package carvellwakeman.incomeoutcome;
 
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.*;
-import android.app.DialogFragment;
-import android.support.v4.view.ViewCompat;
+import android.provider.ContactsContract;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.*;
@@ -16,29 +17,33 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.*;
 import android.widget.*;
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
-import static carvellwakeman.incomeoutcome.R.id.frameLayout;
+import java.util.Map;
 
 public class ActivityManagePeople extends AppCompatActivity {
     Boolean menustate = true;
-    String old_otherperson;
+    String editingPerson;
 
     AdapterManagePeople adapter;
 
     AppBarLayout appBarLayout;
-    Toolbar toolbar;
-
+    android.support.v7.widget.Toolbar toolbar;
     MenuItem button_save;
 
     FloatingActionButton button_new;
-
+    
     TextInputLayout TIL;
-    EditText editText_personname;
+    EditText editText_name;
 
     LinearLayout layout_edit;
 
     NpaLinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
+
+
+    public ActivityManagePeople() {}
+
 
     /** The system calls this to get the DialogFragment's layout, regardless
      of whether it's being displayed as a dialog or an embedded fragment. */
@@ -47,27 +52,23 @@ public class ActivityManagePeople extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_managepeople);
         //public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //View view = inflater.inflate(R.layout.dialog_managepeople, container, false);
+        //View view = inflater.inflate(R.layout.activity_managecategories, container, false);
         //view.setBackgroundColor(Color.WHITE);
 
+        editingPerson = "";
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-
         appBarLayout = (AppBarLayout) findViewById(R.id.appbarlayout);
         AppBarLayoutExpanded(false);
 
-        //appBarLayout.setExpanded(false, false);
-        //appBarLayout.setActivated(false);
-        //CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
-        //lp.height = (int) getResources().getDimension(R.dimen.toolbar_size);
-
         button_new = (FloatingActionButton) findViewById(R.id.FAB_dialogmp_new);
+
 
         layout_edit = (LinearLayout) findViewById(R.id.linearLayout_dialog_editperson);
 
         recyclerView = (RecyclerView) findViewById(R.id.dialog_recyclerView_people);
 
-        TIL = (TextInputLayout)findViewById(R.id.TIL_dialog_personname);
+        TIL = (TextInputLayout) findViewById(R.id.TIL_dialog_personname);
 
 
         //Configure toolbar
@@ -80,31 +81,29 @@ public class ActivityManagePeople extends AppCompatActivity {
             }
         });
         toolbar.inflateMenu(R.menu.toolbar_menu_save);
-        toolbar.setTitle(R.string.title_managepeople);
+        toolbar.setTitle(R.string.title_editperson);
         setSupportActionBar(toolbar);
-        //button_save = toolbar.getMenu().findItem(R.id.toolbar_save);
-        //button_save.setVisible(false);
 
 
         TIL.setErrorEnabled(true);
-        editText_personname = TIL.getEditText();
+        editText_name = TIL.getEditText();
 
-        editText_personname.addTextChangedListener(new TextWatcher() {
+        editText_name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String str = editText_personname.getText().toString();
+                String str = editText_name.getText().toString();
 
                 if (!str.equals("")) {
-                    if (!ProfileManager.getInstance().HasOtherPerson(str)) {
+                    if (!OtherPersonManager.getInstance().HasOtherPerson(str)) {
                         SetSaveButtonEnabled(true);
                         TIL.setError("");
                     }
-                    else{ SetSaveButtonEnabled(false); TIL.setError("Person already exists"); }
+                    else{ SetSaveButtonEnabled(false); TIL.setError("Person already exists"); } //TODO: Put in strings
                 }
-                else{ SetSaveButtonEnabled(false); TIL.setError("Enter a name"); }
+                else{ SetSaveButtonEnabled(false); TIL.setError("Enter a name"); } //TODO: Put in strings
             }
 
             @Override
@@ -112,7 +111,8 @@ public class ActivityManagePeople extends AppCompatActivity {
         });
 
 
-        //Set profiles adapter
+
+        //Set adapter
         adapter = new AdapterManagePeople(this);
         recyclerView.setAdapter(adapter);
 
@@ -130,7 +130,6 @@ public class ActivityManagePeople extends AppCompatActivity {
                 ToggleMenus(false);
             }
         });
-
         //Hide floating action button when recyclerView is scrolled
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -140,8 +139,8 @@ public class ActivityManagePeople extends AppCompatActivity {
                 else if (dy < 0 && !button_new.isShown()){button_new.show(); }
             }
         });
-
     }
+
 
     @Override
     public void onBackPressed()
@@ -169,37 +168,59 @@ public class ActivityManagePeople extends AppCompatActivity {
                 else { ClearAddMenu(); ToggleMenus(true); }
                 return true;
             case R.id.toolbar_save: //SAVE button
-                String str = editText_personname.getText().toString();
+                String newPerson = editText_name.getText().toString();
 
-                if (!str.equals("")) {
-                    //Update other person
-                    ProfileManager.getInstance().UpdateOtherPerson(ActivityManagePeople.this, old_otherperson, str);
+                if (!newPerson.equals("")) {
+                    //Add new
+                    OtherPersonManager.getInstance().AddOtherPerson(newPerson);
+                    DatabaseManager.getInstance().insertSetting(newPerson, true);
 
-                    //Delete old person if they exist (For editing)
-                    ProfileManager.getInstance().RemoveOtherPerson(ActivityManagePeople.this, old_otherperson);
+                    //Remove old person if editing
+                    if (editingPerson != null && !editingPerson.equals("")){
+                        OtherPersonManager.getInstance().RemoveOtherPerson(editingPerson);
+                        DatabaseManager.getInstance().removePersonSetting(editingPerson);
+                    }
 
-                    //Add new person (Edit or new)
-                    ProfileManager.getInstance().AddOtherPerson(ActivityManagePeople.this, str);
+                    //Update budget transactions
+                    for (Budget budget : BudgetManager.getInstance().GetBudgets()) {
+                        for (new_Transaction transaction : budget.GetTransactions(new_Transaction.TRANSACTION_TYPE.Expense)){
+
+                            //Update split to new person
+                            for (Map.Entry<String,Double> split : transaction.GetSplitArray().entrySet()){
+                                if (split.getKey().equals(editingPerson)) {
+                                    Helper.Print(this, "Update " + transaction.GetSource() + " Split " + split.getKey() + "(" + String.valueOf(split.getValue()) + ")" + " TO " + newPerson);
+                                    transaction.SetSplit(newPerson, split.getValue());
+                                    transaction.RemoveSplit(editingPerson);
+                                    Helper.Print(this, "Updated TO: " + transaction.GetSplitArrayString());
+                                }
+                            }
+                            if (transaction.GetPaidBy().equals(editingPerson)){
+                                Helper.Print(this, "Update " + transaction.GetSource() + " PaidBy " + transaction.GetPaidBy() + " TO " + newPerson);
+                                transaction.SetPaidBy(newPerson);
+                                Helper.Print(this, "Updated TO: " + transaction.GetPaidBy());
+                            }
+
+                            //Update database
+                            DatabaseManager.getInstance().insert(budget, transaction, true);
+                            Helper.Print(this, "Database entry updated for: " + transaction.GetSource());
+                        }
+                    }
 
                     adapter.notifyDataSetChanged();
 
-                    //Dismiss dialog
                     ClearAddMenu();
                     ToggleMenus(true);
-                    ProfileManager.hideSoftKeyboard(this, toolbar);
+                    Helper.hideSoftKeyboard(this, editText_name);
                 }
-                //finish();
-
                 return true;
             default:
                 return false;
         }
     }
 
-
     //Edit profile
     public void EditPerson(String name, final DialogFragmentManagePPC dialogFragment){
-        old_otherperson = name;
+        editingPerson = name;
 
         //Open add new layout
         ToggleMenus(false);
@@ -207,7 +228,7 @@ public class ActivityManagePeople extends AppCompatActivity {
         toolbar.setTitle(R.string.title_editperson);
 
         //Load information
-        editText_personname.setText(name);
+        editText_name.setText(name);
 
         //Dismiss fragment
         dialogFragment.dismiss();
@@ -219,7 +240,9 @@ public class ActivityManagePeople extends AppCompatActivity {
                     .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ProfileManager.getInstance().RemoveOtherPerson(ActivityManagePeople.this, name);
+                            OtherPersonManager.getInstance().RemoveOtherPerson(name);
+                            DatabaseManager.getInstance().removePersonSetting(name);
+
                             adapter.notifyDataSetChanged();
                             dialogFragment.dismiss();
                             dialog.dismiss();
@@ -259,9 +282,9 @@ public class ActivityManagePeople extends AppCompatActivity {
     }
 
     public void ClearAddMenu(){
-        old_otherperson = "";
+        editingPerson = "";
 
-        editText_personname.setText("");
+        editText_name.setText("");
     }
 
 
@@ -269,32 +292,4 @@ public class ActivityManagePeople extends AppCompatActivity {
         CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
         lp.height = (expanded ? ViewGroup.LayoutParams.WRAP_CONTENT : (int) getResources().getDimension(R.dimen.toolbar_size));
     }
-
-
-    /* The system calls this only when creating the layout in a dialog.
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // The only reason you might override this method when using onCreateView() is
-        // to modify any dialog characteristics. For example, the dialog includes a
-        // title by default, but your custom layout might not need it. So here you can
-        // remove the dialog title, but you must call the superclass to get the Dialog.
-
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //dialog.setCanceledOnTouchOutside(false); //Disable closing dialog by clicking outside of it
-        return dialog;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Dialog dialog = getDialog();
-        if (dialog != null) {
-            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            //dialog.getWindow().setBackgroundDrawable(null);
-        }
-    }
-    */
 }

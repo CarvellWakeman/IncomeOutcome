@@ -55,7 +55,7 @@ public class TimePeriod implements java.io.Serializable
     public TimePeriod()
     {
         //Dates
-        date = null;
+        date = LocalDate.now();
         _firstOccurenceDate = null;
 
         //Frequency of repeat (Never, Daily, Weekly, Monthly, Yearly)
@@ -156,7 +156,7 @@ public class TimePeriod implements java.io.Serializable
 
         if (blacklistDates != null) {
             for (int i = 0; i < blacklistDates.size(); i++) {
-                str += blacklistDates.get(i).date.toString(ProfileManager.simpleDateFormatSaving) + "|" + (blacklistDates.get(i).edited ? 1 : 0) + ",";
+                str += blacklistDates.get(i).date.toString(Helper.getString(R.string.date_format_saving)) + "|" + (blacklistDates.get(i).edited ? 1 : 0) + ",";
             }
             //Remove last comma
             if (str.length() > 0) { str = str.substring(0, str.length() - 1); }
@@ -184,7 +184,7 @@ public class TimePeriod implements java.io.Serializable
         if (blacklistDates!=null) {
             if (blacklistDates.get(index) != null) {
                 if (!_blacklistDatesQueue.contains(blacklistDates.get(index))) {
-                    return blacklistDates.get(index).date.toString(ProfileManager.simpleDateFormat) + (blacklistDates.get(index).edited ? " (edited)" : " (deleted)");
+                    return blacklistDates.get(index).date.toString(Helper.getString(R.string.date_format)) + (blacklistDates.get(index).edited ? " (edited)" : " (deleted)");
                 }
             }
         }
@@ -204,7 +204,7 @@ public class TimePeriod implements java.io.Serializable
     }
 
     public static LocalDate calcFirstDayOfWeek(Boolean[] dayOfWeek, LocalDate date){
-        if (dayOfWeek[0] && date.getDayOfWeek() <= 1) { return calcNextDayOfWeek(date, 1); }
+        if (dayOfWeek[0]) { return calcNextDayOfWeek(date, 1); }
         else if (dayOfWeek[1] && date.getDayOfWeek() <= 2) { return calcNextDayOfWeek(date, 2); }
         else if (dayOfWeek[2] && date.getDayOfWeek() <= 3) { return calcNextDayOfWeek(date, 3); }
         else if (dayOfWeek[3] && date.getDayOfWeek() <= 4) { return calcNextDayOfWeek(date, 4); }
@@ -473,7 +473,7 @@ public class TimePeriod implements java.io.Serializable
 
 
     //Mutators
-    public void SetRepeatDayOfWeekFromBinary(String str) {
+    public void SetRepeatDayOfWeekFromBinary(String str) { //0 - Monday, 6 - Sunday
         repeatDayOfWeek[0] = str.length() >= 1 && str.charAt(0) == '1';
         repeatDayOfWeek[1] = str.length() >= 2 && str.charAt(1) == '1';
         repeatDayOfWeek[2] = str.length() >= 3 && str.charAt(2) == '1';
@@ -497,12 +497,12 @@ public class TimePeriod implements java.io.Serializable
     //Formatting
     public String GetDateFormatted()
     {
-        if (date != null) { return date.toString(ProfileManager.simpleDateFormat); }
-        else { return ProfileManager.getString(R.string.time_nodate); }
+        if (date != null) { return date.toString(Helper.getString(R.string.date_format)); }
+        else { return Helper.getString(R.string.time_nodate); }
     }
     public String GetRepeatUntilDateFormatted()
     {
-        if (repeatUntilDate != null) { return repeatUntilDate.toString(ProfileManager.simpleDateFormat); }
+        if (repeatUntilDate != null) { return repeatUntilDate.toString(Helper.getString(R.string.date_format)); }
         else { return ""; }
     }
 
@@ -516,42 +516,42 @@ public class TimePeriod implements java.io.Serializable
                 case NEVER:
                     return "";
                 case DAILY:
-                    return " " + ProfileManager.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + ProfileManager.getString(R.string.repeat_days);
+                    return " " + Helper.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + Helper.getString(R.string.repeat_days);
                 case WEEKLY:
-                    return " " + ProfileManager.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + ProfileManager.getString(R.string.repeat_weeks);
+                    return " " + Helper.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + Helper.getString(R.string.repeat_weeks);
                 case MONTHLY:
-                    return " " + ProfileManager.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + ProfileManager.getString(R.string.repeat_months);
+                    return " " + Helper.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + Helper.getString(R.string.repeat_months);
                 case YEARLY:
-                    return " " + ProfileManager.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + ProfileManager.getString(R.string.repeat_years);
+                    return " " + Helper.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + Helper.getString(R.string.repeat_years);
                 default:
                     return "";
             }
         }
     }
     public String GetRepeatDaysOfWeek() {
-        String str = ProfileManager.getString(R.string.misc_on)
+        String str = Helper.getString(R.string.misc_on)
 
-                + (repeatDayOfWeek[0] ? " " + ProfileManager.getString(R.string.repeat_mon) + "," : "")
-                + (repeatDayOfWeek[1] ? " " + ProfileManager.getString(R.string.repeat_tue) + "," : "")
-                + (repeatDayOfWeek[2] ? " " + ProfileManager.getString(R.string.repeat_wed) + "," : "")
-                + (repeatDayOfWeek[3] ? " " + ProfileManager.getString(R.string.repeat_thur) + "," : "")
-                + (repeatDayOfWeek[4] ? " " + ProfileManager.getString(R.string.repeat_fri) + "," : "")
-                + (repeatDayOfWeek[5] ? " " + ProfileManager.getString(R.string.repeat_sat) + "," : "")
-                + (repeatDayOfWeek[6] ? " " + ProfileManager.getString(R.string.repeat_sun) + "" : "");
+                + (repeatDayOfWeek[0] ? " " + Helper.getString(R.string.repeat_mon) + "," : "")
+                + (repeatDayOfWeek[1] ? " " + Helper.getString(R.string.repeat_tue) + "," : "")
+                + (repeatDayOfWeek[2] ? " " + Helper.getString(R.string.repeat_wed) + "," : "")
+                + (repeatDayOfWeek[3] ? " " + Helper.getString(R.string.repeat_thur) + "," : "")
+                + (repeatDayOfWeek[4] ? " " + Helper.getString(R.string.repeat_fri) + "," : "")
+                + (repeatDayOfWeek[5] ? " " + Helper.getString(R.string.repeat_sat) + "," : "")
+                + (repeatDayOfWeek[6] ? " " + Helper.getString(R.string.repeat_sun) + "" : "");
         //Remove last comma
         if (str.charAt(str.length()-1) == ','){ str = str.substring(0, str.length()-1); }
         return str;
     }
 
-    public String GetDayOfMonthFormatted(){ return ProfileManager.getString(R.string.misc_onday) + " " + String.valueOf(repeatDayOfMonth); }
-    public String GetRepeatYear(){ return ProfileManager.getString(R.string.misc_on) + " " + dateOfYear.toString(ProfileManager.simpleDateFormatNoYear); }
+    public String GetDayOfMonthFormatted(){ return Helper.getString(R.string.misc_onday) + " " + String.valueOf(repeatDayOfMonth); }
+    public String GetRepeatYear(){ return Helper.getString(R.string.misc_on) + " " + dateOfYear.toString(Helper.getString(R.string.date_format_noyear)); }
 
     public String GetRepeatString(){
         //Short-Circuit if repeat type is NEVER
         if (repeatFrequency == Repeat.NEVER) { return GetDateFormatted(); }
 
-        String tense = ProfileManager.getString(date.compareTo(LocalDate.now()) <= 0 ? R.string.time_started : R.string.time_starts);
-        String repeatTypeString = tense + " " + GetDateFormatted() + "\n" + ProfileManager.getString(R.string.repeats) + " " + GetEveryNFormatted(GetRepeatFrequency());
+        String tense = Helper.getString(date.compareTo(LocalDate.now()) <= 0 ? R.string.time_started : R.string.time_starts);
+        String repeatTypeString = tense + " " + GetDateFormatted() + "\n" + Helper.getString(R.string.repeats) + " " + GetEveryNFormatted(GetRepeatFrequency());
 
         //Repeat Frequency
         switch (repeatFrequency){
@@ -570,13 +570,13 @@ public class TimePeriod implements java.io.Serializable
         switch (repeatUntil)
         {
             case FOREVER:
-                repeatTypeString += ", " + ProfileManager.getString(R.string.repeat_forever);
+                repeatTypeString += ", " + Helper.getString(R.string.repeat_forever);
                 break;
             case DATE:
-                repeatTypeString += ",\n" + ProfileManager.getString(R.string.until) + " " + GetRepeatUntilDateFormatted();
+                repeatTypeString += ",\n" + Helper.getString(R.string.until) + " " + GetRepeatUntilDateFormatted();
                 break;
             case TIMES:
-                repeatTypeString += ", " + GetRepeatANumberOfTimes() + " " + ProfileManager.getString(R.string.repeat_events);
+                repeatTypeString += ", " + GetRepeatANumberOfTimes() + " " + Helper.getString(R.string.repeat_events);
                 break;
         }
 
@@ -586,9 +586,9 @@ public class TimePeriod implements java.io.Serializable
 
     public String GetRepeatStringShort(){
         //Short-Circuit if repeat type is NEVER
-        if (repeatFrequency == Repeat.NEVER) { return ProfileManager.getString(R.string.repeat_never); }
+        if (repeatFrequency == Repeat.NEVER) { return Helper.getString(R.string.repeat_never); }
 
-        String repeatTypeString = ProfileManager.getString(R.string.repeats) + GetEveryNFormatted(GetRepeatFrequency());
+        String repeatTypeString = Helper.getString(R.string.repeats) + GetEveryNFormatted(GetRepeatFrequency());
 
         //Repeat Frequency
         switch (repeatFrequency){
@@ -607,13 +607,13 @@ public class TimePeriod implements java.io.Serializable
         switch (repeatUntil)
         {
             case FOREVER:
-                repeatTypeString += "; " + ProfileManager.getString(R.string.repeat_forever);
+                repeatTypeString += "; " + Helper.getString(R.string.repeat_forever);
                 break;
             case DATE:
-                repeatTypeString += "; " + ProfileManager.getString(R.string.until) + " " + GetRepeatUntilDateFormatted();
+                repeatTypeString += "; " + Helper.getString(R.string.until) + " " + GetRepeatUntilDateFormatted();
                 break;
             case TIMES:
-                repeatTypeString += "; " + GetRepeatANumberOfTimes() + " " + ProfileManager.getString(R.string.repeat_events);
+                repeatTypeString += "; " + GetRepeatANumberOfTimes() + " " + Helper.getString(R.string.repeat_events);
                 break;
         }
 

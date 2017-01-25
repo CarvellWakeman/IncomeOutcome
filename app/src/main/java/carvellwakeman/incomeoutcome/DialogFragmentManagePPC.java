@@ -21,9 +21,9 @@ public class DialogFragmentManagePPC extends DialogFragment
     String _subtitle;
 
     String _objInput;
-    ProfileManager.ParentCallback _editFunc;
-    ProfileManager.ParentCallback _selectFunc;
-    ProfileManager.ParentCallback _deleteFunc;
+    ParentCallBack _editFunc;
+    ParentCallBack _selectFunc;
+    ParentCallBack _deleteFunc;
 
     TextView textView_title;
     TextView textView_subtitle;
@@ -33,7 +33,7 @@ public class DialogFragmentManagePPC extends DialogFragment
     Button button_delete;
 
 
-    static DialogFragmentManagePPC newInstance(AppCompatActivity parent, String title, String subtitle, String objInput, ProfileManager.ParentCallback editFunc, ProfileManager.ParentCallback selectFunc, ProfileManager.ParentCallback deleteFunc) {
+    static DialogFragmentManagePPC newInstance(AppCompatActivity parent, String title, String subtitle, String objInput, ParentCallBack editFunc, ParentCallBack selectFunc, ParentCallBack deleteFunc) {
         DialogFragmentManagePPC fg = new DialogFragmentManagePPC();
 
         fg._parent = parent;

@@ -31,7 +31,7 @@ import java.util.Map;
 public class CardVersus extends Card
 {
     Context _context;
-    int _profileID;
+    int _budgetID;
 
     int monthsBackMax = 20;
     int monthsBackMin = 2;
@@ -48,10 +48,10 @@ public class CardVersus extends Card
     HorizontalBarChart chart;
     BarDataSet dataSet;
 
-    public CardVersus(ViewGroup insertPoint, int index, int profileID, Context context, LayoutInflater inflater, int layout){
+    public CardVersus(ViewGroup insertPoint, int index, int budgetID, Context context, LayoutInflater inflater, int layout){
         super(context, inflater, layout, insertPoint, index);
         _context = context;
-        _profileID = profileID;
+        _budgetID = budgetID;
 
         //Title
         textView_title = (TextView) getBase().findViewById(R.id.textView_cardVersus_title);
@@ -127,48 +127,47 @@ public class CardVersus extends Card
         SetData();
     }
 
-    public void SetProfileID(int profileID){ _profileID = profileID; }
+    public void SetBudgetID(int profileID){ _budgetID = profileID; }
 
     public void SetData(){
-        Profile _profile = ProfileManager.getInstance().GetProfileByID(_profileID);
-        if (_profile != null){
+        Budget _budget = BudgetManager.getInstance().GetBudget(_budgetID);
+        if (_budget != null){
 
             //Clear chart info
             if (dataSet != null) { dataSet.clear(); }
 
             //Get expense data
-            LocalDate origStart = _profile.GetStartTime();
-            LocalDate origEnd = _profile.GetEndTime();
+            LocalDate origStart = _budget.GetStartDate();
+            LocalDate origEnd = _budget.GetEndDate();
 
-            _profile.TimePeriodMinus(_context, monthsBack-1);
+            _budget.MoveTimePeriod( (monthsBack-1)*-1 );
 
             int nonNullPeriods = 0;
-            final ArrayList<Transaction> pastTransactionPeriods = new ArrayList<>();
-            Transaction tran;
+            final ArrayList<new_Transaction> pastTransactionPeriods = new ArrayList<>();
+            new_Transaction tran;
             for (int i = 0; i < monthsBack; i++){
-                boolean b = _profile.GetShowAll();
-                _profile.SetShowAll(false);
-                _profile.CalculateTimeFrame(null);
-                _profile.SetShowAll(b);
-                tran = _profile.CalculatePeriodTotalBetweenDates(_context);
-                pastTransactionPeriods.add(tran);
-                if (tran != null) { nonNullPeriods++; }
-                _profile.TimePeriodPlus(_context, 1);
+
+                //_profile.CalculateTimeFrame(null);
+                //_profile.SetShowAll(b);
+
+                pastTransactionPeriods.addAll(_budget.GetTransactions( new_Transaction.TRANSACTION_TYPE.Expense ));
+                if (pastTransactionPeriods.size() > 0) { nonNullPeriods++; }
+                _budget.MoveTimePeriod(1);
             }
 
 
 
             //Reset time periods back to original dates
-            _profile.SetStartTime(_context, origStart);
-            _profile.SetEndTime(_context, origEnd);
+            _budget.SetStartDate(origStart);
+            _budget.SetEndDate(origEnd);
 
 
-            if (_profile.GetTransactionsSize() > 0 && nonNullPeriods > 0) {
+            if (_budget.GetTransactionCount() > 0 && nonNullPeriods > 0) {
                 //Convert transactions data to a list of entries
                 List<BarEntry> entries = new ArrayList<>();
                 List<Integer> colors = new ArrayList<>();
                 for (int i = 0; i < pastTransactionPeriods.size(); i++){
-                    Transaction tr = pastTransactionPeriods.get(i);
+                    new_Transaction tr = pastTransactionPeriods.get(i);
                     Double val = 0.0d;
                     if (tr != null) {
                         val = tr.GetValue();
@@ -177,10 +176,10 @@ public class CardVersus extends Card
                     entries.add(new BarEntry(i, val.floatValue()));
 
                     if (val >= 0) { //TODO: Better colors
-                        colors.add(ProfileManager.getColor(R.color.green));
+                        colors.add(Helper.getColor(R.color.green));
                     }
                     else {
-                        colors.add(ProfileManager.getColor(R.color.red));
+                        colors.add(Helper.getColor(R.color.red));
                     }
 
                 }
@@ -192,13 +191,13 @@ public class CardVersus extends Card
                     public String getFormattedValue(float value, AxisBase axis) {
                         int index = Math.round(value);
                         if (index < monthsBack) {
-                            Transaction tr = pastTransactionPeriods.get(index);
+                            new_Transaction tr = pastTransactionPeriods.get(index);
 
                             if (tr != null) {
                                 TimePeriod tp = tr.GetTimePeriod();
                                 if (tp != null) {
                                     if (tp.GetDate() != null) {
-                                        SimpleDateFormat formatter = new SimpleDateFormat(ProfileManager.simpleDateFormatShortNoDay, App.GetLocale());
+                                        SimpleDateFormat formatter = new SimpleDateFormat(Helper.getString(R.string.date_format_shortnoday), App.GetLocale());
                                         return formatter.format(tp.GetDate().toDate());
                                     }
                                 }
@@ -221,7 +220,7 @@ public class CardVersus extends Card
                 //chart.setMaxVisibleValueCount(monthsBack);
 
                 dataSet.setValueTextSize(12);
-                dataSet.setValueFormatter(new CurrencyValueFormatter(2));
+                //dataSet.setValueFormatter();
 
                 xAxis.setLabelCount(monthsBack);
 

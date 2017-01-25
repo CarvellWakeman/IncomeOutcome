@@ -1,14 +1,9 @@
 package carvellwakeman.incomeoutcome;
 
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeople.PersonViewHolder>
 {
@@ -30,18 +25,18 @@ public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeopl
     public void onBindViewHolder(final PersonViewHolder holder, int position)
     {
         //Person
-        String pr = ProfileManager.getInstance().GetOtherPersonByIndex(position);
+        String pr = OtherPersonManager.getInstance().GetOtherPersons().get(position);
         if (pr != null) {
             //Textview
             holder.title.setText(pr);
-            holder.icon.setImageDrawable(ProfileManager.getDrawable(R.drawable.ic_face_white_24dp));
+            holder.icon.setImageDrawable(Helper.getDrawable(R.drawable.ic_face_white_24dp));
             holder.secondaryIcon.setVisibility(View.GONE);
         }
     }
 
     @Override public int getItemCount()
     {
-        return ProfileManager.getInstance().GetOtherPeopleCount();
+        return OtherPersonManager.getInstance().GetOtherPersonCount();
     }
 
 
@@ -51,10 +46,11 @@ public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeopl
 
         @Override
         public void onClick(View v) {
-            ProfileManager.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, ProfileManager.getInstance().GetOtherPersonByIndex(getAdapterPosition()), "", ProfileManager.getInstance().GetOtherPersonByIndex(getAdapterPosition()),
-                    new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.EditPerson(data, dialogFragment); } },
+            String otherPerson = OtherPersonManager.getInstance().GetOtherPersons().get(getAdapterPosition());
+            Helper.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, otherPerson, "", otherPerson,
+                    new ParentCallBack() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.EditPerson(data, dialogFragment); } },
                     null,
-                    new ProfileManager.ParentCallback() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeletePerson(data, dialogFragment); } }
+                    new ParentCallBack() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeletePerson(data, dialogFragment); } }
             ), true); //TODO: Handle mIsLargeDisplay
             //ProfileManager.OpenDialogFragment(parent, DialogFragmentManageProfile.newInstance(parent, ProfileManager.getInstance().GetProfileByIndex(getAdapterPosition())), true); //TODO: Handle mIsLargeDisplay
             //parent.EditPerson(ProfileManager.GetOtherPersonByIndex(getAdapterPosition()));

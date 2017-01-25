@@ -37,12 +37,12 @@ import java.util.Map;
 public class CardTransaction extends Card
 {
     Context _context;
-    int _profileID;
+    int _budgetID;
 
     int keyType;
     int activityType;
     int defaultActivityType;
-    int defaultKeyType;
+    //int defaultKeyType;
 
     TextView textView_title;
     TextView textView_nodata;
@@ -60,14 +60,14 @@ public class CardTransaction extends Card
     boolean isExpanded = false;
 
 
-    public CardTransaction(ViewGroup insertPoint, int index, int profileID, int defaultActivityType, int defaultKeyType, String title, Context context, LayoutInflater inflater, int layout){
+    public CardTransaction(ViewGroup insertPoint, int index, int budgetID, int defaultActivityType, String title, Context context, LayoutInflater inflater, int layout){
         super(context, inflater, layout, insertPoint, index);
         this._context = context;
-        _profileID = profileID;
+        _budgetID = budgetID;
         this.defaultActivityType = defaultActivityType;
         this.activityType = defaultActivityType;
-        this.defaultKeyType = defaultKeyType;
-        this.keyType = defaultKeyType;
+        //this.defaultKeyType = defaultKeyType;
+        //this.keyType = defaultKeyType;
         int keyTypeArray = (activityType==0 ? R.array.keytype_array_ex : R.array.keytype_array_in);
 
         //Title
@@ -115,23 +115,23 @@ public class CardTransaction extends Card
         button_viewDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Profile _profile = ProfileManager.getInstance().GetProfileByID(_profileID);
-                if (_profile != null) {
+                Budget _budget = BudgetManager.getInstance().GetBudget(_budgetID);
+                if (_budget != null) {
                     //_profile.SetFilterMethod(ProfileManager.FILTER_METHODS.NONE, null);
                     //_profile.SetSortMethod(ProfileManager.SORT_METHODS.DATE_DOWN);
 
-                    _profile.CalculateTimeFrame(activityType);
-                    _profile.CalculateTotalsInTimeFrame(activityType, activityType);
+                    //_profile.CalculateTimeFrame(activityType);
+                    //_profile.CalculateTotalsInTimeFrame(activityType, activityType);
 
                     //Start income (details) activity and send it the profile we clicked on
-                    Intent intent = new Intent(_context, ActivityDetailsTransaction.class);
-                    intent.putExtra("activitytype", activityType);
-                    intent.putExtra("keytype", activityType);
-                    intent.putExtra("profile",_profileID);
-                    ((ActivityMain)_context).startActivityForResult(intent, 0);
+                    //Intent intent = new Intent(_context, ActivityDetailsTransaction.class);
+                    //intent.putExtra("activitytype", activityType);
+                    //intent.putExtra("keytype", activityType);
+                    //intent.putExtra("profile",_budgetID);
+                    //((ActivityMain)_context).startActivityForResult(intent, 0);
                 }
                 else {
-                    ProfileManager.PrintUser(_context, "ERROR: Profile not found, could not start transaction details activity");
+                    Helper.PrintUser(_context, "ERROR: Budget not found, could not start transaction details activity");
                 }
             }
         });
@@ -189,15 +189,15 @@ public class CardTransaction extends Card
         SetExpanded(false);
     }
 
-    public void SetProfileID(int profileID){ _profileID = profileID; }
+    public void SetBudgetID(int id){ _budgetID = id; }
 
     public void SetData(){
-        Profile _profile = ProfileManager.getInstance().GetProfileByID(_profileID);
-        if (_profile != null){
-            _profile.CalculateTimeFrame(activityType);
-
+        Budget _budget = BudgetManager.getInstance().GetBudget(_budgetID);
+        if (_budget != null){
+            //_profile.CalculateTimeFrame(activityType);
+            /*
             //Get expense data
-            HashMap<String,Transaction> transactions = _profile.CalculateTotalsInTimeFrame(activityType, keyType, true);
+            HashMap<String,new_Transaction> transactions = _budget.GetTransactionsInTimeframe( (activityType==0 ? new_Transaction.TRANSACTION_TYPE.Expense : new_Transaction.TRANSACTION_TYPE.Income) );
 
             if (transactions.keySet().size() > 0) {
                 //Total
@@ -206,16 +206,16 @@ public class CardTransaction extends Card
                 //Convert transaction data to a list of PieEntry
                 List<PieEntry> entries = new ArrayList<>();
                 List<Integer> colors = new ArrayList<>();
-                for (Map.Entry<String, Transaction> entry : transactions.entrySet()) {
+                for (Map.Entry<String, new_Transaction> entry : transactions.entrySet()) {
                     if (entry.getValue().GetValue() > 0) {
                         total += (entry.getValue().GetValue() - entry.getValue().GetSplitValue());
 
                         entries.add(new PieEntry(entry.getValue().GetValue().floatValue(), entry.getKey()));
 
                         //Special case if keytype is category
-                        Category cat = ProfileManager.getInstance().GetCategory(entry.getValue().GetCategory());
+                        Category cat = CategoryManager.getInstance().GetCategory(entry.getValue().GetCategory());
                         if (cat != null && keyType == 2) { colors.add(cat.GetColor()); }
-                        else { colors.add(ProfileManager.ColorFromString(entry.getKey())); }
+                        else { colors.add(Helper.ColorFromString(entry.getKey())); }
                     }
                 }
 
@@ -239,7 +239,7 @@ public class CardTransaction extends Card
 
                 PieData data = new PieData(dataSet);
                 chart.setData(data);
-                chart.setCenterText(ProfileManager.getString(R.string.info_total_newline) + ProfileManager.currencyFormat.format(total));
+                chart.setCenterText(ProfileManager.getString(R.string.info_total_newline) + Helper.currencyFormat.format(total));
                 chart.invalidate(); //Refresh
 
                 chart.setVisibility(View.VISIBLE);
@@ -255,9 +255,11 @@ public class CardTransaction extends Card
                 switch_showLegend.setVisibility(View.GONE);
                 //relativeLayout_controls.setVisibility(View.GONE);
                 //textView_nodata.setVisibility(View.VISIBLE);
-                String transactionType = ProfileManager.getString(activityType==0 ? R.string.format_nodata_viewdetails_expense : R.string.misc_income);
+                String transactionType = Helper.getString(activityType==0 ? R.string.format_nodata_viewdetails_expense : R.string.misc_income);
                 button_viewDetails.setText(String.format(_context.getString(R.string.format_nodata_viewdetails), transactionType));
             }
+
+            */
         }
 
 
@@ -278,7 +280,7 @@ public class CardTransaction extends Card
                 chart.getLegend().setEnabled(true);
                 chart.setDrawEntryLabels(false);
 
-                dataSet.setValueTextColor(ProfileManager.getColor(R.color.white));
+                dataSet.setValueTextColor(Helper.getColor(R.color.white));
                 dataSet.setYValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);
                 dataSet.setDrawValues(true);
             }
@@ -287,7 +289,7 @@ public class CardTransaction extends Card
                 chart.getLegend().setEnabled(false);
                 chart.setDrawEntryLabels(true);
 
-                dataSet.setValueTextColor(ProfileManager.getColor(R.color.black));
+                dataSet.setValueTextColor(Helper.getColor(R.color.black));
                 dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
                 dataSet.setDrawValues(true);
             }

@@ -25,7 +25,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         resources = getResources();
-        if (ProfileManager.isDebugMode(getApplicationContext())) { context = getApplicationContext(); }
+        if (Helper.isDebugMode(getApplicationContext())) { context = getApplicationContext(); }
 
         //Load lastVersion
         prefs = this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
@@ -36,6 +36,9 @@ public class App extends Application {
     public static Context GetContext() { return context; }
     public static Resources GetResources(){ return resources; }
     public static Locale GetLocale() { return GetResources().getConfiguration().locale; }
+
+    //Package
+    public static String GetPackageName() { return GetContext().getPackageName(); }
 
     //Version
     public static String GetVersion(Context context) {
