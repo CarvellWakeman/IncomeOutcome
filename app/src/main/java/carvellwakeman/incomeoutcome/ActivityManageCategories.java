@@ -242,20 +242,6 @@ public class ActivityManageCategories extends AppCompatActivity {
                     } else { //Update category
                         editingCategory.SetTitle(newCategory);
                         editingCategory.SetColor(GetColor());
-
-                        //Update budget transactions
-                        for (Budget budget : BudgetManager.getInstance().GetBudgets()) {
-                            for (new_Transaction transaction : budget.GetTransactions(new_Transaction.TRANSACTION_TYPE.Expense)){
-
-                                //Update category
-                                if (transaction.GetCategory().equals(editingCategory.GetTitle())) {
-                                    transaction.SetCategory(newCategory);
-                                }
-
-                                //Update database
-                                DatabaseManager.getInstance().insert(budget, transaction, true);
-                            }
-                        }
                     }
 
                     //Add or update old category
@@ -308,8 +294,8 @@ public class ActivityManageCategories extends AppCompatActivity {
     }
 
     //Edit category
-    public void EditCategory(final String id, DialogFragmentManagePPC dialogFragment){
-        Category cr = CategoryManager.getInstance().GetCategory(Integer.valueOf(id));
+    public void EditCategory(final Integer id, DialogFragmentManagePPC dialogFragment){
+        Category cr = CategoryManager.getInstance().GetCategory(id);
         if (cr != null) {
             editingCategory = cr;
 
@@ -339,16 +325,16 @@ public class ActivityManageCategories extends AppCompatActivity {
     }
 
     //Delete category
-    public void DeleteCategory(final String id, final DialogFragmentManagePPC dialogFragment)
+    public void DeleteCategory(final Integer id, final DialogFragmentManagePPC dialogFragment)
     {
-        final Category cr = CategoryManager.getInstance().GetCategory(Integer.valueOf(id));
+        final Category cr = CategoryManager.getInstance().GetCategory(id);
         if (cr != null) {
             new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle).setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     CategoryManager.getInstance().RemoveCategory(cr);
 
-                    DatabaseManager.getInstance().removeCategorySetting(cr.GetTitle());
+                    DatabaseManager.getInstance().removeCategorySetting(cr);
 
                     adapter.notifyDataSetChanged();
                     dialogFragment.dismiss();

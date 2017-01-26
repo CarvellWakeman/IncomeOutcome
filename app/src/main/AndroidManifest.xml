@@ -30,9 +30,6 @@
         <activity android:name=".ActivityNewTransaction" android:label="@string/title_newtransaction"
             android:launchMode="singleTop"/>
 
-
-        <activity android:name=".ActivityManageBudgets" android:label="@string/title_managebudgets"
-            android:launchMode="singleTop"/>
             -->
 
 
@@ -41,6 +38,8 @@
         <activity android:name=".ActivityManageCategories" android:label="@string/title_managecategories"
             android:launchMode="singleTop"/>
         <activity android:name=".ActivityManagePeople" android:label="@string/title_managepeople"
+            android:launchMode="singleTop"/>
+        <activity android:name=".ActivityManageBudgets" android:label="@string/title_managebudgets"
             android:launchMode="singleTop"/>
 
         <activity android:name=".ActivityDatabaseImport" android:label="@string/title_importdatabase"

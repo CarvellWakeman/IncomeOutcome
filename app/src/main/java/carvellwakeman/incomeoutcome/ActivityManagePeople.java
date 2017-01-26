@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class ActivityManagePeople extends AppCompatActivity {
     Boolean menustate = true;
-    String editingPerson;
+    OtherPerson editingPerson;
 
     AdapterManagePeople adapter;
 
@@ -54,8 +54,6 @@ public class ActivityManagePeople extends AppCompatActivity {
         //public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //View view = inflater.inflate(R.layout.activity_managecategories, container, false);
         //view.setBackgroundColor(Color.WHITE);
-
-        editingPerson = "";
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         appBarLayout = (AppBarLayout) findViewById(R.id.appbarlayout);
@@ -97,7 +95,7 @@ public class ActivityManagePeople extends AppCompatActivity {
                 String str = editText_name.getText().toString();
 
                 if (!str.equals("")) {
-                    if (!OtherPersonManager.getInstance().HasOtherPerson(str)) {
+                    if (OtherPersonManager.getInstance().GetOtherPerson(str) == null) {
                         SetSaveButtonEnabled(true);
                         TIL.setError("");
                     }
@@ -171,40 +169,16 @@ public class ActivityManagePeople extends AppCompatActivity {
                 String newPerson = editText_name.getText().toString();
 
                 if (!newPerson.equals("")) {
-                    //Add new
-                    OtherPersonManager.getInstance().AddOtherPerson(newPerson);
-                    DatabaseManager.getInstance().insertSetting(newPerson, true);
-
-                    //Remove old person if editing
-                    if (editingPerson != null && !editingPerson.equals("")){
-                        OtherPersonManager.getInstance().RemoveOtherPerson(editingPerson);
-                        DatabaseManager.getInstance().removePersonSetting(editingPerson);
+                    //New
+                    if (editingPerson == null){
+                        editingPerson = new OtherPerson(newPerson);
+                    } else { //Update
+                        editingPerson.SetName(newPerson);
                     }
 
-                    //Update budget transactions
-                    for (Budget budget : BudgetManager.getInstance().GetBudgets()) {
-                        for (new_Transaction transaction : budget.GetTransactions(new_Transaction.TRANSACTION_TYPE.Expense)){
-
-                            //Update split to new person
-                            for (Map.Entry<String,Double> split : transaction.GetSplitArray().entrySet()){
-                                if (split.getKey().equals(editingPerson)) {
-                                    Helper.Print(this, "Update " + transaction.GetSource() + " Split " + split.getKey() + "(" + String.valueOf(split.getValue()) + ")" + " TO " + newPerson);
-                                    transaction.SetSplit(newPerson, split.getValue());
-                                    transaction.RemoveSplit(editingPerson);
-                                    Helper.Print(this, "Updated TO: " + transaction.GetSplitArrayString());
-                                }
-                            }
-                            if (transaction.GetPaidBy().equals(editingPerson)){
-                                Helper.Print(this, "Update " + transaction.GetSource() + " PaidBy " + transaction.GetPaidBy() + " TO " + newPerson);
-                                transaction.SetPaidBy(newPerson);
-                                Helper.Print(this, "Updated TO: " + transaction.GetPaidBy());
-                            }
-
-                            //Update database
-                            DatabaseManager.getInstance().insert(budget, transaction, true);
-                            Helper.Print(this, "Database entry updated for: " + transaction.GetSource());
-                        }
-                    }
+                    //Add or update old person
+                    OtherPersonManager.getInstance().AddOtherPerson(editingPerson);
+                    DatabaseManager.getInstance().insertSetting(editingPerson, true);
 
                     adapter.notifyDataSetChanged();
 
@@ -219,8 +193,8 @@ public class ActivityManagePeople extends AppCompatActivity {
     }
 
     //Edit profile
-    public void EditPerson(String name, final DialogFragmentManagePPC dialogFragment){
-        editingPerson = name;
+    public void EditPerson(Integer id, final DialogFragmentManagePPC dialogFragment){
+        editingPerson = OtherPersonManager.getInstance().GetOtherPerson(id);
 
         //Open add new layout
         ToggleMenus(false);
@@ -228,20 +202,21 @@ public class ActivityManagePeople extends AppCompatActivity {
         toolbar.setTitle(R.string.title_editperson);
 
         //Load information
-        editText_name.setText(name);
+        editText_name.setText(editingPerson.GetName());
 
         //Dismiss fragment
         dialogFragment.dismiss();
     }
 
-    public void DeletePerson(final String name, final DialogFragmentManagePPC dialogFragment){
-        if (name != null) {
+    public void DeletePerson(final Integer id, final DialogFragmentManagePPC dialogFragment){
+        if (id != 0) {
             new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle)
                     .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            OtherPersonManager.getInstance().RemoveOtherPerson(name);
-                            DatabaseManager.getInstance().removePersonSetting(name);
+                            OtherPerson person = OtherPersonManager.getInstance().GetOtherPerson(id);
+                            OtherPersonManager.getInstance().RemoveOtherPerson(person);
+                            DatabaseManager.getInstance().removePersonSetting(person);
 
                             adapter.notifyDataSetChanged();
                             dialogFragment.dismiss();
@@ -282,7 +257,7 @@ public class ActivityManagePeople extends AppCompatActivity {
     }
 
     public void ClearAddMenu(){
-        editingPerson = "";
+        editingPerson = null;
 
         editText_name.setText("");
     }

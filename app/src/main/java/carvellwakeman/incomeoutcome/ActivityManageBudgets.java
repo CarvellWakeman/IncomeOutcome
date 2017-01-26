@@ -3,7 +3,6 @@ package carvellwakeman.incomeoutcome;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -15,21 +14,20 @@ import android.support.v7.widget.*;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 
-public class ActivityManageProfiles extends AppCompatActivity {
+public class ActivityManageBudgets extends AppCompatActivity {
     Boolean menustate = true;
-    Profile editingprofile = null;
+    Budget editingBudget = null;
 
     LocalDate start_date;
     LocalDate end_date;
     Period period;
 
-    AdapterManageProfiles adapter;
+    AdapterManageBudgets adapter;
 
     AppBarLayout appBarLayout;
     Toolbar toolbar;
@@ -41,7 +39,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
     CheckBox checkbox_override_enddate;
 
     TextInputLayout TIL;
-    EditText editText_profilename;
+    EditText editText_name;
     EditText editText_period;
 
     Spinner spinner_period;
@@ -56,7 +54,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manageprofiles);
+        setContentView(R.layout.activity_managebudgets);
         //view.setBackgroundColor(Color.WHITE);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -70,13 +68,13 @@ public class ActivityManageProfiles extends AppCompatActivity {
 
         checkbox_override_enddate = (CheckBox) findViewById(R.id.checkbox_override_enddate);
 
-        layout_edit = (LinearLayout) findViewById(R.id.linearLayout_dialogmpr_editprofile);
+        layout_edit = (LinearLayout) findViewById(R.id.linearLayout_dialogmpr_editbudget);
 
         editText_period = (EditText) findViewById(R.id.editText_profile_period);
 
         spinner_period = (Spinner) findViewById(R.id.spinner_profile_period);
 
-        recyclerView_profiles = (RecyclerView) findViewById(R.id.recyclerView_dialogmpr_profiles);
+        recyclerView_profiles = (RecyclerView) findViewById(R.id.recyclerView_dialogmpr_budgets);
 
         //Calculate the default period
         CalculatePeriod();
@@ -112,13 +110,13 @@ public class ActivityManageProfiles extends AppCompatActivity {
         TIL = (TextInputLayout)findViewById(R.id.TIL_dialogmpr_profilename);
         if (TIL != null) {
             TIL.setErrorEnabled(true);
-            editText_profilename = TIL.getEditText();
+            editText_name = TIL.getEditText();
         }
 
         //Configure toolbar
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.inflateMenu(R.menu.toolbar_menu_save);
-        toolbar.setTitle(R.string.title_manageprofiles);
+        toolbar.setTitle(R.string.title_managebudgets);
         setSupportActionBar(toolbar);
         //button_save = toolbar.getMenu().findItem(R.id.toolbar_save);
         //button_save.setVisible(false);
@@ -127,7 +125,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
 
 
         //Set profiles adapter
-        adapter = new AdapterManageProfiles(this);
+        adapter = new AdapterManageBudgets(this);
         recyclerView_profiles.setAdapter(adapter);
 
         //LinearLayoutManager for RecyclerView
@@ -137,18 +135,19 @@ public class ActivityManageProfiles extends AppCompatActivity {
         recyclerView_profiles.setLayoutManager(linearLayoutManager);
 
 
-        editText_profilename.addTextChangedListener(new TextWatcher() {
+        editText_name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String str = editText_profilename.getText().toString();
+                String str = editText_name.getText().toString();
+
                 if (!str.equals("")) {
-                    if (!ProfileManager.getInstance().HasProfile(str)) {
+                    if (BudgetManager.getInstance().GetBudget(str) == null) {
                         TIL.setError("");
                     }
-                    else{ TIL.setError("Profile already exists"); }
+                    else{ TIL.setError("Budget already exists"); }
                 }
                 else{ TIL.setError("Enter a title"); }
 
@@ -189,7 +188,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
                 LocalDate c = null;
                 if (start_date != null) { c = start_date; } else { c = new LocalDate(); }
 
-                DatePickerDialog d = new DatePickerDialog(ActivityManageProfiles.this, datePicker, c.getYear(), c.getMonthOfYear() - 1, c.getDayOfMonth());
+                DatePickerDialog d = new DatePickerDialog(ActivityManageBudgets.this, datePicker, c.getYear(), c.getMonthOfYear() - 1, c.getDayOfMonth());
                 d.show();
             }
         });
@@ -201,7 +200,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
                 LocalDate c = null;
                 if (end_date != null) { c = end_date; } else { c = new LocalDate(); }
 
-                DatePickerDialog d = new DatePickerDialog(ActivityManageProfiles.this, datePicker2, c.getYear(), c.getMonthOfYear() - 1, c.getDayOfMonth());
+                DatePickerDialog d = new DatePickerDialog(ActivityManageBudgets.this, datePicker2, c.getYear(), c.getMonthOfYear() - 1, c.getDayOfMonth());
                 d.show();
             }
         });
@@ -248,36 +247,37 @@ public class ActivityManageProfiles extends AppCompatActivity {
             case R.id.toolbar_save: //SAVE button
                 if (start_date == null) { start_date = new LocalDate(); }
 
-                if (!editText_profilename.getText().toString().equals("")) {
-                    if (editingprofile != null) {//Make changes to an existing profile
+                String newBudget = editText_name.getText().toString();
+
+                if (!newBudget.equals("")) {
+                    //New
+                    if (editingBudget == null){
+                        //Create budget
+                        editingBudget = new Budget(newBudget);
+                        //Date
+                        editingBudget.SetStartDate(start_date);
+                        editingBudget.SetEndDate(null);
+                        editingBudget.SetPeriod(period);
+                        if (end_date != null) { editingBudget.SetEndDate(end_date); }
+                    } else { //Update
                         //Name
-                        editingprofile.SetName(editText_profilename.getText().toString());
+                        editingBudget.SetName(newBudget);
                         //Date
-                        editingprofile.SetStartTimeDontSave(start_date);
-                        editingprofile.SetEndTimeDontSave(null);
-                        editingprofile.SetPeriodDontSave(period);
-                        if (end_date != null) { editingprofile.SetEndTimeDontSave(end_date); }
-                        //Update
-                        ProfileManager.getInstance().UpdateProfile(this, editingprofile);
+                        editingBudget.SetStartDate(start_date);
+                        editingBudget.SetEndDate(null);
+                        editingBudget.SetPeriod(period);
+                        if (end_date != null) { editingBudget.SetEndDate(end_date); }
                     }
-                    else { //Add a new profile
-                        //Create profile
-                        Profile pr = new Profile(editText_profilename.getText().toString());
-                        //Date
-                        pr.SetStartTimeDontSave(start_date);
-                        pr.SetEndTimeDontSave(null);
-                        pr.SetPeriodDontSave(period);
-                        if (end_date != null) { pr.SetEndTimeDontSave(end_date); }
-                        //Add new
-                        ProfileManager.getInstance().AddProfile(this, pr);
-                        ProfileManager.getInstance().SelectProfile(this, pr);
-                    }
+
+                    //Add or update old person
+                    BudgetManager.getInstance().AddBudget(editingBudget);
+                    DatabaseManager.getInstance().insertSetting(editingBudget, true);
 
                     adapter.notifyDataSetChanged();
 
-                    ProfileManager.hideSoftKeyboard(this, editText_profilename);
                     ClearAddMenu();
                     ToggleMenus(true);
+                    Helper.hideSoftKeyboard(this, editText_name);
                 }
                 return true;
             default:
@@ -293,24 +293,24 @@ public class ActivityManageProfiles extends AppCompatActivity {
         }
     }
 
-    //Edit profile
-    public void EditProfile(final String id, DialogFragmentManagePPC dialogFragment){
-        Profile pr = ProfileManager.getInstance().GetProfileByID(Integer.valueOf(id));
-        if (pr != null) {
-            editingprofile = pr;
+    //Edit budget
+    public void EditBudget(final Integer id, DialogFragmentManagePPC dialogFragment){
+        Budget br = BudgetManager.getInstance().GetBudget(id);
+        if (br != null) {
+            editingBudget = br;
 
             //Open add new layout
             ToggleMenus(false);
 
             //Set title to edit
-            toolbar.setTitle(R.string.title_editprofile);
+            toolbar.setTitle(R.string.title_editbudget);
 
 
             //Load profile information into add new profile settings
-            editText_profilename.setText(pr.GetName());
-            start_date = pr.GetStartTime();
+            editText_name.setText(br.GetName());
+            start_date = br.GetStartDate();
             //end_date = pr.GetEndTime();
-            period = pr.GetPeriod();
+            period = br.GetPeriod();
             UpdateDates();
             UpdatePeriod();
 
@@ -323,28 +323,36 @@ public class ActivityManageProfiles extends AppCompatActivity {
     }
 
     //Select profile
-    public void SelectProfile(String id, final DialogFragmentManagePPC dialogFragment){
-        Profile pr = ProfileManager.getInstance().GetProfileByID(Integer.valueOf(id));
-        if (pr != null) {
-            if (!ProfileManager.getInstance().SelectProfile(this, pr)) {ProfileManager.PrintUser(this, "Selected Profile could not be found.");}
+    public void SelectBudget(Integer id, final DialogFragmentManagePPC dialogFragment){
+        Budget br = BudgetManager.getInstance().GetBudget(id);
+        if (br != null) {
+            BudgetManager.getInstance().SetSelectedBudget(br);
+            for (Budget b : BudgetManager.getInstance().GetBudgets()){
+                DatabaseManager.getInstance().insertSetting(b, true);
+            }
+
             adapter.notifyDataSetChanged();
-            dialogFragment.dismiss();
+            if (dialogFragment != null) { dialogFragment.dismiss(); }
         }
     }
 
     //Delete profile
-    public void RemoveProfile(String id, final DialogFragmentManagePPC dialogFragment){
-        final Profile pr = ProfileManager.getInstance().GetProfileByID(Integer.valueOf(id));
-        if (pr != null) {
-            if (pr.GetTransactionsSize() > 0 && ProfileManager.getInstance().GetProfileCount() > 1) {
-                ProfileManager.OpenDialogFragment(this, DialogFragmentTransferTransaction.newInstance(this, dialogFragment, pr), true); //TODO: Handle mIsLargeDisplay
+    public void RemoveBudget(Integer id, final DialogFragmentManagePPC dialogFragment){
+        final Budget br = BudgetManager.getInstance().GetBudget(id);
+        if (br != null) {
+            if (br.GetTransactionCount() > 0 && BudgetManager.getInstance().GetBudgetCount() > 1) {
+                //Helper.OpenDialogFragment(this, DialogFragmentTransferTransaction.newInstance(this, dialogFragment, br), true); //TODO: Handle mIsLargeDisplay //TODO IMPLEMENT
             }
             else {
                 new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletetransactions)
                         .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ProfileManager.getInstance().RemoveProfile(ActivityManageProfiles.this, pr);
+                                for (new_Transaction t : br.GetAllTransactions()){ DatabaseManager.getInstance().remove(t); }
+                                DatabaseManager.getInstance().removeBudgetSetting(br);
+
+                                BudgetManager.getInstance().RemoveBudget(br);
+
                                 adapter.notifyDataSetChanged();
                                 dialogFragment.dismiss();
                                 dialog.dismiss();
@@ -356,23 +364,22 @@ public class ActivityManageProfiles extends AppCompatActivity {
     }
 
     //Check if the user is allowed to save
-    public void CheckCanSave()
-    {
-        String name = editText_profilename.getText().toString();
+    public void CheckCanSave() {
+        String name = editText_name.getText().toString();
 
-        if (editingprofile != null) {
+        if (editingBudget != null) {
 
-            Period pe = editingprofile.GetPeriod();
-            if (editingprofile.GetStartTime() != null && start_date != null && editingprofile.GetStartTime().compareTo(start_date) == 0 && //Check start date is same
-                    editingprofile.GetEndTime() != null && end_date != null && editingprofile.GetEndTime().compareTo(end_date) == 0 && //Check end date is same
+            Period pe = editingBudget.GetPeriod();
+            if (editingBudget.GetStartDate() != null && start_date != null && editingBudget.GetStartDate().compareTo(start_date) == 0 && //Check start date is same
+                    editingBudget.GetEndDate() != null && end_date != null && editingBudget.GetEndDate().compareTo(end_date) == 0 && //Check end date is same
                     pe.equals(period) && //Check period is same
-                    ((name.equals("")) || (!name.equals("") && editingprofile.GetName().equals(name)))) {
+                    ((name.equals("")) || (!name.equals("") && editingBudget.GetName().equals(name)))) {
                 SetSaveButtonEnabled(false);
             }
             else { SetSaveButtonEnabled(true); }
         }
         else {
-            if ( (name.equals("")) || (!name.equals("") && ProfileManager.getInstance().HasProfile(name))) {
+            if ( (name.equals("")) || (!name.equals("") && BudgetManager.getInstance().GetBudget(name)!=null)) {
                 SetSaveButtonEnabled(false);
             }
             else { SetSaveButtonEnabled(true); }
@@ -382,12 +389,12 @@ public class ActivityManageProfiles extends AppCompatActivity {
     //Update dates
     public void UpdateDates(){
         if (start_date != null) {
-            button_startdate.setText(getString(R.string.time_start_format, start_date.toString(ProfileManager.simpleDateFormat)));
+            button_startdate.setText(getString(R.string.time_start_format, start_date.toString(Helper.getString(R.string.date_format))));
         } else {
             button_startdate.setText(R.string.time_start);
         }
         if (end_date != null) {
-            button_enddate.setText(getString(R.string.time_end_format, end_date.toString(ProfileManager.simpleDateFormat)));
+            button_enddate.setText(getString(R.string.time_end_format, end_date.toString(Helper.getString(R.string.date_format))));
         } else {
             button_enddate.setText(R.string.time_end);
         }
@@ -395,8 +402,8 @@ public class ActivityManageProfiles extends AppCompatActivity {
 
     //Update period
     public void UpdatePeriod(){
-        if (editingprofile != null) {
-            Period pe = editingprofile.GetPeriod();
+        if (editingBudget != null) {
+            Period pe = editingBudget.GetPeriod();
             if (pe != null) {
                 int YEARS = pe.getYears();
                 int MONTHS = pe.getMonths();
@@ -466,7 +473,7 @@ public class ActivityManageProfiles extends AppCompatActivity {
         //Disable save button
         button_save.setVisible(!editList);
         //Set title
-        toolbar.setTitle( (editList ? R.string.title_manageprofiles : R.string.title_addnewprofile) );
+        toolbar.setTitle( (editList ? R.string.title_managebudgets : R.string.title_addnewbudget) );
         //Set back button
         //toolbar.setNavigationIcon( (edit ? R.drawable.ic_clear_white_24dp : R.drawable.ic_arrow_back_white_24dp) );
     }
@@ -481,11 +488,11 @@ public class ActivityManageProfiles extends AppCompatActivity {
 
         checkbox_override_enddate.setChecked(false);
 
-        editText_profilename.setText("");
+        editText_name.setText("");
         editText_period.setText("1");
         spinner_period.setSelection(2);
 
-        editingprofile = null;
+        editingBudget = null;
     }
 
     public void AppBarLayoutExpanded(boolean expanded){

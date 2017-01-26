@@ -22,7 +22,7 @@ public class new_Transaction implements java.io.Serializable
     private int _uniqueID;
     private int _parentID;
 
-    private String _category;
+    private int _category;
     private String _source;
     private String _description;
 
@@ -33,8 +33,8 @@ public class new_Transaction implements java.io.Serializable
     private ArrayList<Integer> _children;
 
     //Expense type only
-    private String _paidBy;
-    private HashMap<String,Double> _split;
+    private Integer _paidBy;
+    private HashMap<Integer,Double> _split;
 
     private LocalDate _paidBack;
 
@@ -49,7 +49,7 @@ public class new_Transaction implements java.io.Serializable
         _parentID = 0;
 
         _source = "";
-        _category = "";
+        _category = 0;
         _description = "";
 
         _value = 0.0;
@@ -59,7 +59,7 @@ public class new_Transaction implements java.io.Serializable
         _children = new ArrayList<>();
 
         //Expense only
-        _paidBy = "";
+        _paidBy = 0;
         _split = new HashMap<>();
 
         _paidBack = null;
@@ -134,29 +134,29 @@ public class new_Transaction implements java.io.Serializable
     public int GetParentID() { return _parentID; }
 
     public Double GetValue() { return _value; }
-    public Double GetSplit(String person) { if (_split.containsKey(person)) { return _split.get(person); } else { return 0.00d; } }
-    public HashMap<String, Double> GetSplitArray() { return _split; }
+    public Double GetSplit(Integer person) { if (_split.containsKey(person)) { return _split.get(person); } else { return 0.00d; } }
+    public HashMap<Integer, Double> GetSplitArray() { return _split; }
     public String GetSplitArrayString() {
         String t = "";
-        for (Map.Entry<String, Double> split : _split.entrySet()){
-            t += split.getKey() + ":" + String.valueOf(split.getValue()) + "|";
+        for (Map.Entry<Integer, Double> split : _split.entrySet()){
+            t += String.valueOf(split.getKey()) + ":" + String.valueOf(split.getValue()) + "|";
         }
         return t.substring(0,t.length()-2); //Delete last comma
     }
-    public Double GetDebt(String personA, String personB) {
-        if (GetPaidBy().equals(personB) && GetPaidBack() == null) {
+    public Double GetDebt(Integer personA, Integer personB) {
+        if (GetPaidBy() == personB && GetPaidBack() == null) {
             return GetSplit(personA);
         } else {
             return 0.00d;
         }
     }
 
-    public String GetPaidBy() { return _paidBy; }
+    public Integer GetPaidBy() { return _paidBy; }
     public LocalDate GetPaidBack() { return _paidBack; }
 
     public String GetSource() { return _source; }
     public String GetDescription() { return _description; }
-    public String GetCategory() { return _category; }
+    public Integer GetCategory() { return _category; }
 
     public TimePeriod GetTimePeriod() { return _when; }
 
@@ -201,23 +201,25 @@ public class new_Transaction implements java.io.Serializable
     public void SetParentID(Integer ID) { _parentID = ID; }
 
     public void SetValue(Double value){ _value = value; }
-    public void SetSplit(String person, Double value) { _split.put(person, value); }
+    public void SetSplit(Integer person, Double value) { _split.put(person, value); }
     public void SetSplitFromArrayString(String splitString) {
-        String[] splits = splitString.split("|");
+        _split.clear();
+
+        String[] splits = splitString.split("\\|");
         for (String split : splits){
             String[] name_value = split.split(":");
-            String name = name_value[0];
+            Integer name = Integer.valueOf(name_value[0]);
             String value = name_value[1];
             SetSplit(name, Double.valueOf(value));
         }
     }
 
-    public void SetPaidBy(String person) { _paidBy = person; }
+    public void SetPaidBy(Integer person) { _paidBy = person; }
     public void SetPaidBack(LocalDate paidBack) { _paidBack = paidBack; }
 
     public void SetSource(String source) { _source = source; }
     public void SetDescription(String description) { _description = description; }
-    public void SetCategory(String category) { _category = category; }
+    public void SetCategory(int categoryID) { _category = categoryID; }
 
     public void SetTimePeriod(TimePeriod timePeriod) { _when = timePeriod; }
 

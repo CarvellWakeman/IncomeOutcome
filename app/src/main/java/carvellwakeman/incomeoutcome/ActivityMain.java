@@ -35,7 +35,7 @@ public class ActivityMain extends AppCompatActivity
 
 
 
-    int _selectedBudgetID;
+    Budget _selectedBudget;
 
     //Managers
     DatabaseManager databaseManager;
@@ -89,9 +89,7 @@ public class ActivityMain extends AppCompatActivity
         );
 
         //Selected budget
-        Budget _budget = budgetManager.GetSelectedBudget();
-        if (_budget != null){ _selectedBudgetID = _budget.GetID(); }
-        else { _selectedBudgetID = 0; }
+        _selectedBudget = budgetManager.GetSelectedBudget();
 
 
 
@@ -121,7 +119,7 @@ public class ActivityMain extends AppCompatActivity
         button_suggestaddbudget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            //    startActivity(new Intent(ActivityMain.this, ActivityManageProfiles.class));
+            //    startActivity(new Intent(ActivityMain.this, ActivityManageBudgets.class));
             }
         });
 
@@ -138,28 +136,25 @@ public class ActivityMain extends AppCompatActivity
         //Period forward/back
         button_nextPeriod.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                Budget _budget = budgetManager.GetBudget(_selectedBudgetID);
-                if (_budget != null){
+                if (_selectedBudget != null){
                     checkbox_showall.setChecked(false);
-                    _budget.MoveTimePeriod(1);
+                    _selectedBudget.MoveTimePeriod(1);
                     RefreshOverview();
                 }
             }
         });
         button_prevPeriod.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                Budget _budget = budgetManager.GetBudget(_selectedBudgetID);
-                if (_budget != null){
+                if (_selectedBudget != null){
                     checkbox_showall.setChecked(false);
-                    _budget.MoveTimePeriod(-1);
+                    _selectedBudget.MoveTimePeriod(-1);
                     RefreshOverview();
                 }
             }
         });
         checkbox_showall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Budget _budget = budgetManager.GetBudget(_selectedBudgetID);
-                if (_budget != null){
+                if (_selectedBudget != null){
                     //if (b){
                     //    storedStartTime = _profile.GetStartTime();
                     //    storedEndTime = _profile.GetEndTime();
@@ -187,9 +182,10 @@ public class ActivityMain extends AppCompatActivity
 
 
         //Cards
-        versusCard = new CardVersus(insertPoint, 0, _selectedBudgetID, this, inflater, R.layout.card_versus);
-        expensesCard = new CardTransaction(insertPoint, 1, _selectedBudgetID, 0, getString(R.string.header_expenses_summary), this, inflater, R.layout.card_transaction);
-        incomeCard = new CardTransaction(insertPoint, 2, _selectedBudgetID, 1, getString(R.string.header_income_summary), this, inflater, R.layout.card_transaction);
+        Integer budgetID = (_selectedBudget != null ? _selectedBudget.GetID() : 0);
+        versusCard = new CardVersus(insertPoint, 0, budgetID, this, inflater, R.layout.card_versus);
+        expensesCard = new CardTransaction(insertPoint, 1, budgetID, 0, getString(R.string.header_expenses_summary), this, inflater, R.layout.card_transaction);
+        incomeCard = new CardTransaction(insertPoint, 2, budgetID, 1, getString(R.string.header_income_summary), this, inflater, R.layout.card_transaction);
 
         versusCard.getBase().setVisibility(View.GONE);
         expensesCard.getBase().setVisibility(View.GONE);
@@ -204,8 +200,8 @@ public class ActivityMain extends AppCompatActivity
 
         //Check app version for update, display changelog
         if (!App.GetVersion(this).equals(App.GetLastVersion())){
-            //App.SetLastVersion(this);
-            //Helper.OpenDialogFragment(this, DialogFragmentChangelog.newInstance(), true);
+            App.SetLastVersion(this);
+            Helper.OpenDialogFragment(this, DialogFragmentChangelog.newInstance(), true);
         }
 
     }
@@ -221,7 +217,7 @@ public class ActivityMain extends AppCompatActivity
     public void onResume(){
         super.onResume();
 
-        Budget _budget = budgetManager.GetBudget(_selectedBudgetID);
+        _selectedBudget = BudgetManager.getInstance().GetSelectedBudget();
 
         //if (_selectedBudgetID != 0) {
         //    checkbox_showall.setChecked(_profile.GetShowAll());
@@ -229,7 +225,7 @@ public class ActivityMain extends AppCompatActivity
         //}
 
         //Sort and filter bubbles
-        if (_budget != null) {
+        if (_selectedBudget != null) { //TODO Implement new sort and filter
             //SortFilterOptions.DisplayFilter(this, _profile.GetFilterMethod(), _profile.GetFilterData(), sortFilterCallBack);
             //SortFilterOptions.DisplaySort(this, ProfileManager.SORT_METHODS.DATE_DOWN, sortFilterCallBack); //Sorting is irrelevant on main activity
         }
@@ -295,10 +291,9 @@ public class ActivityMain extends AppCompatActivity
 
     //Refresh overview
     public void RefreshOverview(){
-        Budget _budget = budgetManager.GetBudget(_selectedBudgetID);
 
         //Suggest the user add a profile if none exist
-        if (_budget != null){
+        if (_selectedBudget != null){
             versusCard.getBase().setVisibility(View.GONE);
             expensesCard.getBase().setVisibility(View.GONE);
             incomeCard.getBase().setVisibility(View.GONE);
@@ -306,9 +301,9 @@ public class ActivityMain extends AppCompatActivity
             progress_loadingData.setVisibility(View.GONE);
             relativeLayout_period.setVisibility(View.GONE);
 
-            versusCard.SetBudgetID(_selectedBudgetID);
-            expensesCard.SetBudgetID(_selectedBudgetID);
-            incomeCard.SetBudgetID(_selectedBudgetID);
+            versusCard.SetBudgetID(_selectedBudget.GetID());
+            expensesCard.SetBudgetID(_selectedBudget.GetID());
+            incomeCard.SetBudgetID(_selectedBudget.GetID());
 
             versusCard.SetData();
             expensesCard.SetData();
@@ -328,11 +323,10 @@ public class ActivityMain extends AppCompatActivity
     //Toolbar title update
     public void ToolbarTitleUpdate(){
         if (getSupportActionBar() != null) {
-            Budget _budget = budgetManager.GetBudget(_selectedBudgetID);
 
-            if (_budget != null) {
-                getSupportActionBar().setTitle(_budget.GetName() + " " + getString(R.string.title_overview));
-                getSupportActionBar().setSubtitle(_budget.GetDateFormatted());
+            if (_selectedBudget != null) {
+                getSupportActionBar().setTitle(_selectedBudget.GetName() + " " + getString(R.string.title_overview));
+                getSupportActionBar().setSubtitle(_selectedBudget.GetDateFormatted());
             }
             else {
                 getSupportActionBar().setTitle(R.string.title_overview);

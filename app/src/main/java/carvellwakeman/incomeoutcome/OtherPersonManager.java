@@ -1,5 +1,6 @@
 package carvellwakeman.incomeoutcome;
 
+import android.graphics.Color;
 import java.util.ArrayList;
 
 public class OtherPersonManager
@@ -7,38 +8,65 @@ public class OtherPersonManager
     static OtherPersonManager instance = new OtherPersonManager();
 
     //Categories
-    private ArrayList<String> _otherPersons;
+    private ArrayList<OtherPerson> _otherPeople;
 
     //Constructor and Init
     private OtherPersonManager(){}
     static OtherPersonManager getInstance(){ return instance; }
     public void initialize(){
-        _otherPersons = new ArrayList<>();
+        _otherPeople = new ArrayList<>();
     }
 
 
     //Management
-    public void AddOtherPerson(String name) {
-        if (name != null && !name.equals("")) {
-            _otherPersons.add(name);
+    public OtherPerson AddOtherPerson(OtherPerson person) {
+        if (person != null) {
+            OtherPerson cat = GetOtherPerson(person.GetID());
+            if (cat != null) { //Update
+                cat.SetName(person.GetName());
+            } else { //Add new
+                _otherPeople.add(person);
+            }
+        }
+        return person;
+    }
+    public OtherPerson AddOtherPerson(String name){
+        return AddOtherPerson(new OtherPerson(name));
+    }
+
+    public void RemoveOtherPerson(OtherPerson person) { _otherPeople.remove(person); }
+    public void RemoveOtherPerson(String title) {
+        for (int i = 0; i < _otherPeople.size(); i++) {
+            if (_otherPeople.get(i).GetName().equals(title)) {
+                RemoveOtherPerson(_otherPeople.get(i));
+            }
         }
     }
+    public void RemoveAllOtherPeople() { _otherPeople.clear(); }
 
-    public void RemoveOtherPerson(String name) { _otherPersons.remove(name); }
-
-    public void RemoveAllOtherPerson() { _otherPersons.clear(); }
-
-    public boolean HasOtherPerson(String name){ return _otherPersons.contains(name); }
-
-    public ArrayList<String> GetOtherPersons() { return _otherPersons; }
-
-    public ArrayList<String> GetOtherPeopleAndMe(){
-        ArrayList<String> a = new ArrayList<>(_otherPersons);
-        a.add(Helper.getString(R.string.format_me));
-        return a;
+    //Get other person by index
+    public OtherPerson GetOtherPerson(int ID){
+        for (OtherPerson p : _otherPeople) {
+            if (p.GetID() == ID) { return p; }
+        }
+        return null;
+    }
+    public OtherPerson GetOtherPerson(String title) {
+        for (OtherPerson p : _otherPeople) {
+            if (p.GetName().equals(title)) { return p; }
+        }
+        return null;
     }
 
+    public ArrayList<OtherPerson> GetOtherPeople() { return _otherPeople; }
+    public ArrayList<String> GetOtherPeopleNames(){
+        ArrayList<String> arr = new ArrayList<>();
+        for (OtherPerson p : _otherPeople) {
+            arr.add(p.GetName());
+        }
+        return arr;
+    }
 
-    public int GetOtherPersonCount() { return _otherPersons.size(); }
+    public int GetOtherPeopleCount() { return _otherPeople.size(); }
 
 }

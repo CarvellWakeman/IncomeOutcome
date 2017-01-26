@@ -2,6 +2,8 @@ package carvellwakeman.incomeoutcome;
 
 
 import org.joda.time.*;
+import org.joda.time.format.PeriodFormat;
+
 import java.util.*;
 
 
@@ -115,6 +117,7 @@ public class Budget implements java.io.Serializable
         }
         return null;
     }
+    public ArrayList<new_Transaction> GetAllTransactions() { return _transactions; }
     public ArrayList<new_Transaction> GetTransactions(new_Transaction.TRANSACTION_TYPE type) { return GetTransactions(null, null, type); }
     public ArrayList<new_Transaction> GetTransactionsInTimeframe(new_Transaction.TRANSACTION_TYPE type){ return GetTransactions(GetStartDate(), GetEndDate(), type); }
     public ArrayList<new_Transaction> GetTransactions(LocalDate startDate, LocalDate endDate, new_Transaction.TRANSACTION_TYPE type){
@@ -181,5 +184,12 @@ public class Budget implements java.io.Serializable
                 return Helper.getString(R.string.misc_all);
             }
         }
+    }
+
+    public String GetPeriodFormatted(){
+        if (_period != null){
+            return Helper.getString(R.string.repeat_occurevery) + " "+ _period.toString(PeriodFormat.wordBased(App.GetLocale()));
+        }
+        return "No Period";
     }
 }

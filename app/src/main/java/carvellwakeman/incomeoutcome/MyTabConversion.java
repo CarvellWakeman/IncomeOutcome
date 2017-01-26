@@ -78,23 +78,29 @@ public class MyTabConversion {
                                 //Mutators
                                 NewTransaction.SetType(new_Transaction.TRANSACTION_TYPE.Expense);
                                 NewTransaction.SetSource(tran.GetCompany());
-                                NewTransaction.SetCategory(tran.GetCategory());
                                 if (CategoryManager.getInstance().GetCategory(tran.GetCategory()) != null) {
                                     Category cat = new Category(tran.GetCategory(), CategoryColors.getColor(tran.GetCategory()));
                                     CategoryManager.getInstance().AddCategory(cat);
+                                    NewTransaction.SetCategory(cat.GetID());
                                 }
                                 NewTransaction.SetDescription(tran.GetDescription());
                                 NewTransaction.SetValue(Double.parseDouble(Float.toString(tran.GetCost())));
                                 NewTransaction.SetTimePeriod(new TimePeriod(new LocalDate(tran.GetDate())));
 
                                 //EXPENSE ONLY Mutators
-                                if (tran.GetCostB() != 0.0f && !tran.GetPersonAPaid()){
-                                    NewTransaction.SetSplit(tab.GetPersonB(), Double.parseDouble(Float.toString(tran.GetCostB())));
+
+                                //Other person does not exist yet
+                                if (OtherPersonManager.getInstance().GetOtherPerson(tab.GetPersonB()) == null) {
+                                    OtherPerson person = OtherPersonManager.getInstance().AddOtherPerson(tab.GetPersonB());
+
+                                    if (tran.GetCostB() != 0.0f && !tran.GetPersonAPaid()){
+                                        NewTransaction.SetSplit(person.GetID(), Double.parseDouble(Float.toString(tran.GetCostB())));
+                                    }
+
                                 }
-                                if (!OtherPersonManager.getInstance().HasOtherPerson(tab.GetPersonB())) {
-                                    OtherPersonManager.getInstance().AddOtherPerson(tab.GetPersonB());
-                                }
-                                NewTransaction.SetPaidBy( (tran.GetPersonAPaid() ? Helper.getString(R.string.format_me) : tab.GetPersonB()) );
+                                OtherPerson person = OtherPersonManager.getInstance().GetOtherPerson(tab.GetPersonB());
+
+                                NewTransaction.SetPaidBy( (tran.GetPersonAPaid() ? -1 : person.GetID()) );
                                 NewTransaction.SetPaidBack((tab.GetDatePaid() == null ? null : new LocalDate(tab.GetDatePaid())));
 
                                 br.AddTransaction(NewTransaction);

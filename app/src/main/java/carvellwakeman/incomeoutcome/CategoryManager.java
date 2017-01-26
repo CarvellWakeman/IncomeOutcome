@@ -68,7 +68,7 @@ public class CategoryManager
     }
 
     //Management
-    public void AddCategory(Category category) {
+    public Category AddCategory(Category category) {
         if (category != null) {
             Category cat = GetCategory(category.GetID());
             if (cat != null){ //Update
@@ -78,11 +78,17 @@ public class CategoryManager
                 _categories.add(category);
             }
         }
+        return category;
     }
-    public void AddCategory(String title, int color){
+    public Category AddCategory(String title, int color){
         Category cat = GetCategory(title);
-        if (cat != null){ cat.SetColor(color); }
-        else {  AddCategory(new Category(title, color)); }
+        if (cat != null){
+            cat.SetColor(color); }
+        else {
+            cat = new Category(title, color);
+            AddCategory(cat);
+        }
+        return cat;
     }
 
     public void RemoveCategory(Category category) { _categories.remove(category); }

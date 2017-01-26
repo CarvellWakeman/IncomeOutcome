@@ -9,10 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/toolbar_editprofile" />
+        <include layout="@layout/toolbar_editbudget" />
 
         <LinearLayout
-            android:id="@+id/linearLayout_dialogmpr_editprofile"
+            android:id="@+id/linearLayout_dialogmpr_editbudget"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/toolbar_top"
@@ -20,7 +20,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView_dialogmpr_profiles"
+                android:id="@+id/recyclerView_dialogmpr_budgets"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

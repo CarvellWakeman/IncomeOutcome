@@ -212,7 +212,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             DatabaseManager.getInstance().importDatabase(file, true);
                             DatabaseManager.getInstance().loadSettings();
-                            //DatabaseManager.getInstance().loadTransactions();
+                            DatabaseManager.getInstance().loadTransactions();
 
                             dialogFragment.dismiss();
                             finish();

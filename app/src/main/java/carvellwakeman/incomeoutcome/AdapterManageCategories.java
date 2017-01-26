@@ -52,9 +52,9 @@ public class AdapterManageCategories extends RecyclerView.Adapter<AdapterManageC
             if (cr != null) {
 
                 Helper.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, cr.GetTitle(), "", String.valueOf(cr.GetID()),
-                        new ParentCallBack() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.EditCategory(data, dialogFragment); } },
+                        new ParentCallBack() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.EditCategory(Integer.valueOf(data), dialogFragment); } },
                         null,
-                        new ParentCallBack() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeleteCategory(data, dialogFragment); } }),
+                        new ParentCallBack() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeleteCategory(Integer.valueOf(data), dialogFragment); } }),
                         true); //TODO: Handle mIsLargeDisplay
             }
         }

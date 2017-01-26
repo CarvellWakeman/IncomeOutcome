@@ -110,6 +110,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             COLUMN_categorycolor + TEXT_TYPE
             + ");";
     private static final String CREATE_TABLE_SETTINGS_OTHERPEOPLE = "CREATE TABLE IF NOT EXISTS " + TABLE_SETTINGS_OTHERPEOPLE + "(" +
+            COLUMN_uniqueID + INT_TYPE + "," +
             COLUMN_splitWith + TEXT_TYPE + "," +
             COLUMN_splitWith2 + TEXT_TYPE
             + ");";
@@ -166,11 +167,11 @@ public class DatabaseManager extends SQLiteOpenHelper
             COLUMN_budget + INT_TYPE + "," +
             COLUMN_uniqueID + INT_TYPE + "," +
             COLUMN_parentID + INT_TYPE + "," +
-            COLUMN_category + TEXT_TYPE + "," +
+            COLUMN_category + INT_TYPE + "," +
             COLUMN_source + TEXT_TYPE + "," +
             COLUMN_description + TEXT_TYPE  + "," +
             COLUMN_value + DOUBLE_TYPE  + "," +
-            COLUMN_paidBy + TEXT_TYPE + "," +
+            COLUMN_paidBy + INT_TYPE + "," +
             COLUMN_split + TEXT_TYPE + "," +
             COLUMN_paidBack + TEXT_TYPE + "," +
             COLUMN_children + TEXT_TYPE + "," +
@@ -293,9 +294,11 @@ public class DatabaseManager extends SQLiteOpenHelper
                     //Drop expenses and income tables
             DROP_TABLE_EXPENSES + STATEMENT_DELIMITER + DROP_TABLE_INCOME;
 
+
     private static final String UPGRADE_6_7 =
             CREATE_TABLE_SETTINGS_BUDGETS +
                     STATEMENT_DELIMITER +
+
                     //Create budget table - very similar to profile table
                     "INSERT INTO " + TABLE_SETTINGS_BUDGETS +
                     " SELECT " +
@@ -310,6 +313,27 @@ public class DatabaseManager extends SQLiteOpenHelper
 
                     //Drop old profiles table
                     DROP_TABLE_SETTINGS_PROFILES + STATEMENT_DELIMITER +
+
+
+                    //Reformat otherPerson table
+                    "ALTER TABLE " + TABLE_SETTINGS_OTHERPEOPLE + " RENAME TO " + "temp_otherpeople" + STATEMENT_DELIMITER +
+
+                    //Create correctly formatted table
+                    CREATE_TABLE_SETTINGS_OTHERPEOPLE + STATEMENT_DELIMITER +
+
+                    //Copy data from temp to TABLE_SETTINGS_OTHERPEOPLE
+                    "INSERT INTO " + TABLE_SETTINGS_OTHERPEOPLE + "(" +
+                    COLUMN_uniqueID + "," +
+                    COLUMN_splitWith + "," +
+                    COLUMN_splitWith2 +
+                    ") SELECT " +
+                    "NULL," +
+                    COLUMN_splitWith + "," +
+                    COLUMN_splitWith2 +
+                    " FROM temp_otherpeople" + STATEMENT_DELIMITER +
+
+                    //Drop the temp table
+                    "DROP TABLE temp_otherpeople" + STATEMENT_DELIMITER +
 
 
                     //Reformat data from TABLE_TRANSACTIONS by rebuilding it
@@ -340,7 +364,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                         COLUMN_profile + "," +
                         COLUMN_uniqueID + "," +
                         COLUMN_parentID + "," +
-                        COLUMN_category + "," +
+                        "(SELECT "  + COLUMN_uniqueID + " FROM " + TABLE_SETTINGS_CATEGORIES + " WHERE " + "temp_transactions." + COLUMN_category + " = " + TABLE_SETTINGS_CATEGORIES + "." + COLUMN_category + ")," +
                         COLUMN_source + "," +
                         COLUMN_description  + "," +
                         COLUMN_value  + "," +
@@ -412,8 +436,12 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //Helper.Print(App.GetContext(), "OnUpgrade (" + oldVersion + "->" + newVersion + ")");
+        Upgrade(db, oldVersion, newVersion);
+    }
+    public void Upgrade(SQLiteDatabase db, int oldVersion, int newVersion){
+        Helper.Print(App.GetContext(), "OnUpgrade (" + oldVersion + "->" + newVersion + ")");
         //Helper.PrintLong(App.GetContext(), UPGRADE_6_7);
+        //Helper.PrintLong(App.GetContext(), "(SELECT "  + COLUMN_uniqueID + " FROM " + TABLE_SETTINGS_CATEGORIES + " WHERE " + "temp_transactions." + COLUMN_category + " = " + TABLE_SETTINGS_CATEGORIES + "." + COLUMN_category + "),");
 
         try {
             ContentValues cv = new ContentValues();
@@ -436,20 +464,71 @@ public class DatabaseManager extends SQLiteOpenHelper
                     Helper.Print(App.GetContext(), "Upgrade from Ver.5 to Ver.6");
                 case 6: //To version 7
                     SQLExecuteMultiple(db, UPGRADE_6_7);
+
+                    //Fill out UID column in TABLE_OTHERPEOPLE
+                    Cursor c = db.query(TABLE_SETTINGS_OTHERPEOPLE, null, null, null, null, null, null);
+                    while (c.moveToNext()) {
+                        //Find other person name
+                        String name = c.getString(c.getColumnIndex(COLUMN_splitWith));
+                        OtherPerson person = new OtherPerson(name);
+                        Integer UID = person.GetID();
+
+                        contentValues_tr = new ContentValues();
+                        contentValues_tr.put(COLUMN_uniqueID, UID );
+
+                        //Insert/update row and return result
+                        long result = db.update(TABLE_SETTINGS_OTHERPEOPLE, contentValues_tr, COLUMN_splitWith + "=?", new String[] { name });
+
+
+                        //Replace names in split array with UID
+                        Cursor c1 = db.query(TABLE_TRANSACTIONS, null, null, null, null, null, null);
+                        while (c1.moveToNext()) {
+                            //Find other person name
+                            Integer Transaction_ID = c1.getInt(c1.getColumnIndex(COLUMN_uniqueID));
+                            String paidBy = c1.getString(c1.getColumnIndex(COLUMN_paidBy));
+                            String split = c1.getString(c1.getColumnIndex(COLUMN_split));
+
+                            contentValues_tr = new ContentValues();
+
+                            //Replace PaidBy with UID
+                            if (paidBy.equals(name)) {
+                                contentValues_tr.put(COLUMN_paidBy, String.valueOf(UID));
+                            }
+                            else {
+                                contentValues_tr.put(COLUMN_paidBy, -1);
+                            }
+                            //Helper.Print(App.GetContext(), "paidBy:" + paidBy + "\nSplit:" + split + "\nPerson:" + name + "(" + String.valueOf(UID) + ")");
+
+                            //Update split with UID
+                            contentValues_tr.put(COLUMN_split, split.replaceAll(name, String.valueOf(UID)).replaceAll(Helper.getString(R.string.format_me), String.valueOf(-1)));
+
+                            //Insert/update row and return result
+                            //long result2 = 0;
+                            long result2 = db.update(TABLE_TRANSACTIONS, contentValues_tr, COLUMN_uniqueID + "=?", new String[]{String.valueOf(Transaction_ID)});
+                            //Helper.Print(App.GetContext(), "Result2:" + String.valueOf(result2));
+                        }
+                        c1.close();
+
+
+                    }
+                    c.close();
+
+
+
                     Helper.Print(App.GetContext(), "Upgrade from Ver.6 to Ver.7");
                 case 7: //To version 8
             }
             //OLD
             //if (newVersion > oldVersion){
-                //DATABASE_VERSION 1 -> 2
-                //if (oldVersion == 1) {
-                    //Upgrade from DATABASE_VERSION 1 to 2
-                //}
-                //DATABASE_VERSION 2 -> 3
-                //if (oldVersion == 2){
-                //}
-                //Recursive upgrade to next version
-                //onUpgrade(db, oldVersion+1, newVersion);
+            //DATABASE_VERSION 1 -> 2
+            //if (oldVersion == 1) {
+            //Upgrade from DATABASE_VERSION 1 to 2
+            //}
+            //DATABASE_VERSION 2 -> 3
+            //if (oldVersion == 2){
+            //}
+            //Recursive upgrade to next version
+            //onUpgrade(db, oldVersion+1, newVersion);
             //}
 
             //db.execSQL(DROP_TABLE_SETTINGS_CATEGORIES);
@@ -830,9 +909,9 @@ public class DatabaseManager extends SQLiteOpenHelper
 
     }
 
-    public void importDatabase(final File importFile, final boolean backup) { runDBTask( new CallBack() { @Override public void call() { _importDatabase(importFile, backup); } }); }
+    //public void importDatabase(final File importFile, final boolean backup) { runDBTask( new CallBack() { @Override public void call() { _importDatabase(importFile, backup); } }); }
     //private void _importDatabase(File importFile){ _importDatabase(importFile, false); }
-    private void _importDatabase(File importFile, boolean backup){
+    public void importDatabase(File importFile, boolean backup){
 
         try {
             //Database paths
@@ -862,11 +941,11 @@ public class DatabaseManager extends SQLiteOpenHelper
                         //getWritableDatabase();
                         //Force call onUpgrade
                         final int oldVersion = SQLiteDatabase.openDatabase(importFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
-                        onUpgrade(getWritableDatabase(), oldVersion, DATABASE_VERSION);
+                        Upgrade(getWritableDatabase(), oldVersion, getVersion());
                         //getWritableDatabase().close();
 
 
-                        //Load new database
+                        //Load new database (Do not include)
                         //(new DatabaseBackgroundHelper()).execute(8); //loadSettings();
                         //(new DatabaseBackgroundHelper()).execute(9); //loadTransactions();
                         //_loadSettings();
@@ -882,7 +961,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 
         } catch (Exception e) {
             //ProfileManager.Print(activityContext, "Error importing database");
-            //ProfileManager.PrintLong(activityContext, e.getMessage());
+            //Helper.PrintLong(App.GetContext(), e.getMessage());
         }
 
     }
@@ -925,27 +1004,28 @@ public class DatabaseManager extends SQLiteOpenHelper
 
             //Insert/update row and return result
             long result = 0;
-            if (tryUpdate){  result = database.update(TABLE_SETTINGS_CATEGORIES, contentValues_tr, COLUMN_uniqueID + "=" + category.GetID(), null); }
+            if (tryUpdate){  result = database.update(TABLE_SETTINGS_CATEGORIES, contentValues_tr, COLUMN_uniqueID + "=?", new String[] { String.valueOf(category.GetID()) }); }
             if (result == 0) { result = database.insert(TABLE_SETTINGS_CATEGORIES, null, contentValues_tr); }
 
             return result;
         } else{ return -1; }
     }
 
-    public void insertSetting(final String person, final boolean tryUpdate) { runDBTask( new CallBack() { @Override public void call() { _insertSetting(person, tryUpdate); } } ); }
-    private long _insertSetting(String person, boolean tryUpdate)
+    public void insertSetting(final OtherPerson person, final boolean tryUpdate) { runDBTask( new CallBack() { @Override public void call() { _insertSetting(person, tryUpdate); } } ); }
+    private long _insertSetting(OtherPerson person, boolean tryUpdate)
     {
         database = getWritableDatabase();
 
-        if (database != null && isTableExists(TABLE_SETTINGS_OTHERPEOPLE, false) && !person.equals("")) {
+        if (database != null && isTableExists(TABLE_SETTINGS_OTHERPEOPLE, false) && person != null) {
             contentValues_tr = new ContentValues();
 
             //Fill out row
-            contentValues_tr.put(COLUMN_splitWith, person);
+            contentValues_tr.put(COLUMN_uniqueID, person.GetID());
+            contentValues_tr.put(COLUMN_splitWith, person.GetName());
 
             //Insert/update row and return result
             long result = 0;
-            if (tryUpdate){ result = database.update(TABLE_SETTINGS_OTHERPEOPLE, contentValues_tr, COLUMN_splitWith + "=?", new String[] { person }); }
+            if (tryUpdate){ result = database.update(TABLE_SETTINGS_OTHERPEOPLE, contentValues_tr, COLUMN_uniqueID + "=?", new String[] { String.valueOf(person.GetID()) }); }
             if (result == 0) { result = database.insert(TABLE_SETTINGS_OTHERPEOPLE, null, contentValues_tr); }
 
             return result;
@@ -967,11 +1047,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                     contentValues_tr.put(COLUMN_budget, budget.GetName());
 
                     //Selection
-                    if (budget.GetSelected()) {
-                        contentValues_tr.put(COLUMN_selected, 1);
-                    } else {
-                        contentValues_tr.put(COLUMN_selected, 0);
-                    }
+                    contentValues_tr.put(COLUMN_selected, (budget.GetSelected() ? 1 : 0));
 
                     if (budget.GetStartDate() != null) {
                         contentValues_tr.put(COLUMN_startdate, budget.GetStartDate().toString(Helper.getString(R.string.date_format_saving)));
@@ -1150,20 +1226,22 @@ public class DatabaseManager extends SQLiteOpenHelper
             while (c.moveToNext()) {
                 //Find other people
                 String person = c.getString(c.getColumnIndex(COLUMN_splitWith));
+                Integer ID = c.getInt(c.getColumnIndex(COLUMN_uniqueID));
 
                 //Fill out other people
-                if (person != null){
-                    OtherPersonManager.getInstance().AddOtherPerson(person);
+                if (!person.equals("")){
+                    OtherPerson p = OtherPersonManager.getInstance().AddOtherPerson(person);
+                    p.SetID(ID);
                 }
             }
-            /*
+
             //Budgets
             c = database.query(TABLE_SETTINGS_BUDGETS, null, null, null, null, null, null);
             while (c.moveToNext()) {
                 //Find budgets
                 int uniqueID = c.getInt(c.getColumnIndex(COLUMN_uniqueID));
                 String title = c.getString(c.getColumnIndex(COLUMN_budget));
-                int selected = c.getInt(c.getColumnIndex(COLUMN_profileSelected));
+                int selected = c.getInt(c.getColumnIndex(COLUMN_selected));
                 String start_date = c.getString(c.getColumnIndex(COLUMN_startdate));
                 String end_date = c.getString(c.getColumnIndex(COLUMN_enddate));
                 String period = c.getString(c.getColumnIndex(COLUMN_period));
@@ -1179,10 +1257,10 @@ public class DatabaseManager extends SQLiteOpenHelper
                     BudgetManager.getInstance().AddBudget(br);
 
                     //TODO: Find a way to set the selected budget somehow
-                    //if (selected == 1){ ProfileManager.getInstance().SelectProfileDontSave(p); }
+                    if (selected == 1) { BudgetManager.getInstance().SetSelectedBudget(br); }
                 }
             }
-            */
+
         }
         catch (Exception ex){
             //ProfileManager.Print(activityContext, "ERROR: No settings found");
@@ -1224,7 +1302,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                     //COLUMN_parentID + TEXT_TYPE + "," +
                     tr.SetParentID(c.getInt(c.getColumnIndex(COLUMN_parentID)));
                     //COLUMN_category + TEXT_TYPE + "," +
-                    tr.SetCategory(c.getString(c.getColumnIndex(COLUMN_category)));
+                    tr.SetCategory(c.getInt(c.getColumnIndex(COLUMN_category)));
                     //COLUMN_source + TEXT_TYPE + "," +
                     tr.SetSource(c.getString(c.getColumnIndex(COLUMN_source)));
                     //COLUMN_description + TEXT_TYPE  + "," +
@@ -1234,7 +1312,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                     //COLUMN_staticValue + BOOLEAN_TYPE  + "," +
                     //tr.SetStatic(c.getInt(c.getColumnIndex(COLUMN_staticValue)) == 1);
                     //COLUMN_IPaid + BOOLEAN_TYPE + "," +
-                    tr.SetPaidBy(c.getString(c.getColumnIndex(COLUMN_paidBy)));
+                    tr.SetPaidBy(c.getInt(c.getColumnIndex(COLUMN_paidBy)));
                     //COLUMN_splitWith + TEXT_TYPE + "," + //COLUMN_splitValue + DOUBLE_TYPE  + "," +
                     tr.SetSplitFromArrayString(c.getString(c.getColumnIndex(COLUMN_split)));
                     //COLUMN_paidBack + TEXT_TYPE + "," +
@@ -1244,13 +1322,12 @@ public class DatabaseManager extends SQLiteOpenHelper
                     //COLUMN_children
                     tr.AddChildrenFromFormattedString(c.getString(c.getColumnIndex(COLUMN_children)));
 
-
                     //ProfileManager.Print("Transaction Loaded");
                     //Add loaded transaction to profile
                     br.AddTransaction(tr);
                 }
                 else {
-                    //ProfileManager.Print("Transaction could not be loaded, profile -" + _profileID + "- not found.");
+                    //Helper.Print(App.GetContext(), "Transaction could not be loaded, budget not found.");
                 }
             }
 
@@ -1263,20 +1340,20 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
     //Removal
-    public void removeCategorySetting(final String category) { runDBTask( new CallBack() { @Override public void call() { _removeCategorySetting(category); } } ); }
-    private boolean _removeCategorySetting(String category){
+    public void removeCategorySetting(final Category category) { runDBTask( new CallBack() { @Override public void call() { _removeCategorySetting(category); } } ); }
+    private boolean _removeCategorySetting(Category category){
         database = getWritableDatabase();
-        return !category.equals("") && database.delete(TABLE_SETTINGS_CATEGORIES, COLUMN_category + "=?", new String[]{ category }) > 0;
+        return category != null && database.delete(TABLE_SETTINGS_CATEGORIES, COLUMN_uniqueID + "=?", new String[]{ String.valueOf(category.GetID()) }) > 0;
     }
 
-    public void removePersonSetting(final String name) { runDBTask( new CallBack() { @Override public void call() { _removePersonSetting(name); } } ); }
-    private boolean _removePersonSetting(String name){
+    public void removePersonSetting(final OtherPerson person) { runDBTask( new CallBack() { @Override public void call() { _removePersonSetting(person); } } ); }
+    private boolean _removePersonSetting(OtherPerson person){
         database = getWritableDatabase();
-        return !name.equals("") && database.delete(TABLE_SETTINGS_OTHERPEOPLE, COLUMN_splitWith + "=?", new String[]{ name }) > 0;
+        return person != null && database.delete(TABLE_SETTINGS_OTHERPEOPLE, COLUMN_uniqueID + "=?", new String[]{ String.valueOf(person.GetID()) }) > 0;
     }
 
-    public void removeProfileSetting(final Budget budget) { runDBTask( new CallBack() { @Override public void call() { _removeProfileSetting(budget); } } ); }
-    private boolean _removeProfileSetting(Budget budget){
+    public void removeBudgetSetting(final Budget budget) { runDBTask( new CallBack() { @Override public void call() { _removeBudgetSetting(budget); } } ); }
+    private boolean _removeBudgetSetting(Budget budget){
         database = getWritableDatabase();
         return budget != null && database.delete(TABLE_SETTINGS_BUDGETS, COLUMN_budget + "=?", new String[]{String.valueOf(budget.GetName())}) > 0;
     }

@@ -42,6 +42,7 @@ TODO
 
 UNRELEASED
 #[ADD] Category: Parking, membership
+*[CHANGE] Major rewrite of data structures and database, UI updated to comply with new standards
 
 
 

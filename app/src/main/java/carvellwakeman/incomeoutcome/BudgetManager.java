@@ -21,12 +21,37 @@ public class BudgetManager
         _budgets = new ArrayList<>();
     }
 
+    //Budget selection
+    public void SetSelectedBudget(Budget budget){
+        for (Budget b : GetBudgets()){
+            b.SetSelected(false);
+        }
+        budget.SetSelected(true);
+    }
+
+    public Budget GetSelectedBudget(){
+        for (Budget b : GetBudgets()){
+            if (b.GetSelected()){ return b; }
+        }
+        return null;
+    }
+
 
     //Budget Management
-    public void AddBudget(Budget budget) {
+    public Budget AddBudget(Budget budget) {
         if (budget != null) {
-            _budgets.add(budget);
+            Budget cat = GetBudget(budget.GetID());
+            if (cat != null) { //Update
+                cat.SetName(budget.GetName());
+                cat.SetStartDate(budget.GetStartDate());
+                cat.SetEndDate(budget.GetEndDate());
+                cat.SetPeriod(budget.GetPeriod());
+                cat.SetSelected(budget.GetSelected());
+            } else { //Add new
+                _budgets.add(budget);
+            }
         }
+        return budget;
     }
 
     public void RemoveBudget(Budget budget)
@@ -68,13 +93,6 @@ public class BudgetManager
     }
 
     public ArrayList<Budget> GetBudgets(){ return _budgets; }
-
-    public Budget GetSelectedBudget(){
-        for (Budget b : _budgets){
-            if (b.GetSelected()){ return b; }
-        }
-        return null;
-    }
 
     public int GetBudgetCount() { return _budgets.size(); }
 

@@ -110,7 +110,7 @@ public class DialogFragmentTransferTransaction extends DialogFragment
         ProfileManager.getInstance().RemoveProfile(_parent, current);
         dismiss();
 
-        //Update adapter from ActivityManageProfiles
+        //Update adapter from ActivityManageBudgets
         if (_parent != null) {
             _parent.finish();
         }

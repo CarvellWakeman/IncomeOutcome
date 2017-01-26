@@ -2,16 +2,12 @@ package carvellwakeman.incomeoutcome;
 
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.Path;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,19 +16,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import org.apache.commons.io.FileUtils;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 
@@ -78,23 +64,23 @@ public class ActivitySettings extends AppCompatActivity
         int indexCount = 0;
 
         //Setting Categories
-        CardSettings profilesPeopleCategories = new CardSettings(this, inflater, insertPoint, indexCount++, R.layout.row_layout_setting_card, Helper.getString(R.string.title_settings_budgetspeoplecategories));
-        //Manage profiles
-        profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_account_white_24dp, getString(R.string.title_managebudgets), null,
+        CardSettings budgetsPeopleCategories = new CardSettings(this, inflater, insertPoint, indexCount++, R.layout.row_layout_setting_card, Helper.getString(R.string.title_settings_budgetspeoplecategories));
+        //Manage budgets
+        budgetsPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_account_white_24dp, getString(R.string.title_managebudgets), null,
                 new View.OnClickListener() { @Override public void onClick(View v) {
                     //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentManageProfiles(), mIsLargeLayout);
-                    //startActivity(new Intent(ActivitySettings.this, ActivityManageProfiles.class));
+                    startActivity(new Intent(ActivitySettings.this, ActivityManageBudgets.class));
                 }}
         ));
         //Manage people
-        profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_face_white_24dp, getString(R.string.title_managepeople), null,
+        budgetsPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_face_white_24dp, getString(R.string.title_managepeople), null,
                 new View.OnClickListener() { @Override public void onClick(View v) {
                     //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentManagePeople(), mIsLargeLayout);
                     startActivity(new Intent(ActivitySettings.this, ActivityManagePeople.class));
                 }}
         ));
         //Manage categories
-        profilesPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_view_list_white_24dp, getString(R.string.title_managecategories), null,
+        budgetsPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_view_list_white_24dp, getString(R.string.title_managecategories), null,
                 new View.OnClickListener() { @Override public void onClick(View v) {
                     //Helper.OpenDialogFragment(ActivitySettings.this, new DialogFragmentManageCategories(), mIsLargeLayout);
                     startActivity(new Intent(ActivitySettings.this, ActivityManageCategories.class));
@@ -175,7 +161,7 @@ public class ActivitySettings extends AppCompatActivity
                     new_Transaction tr = new new_Transaction(TranType);
 
                     tr.SetSource("Source" + rand.nextInt());
-                    if (categories!=null && categories.size()>0) { tr.SetCategory(categories.get(rand.nextInt(categories.size())).GetTitle()); }
+                    if (categories!=null && categories.size()>0) { tr.SetCategory(categories.get(rand.nextInt(categories.size())).GetID()); }
                     tr.SetDescription(String.valueOf(rand.nextInt()));
                     tr.SetValue( (rand.nextInt(1000) * rand.nextDouble()) );
                     tr.SetTimePeriod(new TimePeriod(beginning.plusDays(rand.nextInt(12000))));
@@ -206,7 +192,7 @@ public class ActivitySettings extends AppCompatActivity
                     t1.SetValue(10.0d);
                     t1.SetSource("The Store");
                     t1.SetDescription("We bought some things");
-                    t1.SetCategory("Things");
+                    //t1.SetCategory( (new Category("Things", Color.argb(255,255,0,0))).GetID() );
                         TimePeriod tp1 = new TimePeriod();
                         tp1.SetDate(new LocalDate(2017,1,1));
                         tp1.SetRepeatFrequency(Repeat.WEEKLY);

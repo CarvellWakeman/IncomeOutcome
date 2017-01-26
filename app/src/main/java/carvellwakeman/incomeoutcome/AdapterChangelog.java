@@ -37,7 +37,7 @@ public class AdapterChangelog extends RecyclerView.Adapter<AdapterChangelog.Chan
 
             //Title info
             holder.version.setText(change.version + " " + change.versionChannel);
-            holder.date.setText(LocalDate.parse(change.date).toString(ProfileManager.simpleDateFormat));
+            holder.date.setText(LocalDate.parse(change.date).toString(Helper.getString(R.string.date_format)));
 
 
             //Notes
@@ -80,7 +80,7 @@ public class AdapterChangelog extends RecyclerView.Adapter<AdapterChangelog.Chan
 
             //Title coloring
             if (change.version.equals(App.GetVersion(_parent))){
-                holder.version.setTextColor(ProfileManager.getColor(R.color.black));
+                holder.version.setTextColor(Helper.getColor(R.color.black));
                 holder.setVisibility(true);
             }
         }

@@ -60,7 +60,7 @@ public class DialogFragmentDeleteData extends DialogFragment {
                                 @Override public void onClick(DialogInterface dialog, int which) {
                                     BudgetManager.getInstance().RemoveAllBudgets();
                                     CategoryManager.getInstance().RemoveAllCategories();
-                                    OtherPersonManager.getInstance().RemoveAllOtherPerson();
+                                    OtherPersonManager.getInstance().RemoveAllOtherPeople();
 
                                     DatabaseManager.getInstance().deleteAllTableContent();
 
@@ -91,7 +91,7 @@ public class DialogFragmentDeleteData extends DialogFragment {
                     new AlertDialog.Builder(_parent).setTitle(R.string.confirm_areyousure_deletesingle)
                             .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                                 @Override public void onClick(DialogInterface dialog, int which) {
-                                    OtherPersonManager.getInstance().RemoveAllOtherPerson();
+                                    OtherPersonManager.getInstance().RemoveAllOtherPeople();
                                     DatabaseManager.getInstance().deleteTableContent(DatabaseManager.TABLE_SETTINGS_OTHERPEOPLE);
 
                                     if (_callBack != null) { _callBack.call(); }
