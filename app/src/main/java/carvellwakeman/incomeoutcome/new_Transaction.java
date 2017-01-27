@@ -21,6 +21,7 @@ public class new_Transaction implements java.io.Serializable
     //Transaction IDs
     private int _uniqueID;
     private int _parentID;
+    private int _budgetID;
 
     private int _category;
     private String _source;
@@ -45,8 +46,8 @@ public class new_Transaction implements java.io.Serializable
         _type = ttype;
 
         _uniqueID = System.identityHashCode(this);
-
         _parentID = 0;
+        _budgetID = 0;
 
         _source = "";
         _category = 0;
@@ -68,6 +69,7 @@ public class new_Transaction implements java.io.Serializable
         this(copy.GetType());
 
         _parentID = copy.GetID();
+        _budgetID = copy.GetBudgetID();
 
         _source = copy.GetSource();
         _category = copy.GetCategory();
@@ -132,6 +134,7 @@ public class new_Transaction implements java.io.Serializable
     public new_Transaction.TRANSACTION_TYPE GetType() { return _type; }
     public int GetID() { return _uniqueID; }
     public int GetParentID() { return _parentID; }
+    public int GetBudgetID() { return _budgetID; }
 
     public Double GetValue() { return _value; }
     public Double GetSplit(Integer person) { if (_split.containsKey(person)) { return _split.get(person); } else { return 0.00d; } }
@@ -139,7 +142,12 @@ public class new_Transaction implements java.io.Serializable
     public String GetSplitArrayString() {
         String t = "";
         for (Map.Entry<Integer, Double> split : _split.entrySet()){
-            t += String.valueOf(split.getKey()) + ":" + String.valueOf(split.getValue()) + "|";
+            String name = String.valueOf(split.getKey());
+            String value = String.valueOf(split.getValue());
+
+            t += name + ":" + value + "|";
+
+            //Helper.Print(App.GetContext(), "GetSplit " + name + ":" + value);
         }
         return t.substring(0,t.length()-2); //Delete last comma
     }
@@ -199,19 +207,27 @@ public class new_Transaction implements java.io.Serializable
     public void SetType(TRANSACTION_TYPE type) { _type = type; }
     public void SetID(Integer ID) { _uniqueID = ID; }
     public void SetParentID(Integer ID) { _parentID = ID; }
+    public void SetBudgetID(Integer ID) { _budgetID = ID; }
 
     public void SetValue(Double value){ _value = value; }
     public void SetSplit(Integer person, Double value) { _split.put(person, value); }
     public void SetSplitFromArrayString(String splitString) {
+        //try {
         _split.clear();
+        //Helper.Print(App.GetContext(), "Input:" + splitString);
 
         String[] splits = splitString.split("\\|");
         for (String split : splits){
             String[] name_value = split.split(":");
             Integer name = Integer.valueOf(name_value[0]);
             String value = name_value[1];
+            //Helper.Print(App.GetContext(), "SetSplit " + name + ", " + value);
             SetSplit(name, Double.valueOf(value));
         }
+        //} catch (Exception ex){
+            //Helper.Print(App.GetContext(), "Error:" + ex.getMessage());
+        //}
+
     }
 
     public void SetPaidBy(Integer person) { _paidBy = person; }

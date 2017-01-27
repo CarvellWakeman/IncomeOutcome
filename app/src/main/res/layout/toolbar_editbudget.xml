@@ -86,7 +86,7 @@
 
             </RelativeLayout>
 
-
+            <!--
             <Button
                 android:id="@+id/button_dialogmpr_startdate"
                 style="@style/RaisedButtonTheme"
@@ -125,6 +125,7 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/time_endlower"
                 android:visibility="gone" />
+         -->
 
 
         </RelativeLayout>

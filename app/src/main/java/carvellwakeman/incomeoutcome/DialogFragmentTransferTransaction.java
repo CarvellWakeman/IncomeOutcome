@@ -16,11 +16,13 @@ import android.widget.*;
 
 public class DialogFragmentTransferTransaction extends DialogFragment
 {
-    ActivityManageProfiles _parent;
+    ActivityManageBudgets _parent;
     DialogFragmentManagePPC _dialog;
-    Profile current;
 
-    AdapterTransferTransaction adapter;
+    Budget _budget;
+
+    //AdapterTransferTransactions adapter;
+    AdapterTransferTransactions adapter;
 
     TextView textView_title;
 
@@ -31,13 +33,14 @@ public class DialogFragmentTransferTransaction extends DialogFragment
     NpaLinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
 
-    static DialogFragmentTransferTransaction newInstance(ActivityManageProfiles parent, DialogFragmentManagePPC dialog, Profile current) {
+    static DialogFragmentTransferTransaction newInstance(ActivityManageBudgets parent, DialogFragmentManagePPC dialog, Budget budget) {
         DialogFragmentTransferTransaction fg = new DialogFragmentTransferTransaction();
         fg._parent = parent;
         fg._dialog = dialog;
-        Bundle args = new Bundle();
-        args.putSerializable("profile", current);
-        fg.setArguments(args);
+        fg._budget = budget;
+        //Bundle args = new Bundle();
+        //args.putSerializable("budget", budget);
+        //fg.setArguments(args);
 
         return fg;
     }
@@ -49,7 +52,7 @@ public class DialogFragmentTransferTransaction extends DialogFragment
         View view = inflater.inflate(R.layout.dialog_transfertransaction, container, false);
         view.setBackgroundColor(Color.WHITE);
 
-        current = (Profile)getArguments().getSerializable("profile");
+        //current = (Profile)getArguments().getSerializable("profile");
 
         textView_title = (TextView) view.findViewById(R.id.textView_dialogtt_title);
 
@@ -60,8 +63,8 @@ public class DialogFragmentTransferTransaction extends DialogFragment
         recyclerView = (RecyclerView) view.findViewById(R.id.dialog_recyclerView_transfertransaction);
 
 
-        //Set profiles adapter
-        adapter = new AdapterTransferTransaction(this);
+        //Adapter
+        adapter = new AdapterTransferTransactions(this, _budget);
         recyclerView.setAdapter(adapter);
 
         //LinearLayoutManager for RecyclerView
@@ -78,8 +81,11 @@ public class DialogFragmentTransferTransaction extends DialogFragment
                         .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ProfileManager.getInstance().RemoveProfile(_parent, current);
-                                if (_parent.adapter != null) { _parent.adapter.notifyDataSetChanged(); }
+                                for (new_Transaction t : _budget.GetAllTransactions()){ DatabaseManager.getInstance().remove(t); }
+                                DatabaseManager.getInstance().removeBudgetSetting(_budget);
+                                BudgetManager.getInstance().RemoveBudget(_budget);
+
+                                //if (_parent.adapter != null) { _parent.adapter.notifyDataSetChanged(); }
                                 _dialog.dismiss();
                                 dismiss();
                             }})
@@ -104,16 +110,34 @@ public class DialogFragmentTransferTransaction extends DialogFragment
     }
 
 
-    //Transfer Transaction
-    public void TransferTransaction(Profile pr){
-        current.TransferAllTransactions(_parent, pr);
-        ProfileManager.getInstance().RemoveProfile(_parent, current);
+    //Transfer Transactions
+    public void TransferTransactions(Budget to){
+        //Select budget 'to' if _budget was selected
+        if (_budget.GetSelected()) { BudgetManager.getInstance().SetSelectedBudget(to); }
+        //Transfer transactions from _budget -> to
+        for (new_Transaction tr : _budget.GetAllTransactions()){
+            to.AddTransaction(tr);
+            DatabaseManager.getInstance().insert(tr, true);
+        }
+
+        //Delete _budget
+        DatabaseManager.getInstance().removeBudgetSetting(_budget);
+        BudgetManager.getInstance().RemoveBudget(_budget);
+
+        //Update budget 'to'
+        DatabaseManager.getInstance().insertSetting(to, true);
+
+
+        //adapter.notifyDataSetChanged();
+        _parent.adapter.notifyDataSetChanged();
+
+        _dialog.dismiss();
         dismiss();
 
         //Update adapter from ActivityManageBudgets
-        if (_parent != null) {
-            _parent.finish();
-        }
+        //if (_parent != null) {
+        //    _parent.finish();
+        //}
 
     }
 

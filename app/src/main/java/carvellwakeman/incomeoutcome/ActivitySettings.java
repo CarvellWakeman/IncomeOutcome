@@ -105,7 +105,7 @@ public class ActivitySettings extends AppCompatActivity
         final String whatsNew = String.format(getString(R.string.subtitle_settings_changelog), App.GetVersion(ActivitySettings.this));
         Setting changelog = new Setting(inflater, R.drawable.ic_update_white_24dp, getString(R.string.title_settings_changelog), whatsNew,
                 new View.OnClickListener() { @Override public void onClick(View v) {
-                    //Helper.OpenDialogFragment(ActivitySettings.this, DialogFragmentChangelog.newInstance(), true);
+                    Helper.OpenDialogFragment(ActivitySettings.this, DialogFragmentChangelog.newInstance(), true);
                 }}
         );
         changelog.SetLongClickListener(new View.OnLongClickListener(){

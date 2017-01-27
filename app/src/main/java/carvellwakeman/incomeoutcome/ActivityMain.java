@@ -65,25 +65,23 @@ public class ActivityMain extends AppCompatActivity
         databaseManager.initialize();
 
         //Load data from database
-        databaseManager.runDBTask(
+        databaseManager.loadSettings( //Load settings
             new CallBack() {
                 @Override public void call() {
-                    databaseManager.loadSettings();
-                    databaseManager.loadTransactions();
-                }
-            },
-            null,
-            new CallBack[]{
-                new CallBack() {
-                    @Override public void call() {
-                        if (versusCard!=null){ versusCard.getBase().setVisibility(View.VISIBLE); }
-                        if (incomeCard!=null){ incomeCard.getBase().setVisibility(View.VISIBLE); }
-                        if (expensesCard!=null){ expensesCard.getBase().setVisibility(View.VISIBLE); }
-                        if (progress_loadingData!=null){ progress_loadingData.setVisibility(View.GONE); }
-                        if (relativeLayout_period!=null){ relativeLayout_period.setVisibility(View.VISIBLE); }
+                    databaseManager.loadTransactions( //THEN load transactions
+                        new CallBack() { //THEN load overview cards
+                            @Override
+                            public void call() {
+                                if (versusCard!=null){ versusCard.getBase().setVisibility(View.VISIBLE); }
+                                if (incomeCard!=null){ incomeCard.getBase().setVisibility(View.VISIBLE); }
+                                if (expensesCard!=null){ expensesCard.getBase().setVisibility(View.VISIBLE); }
+                                if (progress_loadingData!=null){ progress_loadingData.setVisibility(View.GONE); }
+                                if (relativeLayout_period!=null){ relativeLayout_period.setVisibility(View.VISIBLE); }
 
-                        RefreshOverview();
-                    }
+                                RefreshOverview();
+                            }
+                        }
+                    );
                 }
             }
         );

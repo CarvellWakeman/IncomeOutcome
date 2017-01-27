@@ -18,6 +18,8 @@ public class ViewHolderTextUnderline extends RecyclerView.ViewHolder implements 
     TextView subTitle;
     TextView subTitle2;
 
+    View row_divider;
+
     public ViewHolderTextUnderline(View itemView)
     {
         super(itemView);
@@ -28,16 +30,16 @@ public class ViewHolderTextUnderline extends RecyclerView.ViewHolder implements 
         title = (TextView) itemView.findViewById(R.id.row_layout_text_title);
         subTitle = (TextView) itemView.findViewById(R.id.row_layout_text_subtitle);
         subTitle2 = (TextView) itemView.findViewById(R.id.row_layout_text_subtitle2);
+        row_divider = itemView.findViewById(R.id.transaction_row_divider);
 
-        //Short and long click listeners for the expenses context menu
+        //Short and long click listeners
         base.setOnClickListener(this);
         base.setOnLongClickListener(this);
 
     }
 
     @Override
-    public void onClick(View v) {
-    }
+    public void onClick(View v) { }
 
     @Override
     public boolean onLongClick(View v){

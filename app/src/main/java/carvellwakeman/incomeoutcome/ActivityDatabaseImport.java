@@ -112,6 +112,14 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             DatabaseManager.getInstance().importDatabase(DatabaseManager.getInstance().EXPORT_BACKUP, false);
+
+                            //Load settings then transactions
+                            DatabaseManager.getInstance().loadSettings(new CallBack() {
+                                @Override public void call() {
+                                    DatabaseManager.getInstance().loadTransactions(null);
+                                }
+                            });
+
                             finish();
                         }
                     }).setNegativeButton(R.string.confirm_no, null).create().show();
@@ -211,8 +219,13 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             DatabaseManager.getInstance().importDatabase(file, true);
-                            DatabaseManager.getInstance().loadSettings();
-                            DatabaseManager.getInstance().loadTransactions();
+
+                            //Load settings then transactions
+                            DatabaseManager.getInstance().loadSettings(new CallBack() {
+                                @Override public void call() {
+                                    DatabaseManager.getInstance().loadTransactions(null);
+                                }
+                            });
 
                             dialogFragment.dismiss();
                             finish();

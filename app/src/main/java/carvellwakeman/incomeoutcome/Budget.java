@@ -91,7 +91,10 @@ public class Budget implements java.io.Serializable
 
 
     //Transactions
-    public void AddTransaction(new_Transaction transaction) { _transactions.add(transaction); }
+    public void AddTransaction(new_Transaction transaction) {
+        _transactions.add(transaction);
+        transaction.SetBudgetID(GetID());
+    }
 
     public void RemoveTransaction(new_Transaction transaction) { _transactions.remove(transaction); }
     public void RemoveTransaction(int ID){
@@ -178,7 +181,7 @@ public class Budget implements java.io.Serializable
         }
         else {
             if (_endTime == null && _startTime != null){ //&&!showAll
-                return Helper.getString(R.string.time_started) + _startTime.toString(Helper.getString(R.string.date_format));
+                return Helper.getString(R.string.time_started) + " " + _startTime.toString(Helper.getString(R.string.date_format));
             }
             else {
                 return Helper.getString(R.string.misc_all);

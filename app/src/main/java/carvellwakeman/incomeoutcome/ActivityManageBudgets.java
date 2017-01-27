@@ -34,9 +34,9 @@ public class ActivityManageBudgets extends AppCompatActivity {
     MenuItem button_save;
 
     FloatingActionButton button_new;
-    Button button_startdate;
-    Button button_enddate;
-    CheckBox checkbox_override_enddate;
+    //Button button_startdate;
+    //Button button_enddate;
+    //CheckBox checkbox_override_enddate;
 
     TextInputLayout TIL;
     EditText editText_name;
@@ -63,10 +63,10 @@ public class ActivityManageBudgets extends AppCompatActivity {
 
 
         button_new = (FloatingActionButton) findViewById(R.id.FAB_dialogmpr_new);
-        button_startdate = (Button) findViewById(R.id.button_dialogmpr_startdate);
-        button_enddate = (Button) findViewById(R.id.button_dialogmpr_enddate);
+        //button_startdate = (Button) findViewById(R.id.button_dialogmpr_startdate);
+        //button_enddate = (Button) findViewById(R.id.button_dialogmpr_enddate);
 
-        checkbox_override_enddate = (CheckBox) findViewById(R.id.checkbox_override_enddate);
+        //checkbox_override_enddate = (CheckBox) findViewById(R.id.checkbox_override_enddate);
 
         layout_edit = (LinearLayout) findViewById(R.id.linearLayout_dialogmpr_editbudget);
 
@@ -166,7 +166,8 @@ public class ActivityManageBudgets extends AppCompatActivity {
                 //ProfileManager.Print("New Button Click");
                 ToggleMenus(false);
                 //Visibility
-                button_enddate.setVisibility(View.GONE);
+                //button_enddate.setVisibility(View.GONE);
+                ClearAddMenu();
             }
         });
 
@@ -181,6 +182,7 @@ public class ActivityManageBudgets extends AppCompatActivity {
         });
 
         //Set start date
+        /*
         button_startdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,6 +214,7 @@ public class ActivityManageBudgets extends AppCompatActivity {
                 button_enddate.setVisibility( (b ? View.VISIBLE : View.GONE) );
             }
         });
+        */
 
         ClearAddMenu();
 
@@ -336,12 +339,12 @@ public class ActivityManageBudgets extends AppCompatActivity {
         }
     }
 
-    //Delete profile
+    //Delete budget
     public void RemoveBudget(Integer id, final DialogFragmentManagePPC dialogFragment){
         final Budget br = BudgetManager.getInstance().GetBudget(id);
         if (br != null) {
             if (br.GetTransactionCount() > 0 && BudgetManager.getInstance().GetBudgetCount() > 1) {
-                //Helper.OpenDialogFragment(this, DialogFragmentTransferTransaction.newInstance(this, dialogFragment, br), true); //TODO: Handle mIsLargeDisplay //TODO IMPLEMENT
+                Helper.OpenDialogFragment(this, DialogFragmentTransferTransaction.newInstance(this, dialogFragment, br), true); //TODO: Handle mIsLargeDisplay
             }
             else {
                 new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletetransactions)
@@ -350,16 +353,20 @@ public class ActivityManageBudgets extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 for (new_Transaction t : br.GetAllTransactions()){ DatabaseManager.getInstance().remove(t); }
                                 DatabaseManager.getInstance().removeBudgetSetting(br);
-
                                 BudgetManager.getInstance().RemoveBudget(br);
+                                //Select a new budget if the one being deleted was the selected one
+                                if (br.GetSelected()) { BudgetManager.getInstance().SetSelectedBudget(BudgetManager.getInstance().GetBudgets().get(0)); }
 
                                 adapter.notifyDataSetChanged();
+
                                 dialogFragment.dismiss();
                                 dialog.dismiss();
                             }})
                         .setNegativeButton(R.string.action_cancel, null).create().show();
 
             }
+
+
         }
     }
 
@@ -388,6 +395,7 @@ public class ActivityManageBudgets extends AppCompatActivity {
 
     //Update dates
     public void UpdateDates(){
+        /*
         if (start_date != null) {
             button_startdate.setText(getString(R.string.time_start_format, start_date.toString(Helper.getString(R.string.date_format))));
         } else {
@@ -398,6 +406,7 @@ public class ActivityManageBudgets extends AppCompatActivity {
         } else {
             button_enddate.setText(R.string.time_end);
         }
+        */
     }
 
     //Update period
@@ -486,7 +495,7 @@ public class ActivityManageBudgets extends AppCompatActivity {
 
         UpdateDates();
 
-        checkbox_override_enddate.setChecked(false);
+        //checkbox_override_enddate.setChecked(false);
 
         editText_name.setText("");
         editText_period.setText("1");

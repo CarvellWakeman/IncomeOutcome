@@ -371,7 +371,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                         //COLUMN_IPaid becomes COLUMN_paidBy
                             "CASE WHEN " + COLUMN_IPaid + " = 0 THEN " + COLUMN_splitWith + " ELSE (SELECT '"+Helper.getString(R.string.format_me)+"') END" + "," +
                         //COLUMN_split is made from COLUMN_value, COLUMN_splitValue and COLUMN_splitWith
-                            "(SELECT '"+Helper.getString(R.string.format_me)+"') || ':' || (" + COLUMN_value + "-" + COLUMN_splitValue + ") || '|' || " + COLUMN_splitWith + " || ':' || " + COLUMN_splitValue + "," +
+                            "(SELECT '"+Helper.getString(R.string.format_me)+"') || ':' || (" + COLUMN_value + "-" + COLUMN_splitValue + ") || (CASE WHEN " + COLUMN_splitWith + " = '' THEN '' ELSE '|' || " + COLUMN_splitWith + " || ':' || " + COLUMN_splitValue + " END)" + "," +
                         COLUMN_paidBack + "," +
                         COLUMN_children + "," +
                         COLUMN_when +
@@ -558,7 +558,8 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
     //Task Execution
-    public void runDBTask(final CallBack BackgroundAction) { runDBTask(BackgroundAction, null, null); }
+    public void runDBTask(final CallBack BackgroundAction) { runDBTask(BackgroundAction, new CallBack[]{}, new CallBack[]{}); }
+    public void runDBTask(final CallBack BackgroundAction, final CallBack PreAction, final CallBack PostAction) { runDBTask(BackgroundAction, new CallBack[]{PreAction}, new CallBack[]{PostAction}); }
     public void runDBTask(CallBack BackgroundAction, final CallBack[] PreActions, final CallBack[] PostActions){
         AsyncTask<Object, String, String> task = new AsyncTask<Object, String, String>() {
             @Override protected void onPreExecute() {
@@ -1076,8 +1077,8 @@ public class DatabaseManager extends SQLiteOpenHelper
         } else { return -1; }//ProfileManager.Print(activityContext, "Budget is null"); return -1; }
     }
 
-    public void insert(final Budget budget, final new_Transaction transaction, final boolean tryupdate) { runDBTask(new CallBack() { @Override public void call() { _insert(budget, transaction, tryupdate); } } ); }
-    private long _insert(Budget budget, new_Transaction transaction, boolean tryupdate)
+    public void insert(final new_Transaction transaction, final boolean tryupdate) { runDBTask(new CallBack() { @Override public void call() { _insert(transaction, tryupdate); } } ); }
+    private long _insert(new_Transaction transaction, boolean tryupdate)
     {
         database = getWritableDatabase();
 
@@ -1089,7 +1090,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 
             //Fill out row
             contentValues_tr.put(COLUMN_type, transaction.GetType().ordinal());
-            contentValues_tr.put(COLUMN_budget, budget.GetID());
+            contentValues_tr.put(COLUMN_budget, transaction.GetBudgetID());
             contentValues_tr.put(COLUMN_uniqueID, transaction.GetID());
             contentValues_tr.put(COLUMN_parentID, transaction.GetParentID());
             contentValues_tr.put(COLUMN_category, transaction.GetCategory());
@@ -1201,7 +1202,7 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
     //Loading
-    public void loadSettings() { runDBTask( new CallBack() { @Override public void call() { _loadSettings(); } } ); }
+    public void loadSettings(CallBack callback) { runDBTask( new CallBack() { @Override public void call() { _loadSettings(); } }, null, callback ); }
     private void _loadSettings()
     {
         database = getWritableDatabase();
@@ -1249,11 +1250,10 @@ public class DatabaseManager extends SQLiteOpenHelper
                 //Fill out budgets
                 if (title != null && !title.equals("")){
                     Budget br = new Budget(title);
-                    br.SetSelected(selected==1);
                     br.SetID(uniqueID);
-                    if (start_date != null){ br.SetStartDate(ConvertDateFromString(start_date)); }
-                    if (end_date != null){ br.SetEndDate(ConvertDateFromString(end_date)); }
-                    if (period != null){ try { br.SetPeriod(Period.parse(period)); } catch (Exception e) { e.printStackTrace(); } }
+                    if (start_date != null) { br.SetStartDate(ConvertDateFromString(start_date)); }
+                    if (end_date != null) { br.SetEndDate(ConvertDateFromString(end_date)); }
+                    if (period != null) { try { br.SetPeriod(Period.parse(period)); } catch (Exception e) { e.printStackTrace(); } }
                     BudgetManager.getInstance().AddBudget(br);
 
                     //TODO: Find a way to set the selected budget somehow
@@ -1276,16 +1276,19 @@ public class DatabaseManager extends SQLiteOpenHelper
 
     }
 
-    public void loadTransactions() { runDBTask( new CallBack() { @Override public void call() { _loadTransactions(); } } ); }
+    public void loadTransactions(CallBack callback) { runDBTask( new CallBack() { @Override public void call() { _loadTransactions(); } }, null, callback); }
     private void _loadTransactions()
     {
         database = getWritableDatabase();
 
         try {
             Cursor c = database.query(TABLE_TRANSACTIONS, null, null, null, null, null, null);
+            //Helper.Print(App.GetContext(), "Count:" + String.valueOf(c.getCount()));
 
             while (c.moveToNext()) {
-                //Find profile
+                //Helper.Print(App.GetContext(), "Loop " + c.toString());
+
+                //Find budget
                 int ID = c.getInt(c.getColumnIndex(COLUMN_budget));
                 Budget br = BudgetManager.getInstance().GetBudget(ID);
 
@@ -1294,6 +1297,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                     new_Transaction tr = new new_Transaction();
 
                     //Load and apply transaction properties
+
 
                     //COLUMN_type + TEXT_TYPE + "," +
                     tr.SetType(new_Transaction.TRANSACTION_TYPE.values()[c.getInt(c.getColumnIndex(COLUMN_type))]);
@@ -1311,10 +1315,16 @@ public class DatabaseManager extends SQLiteOpenHelper
                     tr.SetValue(c.getDouble(c.getColumnIndex(COLUMN_value)));
                     //COLUMN_staticValue + BOOLEAN_TYPE  + "," +
                     //tr.SetStatic(c.getInt(c.getColumnIndex(COLUMN_staticValue)) == 1);
+
                     //COLUMN_IPaid + BOOLEAN_TYPE + "," +
-                    tr.SetPaidBy(c.getInt(c.getColumnIndex(COLUMN_paidBy)));
+                    Integer paidBy = c.getInt(c.getColumnIndex(COLUMN_paidBy));
+                    //Helper.Print(App.GetContext(), "PaidBy:" + String.valueOf(paidBy));
+                    tr.SetPaidBy(paidBy);
+
                     //COLUMN_splitWith + TEXT_TYPE + "," + //COLUMN_splitValue + DOUBLE_TYPE  + "," +
-                    tr.SetSplitFromArrayString(c.getString(c.getColumnIndex(COLUMN_split)));
+                    String splitString = c.getString(c.getColumnIndex(COLUMN_split));
+                    //Helper.Print(App.GetContext(), "Transaction: " + tr.GetSource() + " SplitString:" + splitString);
+                    tr.SetSplitFromArrayString(splitString);
                     //COLUMN_paidBack + TEXT_TYPE + "," +
                     tr.SetPaidBack(ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_paidBack))));
                     //COLUMN_when + INT_TYPE //+ "," +
@@ -1322,19 +1332,25 @@ public class DatabaseManager extends SQLiteOpenHelper
                     //COLUMN_children
                     tr.AddChildrenFromFormattedString(c.getString(c.getColumnIndex(COLUMN_children)));
 
+
+                    //Helper.Print(App.GetContext(), "Transaction: " + tr.GetSource());
                     //ProfileManager.Print("Transaction Loaded");
                     //Add loaded transaction to profile
                     br.AddTransaction(tr);
+
+                    //Helper.Print(App.GetContext(), "Count2:" + String.valueOf(br.GetTransactionCount()));
                 }
-                else {
-                    //Helper.Print(App.GetContext(), "Transaction could not be loaded, budget not found.");
+                else { //NO UI WORK on worker thread
+                   // Helper.Print(App.GetContext(), "Transaction could not be loaded, budget not found.");
                 }
+
             }
+
 
 
             c.close();
         } catch (Exception ex){
-
+            //Helper.Print(App.GetContext(), "Error:" + ex.getMessage());
         }
 
     }
@@ -1355,7 +1371,7 @@ public class DatabaseManager extends SQLiteOpenHelper
     public void removeBudgetSetting(final Budget budget) { runDBTask( new CallBack() { @Override public void call() { _removeBudgetSetting(budget); } } ); }
     private boolean _removeBudgetSetting(Budget budget){
         database = getWritableDatabase();
-        return budget != null && database.delete(TABLE_SETTINGS_BUDGETS, COLUMN_budget + "=?", new String[]{String.valueOf(budget.GetName())}) > 0;
+        return budget != null && database.delete(TABLE_SETTINGS_BUDGETS, COLUMN_uniqueID + "=?", new String[]{String.valueOf(budget.GetID())}) > 0;
     }
 
     public void remove(final new_Transaction transaction) { runDBTask( new CallBack() { @Override public void call() { _remove(transaction); } } ); }

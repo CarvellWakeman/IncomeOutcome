@@ -1,5 +1,6 @@
 TODO
 -High
+*[BUGFIX] Importing a transaction should be done in the background
 *[BUGFIX] Transaction parentID sometimes set to non-zero even when transaction has no parent. Clone Transaction? Result:overflow menu won't open
 -Medium
 *[BUGFIX] Versus Card not showing values when an even number of periods are shown
