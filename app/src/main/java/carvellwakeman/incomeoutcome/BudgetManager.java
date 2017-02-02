@@ -57,12 +57,14 @@ public class BudgetManager
     public void RemoveBudget(Budget budget)
     {
         if (budget != null) {
+            budget.RemoveAllTransactions();
             _budgets.remove(budget);
         }
     }
     public void RemoveBudget(int ID) {
         for (int i = 0; i < _budgets.size(); i++) {
             if (_budgets.get(i).GetID() == ID){
+                _budgets.get(i).RemoveAllTransactions();
                 _budgets.remove(i);
             }
         }

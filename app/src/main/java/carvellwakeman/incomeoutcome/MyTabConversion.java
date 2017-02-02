@@ -66,6 +66,7 @@ public class MyTabConversion {
 
                 //Add new budget
                 BudgetManager.getInstance().AddBudget(br);
+                DatabaseManager.getInstance().insertSetting(br, false);
                 //ProfileManager.getInstance().SelectProfile(br);
 
                 //Convert between Tab<->MyTabTransaction objects into Profile<->Transaction objects
@@ -92,6 +93,7 @@ public class MyTabConversion {
                                 //Other person does not exist yet
                                 if (OtherPersonManager.getInstance().GetOtherPerson(tab.GetPersonB()) == null) {
                                     OtherPerson person = OtherPersonManager.getInstance().AddOtherPerson(tab.GetPersonB());
+                                    DatabaseManager.getInstance().insertSetting(person, false);
 
                                     if (tran.GetCostB() != 0.0f && !tran.GetPersonAPaid()){
                                         NewTransaction.SetSplit(person.GetID(), Double.parseDouble(Float.toString(tran.GetCostB())));
@@ -104,6 +106,7 @@ public class MyTabConversion {
                                 NewTransaction.SetPaidBack((tab.GetDatePaid() == null ? null : new LocalDate(tab.GetDatePaid())));
 
                                 br.AddTransaction(NewTransaction);
+                                DatabaseManager.getInstance().insert(NewTransaction, false);
                             }
                         }
                     }

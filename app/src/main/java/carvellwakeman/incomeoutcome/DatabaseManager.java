@@ -847,6 +847,7 @@ public class DatabaseManager extends SQLiteOpenHelper
         _deleteTableContent(TABLE_SETTINGS_BUDGETS);
         _deleteTableContent(TABLE_TRANSACTIONS);
         _deleteTableContent(TABLE_TIMEPERIODS);
+        SQLExecuteMultiple(database, "DELETE FROM sqlite_sequence WHERE name='"+TABLE_TIMEPERIODS+"';"); //Reset autoincrement id counter for TABLE_TIMEPERIODS
         //Legacy
         _deleteTableContent(TABLE_EXPENSES);
         _deleteTableContent(TABLE_INCOME);

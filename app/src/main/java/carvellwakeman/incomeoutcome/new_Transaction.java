@@ -149,7 +149,7 @@ public class new_Transaction implements java.io.Serializable
 
             //Helper.Print(App.GetContext(), "GetSplit " + name + ":" + value);
         }
-        return t.substring(0,t.length()-2); //Delete last comma
+        return (t.length() > 1 ? t.substring(0,t.length()-2) : t); //Delete last comma if possible
     }
     public Double GetDebt(Integer personA, Integer personB) {
         if (GetPaidBy() == personB && GetPaidBack() == null) {

@@ -148,6 +148,7 @@ public class ActivitySettings extends AppCompatActivity
                 if (br == null) {
                     br = new Budget("DummyData");
                     BudgetManager.getInstance().AddBudget(br);
+                    DatabaseManager.getInstance().insertSetting(br, false);
                 }
 
                 for (int i = 0; i < 1000; i++){
@@ -160,17 +161,18 @@ public class ActivitySettings extends AppCompatActivity
 
                     new_Transaction tr = new new_Transaction(TranType);
 
-                    tr.SetSource("Source" + rand.nextInt());
-                    if (categories!=null && categories.size()>0) { tr.SetCategory(categories.get(rand.nextInt(categories.size())).GetID()); }
-                    tr.SetDescription(String.valueOf(rand.nextInt()));
-                    tr.SetValue( (rand.nextInt(1000) * rand.nextDouble()) );
-                    tr.SetTimePeriod(new TimePeriod(beginning.plusDays(rand.nextInt(12000))));
+                    tr.SetSource("Source" + String.valueOf(Math.abs(rand.nextInt(2000))));
+                    if (categories!=null && categories.size()>0) { tr.SetCategory(categories.get(rand.nextInt(categories.size()-1)).GetID()); }
+                    tr.SetDescription("Desc" + String.valueOf(Math.abs(rand.nextInt(2000))));
+                    tr.SetValue( 1.0d * Math.abs(rand.nextInt(1000)) );
+                    tr.SetTimePeriod(new TimePeriod(beginning.plusDays(Math.abs(rand.nextInt(12000)))));
 
                     br.AddTransaction(tr);
+                    DatabaseManager.getInstance().insert(tr, false);
                 }
 
                 //ProfileManager.getInstance().SelectProfile(ActivitySettings.this, pr);
-                Helper.Print(ActivitySettings.this, "Adding 1000 transactions");
+                Helper.PrintUser(ActivitySettings.this, "Adding 1000 transactions");
                 }
             }));
 
