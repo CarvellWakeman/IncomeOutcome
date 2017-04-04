@@ -25,7 +25,7 @@ public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeopl
     public void onBindViewHolder(final PersonViewHolder holder, int position)
     {
         //Person
-        OtherPerson pr = OtherPersonManager.getInstance().GetOtherPeople().get(position);
+        Person pr = PersonManager.getInstance().GetPeople().get(position);
         if (pr != null) {
             //Textview
             holder.title.setText(pr.GetName());
@@ -36,7 +36,7 @@ public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeopl
 
     @Override public int getItemCount()
     {
-        return OtherPersonManager.getInstance().GetOtherPeopleCount();
+        return PersonManager.getInstance().GetPeopleCount();
     }
 
 
@@ -46,9 +46,13 @@ public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeopl
 
         @Override
         public void onClick(View v) {
-            OtherPerson person = OtherPersonManager.getInstance().GetOtherPeople().get(getAdapterPosition());
+            Person person = PersonManager.getInstance().GetPeople().get(getAdapterPosition());
             Helper.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, person.GetName(), "", String.valueOf(person.GetID()),
-                    new ParentCallBack() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.EditPerson(Integer.valueOf(data), dialogFragment); } },
+                    new ParentCallBack() {
+                        @Override public void call(String data, DialogFragmentManagePPC dialogFragment) {
+                            parent.EditPerson(Integer.valueOf(data), dialogFragment);
+                        }
+                    },
                     null,
                     new ParentCallBack() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeletePerson(Integer.valueOf(data), dialogFragment); } }
             ), true); //TODO: Handle mIsLargeDisplay

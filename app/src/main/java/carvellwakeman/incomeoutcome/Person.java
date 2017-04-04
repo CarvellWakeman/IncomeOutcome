@@ -1,12 +1,12 @@
 package carvellwakeman.incomeoutcome;
 
-public class OtherPerson
+public class Person
 {
     private int _uniqueID;
     private String _name;
 
 
-    public OtherPerson(String name){
+    public Person(String name){
         _uniqueID = System.identityHashCode(this);
 
         _name = name;

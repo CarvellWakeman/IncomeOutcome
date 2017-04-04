@@ -91,8 +91,8 @@ public class MyTabConversion {
                                 //EXPENSE ONLY Mutators
 
                                 //Other person does not exist yet
-                                if (OtherPersonManager.getInstance().GetOtherPerson(tab.GetPersonB()) == null) {
-                                    OtherPerson person = OtherPersonManager.getInstance().AddOtherPerson(tab.GetPersonB());
+                                if (PersonManager.getInstance().GetPerson(tab.GetPersonB()) == null) {
+                                    Person person = PersonManager.getInstance().AddPerson(tab.GetPersonB());
                                     DatabaseManager.getInstance().insertSetting(person, false);
 
                                     if (tran.GetCostB() != 0.0f && !tran.GetPersonAPaid()){
@@ -100,7 +100,7 @@ public class MyTabConversion {
                                     }
 
                                 }
-                                OtherPerson person = OtherPersonManager.getInstance().GetOtherPerson(tab.GetPersonB());
+                                Person person = PersonManager.getInstance().GetPerson(tab.GetPersonB());
 
                                 NewTransaction.SetPaidBy( (tran.GetPersonAPaid() ? -1 : person.GetID()) );
                                 NewTransaction.SetPaidBack((tab.GetDatePaid() == null ? null : new LocalDate(tab.GetDatePaid())));

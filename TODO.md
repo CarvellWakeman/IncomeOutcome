@@ -1,14 +1,21 @@
+PREV:Refactoring activityManageBudgets/activityManageCategories/activityManagePeople
+NEXT:Get ActivityDetailsTransaction working
+
 TODO
 -High
+*[BUGFIX] Transaction Split rows (in details activity) not updating when some changes are made
 *[BUGFIX] Importing a transaction should be done in the background
 *[BUGFIX] Transaction parentID sometimes set to non-zero even when transaction has no parent. Clone Transaction? Result:overflow menu won't open
 -Medium
 *[BUGFIX] Versus Card not showing values when an even number of periods are shown
 -Low
+*[BUGFIX] Change to TextInputEditText instead of EditText
 *[BUGFIX] Crash when scrolling updwards on transaction details recyclerview
 *[BUGFIX] Permissions revoked on runtime leaves import activity empty
 *[BUGFIX] Some MyTab import expenses are not split
 
+*[CHANGE] Show All / Show Unpaid moved to overflow menu
+*[CHANGE] Transaction uses category ID and person ID instead of strings
 *[CHANGE] When adding a transaction, the keyboard hides when any element that does not use it is clicked
 *[CHANGE] DatabaseHelper contains method runDBTask which runs DB tasks Asynchronously, don't expose GenericAsyncTask
 *[CHANGE] Database operations use service/intentservice instead of AsyncTask (why?)
@@ -21,6 +28,9 @@ TODO
 *[CHANGE] Filter dialog windows shrunk to wrap content
 *[CHANGE] DialogFragmentManagePPC windows shrunk to wrap content
 
+*[ADD] FAB on Overview page to add transaction
+*[ADD] Time period option "All Unpaid"
+*[ADD] Toolbar changes color when current day is within timeperiod (Or some other indicator)
 *[ADD] Overview of category/source
 *[ADD] Rate in playstore button on Changelog
 *[ADD] Notification of progress when async deleting data
@@ -44,7 +54,7 @@ TODO
 UNRELEASED
 #[ADD] Category: Parking, membership
 *[CHANGE] Major rewrite of data structures and database, UI updated to comply with new standards
-
+*[CHANGE] Refactored activityManageBudgets/activityManageCategories/activityManagePeople
 
 
 FORMAT

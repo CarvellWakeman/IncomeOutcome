@@ -82,7 +82,7 @@ public class CategoryManager
     }
     public Category AddCategory(String title, int color){
         Category cat = GetCategory(title);
-        if (cat != null){
+        if (cat != null){ //Update just color
             cat.SetColor(color); }
         else {
             cat = new Category(title, color);

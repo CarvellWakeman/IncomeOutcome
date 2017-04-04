@@ -53,7 +53,6 @@ public class ActivitySettings extends AppCompatActivity
     public void onStart(){
         super.onStart();
 
-
         //Populate settings
         LayoutInflater inflater = getLayoutInflater();//(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)
         ViewGroup insertPoint = (ViewGroup) findViewById(R.id.settings_layout);

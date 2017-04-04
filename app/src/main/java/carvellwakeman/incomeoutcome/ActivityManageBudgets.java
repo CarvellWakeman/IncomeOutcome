@@ -23,8 +23,6 @@ public class ActivityManageBudgets extends AppCompatActivity {
     Boolean menustate = true;
     Budget editingBudget = null;
 
-    LocalDate start_date;
-    LocalDate end_date;
     Period period;
 
     AdapterManageBudgets adapter;
@@ -122,8 +120,6 @@ public class ActivityManageBudgets extends AppCompatActivity {
         //button_save.setVisible(false);
 
 
-
-
         //Set profiles adapter
         adapter = new AdapterManageBudgets(this);
         recyclerView_profiles.setAdapter(adapter);
@@ -163,11 +159,7 @@ public class ActivityManageBudgets extends AppCompatActivity {
         button_new.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //ProfileManager.Print("New Button Click");
-                ToggleMenus(false);
-                //Visibility
-                //button_enddate.setVisibility(View.GONE);
-                ClearAddMenu();
+                OpenAddMenu();
             }
         });
 
@@ -181,52 +173,11 @@ public class ActivityManageBudgets extends AppCompatActivity {
             }
         });
 
-        //Set start date
-        /*
-        button_startdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Open date picker dialog
-                LocalDate c = null;
-                if (start_date != null) { c = start_date; } else { c = new LocalDate(); }
-
-                DatePickerDialog d = new DatePickerDialog(ActivityManageBudgets.this, datePicker, c.getYear(), c.getMonthOfYear() - 1, c.getDayOfMonth());
-                d.show();
-            }
-        });
-        //Set end date
-        button_enddate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Open date picker dialog
-                LocalDate c = null;
-                if (end_date != null) { c = end_date; } else { c = new LocalDate(); }
-
-                DatePickerDialog d = new DatePickerDialog(ActivityManageBudgets.this, datePicker2, c.getYear(), c.getMonthOfYear() - 1, c.getDayOfMonth());
-                d.show();
-            }
-        });
-
-        //End Date override
-        checkbox_override_enddate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                button_enddate.setVisibility( (b ? View.VISIBLE : View.GONE) );
-            }
-        });
-        */
-
-        ClearAddMenu();
-
     }
 
 
     @Override
-    public void onBackPressed()
-    {
-        if (menustate){ super.onBackPressed(); }
-        else { ClearAddMenu(); ToggleMenus(true); }
-    }
+    public void onBackPressed() { BackAction(); }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -240,15 +191,10 @@ public class ActivityManageBudgets extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                if (menustate) { finish(); }
-                else {
-                    ClearAddMenu();
-                    ToggleMenus(true);
-                }
+            case android.R.id.home: //Back button
+                BackAction();
                 return true;
             case R.id.toolbar_save: //SAVE button
-                if (start_date == null) { start_date = new LocalDate(); }
 
                 String newBudget = editText_name.getText().toString();
 
@@ -257,19 +203,15 @@ public class ActivityManageBudgets extends AppCompatActivity {
                     if (editingBudget == null){
                         //Create budget
                         editingBudget = new Budget(newBudget);
-                        //Date
-                        editingBudget.SetStartDate(start_date);
+                        //Date and Period
+                        editingBudget.SetStartDate(new LocalDate());
                         editingBudget.SetEndDate(null);
                         editingBudget.SetPeriod(period);
-                        if (end_date != null) { editingBudget.SetEndDate(end_date); }
                     } else { //Update
                         //Name
                         editingBudget.SetName(newBudget);
-                        //Date
-                        editingBudget.SetStartDate(start_date);
-                        editingBudget.SetEndDate(null);
+                        //Period
                         editingBudget.SetPeriod(period);
-                        if (end_date != null) { editingBudget.SetEndDate(end_date); }
                     }
 
                     //Add or update old person
@@ -278,9 +220,7 @@ public class ActivityManageBudgets extends AppCompatActivity {
 
                     adapter.notifyDataSetChanged();
 
-                    ClearAddMenu();
-                    ToggleMenus(true);
-                    Helper.hideSoftKeyboard(this, editText_name);
+                   CloseSubMenus();
                 }
                 return true;
             default:
@@ -303,7 +243,7 @@ public class ActivityManageBudgets extends AppCompatActivity {
             editingBudget = br;
 
             //Open add new layout
-            ToggleMenus(false);
+            OpenEditMenu();
 
             //Set title to edit
             toolbar.setTitle(R.string.title_editbudget);
@@ -311,14 +251,13 @@ public class ActivityManageBudgets extends AppCompatActivity {
 
             //Load profile information into add new profile settings
             editText_name.setText(br.GetName());
-            start_date = br.GetStartDate();
+            //start_date = br.GetStartDate();
             //end_date = pr.GetEndTime();
             period = br.GetPeriod();
-            UpdateDates();
             UpdatePeriod();
 
-            //Visibility
-            //button_enddate.setVisibility(View.VISIBLE);
+            //Disiable save button
+            SetSaveButtonEnabled(false);
 
             //Dismiss dialogfragment
             dialogFragment.dismiss();
@@ -374,40 +313,19 @@ public class ActivityManageBudgets extends AppCompatActivity {
     public void CheckCanSave() {
         String name = editText_name.getText().toString();
 
-        if (editingBudget != null) {
-
-            Period pe = editingBudget.GetPeriod();
-            if (editingBudget.GetStartDate() != null && start_date != null && editingBudget.GetStartDate().compareTo(start_date) == 0 && //Check start date is same
-                    editingBudget.GetEndDate() != null && end_date != null && editingBudget.GetEndDate().compareTo(end_date) == 0 && //Check end date is same
-                    pe.equals(period) && //Check period is same
-                    ((name.equals("")) || (!name.equals("") && editingBudget.GetName().equals(name)))) {
-                SetSaveButtonEnabled(false);
+        if (name.equals("")) {
+            SetSaveButtonEnabled(false);
+        } else {
+            if (BudgetManager.getInstance().GetBudget(name) != null) {
+                Period pe = editingBudget.GetPeriod();
+                SetSaveButtonEnabled(!pe.equals(period)); //Check if color is different
+            } else {
+                SetSaveButtonEnabled(true);
             }
-            else { SetSaveButtonEnabled(true); }
-        }
-        else {
-            if ( (name.equals("")) || (!name.equals("") && BudgetManager.getInstance().GetBudget(name)!=null)) {
-                SetSaveButtonEnabled(false);
-            }
-            else { SetSaveButtonEnabled(true); }
         }
     }
 
-    //Update dates
-    public void UpdateDates(){
-        /*
-        if (start_date != null) {
-            button_startdate.setText(getString(R.string.time_start_format, start_date.toString(Helper.getString(R.string.date_format))));
-        } else {
-            button_startdate.setText(R.string.time_start);
-        }
-        if (end_date != null) {
-            button_enddate.setText(getString(R.string.time_end_format, end_date.toString(Helper.getString(R.string.date_format))));
-        } else {
-            button_enddate.setText(R.string.time_end);
-        }
-        */
-    }
+
 
     //Update period
     public void UpdatePeriod(){
@@ -443,59 +361,65 @@ public class ActivityManageBudgets extends AppCompatActivity {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-
-    //Date pickers
-    DatePickerDialog.OnDateSetListener datePicker = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
-        {
-            //Set startdate
-            start_date = new LocalDate(year, monthOfYear + 1, dayOfMonth);
-            UpdateDates();
-            CheckCanSave();
-        }
-    };
-    DatePickerDialog.OnDateSetListener datePicker2 = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
-        {
-            //Set end date
-            end_date = new LocalDate(year, monthOfYear + 1, dayOfMonth);
-            UpdateDates();
-            CheckCanSave();
-        }
-    };
+    //Back button / toolbar back button action
+    public void BackAction(){
+        if (!menustate) { finish(); }
+        else { CloseSubMenus(); }
+    }
 
 
     //Expand and retract sub menus
-    public void ToggleMenus(boolean editList){
-        menustate = editList;
+    public void OpenEditMenu(){
+        AppBarLayoutExpanded(true);
 
-        //Enable edit layout
-        //layout_edit.setVisibility( (edit ? View.VISIBLE : View.GONE) );
-        //Disable add layout
-        //layout_add.setVisibility( (edit ? View.GONE : View.VISIBLE) );
-        AppBarLayoutExpanded(!editList);
+        //Show add new button
+        button_new.setVisibility( View.VISIBLE );
 
-        //Enable add new button
-        button_new.setVisibility( (editList ? View.VISIBLE : View.GONE) );
-        //Disable save button
-        button_save.setVisible(!editList);
+        //Show save button
+        button_save.setVisible(true);
+
         //Set title
-        toolbar.setTitle( (editList ? R.string.title_managebudgets : R.string.title_addnewbudget) );
-        //Set back button
-        //toolbar.setNavigationIcon( (edit ? R.drawable.ic_clear_white_24dp : R.drawable.ic_arrow_back_white_24dp) );
+        toolbar.setTitle( R.string.title_editbudget );
     }
 
-    //Clear add profile menu
-    public void ClearAddMenu(){
-        start_date = null;
-        end_date = null;
+    public void OpenAddMenu(){
+        AppBarLayoutExpanded(true);
+
+        //Clear old data
+        ClearSubMenuData();
+
+        //Focus on text input
+        editText_name.requestFocus();
+        Helper.showSoftKeyboard(ActivityManageBudgets.this, editText_name);
+
+        //Hide add new button
+        button_new.setVisibility( View.GONE );
+
+        //Show save button
+        button_save.setVisible(true);
+
+        //Set title
+        toolbar.setTitle( R.string.title_addnewbudget );
+    }
+
+    public void CloseSubMenus(){
+        AppBarLayoutExpanded(false);
+
+        //Show add new button
+        button_new.setVisibility( View.VISIBLE );
+
+        //Set title
+        toolbar.setTitle( R.string.title_managebudgets );
+
+        //Hide save button
+        button_save.setVisible(false);
+
+        //Hide soft keyboard
+        Helper.hideSoftKeyboard(ActivityManageBudgets.this, editText_name);
+    }
+
+    public void ClearSubMenuData(){
         period = null;
-
-        UpdateDates();
-
-        //checkbox_override_enddate.setChecked(false);
 
         editText_name.setText("");
         editText_period.setText("1");
@@ -505,6 +429,8 @@ public class ActivityManageBudgets extends AppCompatActivity {
     }
 
     public void AppBarLayoutExpanded(boolean expanded){
+        menustate = expanded;
+
         CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
         lp.height = (expanded ? ViewGroup.LayoutParams.WRAP_CONTENT : (int) getResources().getDimension(R.dimen.toolbar_size));
     }

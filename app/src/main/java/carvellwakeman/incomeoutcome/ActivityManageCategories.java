@@ -19,6 +19,8 @@ import android.view.*;
 import android.widget.*;
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
+import java.util.Random;
+
 public class ActivityManageCategories extends AppCompatActivity {
     Boolean menustate = true;
     Category editingCategory;
@@ -82,15 +84,11 @@ public class ActivityManageCategories extends AppCompatActivity {
 
         //Configure toolbar
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (menustate) { finish(); }
-                else { ToggleMenus(true); }
-            }
-        });
+        //toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        //    @Override public void onClick(View v) { BackAction(); }
+        //});
         toolbar.inflateMenu(R.menu.toolbar_menu_save);
-        toolbar.setTitle(R.string.title_editcategory);
+        toolbar.setTitle(R.string.title_managecategories);
         setSupportActionBar(toolbar);
 
 
@@ -103,16 +101,20 @@ public class ActivityManageCategories extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                CheckCanSave();
+
                 String str = editText_name.getText().toString();
 
-                if (!str.equals("")) {
-                    if (CategoryManager.getInstance().GetCategory(str) == null) {
-                        CheckCanSave();
-                        TIL.setError("");
-                    }
-                    else{ CheckCanSave(); TIL.setError("Category already exists"); }
+                if (str.equals("")) {
+                     TIL.setError("Enter a title");
                 }
-                else{ CheckCanSave(); TIL.setError("Enter a title"); }
+                else{
+                    if (CategoryManager.getInstance().GetCategory(str) == null) {
+                        TIL.setError("");
+                    } else {
+                        TIL.setError("Category already exists");
+                    }
+                }
             }
 
             @Override
@@ -174,7 +176,7 @@ public class ActivityManageCategories extends AppCompatActivity {
         button_new.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToggleMenus(false);
+                OpenAddMenu();
             }
         });
         //Hide floating action button when recyclerView is scrolled
@@ -208,11 +210,7 @@ public class ActivityManageCategories extends AppCompatActivity {
 
 
     @Override
-    public void onBackPressed()
-    {
-        if (menustate){ super.onBackPressed(); }
-        else { ClearAddMenu(); ToggleMenus(true); }
-    }
+    public void onBackPressed() { BackAction(); }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -228,9 +226,8 @@ public class ActivityManageCategories extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
-            case android.R.id.home:
-                if (menustate) { finish(); }
-                else { ClearAddMenu(); ToggleMenus(true); }
+            case android.R.id.home: //Back Button
+                BackAction();
                 return true;
             case R.id.toolbar_save: //SAVE button
                 String newCategory = editText_name.getText().toString();
@@ -238,10 +235,10 @@ public class ActivityManageCategories extends AppCompatActivity {
                 if (!newCategory.equals("")) {
                     //New category
                     if (editingCategory == null){
-                        editingCategory = new Category(newCategory, GetColor());
+                        editingCategory = new Category(newCategory, GetSeekbarColor());
                     } else { //Update category
                         editingCategory.SetTitle(newCategory);
-                        editingCategory.SetColor(GetColor());
+                        editingCategory.SetColor(GetSeekbarColor());
                     }
 
                     //Add or update old category
@@ -250,9 +247,7 @@ public class ActivityManageCategories extends AppCompatActivity {
 
                     adapter.notifyDataSetChanged();
 
-                    ClearAddMenu();
-                    ToggleMenus(true);
-                    Helper.hideSoftKeyboard(this, editText_name);
+                    CloseSubMenus();
                 }
                 return true;
             default:
@@ -260,33 +255,25 @@ public class ActivityManageCategories extends AppCompatActivity {
         }
     }
 
-    //Get color from the three seekbars
-    public int GetSeekbarColor(){
-        return Color.argb(255, (int)(((double)seekBar_red.getProgress()/100.0)*255), (int)(((double)seekBar_green.getProgress()/100.0)*255), (int)(((double)seekBar_blue.getProgress()/100.0)*255));
-    }
 
     //Check if the user is allowed to save
-    public void CheckCanSave()
-    {
+    public void CheckCanSave() {
         String name = editText_name.getText().toString();
 
-        editingCategory = CategoryManager.getInstance().GetCategory(name);
-
-        if (editingCategory != null) {
-            if (editingCategory.GetColor() == GetSeekbarColor() && //Check color
-                    (name.equals("") || (!name.equals("") && editingCategory.GetTitle().equals(name))) //Check if name is the same
-            ) { SetSaveButtonEnabled(false); }
-            else { SetSaveButtonEnabled(true); }
-        }
-        else {
-            if (name.equals("")) { SetSaveButtonEnabled(false); }
-            else { SetSaveButtonEnabled(true); }
+        if (name.equals("")) {
+            SetSaveButtonEnabled(false);
+        } else {
+            if (CategoryManager.getInstance().GetCategory(name) != null) {
+                SetSaveButtonEnabled(editingCategory.GetColor() != GetSeekbarColor()); //Check if color is different
+            } else {
+                SetSaveButtonEnabled(true);
+            }
         }
     }
 
 
     //Update positive button text
-    public void SetSaveButtonEnabled(Boolean enabled){
+    public void SetSaveButtonEnabled(boolean enabled){
         if (button_save != null) {
             button_save.setEnabled(enabled);
             if (button_save.getIcon() != null) button_save.getIcon().setAlpha((enabled ? 255 : 130));
@@ -300,9 +287,7 @@ public class ActivityManageCategories extends AppCompatActivity {
             editingCategory = cr;
 
             //Open add new layout
-            ToggleMenus(false);
-            //Set title to edit
-            toolbar.setTitle(R.string.title_editcategory);
+            OpenEditMenu();
 
             //Load information
             editText_name.setText(cr.GetTitle());
@@ -315,9 +300,12 @@ public class ActivityManageCategories extends AppCompatActivity {
             seekBar_green.setProgress((int) ((green / 255.0) * 100));
             seekBar_blue.setProgress((int) ((blue / 255.0) * 100));
 
-            SetIndicatorColor(cr.GetColor());
+            SetIndicatorColor(cr.GetColor()); //Already done by seekbar listeners
 
-            CheckCanSave();
+            //CheckCanSave();
+
+            //Disable save button
+            SetSaveButtonEnabled(false);
 
             //Dismiss dialogfragment
             dialogFragment.dismiss();
@@ -347,49 +335,92 @@ public class ActivityManageCategories extends AppCompatActivity {
         }
     }
 
-    public int GetColor(){
-        return Color.argb(255, (int)(((double)seekBar_red.getProgress()/100.0)*255), (int)(((double)seekBar_green.getProgress()/100.0)*255), (int)(((double)seekBar_blue.getProgress()/100.0)*255));
+    public int GetSeekbarColor(){
+        int red =   (int) ( ((double)seekBar_red.getProgress() / 100.0) * 255);
+        int green = (int) ( ((double)seekBar_green.getProgress() / 100.0) * 255);
+        int blue =  (int) ( ((double)seekBar_blue.getProgress() / 100.0) * 255);
+        return Color.argb(255, red, green, blue);
+    }
+
+    public void SetIndicatorColor(int color){ imageView_colorindicator.setColorFilter(color); }
+
+
+    //Back button / toolbar back button action
+    public void BackAction(){
+        if (!menustate) { finish(); }
+        else { CloseSubMenus(); }
     }
 
 
     //Expand and retract sub menus
-    public void ToggleMenus(Boolean editList){
-        menustate = editList;
+    public void OpenEditMenu(){
+        AppBarLayoutExpanded(true);
 
-        //Color preview button
-        //imageView_colorindicator.setVisibility( (edit ? View.GONE : View.VISIBLE) );
-        //Enable edit layout
-        //layout_edit.setVisibility( (editList ? View.VISIBLE : View.GONE) );
-        //Disable add layout
-        //layout_add.setVisibility( (edit ? View.GONE : View.VISIBLE) );
-        AppBarLayoutExpanded(!editList);
+        //Show add new button
+        button_new.setVisibility( View.VISIBLE );
 
-        //Enable add new button
-        button_new.setVisibility( (editList ? View.VISIBLE : View.GONE) );
-        //Disable save button
-        button_save.setVisible(!editList);
+        //Show save button
+        button_save.setVisible(true);
+
         //Set title
-        toolbar.setTitle( (editList ? R.string.title_managecategories : R.string.title_addnewcategory) );
-        //Set back button
-        //toolbar.setNavigationIcon( (edit ? R.drawable.ic_clear_white_24dp : R.drawable.ic_arrow_back_white_24dp) );
+        toolbar.setTitle( R.string.title_editcategory );
     }
 
-    public void ClearAddMenu(){
+    public void OpenAddMenu(){
+        AppBarLayoutExpanded(true);
+
+        //Clear old data
+        ClearSubMenuData();
+
+        //Set color bar initial color
+        Random rand = new Random();
+        seekBar_red.setProgress(rand.nextInt(100));
+        seekBar_green.setProgress(rand.nextInt(100));
+        seekBar_blue.setProgress(rand.nextInt(100));
+        SetIndicatorColor(GetSeekbarColor());
+
+        //Focus on text input
+        editText_name.requestFocus();
+        Helper.showSoftKeyboard(ActivityManageCategories.this, editText_name);
+
+        //Hide add new button
+        button_new.setVisibility( View.GONE );
+
+        //Show save button
+        button_save.setVisible(true);
+
+        //Set title
+        toolbar.setTitle( R.string.title_addnewcategory );
+    }
+
+    public void CloseSubMenus(){
+        AppBarLayoutExpanded(false);
+
+        //Show add new button
+        button_new.setVisibility( View.VISIBLE );
+
+        //Set title
+        toolbar.setTitle( R.string.title_managecategories );
+
+        //Hide save button
+        button_save.setVisible(false);
+
+        //Hide soft keyboard
+        Helper.hideSoftKeyboard(ActivityManageCategories.this, editText_name);
+    }
+
+    public void ClearSubMenuData(){
         editingCategory = null;
 
-        //Reset old state
         editText_name.setText("");
-        seekBar_red.setProgress(50);
-        seekBar_green.setProgress(50);
-        seekBar_blue.setProgress(50);
     }
 
-
-    public void SetIndicatorColor(int color){ imageView_colorindicator.setColorFilter(color); }
-
     public void AppBarLayoutExpanded(boolean expanded){
+        menustate = expanded;
+
         CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
         lp.height = (expanded ? ViewGroup.LayoutParams.WRAP_CONTENT : (int) getResources().getDimension(R.dimen.toolbar_size));
     }
+
 
 }

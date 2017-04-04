@@ -33,8 +33,8 @@ public class Budget implements java.io.Serializable
 
         //Default period (1 month)
         _period = new Period(0,1,0,0,0,0,0,0);
-        SetStartDate(LocalDate.now().withDayOfMonth(1));
-        SetEndDate(LocalDate.now().withDayOfMonth(31));
+        SetStartDate(LocalDate.now().withDayOfMonth(1)); //First day of month
+        SetEndDate(LocalDate.now().withDayOfMonth(LocalDate.now().dayOfMonth().getMaximumValue())); //Last day of month
     }
 
 

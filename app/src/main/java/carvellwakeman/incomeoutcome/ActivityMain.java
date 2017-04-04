@@ -41,7 +41,7 @@ public class ActivityMain extends AppCompatActivity
     DatabaseManager databaseManager;
     BudgetManager budgetManager;
     CategoryManager categoryManager;
-    OtherPersonManager otherPersonManager;
+    PersonManager personManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +57,8 @@ public class ActivityMain extends AppCompatActivity
         categoryManager.initialize();
 
         //Initialize otherperson manager
-        otherPersonManager = OtherPersonManager.getInstance();
-        otherPersonManager.initialize();
+        personManager = PersonManager.getInstance();
+        personManager.initialize();
 
         //Initialize the Database
         databaseManager = DatabaseManager.getInstance();

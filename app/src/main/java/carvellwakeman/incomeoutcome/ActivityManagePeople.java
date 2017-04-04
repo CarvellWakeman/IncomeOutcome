@@ -2,9 +2,7 @@ package carvellwakeman.incomeoutcome;
 
 
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -17,13 +15,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.*;
 import android.widget.*;
-import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
-
-import java.util.Map;
 
 public class ActivityManagePeople extends AppCompatActivity {
     Boolean menustate = true;
-    OtherPerson editingPerson;
+    Person editingPerson;
 
     AdapterManagePeople adapter;
 
@@ -71,15 +66,11 @@ public class ActivityManagePeople extends AppCompatActivity {
 
         //Configure toolbar
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (menustate) { finish(); }
-                else { ToggleMenus(true); }
-            }
-        });
+        //toolbar.setNavigationOnClickListener(new View.OnClickListener() { //Back button while editing closes editing menu (Does not exit activity)
+        //    @Override  public void onClick(View v) { BackAction(); }
+        //});
         toolbar.inflateMenu(R.menu.toolbar_menu_save);
-        toolbar.setTitle(R.string.title_editperson);
+        toolbar.setTitle(R.string.title_managepeople);
         setSupportActionBar(toolbar);
 
 
@@ -95,7 +86,7 @@ public class ActivityManagePeople extends AppCompatActivity {
                 String str = editText_name.getText().toString();
 
                 if (!str.equals("")) {
-                    if (OtherPersonManager.getInstance().GetOtherPerson(str) == null) {
+                    if (PersonManager.getInstance().GetPerson(str) == null) {
                         SetSaveButtonEnabled(true);
                         TIL.setError("");
                     }
@@ -124,9 +115,7 @@ public class ActivityManagePeople extends AppCompatActivity {
         //Button listeners
         button_new.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                ToggleMenus(false);
-            }
+            public void onClick(View v) { OpenAddMenu(); }
         });
         //Hide floating action button when recyclerView is scrolled
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -141,11 +130,7 @@ public class ActivityManagePeople extends AppCompatActivity {
 
 
     @Override
-    public void onBackPressed()
-    {
-        if (menustate){ super.onBackPressed(); }
-        else { ClearAddMenu(); ToggleMenus(true); }
-    }
+    public void onBackPressed() { BackAction(); }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -161,9 +146,8 @@ public class ActivityManagePeople extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
-            case android.R.id.home:
-                if (menustate) { finish(); }
-                else { ClearAddMenu(); ToggleMenus(true); }
+            case android.R.id.home: //Back Button
+                BackAction();
                 return true;
             case R.id.toolbar_save: //SAVE button
                 String newPerson = editText_name.getText().toString();
@@ -171,20 +155,18 @@ public class ActivityManagePeople extends AppCompatActivity {
                 if (!newPerson.equals("")) {
                     //New
                     if (editingPerson == null){
-                        editingPerson = new OtherPerson(newPerson);
+                        editingPerson = new Person(newPerson);
                     } else { //Update
                         editingPerson.SetName(newPerson);
                     }
 
                     //Add or update old person
-                    OtherPersonManager.getInstance().AddOtherPerson(editingPerson);
+                    PersonManager.getInstance().AddPerson(editingPerson);
                     DatabaseManager.getInstance().insertSetting(editingPerson, true);
 
                     adapter.notifyDataSetChanged();
 
-                    ClearAddMenu();
-                    ToggleMenus(true);
-                    Helper.hideSoftKeyboard(this, editText_name);
+                    CloseSubMenus();
                 }
                 return true;
             default:
@@ -194,18 +176,18 @@ public class ActivityManagePeople extends AppCompatActivity {
 
     //Edit profile
     public void EditPerson(Integer id, final DialogFragmentManagePPC dialogFragment){
-        editingPerson = OtherPersonManager.getInstance().GetOtherPerson(id);
 
-        //Open add new layout
-        ToggleMenus(false);
-        //Set title to edit
-        toolbar.setTitle(R.string.title_editperson);
+        editingPerson = PersonManager.getInstance().GetPerson(id);
+        if (editingPerson != null){
+            //Open edit layout
+            OpenEditMenu();
 
-        //Load information
-        editText_name.setText(editingPerson.GetName());
+            //Load information
+            editText_name.setText(editingPerson.GetName());
 
-        //Dismiss fragment
-        dialogFragment.dismiss();
+            //Dismiss fragment
+            dialogFragment.dismiss();
+        }
     }
 
     public void DeletePerson(final Integer id, final DialogFragmentManagePPC dialogFragment){
@@ -214,8 +196,8 @@ public class ActivityManagePeople extends AppCompatActivity {
                     .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            OtherPerson person = OtherPersonManager.getInstance().GetOtherPerson(id);
-                            OtherPersonManager.getInstance().RemoveOtherPerson(person);
+                            Person person = PersonManager.getInstance().GetPerson(id);
+                            PersonManager.getInstance().RemovePerson(person);
                             DatabaseManager.getInstance().removePersonSetting(person);
 
                             adapter.notifyDataSetChanged();
@@ -235,28 +217,64 @@ public class ActivityManagePeople extends AppCompatActivity {
         }
     }
 
-
-    //Expand and retract sub menus
-    public void ToggleMenus(Boolean edit){
-        menustate = edit;
-
-        //Enable edit layout
-        //layout_edit.setVisibility( (edit ? View.VISIBLE : View.GONE) );
-        //Disable add layout
-        //TIL.setVisibility( (edit ? View.GONE : View.VISIBLE) );
-        AppBarLayoutExpanded(!edit);
-
-        //Enable add new button
-        button_new.setVisibility( (edit ? View.VISIBLE : View.GONE) );
-        //Disable save button
-        button_save.setVisible(!edit);
-        //Set title
-        toolbar.setTitle( (edit ? R.string.title_managepeople : R.string.title_addnewperson) );
-        //Set back button
-        //toolbar.setNavigationIcon( (edit ? R.drawable.ic_clear_white_24dp : R.drawable.ic_arrow_back_white_24dp) );
+    //Back button / toolbar back button action
+    public void BackAction(){
+        if (!menustate) { finish(); }
+        else { CloseSubMenus(); }
     }
 
-    public void ClearAddMenu(){
+
+    //Expand and retract sub menus
+    public void OpenEditMenu(){
+        AppBarLayoutExpanded(true);
+
+        //Show add new button
+        button_new.setVisibility( View.VISIBLE );
+
+        //Show save button
+        button_save.setVisible(true);
+
+        //Set title
+        toolbar.setTitle( R.string.title_editperson );
+    }
+
+    public void OpenAddMenu(){
+        AppBarLayoutExpanded(true);
+
+        //Clear old data
+        ClearSubMenuData();
+
+        //Focus on text input
+        editText_name.requestFocus();
+        Helper.showSoftKeyboard(ActivityManagePeople.this, editText_name);
+
+        //Hide add new button
+        button_new.setVisibility( View.GONE );
+
+        //Show save button
+        button_save.setVisible(true);
+
+        //Set title
+        toolbar.setTitle( R.string.title_addnewperson );
+    }
+
+    public void CloseSubMenus(){
+        AppBarLayoutExpanded(false);
+
+        //Show add new button
+        button_new.setVisibility( View.VISIBLE );
+
+        //Set title
+        toolbar.setTitle( R.string.title_managepeople );
+
+        //Hide save button
+        button_save.setVisible(false);
+
+        //Hide soft keyboard
+        Helper.hideSoftKeyboard(ActivityManagePeople.this, editText_name);
+    }
+
+    public void ClearSubMenuData(){
         editingPerson = null;
 
         editText_name.setText("");
@@ -264,6 +282,8 @@ public class ActivityManagePeople extends AppCompatActivity {
 
 
     public void AppBarLayoutExpanded(boolean expanded){
+        menustate = expanded;
+
         CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
         lp.height = (expanded ? ViewGroup.LayoutParams.WRAP_CONTENT : (int) getResources().getDimension(R.dimen.toolbar_size));
     }

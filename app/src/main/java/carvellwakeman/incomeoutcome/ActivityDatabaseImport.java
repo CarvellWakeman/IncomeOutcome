@@ -4,7 +4,6 @@ package carvellwakeman.incomeoutcome;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TextInputLayout;
@@ -221,7 +220,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                             //Delete existing app data
                             BudgetManager.getInstance().RemoveAllBudgets();
                             CategoryManager.getInstance().RemoveAllCategories();
-                            OtherPersonManager.getInstance().RemoveAllOtherPeople();
+                            PersonManager.getInstance().RemoveAllPeople();
 
                             //Delete existing database data
                             DatabaseManager.getInstance().deleteAllTableContent();

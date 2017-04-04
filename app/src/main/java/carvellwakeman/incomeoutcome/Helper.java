@@ -139,6 +139,14 @@ public class Helper
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         }
     }
+    //Show Soft Keyboard
+    public static void showSoftKeyboard(Activity act, View v)
+    {
+        if (v != null) {
+            InputMethodManager imm = (InputMethodManager) act.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
 
 
     //Color parsing

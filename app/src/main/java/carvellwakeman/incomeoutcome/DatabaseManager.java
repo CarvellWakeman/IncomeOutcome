@@ -470,7 +470,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                     while (c.moveToNext()) {
                         //Find other person name
                         String name = c.getString(c.getColumnIndex(COLUMN_splitWith));
-                        OtherPerson person = new OtherPerson(name);
+                        Person person = new Person(name);
                         Integer UID = person.GetID();
 
                         contentValues_tr = new ContentValues();
@@ -1013,8 +1013,8 @@ public class DatabaseManager extends SQLiteOpenHelper
         } else{ return -1; }
     }
 
-    public void insertSetting(final OtherPerson person, final boolean tryUpdate) { runDBTask( new CallBack() { @Override public void call() { _insertSetting(person, tryUpdate); } } ); }
-    private long _insertSetting(OtherPerson person, boolean tryUpdate)
+    public void insertSetting(final Person person, final boolean tryUpdate) { runDBTask(new CallBack() { @Override public void call() { _insertSetting(person, tryUpdate); } } ); }
+    private long _insertSetting(Person person, boolean tryUpdate)
     {
         database = getWritableDatabase();
 
@@ -1232,7 +1232,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 
                 //Fill out other people
                 if (!person.equals("")){
-                    OtherPerson p = OtherPersonManager.getInstance().AddOtherPerson(person);
+                    Person p = PersonManager.getInstance().AddPerson(person);
                     p.SetID(ID);
                 }
             }
@@ -1363,8 +1363,8 @@ public class DatabaseManager extends SQLiteOpenHelper
         return category != null && database.delete(TABLE_SETTINGS_CATEGORIES, COLUMN_uniqueID + "=?", new String[]{ String.valueOf(category.GetID()) }) > 0;
     }
 
-    public void removePersonSetting(final OtherPerson person) { runDBTask( new CallBack() { @Override public void call() { _removePersonSetting(person); } } ); }
-    private boolean _removePersonSetting(OtherPerson person){
+    public void removePersonSetting(final Person person) { runDBTask(new CallBack() { @Override public void call() { _removePersonSetting(person); } } ); }
+    private boolean _removePersonSetting(Person person){
         database = getWritableDatabase();
         return person != null && database.delete(TABLE_SETTINGS_OTHERPEOPLE, COLUMN_uniqueID + "=?", new String[]{ String.valueOf(person.GetID()) }) > 0;
     }
