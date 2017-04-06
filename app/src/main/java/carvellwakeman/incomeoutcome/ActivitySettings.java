@@ -150,7 +150,7 @@ public class ActivitySettings extends AppCompatActivity
                     DatabaseManager.getInstance().insertSetting(br, false);
                 }
 
-                for (int i = 0; i < 1000; i++){
+                for (int i = 0; i < 100; i++){
                     Random rand = new Random();
 
                     new_Transaction.TRANSACTION_TYPE[] types =new_Transaction. TRANSACTION_TYPE.values();
@@ -171,40 +171,97 @@ public class ActivitySettings extends AppCompatActivity
                 }
 
                 //ProfileManager.getInstance().SelectProfile(ActivitySettings.this, pr);
-                Helper.PrintUser(ActivitySettings.this, "Adding 1000 transactions");
+                Helper.PrintUser(ActivitySettings.this, "Adding 100 transactions");
                 }
             }));
 
             debug.AddSetting(new Setting(inflater, R.drawable.ic_exclamation_white_24dp, "Structure rewrite testing", "", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //Initialize budget manager
+                    //Initialize managers
                     BudgetManager bm = BudgetManager.getInstance();
-                    bm.initialize();
+                    DatabaseManager dm = DatabaseManager.getInstance();
+                    PersonManager pm = PersonManager.getInstance();
+                    CategoryManager cm = CategoryManager.getInstance();
 
-                    //Create new budgets
-                    Budget b1 = new Budget("MyBudget");
+                    //Remove old test budget
+                    bm.RemoveBudget(bm.GetBudget("StructureBudget"));
+
+                    //Create new budget
+                    Budget b1 = new Budget("StructureBudget");
                     b1.SetStartDate(new LocalDate(2017,1,1));
                     b1.SetEndDate(new LocalDate(2017,1,31));
+                    b1.SetSelected(true);
+
                     bm.AddBudget(b1);
+
+
+                    //Create people
+                    Person pA = pm.AddPerson("A");
+                    Person pB = pm.AddPerson("B");
+
+
+                    //Create category
+                    Category c1 = cm.AddCategory("TestCategory", Color.BLUE);
+                    Category c2 = cm.AddCategory("OtherCategory", Color.RED);
+
+                    //Create timeperiods
+                    TimePeriod tp1 = new TimePeriod();
+                    tp1.SetDate(new LocalDate(2017,1,1));
+                    tp1.SetRepeatFrequency(Repeat.WEEKLY);
+                    tp1.SetRepeatEveryN(1);
+                    tp1.SetRepeatDayOfWeekFromBinary("1000000");
+                    tp1.SetRepeatUntil(RepeatUntil.TIMES);
+                    tp1.SetRepeatANumberOfTimes(4);
+                    tp1.SetDate(tp1.GetFirstOccurrence());
+
+                    TimePeriod tp2 = new TimePeriod();
+                    tp2.SetDate(new LocalDate(2017,1,3));
+
 
                     //Create new transactions
                     new_Transaction t1 = new new_Transaction();
-                    t1.SetValue(10.0d);
+                    t1.SetCategory(c1.GetID());
                     t1.SetSource("The Store");
                     t1.SetDescription("We bought some things");
-                    //t1.SetCategory( (new Category("Things", Color.argb(255,255,0,0))).GetID() );
-                        TimePeriod tp1 = new TimePeriod();
-                        tp1.SetDate(new LocalDate(2017,1,1));
-                        tp1.SetRepeatFrequency(Repeat.WEEKLY);
-                        tp1.SetRepeatEveryN(1);
-                        tp1.SetRepeatDayOfWeekFromBinary("1010000");
-                        tp1.SetRepeatUntil(RepeatUntil.FOREVER);
-                        //tp1.SetRepeatANumberOfTimes(4);
+
+                    t1.SetValue(10.0d);
+                    t1.SetPaidBy(pB.GetID());
+                    t1.SetSplit(0, 5.0d);
+                    t1.SetSplit(pA.GetID(), 2.5d);
+                    t1.SetSplit(pB.GetID(), 2.5d);
+                    //t1.SetPaidBack(LocalDate.now());
                     t1.SetTimePeriod(tp1);
+
+                    new_Transaction t2 = new new_Transaction();
+                    t2.SetValue(20.0d);
+                    t2.SetCategory(c2.GetID());
+                    t2.SetSource("The Other Store");
+                    t2.SetDescription("Herp Derp");
+                    t2.SetTimePeriod(tp2);
+
                     b1.AddTransaction(t1);
+                    b1.AddTransaction(t2);
 
 
+
+                    //Database entries
+                    dm.insertSetting(pA,true);
+                    dm.insertSetting(pB,true);
+                    dm.insertSetting(c1,true);
+                    dm.insertSetting(c2,true);
+                    dm.insertSetting(b1, true);
+                    dm.insert(t1,true);
+                    dm.insert(t2,true);
+                    dm.insert(t1.GetID(), tp1, true);
+                    dm.insert(t2.GetID(), tp2, true);
+
+
+
+                    Helper.Print(ActivitySettings.this, "Added test data");
+
+
+                    /*
                     ArrayList<Budget> bs = bm.GetBudgets();
                     for (int i = 0; i < bs.size(); i++){
                         Helper.PrintLong(ActivitySettings.this, "Budget:" +
@@ -224,6 +281,7 @@ public class ActivitySettings extends AppCompatActivity
                             );
                         }
                     }
+                    */
                 }
             }));
 

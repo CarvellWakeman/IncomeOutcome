@@ -31,7 +31,7 @@ import java.util.Map;
 public class CardVersus extends Card
 {
     Context _context;
-    int _budgetID;
+    Budget _budget;
 
     int monthsBackMax = 20;
     int monthsBackMin = 2;
@@ -51,7 +51,7 @@ public class CardVersus extends Card
     public CardVersus(ViewGroup insertPoint, int index, int budgetID, Context context, LayoutInflater inflater, int layout){
         super(context, inflater, layout, insertPoint, index);
         _context = context;
-        _budgetID = budgetID;
+        _budget = BudgetManager.getInstance().GetBudget(budgetID);
 
         //Title
         textView_title = (TextView) getBase().findViewById(R.id.textView_cardVersus_title);
@@ -127,10 +127,9 @@ public class CardVersus extends Card
         SetData();
     }
 
-    public void SetBudgetID(int profileID){ _budgetID = profileID; }
+    public void SetBudget(int id){ _budget = BudgetManager.getInstance().GetBudget(id); }
 
     public void SetData(){
-        Budget _budget = BudgetManager.getInstance().GetBudget(_budgetID);
         if (_budget != null){
 
             //Clear chart info

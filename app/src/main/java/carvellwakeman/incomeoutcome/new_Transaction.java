@@ -1,6 +1,7 @@
 package carvellwakeman.incomeoutcome;
 
 
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
 import java.util.*;
@@ -27,15 +28,15 @@ public class new_Transaction implements java.io.Serializable
     private String _source;
     private String _description;
 
-    private Double _value;
+    private double _value;
 
     private TimePeriod _when;
 
     private ArrayList<Integer> _children;
 
     //Expense type only
-    private Integer _paidBy;
-    private HashMap<Integer,Double> _split;
+    private int _paidBy;
+    private HashMap<Integer,Double> _split; //Split[($,me),($,p1),...]
 
     private LocalDate _paidBack;
 
@@ -100,7 +101,7 @@ public class new_Transaction implements java.io.Serializable
         //Blacklist child's date
         TimePeriod tp = child.GetTimePeriod();
         if (tp != null && GetTimePeriod() != null) { GetTimePeriod().AddBlacklistDate(tp.GetDate(), true); }}
-    private void AddChild(Integer ID) {
+    private void AddChild(int ID) {
         _children.add(ID);
     }
     public void AddChildrenFromFormattedString(String input){
@@ -122,7 +123,7 @@ public class new_Transaction implements java.io.Serializable
     public ArrayList<Integer> GetChildren() { return _children; }
     public String GetChildrenFormatted(){
         String childrenString = "";
-        for (Integer id : _children){
+        for (int id : _children){
             childrenString += id;
             if (_children.indexOf(id) != _children.size()-1) { childrenString += Helper.getString(R.string.item_delimiter); }
         }
@@ -136,8 +137,10 @@ public class new_Transaction implements java.io.Serializable
     public int GetParentID() { return _parentID; }
     public int GetBudgetID() { return _budgetID; }
 
-    public Double GetValue() { return _value; }
-    public Double GetSplit(Integer person) { if (_split.containsKey(person)) { return _split.get(person); } else { return 0.00d; } }
+    public double GetValue() { return _value; }
+    public double GetSplit(int personID) { if (_split.containsKey(personID)) { return _split.get(personID); } else { return 0.00d; } }
+    public double GetSplitPercentage(int personID) { return Math.round( (GetSplit(personID) / GetValue()) * 100.0d); }
+    public boolean IsSplit(){ return _split.size() > 1; }
     public HashMap<Integer, Double> GetSplitArray() { return _split; }
     public String GetSplitArrayString() {
         String t = "";
@@ -151,7 +154,7 @@ public class new_Transaction implements java.io.Serializable
         }
         return (t.length() > 1 ? t.substring(0,t.length()-2) : t); //Delete last comma if possible
     }
-    public Double GetDebt(Integer personA, Integer personB) {
+    public double GetDebt(int personA, int personB) {
         if (GetPaidBy() == personB && GetPaidBack() == null) {
             return GetSplit(personA);
         } else {
@@ -159,12 +162,12 @@ public class new_Transaction implements java.io.Serializable
         }
     }
 
-    public Integer GetPaidBy() { return _paidBy; }
+    public int GetPaidBy() { return _paidBy; }
     public LocalDate GetPaidBack() { return _paidBack; }
 
     public String GetSource() { return _source; }
     public String GetDescription() { return _description; }
-    public Integer GetCategory() { return _category; }
+    public int GetCategory() { return _category; }
 
     public TimePeriod GetTimePeriod() { return _when; }
 
@@ -184,16 +187,22 @@ public class new_Transaction implements java.io.Serializable
 
                 ArrayList<LocalDate> tp_dates = tp.GetOccurrencesWithin(start, end);
 
+                //Helper.Print(App.GetContext(), "OGDate:" + tp.GetDate().toString(Helper.getString(R.string.date_format)));
+
                 for (int ii = 0; ii < tp_dates.size(); ii++) {
+                    //Helper.Print(App.GetContext(), "Occurrence:" + tp_dates.get(ii).toString(Helper.getString(R.string.date_format)));
                     //If we find THIS transaction in the list, add it (IE: The REAL slim shady)
                     if (tp.GetDate().equals(tp_dates.get(ii))) {
                         occurrences.add(this);
+                        //Helper.Print(App.GetContext(), "Add OG: " + this.GetParentID());
                     }
                     else { //Make ghost transactions
                         new_Transaction temp = new new_Transaction(this);
                         temp.SetTimePeriod(new TimePeriod(tp_dates.get(ii)));
                         temp.SetParentID(GetID());
                         occurrences.add(temp);
+
+                        //Helper.Print(App.GetContext(), "Add GHOST: " + temp.GetParentID());
                     }
                 }
             }
@@ -205,44 +214,48 @@ public class new_Transaction implements java.io.Serializable
 
     //Mutators
     public void SetType(TRANSACTION_TYPE type) { _type = type; }
-    public void SetID(Integer ID) { _uniqueID = ID; }
-    public void SetParentID(Integer ID) { _parentID = ID; }
-    public void SetBudgetID(Integer ID) { _budgetID = ID; }
+    public void SetID(int ID) { _uniqueID = ID; }
+    public void SetParentID(int ID) { _parentID = ID; }
+    public void SetBudgetID(int ID) { _budgetID = ID; }
 
-    public void SetValue(Double value){ _value = value; }
-    public void SetSplit(Integer person, Double value) { _split.put(person, value); }
+    public void SetValue(double value){ _value = value; }
+    public void SetSplit(int personID, double value) { _split.put(personID, value); }
     public void SetSplitFromArrayString(String splitString) {
-        //try {
-        _split.clear();
-        //Helper.Print(App.GetContext(), "Input:" + splitString);
+        if (!splitString.equals("")) {
+            //try {
+            _split.clear();
 
-        String[] splits = splitString.split("\\|");
-        for (String split : splits){
-            String[] name_value = split.split(":");
-            Integer name = Integer.valueOf(name_value[0]);
-            String value = name_value[1];
-            //Helper.Print(App.GetContext(), "SetSplit " + name + ", " + value);
-            SetSplit(name, Double.valueOf(value));
-        }
-        //} catch (Exception ex){
+            String[] splits = splitString.split("\\|");
+            for (String split : splits){
+                String[] name_value = split.split(":");
+                int name = Integer.valueOf(name_value[0]);
+                String value = name_value[1];
+                //Helper.Print(App.GetContext(), "SetSplit " + name + ", " + value);
+                SetSplit(name, Double.valueOf(value));
+            }
+            //} catch (Exception ex){
             //Helper.Print(App.GetContext(), "Error:" + ex.getMessage());
-        //}
-
+            //}
+        }
     }
 
-    public void SetPaidBy(Integer person) { _paidBy = person; }
+    public void SetPaidBy(int personID) { _paidBy = personID; }
     public void SetPaidBack(LocalDate paidBack) { _paidBack = paidBack; }
 
-    public void SetSource(String source) { _source = source; }
-    public void SetDescription(String description) { _description = description; }
+    public void SetSource(String source) {
+        if (source==null){ _source=""; } else { _source = source; }
+    }
+    public void SetDescription(String description) {
+        if (description==null){ _description=""; } else { _description = description; }
+    }
     public void SetCategory(int categoryID) { _category = categoryID; }
 
     public void SetTimePeriod(TimePeriod timePeriod) { _when = timePeriod; }
 
 
     //Splits
-    public void RemoveSplit(String person){
-        _split.remove(person);
-    }
+    //public void RemoveSplit(String person){
+    //    _split.remove(person);
+    //}
 
 }

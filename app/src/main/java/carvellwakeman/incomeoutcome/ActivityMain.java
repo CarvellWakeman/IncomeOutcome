@@ -72,11 +72,14 @@ public class ActivityMain extends AppCompatActivity
                         new CallBack() { //THEN load overview cards
                             @Override
                             public void call() {
-                                if (versusCard!=null){ versusCard.getBase().setVisibility(View.VISIBLE); }
+                                //if (versusCard!=null){ versusCard.getBase().setVisibility(View.VISIBLE); }
                                 if (incomeCard!=null){ incomeCard.getBase().setVisibility(View.VISIBLE); }
                                 if (expensesCard!=null){ expensesCard.getBase().setVisibility(View.VISIBLE); }
                                 if (progress_loadingData!=null){ progress_loadingData.setVisibility(View.GONE); }
                                 if (relativeLayout_period!=null){ relativeLayout_period.setVisibility(View.VISIBLE); }
+
+                                //Selected budget
+                                _selectedBudget = budgetManager.GetSelectedBudget();
 
                                 RefreshOverview();
                             }
@@ -85,9 +88,6 @@ public class ActivityMain extends AppCompatActivity
                 }
             }
         );
-
-        //Selected budget
-        _selectedBudget = budgetManager.GetSelectedBudget();
 
 
 
@@ -115,9 +115,8 @@ public class ActivityMain extends AppCompatActivity
         button_suggestaddbudget = (Button) findViewById(R.id.button_suggest_addprofile);
 
         button_suggestaddbudget.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            //    startActivity(new Intent(ActivityMain.this, ActivityManageBudgets.class));
+            @Override public void onClick(View view) {
+                startActivity(new Intent(ActivityMain.this, ActivityManageBudgets.class));
             }
         });
 
@@ -153,13 +152,6 @@ public class ActivityMain extends AppCompatActivity
         checkbox_showall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (_selectedBudget != null){
-                    //if (b){
-                    //    storedStartTime = _profile.GetStartTime();
-                    //    storedEndTime = _profile.GetEndTime();
-                    //}
-                    //_profile.SetStartTime( (b ? null : storedStartTime) );
-                    //_profile.SetEndTime( (b ? null : storedEndTime) );
-                    //_budget.SetShowAll(b);
                     RefreshOverview();
                 }
             }
@@ -197,25 +189,21 @@ public class ActivityMain extends AppCompatActivity
         //ProfileManager.OpenDialogFragment(this, DialogFragmentPermissionReasoning.newInstance(this, new int[]{ R.string.tt_permission_writestorage1 }, new int[]{ R.string.tt_permission_writestorage2 }, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }), true);
 
         //Check app version for update, display changelog
-        if (!App.GetVersion(this).equals(App.GetLastVersion())){
+        if (!App.GetVersion(this).equals(App.GetPrevVersion())){
             App.SetLastVersion(this);
             Helper.OpenDialogFragment(this, DialogFragmentChangelog.newInstance(), true);
         }
 
     }
 
-    @Override
-    public void onStart(){
-        super.onStart();
-        
-        //RefreshOverview();
-    }
 
     @Override
     public void onResume(){
         super.onResume();
 
         _selectedBudget = BudgetManager.getInstance().GetSelectedBudget();
+
+        RefreshOverview();
 
         //if (_selectedBudgetID != 0) {
         //    checkbox_showall.setChecked(_profile.GetShowAll());
@@ -291,28 +279,28 @@ public class ActivityMain extends AppCompatActivity
     public void RefreshOverview(){
 
         //Suggest the user add a profile if none exist
-        if (_selectedBudget != null){
+        if (_selectedBudget == null){
             versusCard.getBase().setVisibility(View.GONE);
             expensesCard.getBase().setVisibility(View.GONE);
             incomeCard.getBase().setVisibility(View.GONE);
             button_suggestaddbudget.setVisibility(View.VISIBLE);
             progress_loadingData.setVisibility(View.GONE);
             relativeLayout_period.setVisibility(View.GONE);
-
-            versusCard.SetBudgetID(_selectedBudget.GetID());
-            expensesCard.SetBudgetID(_selectedBudget.GetID());
-            incomeCard.SetBudgetID(_selectedBudget.GetID());
-
-            versusCard.SetData();
-            expensesCard.SetData();
-            incomeCard.SetData();
         }
         else {
-            versusCard.getBase().setVisibility(View.VISIBLE);
+            //versusCard.getBase().setVisibility(View.VISIBLE);
             expensesCard.getBase().setVisibility(View.VISIBLE);
             incomeCard.getBase().setVisibility(View.VISIBLE);
             button_suggestaddbudget.setVisibility(View.GONE);
             relativeLayout_period.setVisibility(View.VISIBLE);
+
+            //versusCard.SetBudget(_selectedBudget.GetID());
+            expensesCard.SetBudget(_selectedBudget.GetID());
+            incomeCard.SetBudget(_selectedBudget.GetID());
+
+            //versusCard.SetData();
+            expensesCard.SetData();
+            incomeCard.SetData();
         }
 
         ToolbarTitleUpdate();

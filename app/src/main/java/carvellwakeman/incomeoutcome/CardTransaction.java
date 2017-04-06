@@ -37,7 +37,7 @@ import java.util.Map;
 public class CardTransaction extends Card
 {
     Context _context;
-    int _budgetID;
+    Budget _budget;
 
     int keyType;
     int activityType;
@@ -63,7 +63,8 @@ public class CardTransaction extends Card
     public CardTransaction(ViewGroup insertPoint, int index, int budgetID, int defaultActivityType, String title, Context context, LayoutInflater inflater, int layout){
         super(context, inflater, layout, insertPoint, index);
         this._context = context;
-        _budgetID = budgetID;
+        this._budget = BudgetManager.getInstance().GetBudget(budgetID);
+
         this.defaultActivityType = defaultActivityType;
         this.activityType = defaultActivityType;
         //this.defaultKeyType = defaultKeyType;
@@ -115,8 +116,14 @@ public class CardTransaction extends Card
         button_viewDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Budget _budget = BudgetManager.getInstance().GetBudget(_budgetID);
                 if (_budget != null) {
+                    //Start the details activity
+                    Intent intent = new Intent(_context, ActivityDetailsTransaction.class);
+                    intent.putExtra("activitytype", activityType);
+                    intent.putExtra("budget", _budget.GetID());
+                    _context.startActivity(intent);
+
+
                     //_profile.SetFilterMethod(ProfileManager.FILTER_METHODS.NONE, null);
                     //_profile.SetSortMethod(ProfileManager.SORT_METHODS.DATE_DOWN);
 
@@ -189,10 +196,9 @@ public class CardTransaction extends Card
         SetExpanded(false);
     }
 
-    public void SetBudgetID(int id){ _budgetID = id; }
+    public void SetBudget(int id){ _budget = BudgetManager.getInstance().GetBudget(id); }
 
     public void SetData(){
-        Budget _budget = BudgetManager.getInstance().GetBudget(_budgetID);
         if (_budget != null){
             //_profile.CalculateTimeFrame(activityType);
             /*

@@ -255,7 +255,7 @@ public class TimePeriod implements java.io.Serializable
         }
         return null;
     }
-    public static LocalDate calcNearestDateInPeriod(Period per, LocalDate date){
+    public static LocalDate calcNearestDateInPeriod(LocalDate date, Period per){
         if (per != null && date != null) {
             LocalDate ret = new LocalDate(date);
 
@@ -282,9 +282,9 @@ public class TimePeriod implements java.io.Serializable
         ArrayList<LocalDate> event_occurrences = new ArrayList<>();
         int event_occurrences_count = 0;
         LocalDate currentEvent = initialEvent;
-        //ProfileManager.Print("event_start:" + event_start.toString(ProfileManager.simpleDateFormat));
-        //ProfileManager.Print("event_end:" + event_end.toString(ProfileManager.simpleDateFormat));
-        //ProfileManager.Print("initialEvent:" + initialEvent.toString(ProfileManager.simpleDateFormat));
+        //Helper.Print(App.GetContext(), "event_start:" + event_start.toString(Helper.getString(R.string.date_format)));
+        //Helper.Print(App.GetContext(), "event_end:" + event_end.toString(Helper.getString(R.string.date_format)));
+        //Helper.Print(App.GetContext(), "initialEvent:" + initialEvent.toString(Helper.getString(R.string.date_format)));
 
         //Null check for event period
         if (event_start != null && event_end != null) {
@@ -378,11 +378,11 @@ public class TimePeriod implements java.io.Serializable
         LocalDate event_start = date; //dateMax(date, timeFrame_start);
         LocalDate event_end = timeFrame_end;
         LocalDate initialEvent = (event_start!=null ? event_start : date);
-        //Null start_time (set to first occurrence of event)        ^^^^
-        //Null end_time impossible, because there could be infinite occurrences
+        //Null start_time =(set to first occurrence of event)       ^^^^
+        //Null end_time = impossible, because there could be infinite occurrences
 
 
-        //Set event_start & initialEvent depending on repeatFrequence: NEVER (Short-Circuit return), WEEKLY, MONTHLY, and YEARLY
+        //Set event_start & initialEvent depending on repeatFrequency: NEVER (Short-Circuit return), WEEKLY, MONTHLY, and YEARLY
         switch(repeatFrequency){
             case NEVER:
                 if (date != null) {
@@ -548,7 +548,7 @@ public class TimePeriod implements java.io.Serializable
 
     public String GetRepeatString(){
         //Short-Circuit if repeat type is NEVER
-        if (repeatFrequency == Repeat.NEVER) { return GetDateFormatted(); }
+        if (repeatFrequency == Repeat.NEVER) { return ""; }
 
         String tense = Helper.getString(date.compareTo(LocalDate.now()) <= 0 ? R.string.time_started : R.string.time_starts);
         String repeatTypeString = tense + " " + GetDateFormatted() + "\n" + Helper.getString(R.string.repeats) + " " + GetEveryNFormatted(GetRepeatFrequency());

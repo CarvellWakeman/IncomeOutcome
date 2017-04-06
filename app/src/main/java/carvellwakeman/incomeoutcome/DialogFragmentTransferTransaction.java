@@ -85,7 +85,8 @@ public class DialogFragmentTransferTransaction extends DialogFragment
                                 DatabaseManager.getInstance().removeBudgetSetting(_budget);
                                 BudgetManager.getInstance().RemoveBudget(_budget);
 
-                                //if (_parent.adapter != null) { _parent.adapter.notifyDataSetChanged(); }
+                                 _parent.adapter.notifyDataSetChanged();
+
                                 _dialog.dismiss();
                                 dismiss();
                             }})

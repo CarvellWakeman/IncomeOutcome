@@ -5,6 +5,11 @@ public class Person
     private int _uniqueID;
     private String _name;
 
+    static Person Me;
+    static {
+        Me = new Person(Helper.getString(R.string.format_me));
+        Me._uniqueID = 0;
+    }
 
     public Person(String name){
         _uniqueID = System.identityHashCode(this);
@@ -22,3 +27,5 @@ public class Person
     public void SetID(int ID){ _uniqueID = ID; }
 
 }
+
+

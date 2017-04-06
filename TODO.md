@@ -1,5 +1,6 @@
-PREV:Refactoring activityManageBudgets/activityManageCategories/activityManagePeople
-NEXT:Get ActivityDetailsTransaction working
+PREV:Refactoring ActivityDetailsTransaction
+NEXT:Get adding/editing working THEN Get sorting and filtering remade
+
 
 TODO
 -High
@@ -14,6 +15,7 @@ TODO
 *[BUGFIX] Permissions revoked on runtime leaves import activity empty
 *[BUGFIX] Some MyTab import expenses are not split
 
+*[CHANGE] Move details page date inbetween next/prev period buttons
 *[CHANGE] Show All / Show Unpaid moved to overflow menu
 *[CHANGE] Transaction uses category ID and person ID instead of strings
 *[CHANGE] When adding a transaction, the keyboard hides when any element that does not use it is clicked
@@ -28,6 +30,8 @@ TODO
 *[CHANGE] Filter dialog windows shrunk to wrap content
 *[CHANGE] DialogFragmentManagePPC windows shrunk to wrap content
 
+*[ADD] Snackbar notifications for database functions
+*[ADD] Per Person Payback Dates
 *[ADD] FAB on Overview page to add transaction
 *[ADD] Time period option "All Unpaid"
 *[ADD] Toolbar changes color when current day is within timeperiod (Or some other indicator)
@@ -52,6 +56,7 @@ TODO
 
 
 UNRELEASED
+*[BUGFIX] Database manager correctly loads transactions that are not split
 #[ADD] Category: Parking, membership
 *[CHANGE] Major rewrite of data structures and database, UI updated to comply with new standards
 *[CHANGE] Refactored activityManageBudgets/activityManageCategories/activityManagePeople

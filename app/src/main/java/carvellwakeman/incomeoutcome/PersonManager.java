@@ -45,6 +45,9 @@ public class PersonManager
 
     //Get person by index
     public Person GetPerson(int ID){
+        //Override for "ME"
+        if (ID==0){ return Person.Me; }
+
         for (Person p : _People) {
             if (p.GetID() == ID) { return p; }
         }

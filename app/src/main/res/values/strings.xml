@@ -65,7 +65,7 @@
 
     <string name="title_settings_viewdatabase">View Database</string>
     <string name="title_settings_importmytab">Import MyTab Save File</string>
-    <string name="title_settings_fakedata">Add random data (1000 transactions)</string>
+    <string name="title_settings_fakedata">Add random data (100 transactions)</string>
 
     <!-- Setting subtitles -->
     <string name="subtitle_settings_defaultcategories">Erase all existing categories and load defaults</string>
@@ -105,6 +105,7 @@
     <string name="misc_all">All</string>
     <string name="misc_on"> on </string>
     <string name="misc_onday"> on day </string>
+    <string name="misc_me">Me</string>
 
     <!-- Placeholders -->
     <string name="placeholder_title">Title</string>
@@ -155,9 +156,9 @@
     <string name="info_title_value">%1$s %2$s</string>
     <string name="info_income_summary_value">Earned %1$s</string>
     <string name="info_expense_summary_value">Earned %1$s</string>
-    <string name="info_paidby">Paid By</string>
+    <string name="info_paidby">Paid By %1$s</string>
     <string name="info_paidback">Paid Back</string>
-    <string name="info_paidback_format">Paid Back %1$s</string>
+    <string name="info_paidback_format">Paid %1$s</string>
     <string name="info_nobackup">No Backup Found</string>
     <string name="info_restorebackup">Restore Backup</string>
     <string name="info_backupnotice">Restore data from before your last import</string>
@@ -178,8 +179,7 @@
 
     <!-- Formatting -->
     <string name="item_delimiter">,</string>
-    <string name="format_ipaid">%1$s owes %2$s (%3$s%%)</string>
-    <string name="format_theypaid">I owe %1$s (%2$s%%)</string>
+    <string name="format_paid">%1$s owe%2$s %3$s %4$s (%5$s%%)</string>
     <string name="format_me">You</string>
     <string name="balance_even">Balance is even between You and </string>
     <string name="balance_uneven">owe</string>

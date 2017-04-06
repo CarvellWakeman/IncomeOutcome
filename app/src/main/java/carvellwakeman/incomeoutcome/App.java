@@ -53,6 +53,6 @@ public class App extends Application {
             return pInfo.versionCode;
         } catch (Exception ex){ return -1; }
     }
-    public static String GetLastVersion(){ return lastVersion; }
+    public static String GetPrevVersion(){ return lastVersion; }
     public static void SetLastVersion(Context ac){ prefs.edit().putString(versionKey, GetVersion(ac)).apply(); }
 }

@@ -32,6 +32,7 @@
 
 
         <RelativeLayout
+            android:id="@+id/transaction_row_relativelayout_base"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -121,80 +122,62 @@
                     android:layout_toEndOf="@+id/transaction_row_cost"
                     android:text="@string/info_paidby"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
-                <TextView
-                    android:id="@+id/transaction_row_paidby_who"
-                    android:layout_width="wrap_content"
+
+                <LinearLayout
+                    android:id="@+id/transaction_row_linearlayout_split"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/transaction_row_paidby"
-                    android:layout_marginStart="4dp"
-                    android:layout_toEndOf="@+id/transaction_row_paidby"
-                    android:text="@string/placeholder_person"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:visibility="gone" />
+                    android:orientation="vertical"
+                    android:layout_below="@+id/transaction_row_paidby">
 
-
-                <TextView
-                    android:id="@+id/transaction_row_split"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/transaction_row_cost"
-                    android:text="@string/format_ipaid"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:visibility="gone" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/transaction_row_paidback"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/transaction_row_split"
+                    android:layout_below="@+id/transaction_row_linearlayout_split"
                     android:text="@string/info_paidback"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/darkgreen"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
             </RelativeLayout>
 
-            <!-- Description and repeat -->
-            <RelativeLayout
-                android:id="@+id/transaction_row_descriptionandrepeat"
+            <!-- Description -->
+            <TextView
+                android:id="@+id/transaction_row_description"
+                android:layout_below="@+id/transaction_row_relativelayout_cost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/transaction_row_relativelayout_cost"
+                android:layout_alignParentEnd="true"
+                android:text="@string/info_description"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="italic"
+                android:visibility="gone"
                 android:paddingBottom="16dp"
                 android:paddingEnd="16dp"
                 android:paddingStart="16dp"
-                android:paddingTop="8dp">
-
-                <TextView
-                    android:id="@+id/transaction_row_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:text="@string/info_description"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textStyle="italic"
-                    android:visibility="gone" />
-
-            </RelativeLayout>
+                android:paddingTop="8dp"/>
 
 
             <View
                 android:id="@+id/transaction_row_divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@id/transaction_row_descriptionandrepeat"
+                android:layout_below="@id/transaction_row_description"
                 android:background="@android:color/darker_gray" />
 
 
             <!-- Date and expand button -->
+            <!--android:animateLayoutChanges="true"-->
             <RelativeLayout
                 android:id="@+id/transaction_row_relativelayout_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/transaction_row_divider"
-                android:animateLayoutChanges="true"
                 android:padding="16dp">
 
 

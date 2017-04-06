@@ -70,22 +70,25 @@ public class Budget implements java.io.Serializable
         else { _periodFrequency = Repeat.NEVER; }
 
         //Set start and end dates to the precision of the period
-        LocalDate T = TimePeriod.calcNearestDateInPeriod(period, GetStartDate());
+        LocalDate T = TimePeriod.calcNearestDateInPeriod(GetStartDate(), period);
         SetStartDate(T);
     }
 
-    public void MoveTimePeriod(int n){
-        if (GetStartDate() == null) { SetStartDate((new LocalDate()).withDayOfMonth(1) ); }
+    public void MoveTimePeriod(int n) {
+        if (GetStartDate() == null) { SetStartDate((new LocalDate()).withDayOfMonth(1)); }
 
         for (int i = 0; i < Math.abs(n); i++) {
             if (n > 0) { SetStartDate(GetStartDate().plus(GetPeriod())); }
             else { SetStartDate(GetStartDate().minus(GetPeriod())); }
         }
 
-        SetEndDate(GetStartDate().plus(GetPeriod()));
 
         //Subtract one day for months and years
-        if (GetPeriodFreqency()==Repeat.MONTHLY || GetPeriodFreqency()==Repeat.YEARLY) { SetEndDate(GetEndDate().minusDays(1)); }
+        if (GetPeriodFreqency() == Repeat.MONTHLY || GetPeriodFreqency() == Repeat.YEARLY) {
+            SetEndDate(GetStartDate().plus(GetPeriod()).minusDays(1));
+        } else {
+            SetEndDate(GetStartDate().plus(GetPeriod()));
+        }
 
     }
 
@@ -124,11 +127,12 @@ public class Budget implements java.io.Serializable
     public ArrayList<new_Transaction> GetTransactions(new_Transaction.TRANSACTION_TYPE type) { return GetTransactions(null, null, type); }
     public ArrayList<new_Transaction> GetTransactionsInTimeframe(new_Transaction.TRANSACTION_TYPE type){ return GetTransactions(GetStartDate(), GetEndDate(), type); }
     public ArrayList<new_Transaction> GetTransactions(LocalDate startDate, LocalDate endDate, new_Transaction.TRANSACTION_TYPE type){
-        ArrayList<new_Transaction> l = new ArrayList<>();
+        ArrayList<new_Transaction> tmp = new ArrayList<>();
         for (int i = 0; i < _transactions.size(); i++) {
-            l.addAll(_transactions.get(i).GetOccurrences(startDate, endDate, type));
+            tmp.addAll(_transactions.get(i).GetOccurrences(startDate, endDate, type));
         }
-        return l;
+        Helper.Print(App.GetContext(), "GetTransactions");
+        return tmp;
     }
 
 
