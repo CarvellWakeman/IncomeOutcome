@@ -10,8 +10,4 @@
         android:title="@string/action_delete"
         android:orderInCategory="2" />
 
-    <item android:id="@+id/transaction_duplicate"
-        android:title="@string/action_duplicate"
-        android:orderInCategory="3" />
-
 </menu>

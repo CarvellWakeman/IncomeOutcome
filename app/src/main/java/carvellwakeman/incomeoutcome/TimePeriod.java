@@ -232,6 +232,7 @@ public class TimePeriod implements java.io.Serializable
 
     public static LocalDate calcNextDayOfMonth(LocalDate date, int dayOfMonth) {
         if (date != null) {
+            dayOfMonth = Math.min(30,dayOfMonth); // Added after 'org.joda.time.IllegalFieldValueException: Value 31 for dayOfMonth must be in the range [1,30]', is it necessary though?
             return (date.getDayOfMonth() <= dayOfMonth) ? date.withDayOfMonth(dayOfMonth) : date.plusMonths(1).withDayOfMonth(dayOfMonth);
         }
         return null;
@@ -442,7 +443,7 @@ public class TimePeriod implements java.io.Serializable
 
     //Accessors
     public LocalDate GetDate() { return date; }
-    public LocalDate GetFirstOccurrence() { if (_firstOccurenceDate == null ) { return date; } else { return _firstOccurenceDate; } }
+    public LocalDate GetFirstOccurrence() { CalculateFirstOccurrence(); if (_firstOccurenceDate == null ) { return date; } else { return _firstOccurenceDate; } }
 
     public Repeat GetRepeatFrequency() { return repeatFrequency; }
         public Boolean DoesRepeat() { return GetRepeatFrequency() != Repeat.NEVER; }
@@ -482,16 +483,16 @@ public class TimePeriod implements java.io.Serializable
         repeatDayOfWeek[5] = str.length() >= 6 && str.charAt(5) == '1';
         repeatDayOfWeek[6] = str.length() >= 7 && str.charAt(6) == '1';
     }
-    public void SetDate(LocalDate newDate) { date = newDate; CalculateFirstOccurrence();}
+    public void SetDate(LocalDate newDate) { date = newDate; }
     //public void SetFirstOccurrence(LocalDate newDate) { _firstOccurenceDate = newDate; }
-    public void SetRepeatFrequency(Repeat freq) { repeatFrequency = freq; CalculateFirstOccurrence();}
-    public void SetRepeatUntil(RepeatUntil until) { repeatUntil = until; CalculateFirstOccurrence();}
-    public void SetRepeatANumberOfTimes(int times) { repeatUntilTimes = times; CalculateFirstOccurrence();}
-    public void SetRepeatUntilDate(LocalDate repUntDate) { repeatUntilDate = repUntDate; CalculateFirstOccurrence();}
-    public void SetRepeatEveryN(int n) { repeatEveryN = n; CalculateFirstOccurrence();}
-    public void SetDayOfWeek(int day, Boolean val) { if (day >= 0 && day <= 6) { repeatDayOfWeek[day] = val; } CalculateFirstOccurrence();}
-    public void SetRepeatDayOfMonth(int val) { repeatDayOfMonth = val; CalculateFirstOccurrence();}
-    public void SetDateOfYear(LocalDate newDate) { dateOfYear = newDate; CalculateFirstOccurrence();}
+    public void SetRepeatFrequency(Repeat freq) { repeatFrequency = freq; }
+    public void SetRepeatUntil(RepeatUntil until) { repeatUntil = until; }
+    public void SetRepeatANumberOfTimes(int times) { repeatUntilTimes = times; }
+    public void SetRepeatUntilDate(LocalDate repUntDate) { repeatUntilDate = repUntDate; }
+    public void SetRepeatEveryN(int n) { repeatEveryN = n; }
+    public void SetDayOfWeek(int day, Boolean val) { if (day >= 0 && day <= 6) { repeatDayOfWeek[day] = val; } }
+    public void SetRepeatDayOfMonth(int val) { repeatDayOfMonth = val; }
+    public void SetDateOfYear(LocalDate newDate) { dateOfYear = newDate; }
 
 
     //Formatting
@@ -573,7 +574,7 @@ public class TimePeriod implements java.io.Serializable
                 repeatTypeString += ", " + Helper.getString(R.string.repeat_forever);
                 break;
             case DATE:
-                repeatTypeString += ",\n" + Helper.getString(R.string.until) + " " + GetRepeatUntilDateFormatted();
+                repeatTypeString += ", " + Helper.getString(R.string.until) + " " + GetRepeatUntilDateFormatted();
                 break;
             case TIMES:
                 repeatTypeString += ", " + GetRepeatANumberOfTimes() + " " + Helper.getString(R.string.repeat_events);
@@ -593,13 +594,13 @@ public class TimePeriod implements java.io.Serializable
         //Repeat Frequency
         switch (repeatFrequency){
             case WEEKLY:
-                repeatTypeString += "; " + GetRepeatDaysOfWeek();
+                repeatTypeString += " " + GetRepeatDaysOfWeek();
                 break;
             case MONTHLY:
-                repeatTypeString += "; " +GetDayOfMonthFormatted();
+                repeatTypeString += " " + GetDayOfMonthFormatted();
                 break;
             case YEARLY:
-                repeatTypeString += "; " +GetRepeatYear();
+                repeatTypeString += " " + GetRepeatYear();
                 break;
         }
 
@@ -607,10 +608,10 @@ public class TimePeriod implements java.io.Serializable
         switch (repeatUntil)
         {
             case FOREVER:
-                repeatTypeString += "; " + Helper.getString(R.string.repeat_forever);
+                repeatTypeString += ", " + Helper.getString(R.string.repeat_forever);
                 break;
             case DATE:
-                repeatTypeString += "; " + Helper.getString(R.string.until) + " " + GetRepeatUntilDateFormatted();
+                repeatTypeString += ", " + Helper.getString(R.string.until) + " " + GetRepeatUntilDateFormatted();
                 break;
             case TIMES:
                 repeatTypeString += "; " + GetRepeatANumberOfTimes() + " " + Helper.getString(R.string.repeat_events);

@@ -116,6 +116,9 @@ public class Budget implements java.io.Serializable
     }
 
     public new_Transaction GetTransaction(int ID){
+        //Short circuit for invalid ID
+        if (ID == -1){ return null; }
+
         for (int i = 0; i < _transactions.size(); i++) {
             if (_transactions.get(i).GetID() == ID) {
                 return _transactions.get(i);

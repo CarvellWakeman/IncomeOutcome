@@ -23,27 +23,27 @@ import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.joda.time.LocalDate;
 
 
-public class ActivityNewTransaction extends AppCompatActivity
+public class ActivityNewTransactionRewrite extends AppCompatActivity
 {
     //Activity type (Expense or Income)
     int activityType;
 
-    //Data structure IDs
-    int _profileID;
+    //Data structure
+    Budget _budget;
+
     //If editing or cloning
-    int _transactionID;
+    //int _transactionID;
 
     EDIT_STATE _editState;
     public enum EDIT_STATE
     {
         NewTransaction,
-        EditUpdate,
-        EditGhost,
+        Edit,
         Duplicate
     }
 
 
-    LocalDate _cloneDate;
+    //LocalDate _cloneDate;
     LocalDate _paidBack;
 
 
@@ -57,7 +57,7 @@ public class ActivityNewTransaction extends AppCompatActivity
     //Adapters
     ArrayAdapter<String> otherPeopleAdapter;
     ArrayAdapter<String> categoryAdapter;
-    AdapterBlacklistDates blacklistAdapter;
+    //AdapterBlacklistDates blacklistAdapter;
 
 
     //Time Period
@@ -68,10 +68,14 @@ public class ActivityNewTransaction extends AppCompatActivity
     Setting dateTP;
     Setting repeatTP;
 
+
+
+
+
     //Views
     Toolbar toolbar;
 
-    NoDefaultSpinner spinner_categories;
+    Spinner spinner_categories;
     Spinner spinner_otherPeople;
 
     CheckBox checkBox_split;
@@ -110,7 +114,7 @@ public class ActivityNewTransaction extends AppCompatActivity
 
 
 
-    boolean noInfiniteLoopPlease = true;
+    //boolean noInfiniteLoopPlease = true;
 
 
 
@@ -123,14 +127,14 @@ public class ActivityNewTransaction extends AppCompatActivity
         //Get the intent that opened this activity
         Intent intent = getIntent();
         activityType = intent.getIntExtra("activitytype", -1);
+        _budget = BudgetManager.getInstance().GetBudget(intent.getIntExtra("budget", -1));
 
 
         //Variable defaults
         noInfiniteLoopPlease = true;
         tCost = sCost = splitPercent = 0d;
-        _profileID = 0;
-        _transactionID = 0;
-        _cloneDate = null;
+        //_transactionID = 0;
+        //_cloneDate = null;
 
 
         //Find Views
@@ -146,10 +150,11 @@ public class ActivityNewTransaction extends AppCompatActivity
         linearLayout_splitCheckbox = (LinearLayout) findViewById(R.id.linearLayout_newTransaction_splitCostCheckBox);
         frameLayout_timePeriod = (FrameLayout) findViewById(R.id.frameLayout_timePeriod);
 
-        spinner_categories = (NoDefaultSpinner) findViewById(R.id.spinner_newTransaction_categories);
+        spinner_categories = (Spinner) findViewById(R.id.spinner_newTransaction_categories);
         spinner_otherPeople = (Spinner) findViewById(R.id.spinner_newTransaction_otherpeople);
 
         checkBox_paidBack = (CheckBox) findViewById(R.id.checkBox_newTransaction_paidback);
+        /*
         checkBox_paidBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,6 +184,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                 }
             }
         });
+        */
 
         checkBox_split = (CheckBox) findViewById(R.id.checkBox_newTransaction_splitEnabled);
         checkBox_split.setOnClickListener(new View.OnClickListener() {

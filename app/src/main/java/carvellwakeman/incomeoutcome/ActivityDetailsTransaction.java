@@ -151,10 +151,10 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                 @Override
                 public void onClick(View view) {
                     if (_budget != null) {
-                        //Intent intent = new Intent(ActivityDetailsTransaction.this, ActivityNewTransaction.class);
-                        //intent.putExtra("activitytype", activityType);
-                        //intent.putExtra("budget", _budget.GetID());
-                        //startActivityForResult(intent, 4);
+                        Intent intent = new Intent(ActivityDetailsTransaction.this, ActivityNewTransaction.class);
+                        intent.putExtra("activitytype", activityType);
+                        intent.putExtra("budget", _budget.GetID());
+                        startActivity(intent);
                     }
                     else {
                         Helper.PrintUser(ActivityDetailsTransaction.this, "ERROR: Budget not found, could not start New Transaction Activity");
@@ -201,8 +201,6 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             transactionsView.setAdapter(transactionsAdapter);
 
             linearLayoutManager = new NpaLinearLayoutManager(this);
-            linearLayoutManager.setOrientation(NpaLinearLayoutManager.VERTICAL);
-            linearLayoutManager.scrollToPosition(0);
             transactionsView.setLayoutManager(linearLayoutManager);
 
 
@@ -222,11 +220,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
     public void onResume(){
         super.onResume();
 
-        //if (_profile != null) { checkbox_showall.setChecked(_profile.GetShowAll()); }
-
-        CheckShowNoDataNotice();
-        //RefreshActivity();
-        //UpdateAdapters();
+        RefreshActivity();
     }
 
     @Override
@@ -362,21 +356,41 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             //If the expense is not a ghost expense (only exists in the _timeframe array), then edit it normally, else clone it and blacklist the old date
             switch (action.getItemId()) {
                 case R.id.transaction_edit_instance: //Edit(instance)
-                    //If edited expense exists, edit it. If not, clone it (and then edit it)
+                    //If edited expense exists, edit it. If not, duplicate it
                     if ( _budget.GetTransaction(tran.GetID()) != null ) {
-                        //Transaction is an original
-                        if (tran.GetID() == tranp.GetID() && tran.GetTimePeriod()!=null && (tran.GetTimePeriod().DoesRepeat() || tranp.GetTimePeriod().DoesRepeat()) ){ //Editing parent as an instance
-                            cloneTransaction(tranp, _budget.GetID(), tran.GetTimePeriod().GetDate());
-                        } else { //Transaction is a child of an original
-                            editTransaction(tran, _budget.GetID());
+                        //If tranp has children (ie, tranp and tran are not the same transaction)
+                        if (tranp.GetTimePeriod().DoesRepeat()){ //tranp has children, dupliciate and blacklist it
+                            Intent intent = new Intent(ActivityDetailsTransaction.this, ActivityNewTransaction.class);
+                            intent.putExtra("activitytype", activityType);
+                            intent.putExtra("budget", _budget.GetID());
+                            intent.putExtra("transaction", tranp.GetID());
+                            intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Duplicate.ordinal());
+                            startActivity(intent);
+                        } else { //Standard transaction
+                            Intent intent = new Intent(ActivityDetailsTransaction.this, ActivityNewTransaction.class);
+                            intent.putExtra("activitytype", activityType);
+                            intent.putExtra("budget", _budget.GetID());
+                            intent.putExtra("transaction", tranp.GetID());
+                            intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Edit.ordinal());
+                            startActivity(intent);
                         }
                     } else { //Ghost
-                        cloneTransaction(tranp, _budget.GetID(), tran.GetTimePeriod().GetDate());
+                        Intent intent = new Intent(ActivityDetailsTransaction.this, ActivityNewTransaction.class);
+                        intent.putExtra("activitytype", activityType);
+                        intent.putExtra("budget", _budget.GetID());
+                        intent.putExtra("transaction", tran.GetID());
+                        intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Duplicate.ordinal());
+                        startActivity(intent);
                     }
                     break;
 
                 case R.id.transaction_edit_all: //Edit(all / parent)
-                    editTransaction(tranp, _budget.GetID());
+                    Intent intent = new Intent(ActivityDetailsTransaction.this, ActivityNewTransaction.class);
+                    intent.putExtra("activitytype", activityType);
+                    intent.putExtra("budget", _budget.GetID());
+                    intent.putExtra("transaction", tranp.GetID());
+                    intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Edit.ordinal());
+                    startActivity(intent);
                     break;
 
                 case R.id.transaction_delete_instance: //Delete(instance)

@@ -80,8 +80,6 @@ public class DialogFragmentChangelog extends DialogFragment
 
             //LinearLayoutManager for RecyclerView
             linearLayoutManager = new NpaLinearLayoutManager(getActivity());
-            linearLayoutManager.setOrientation(NpaLinearLayoutManager.VERTICAL);
-            linearLayoutManager.scrollToPosition(0);
             recyclerView_changes.setLayoutManager(linearLayoutManager);
         }
         else {

@@ -3,6 +3,7 @@ package carvellwakeman.incomeoutcome;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -54,6 +55,7 @@ public class ActivityManageBudgets extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_managebudgets);
         //view.setBackgroundColor(Color.WHITE);
+
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         appBarLayout = (AppBarLayout) findViewById(R.id.appbarlayout);
@@ -126,8 +128,6 @@ public class ActivityManageBudgets extends AppCompatActivity {
 
         //LinearLayoutManager for RecyclerView
         linearLayoutManager = new NpaLinearLayoutManager(this);
-        linearLayoutManager.setOrientation(NpaLinearLayoutManager.VERTICAL);
-        linearLayoutManager.scrollToPosition(0);
         recyclerView_profiles.setLayoutManager(linearLayoutManager);
 
 
@@ -173,6 +173,12 @@ public class ActivityManageBudgets extends AppCompatActivity {
             }
         });
 
+    }
+
+    //Option to automatically open the add menu
+    @Override public void onWindowFocusChanged(boolean hasFocus){
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra("addnew", false)){ OpenAddMenu(); }
     }
 
 

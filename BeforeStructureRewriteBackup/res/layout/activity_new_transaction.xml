@@ -61,7 +61,7 @@
                 card_view:cardUseCompatPadding="true"
                 card_view:contentPadding="@dimen/cardview_default_padding">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -87,84 +87,177 @@
 
                     </android.support.design.widget.TextInputLayout>
 
-                    <!-- Split -->
-
-                    <CheckBox
-                        android:id="@+id/checkBox_newTransaction_splitEnabled"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="bottom"
-                        android:layout_below="@id/TIL_newTransaction_cost"
-                        android:text="@string/action_splitcost"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textColor="@color/black"
-                        android:theme="@style/BlackCheckboxTheme"
-                        android:visibility="visible"
-                        android:layout_marginTop="5dp" />
-
                     <LinearLayout
-                        android:id="@+id/linearLayout_newTransaction_split"
+                        android:id="@+id/linearLayout_newTransaction_splitCostCheckBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
+                        android:theme="@style/Base.Theme.AppCompat.Light"
                         android:visibility="gone"
-                        android:layout_below="@+id/TIL_newTransaction_cost"
-                        android:layout_marginTop="5dp">
+                        android:weightSum="8">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:text="@string/tt_paid"
+                        <CheckBox
+                            android:id="@+id/checkBox_newTransaction_splitEnabled"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="bottom"
+                            android:layout_weight="3"
+                            android:text="@string/action_splitcost"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:textAlignment="viewEnd"
-                            android:layout_marginBottom="10dp" />
+                            android:textColor="@color/black"
+                            android:theme="@style/BlackCheckboxTheme"
+                            android:visibility="visible" />
 
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/recyclerView_newTransaction_split"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                        <!-- carvellwakeman.incomeoutcome.NoDefaultSpinner -->
+                        <Spinner
+                            android:id="@+id/spinner_newTransaction_otherpeople"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="5"
+                            android:theme="@style/MaterialTheme"
+                            android:visibility="gone" />
 
-                        </android.support.v7.widget.RecyclerView>
 
-                      <LinearLayout
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="horizontal"
-                          android:weightSum="2">
-
-                          <Button
-                              android:id="@+id/button_newTransaction_addsplit"
-                              style="@style/FlatButtonTheme"
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_weight="1"
-                              android:paddingBottom="16dp"
-                              android:paddingTop="16dp"
-                              android:text="@string/action_addsplit"
-                              android:textAllCaps="false"
-                              android:textAlignment="viewStart" />
-
-                          <Button
-                              android:id="@+id/button_newTransaction_removesplit"
-                              style="@style/FlatButtonTheme"
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_weight="1"
-                              android:paddingBottom="16dp"
-                              android:paddingTop="16dp"
-                              android:text="@string/action_removesplit"
-                              android:textAllCaps="false"
-                              android:textAlignment="viewEnd"
-                              android:gravity="center_vertical" />
-                      </LinearLayout>
+                        <Button
+                            android:id="@+id/button_newTransaction_splitNotice"
+                            style="@style/FlatButtonTheme"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tt_add_to_split"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textStyle="italic"
+                            android:visibility="gone" />
 
                     </LinearLayout>
 
-                </RelativeLayout>
+                </LinearLayout>
 
             </android.support.v7.widget.CardView>
 
+            <!-- Split -->
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_newTransaction_split"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/cardview_default_margin"
+                android:layout_marginStart="@dimen/cardview_default_margin"
+                android:layout_marginTop="@dimen/cardview_default_margin"
+                android:visibility="gone"
+                card_view:cardCornerRadius="@dimen/cardview_default_radius"
+                card_view:cardElevation="@dimen/cardview_default_elevation"
+                card_view:cardUseCompatPadding="true"
+                card_view:contentPadding="@dimen/cardview_default_padding">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="5dp"
+                        android:weightSum="10">
+
+                        <TextView
+                            android:id="@+id/textView_newTransaction_split"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_weight="10"
+                            android:text="@string/tt_percentage_split"
+                            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                        <android.support.v7.widget.SwitchCompat
+                            android:id="@+id/switch_paidBy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="9"
+                            android:checked="true"
+                            android:gravity="center_vertical|end"
+                            android:text="@string/tt_ipaid"
+                            android:textOff="@string/tt_theypaid"
+                            android:textOn="@string/tt_ipaid"
+                            android:visibility="visible" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="5dp"
+                        android:weightSum="2">
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/TIL_newTransaction_PersonACost"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <EditText
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentStart="true"
+                                android:digits=".0123456789"
+                                android:ems="10"
+                                android:hint="@string/tt_yourcost"
+                                android:imeOptions="actionNext"
+                                android:inputType="number"
+                                android:maxLines="1"
+                                android:minLines="1" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/TIL_newTransaction_PersonBCost"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <EditText
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentStart="true"
+                                android:digits=".0123456789"
+                                android:ems="10"
+                                android:hint="@string/tt_theircost"
+                                android:imeOptions="actionNext"
+                                android:inputType="number"
+                                android:maxLines="1"
+                                android:minLines="1" />
+
+                        </android.support.design.widget.TextInputLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="5dp">
+
+                        <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                            android:id="@+id/seekBar_newTransaction"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            app:dsb_indicatorColor="@color/colorAccent"
+                            app:dsb_indicatorFormatter="%s%%"
+                            app:dsb_max="100"
+                            app:dsb_min="0"
+                            app:dsb_progressColor="@color/colorAccent"
+                            app:dsb_rippleColor="@color/colorAccent"
+                            app:dsb_value="50" />
+
+                    </TableRow>
+
+                </TableLayout>
+
+
+            </android.support.v7.widget.CardView>
 
             <!-- Category and Source -->
             <android.support.v7.widget.CardView

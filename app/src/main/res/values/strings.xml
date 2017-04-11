@@ -27,6 +27,7 @@
     <string name="title_addnewperson">New Person</string>
     <string name="title_addnewcategory">New Category</string>
     <string name="title_selectbudget">Select Budget</string>
+    <string name="title_selectperson">Select Person</string>
     <string name="title_selectcurrentbudget">Select Current Budget</string>
     <string name="title_delete">Delete Budget</string>
     <string name="title_edittransaction">Edit Transaction</string>
@@ -106,6 +107,7 @@
     <string name="misc_on"> on </string>
     <string name="misc_onday"> on day </string>
     <string name="misc_me">Me</string>
+    <string name="misc_your">Your</string>
 
     <!-- Placeholders -->
     <string name="placeholder_title">Title</string>
@@ -117,8 +119,9 @@
 
 
     <!-- Tool Tip -->
-    <string name="tt_theircost">Their Cost</string>
+    <string name="tt_theircost">%1$s Cost</string>
     <string name="tt_yourcost">Your Cost</string>
+    <string name="tt_paid">Paid</string>
     <string name="tt_ipaid">I Paid</string>
     <string name="tt_theypaid">They Paid </string>
     <string name="tt_percentage_split">Split</string>
@@ -126,8 +129,8 @@
     <string name="tt_showall">Show All</string>
     <string name="tt_showlegend">Legend</string>
     <string name="tt_personname">Person Name</string>
-    <string name="tt_budgetname">Budget Name</string>
-    <string name="tt_categoryname">Category Name</string>
+    <string name="tt_budgetname">Budget Title</string>
+    <string name="tt_categoryname">Category Title</string>
     <string name="tt_displaydata">Display Data </string>
     <string name="tt_nodata">No Data</string>
     <string name="tt_changelog_nocdata">No Changelog Found</string>
@@ -172,6 +175,7 @@
     <string name="info_domwarning">* Some months are limited to 28/29/30 days. The last day of the month will be chosen in these cases.</string>
     <string name="info_selected">Selected</string>
     <string name="info_total_newline">Total\n</string>
+    <string name="info_select_category">Select a category</string>
 
     <!-- Notice -->
     <string name="notice_deletesuccess">Successfully Deleted</string>
@@ -195,8 +199,9 @@
     <!-- DEBUG -->
     <string name="debug_database">View Database</string>
 
-    <!-- Spinner selection -->
+    <!-- Spinner -->
     <string name="select_category">Select a Category&#8230;</string>
+    <string name="add_new">Add new&#8230;</string>
 
     <!-- User actions -->
     <string name="action_edit">Edit</string>
@@ -224,6 +229,8 @@
     <string name="action_transfer">TRANSFER</string>
     <string name="action_viewdetails">VIEW DETAILS</string>
     <string name="action_setpaidback">Set Paid Back Date</string>
+    <string name="action_addsplit">+ Add person</string>
+    <string name="action_removesplit">- Remove person</string>
 
 
     <!-- Confirmation -->

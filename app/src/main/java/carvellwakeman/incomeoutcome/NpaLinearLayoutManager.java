@@ -20,6 +20,8 @@ class NpaLinearLayoutManager extends LinearLayoutManager {
 
     public NpaLinearLayoutManager(Context context) {
         super(context);
+        setOrientation(NpaLinearLayoutManager.VERTICAL);
+        scrollToPosition(0);
     }
 
     public NpaLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {

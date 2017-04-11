@@ -79,8 +79,6 @@ public class ActivityDatabaseImport extends AppCompatActivity {
 
             //LinearLayoutManager for RecyclerView
             linearLayoutManager = new NpaLinearLayoutManager(this);
-            linearLayoutManager.setOrientation(NpaLinearLayoutManager.VERTICAL);
-            linearLayoutManager.scrollToPosition(0);
             recyclerView_files.setLayoutManager(linearLayoutManager);
 
 

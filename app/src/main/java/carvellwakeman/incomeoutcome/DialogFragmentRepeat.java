@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -86,14 +87,6 @@ public class DialogFragmentRepeat extends DialogFragment
                     _timePeriod.SetRepeatUntilDate(_timePeriod.GetDate());
                 }
                 switch(_timePeriod.GetRepeatFrequency()){
-                    //case NEVER:
-                     //   _parent.SetTimePeriod(_timePeriod);
-                    //    dismiss();
-                    //    break;
-                    //case DAILY:
-                    //    _parent.SetTimePeriod(_timePeriod);
-                    //    dismiss();
-                    //    break;
                     case WEEKLY:
                         if (!AllDaysOff()) {
                             _timePeriod.SetDayOfWeek(0, GetValMon());
@@ -104,31 +97,30 @@ public class DialogFragmentRepeat extends DialogFragment
                             _timePeriod.SetDayOfWeek(5, GetValSat());
                             _timePeriod.SetDayOfWeek(6, GetValSun());
 
-                            _parent.SetTimePeriod(_timePeriod);
 
-                            dismiss();
                         }
                         break;
                     case MONTHLY:
                         if (_timePeriod.GetDate() != null){
                             _timePeriod.SetRepeatDayOfMonth(_timePeriod.GetDate().getDayOfMonth());
                         }
-                        _parent.SetTimePeriod(_timePeriod);
-                        dismiss();
+
                         break;
                     case YEARLY:
                         if (_timePeriod.GetDate() != null){
                             _timePeriod.SetDateOfYear(_timePeriod.GetDate());
                         }
-                        _parent.SetTimePeriod(_timePeriod);
-                        dismiss();
+
                         break;
                     default:
-                        _parent.SetTimePeriod(_timePeriod);
-                        dismiss();
                         break;
                 }
 
+                //Sent timeperiod back to parent
+                Intent intent = new Intent();
+                intent.putExtra("timeperiod", _timePeriod);
+                _parent.onActivityResult(0,0,intent);
+                dismiss();
             }
         });
 
@@ -188,7 +180,7 @@ public class DialogFragmentRepeat extends DialogFragment
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //Hide soft keyboard
-                ProfileManager.hideSoftKeyboard(getActivity(), view);
+                Helper.hideSoftKeyboard(_parent, view);
 
                 relativeLayout_repeateveryn.setVisibility(View.VISIBLE);
                 relativeLayout_weekly.setVisibility(View.GONE);
@@ -226,7 +218,7 @@ public class DialogFragmentRepeat extends DialogFragment
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (_timePeriod != null) {
                     //Hide soft keyboard
-                    ProfileManager.hideSoftKeyboard(getActivity(), view);
+                    Helper.hideSoftKeyboard(_parent, view);
 
                     _timePeriod.SetRepeatUntil(_timePeriod.GetRepeatUntilFromIndex(position));
 
@@ -299,12 +291,12 @@ public class DialogFragmentRepeat extends DialogFragment
             @Override public void afterTextChanged(Editable s) { }
         });
 
-        button_repeatUntil.setText(dateUntil.toString(ProfileManager.simpleDateFormat));
+        button_repeatUntil.setText(dateUntil.toString(Helper.getString(R.string.date_format)));
         button_repeatUntil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Hide soft keyboard
-                ProfileManager.hideSoftKeyboard(getActivity(), v);
+                Helper.hideSoftKeyboard(_parent, v);
 
                 //Open date picker dialog
                 if (dateUntil == null) { dateUntil = new LocalDate(); }
@@ -450,7 +442,7 @@ public class DialogFragmentRepeat extends DialogFragment
                 button_repeatUntil.setText(R.string.time_setdate);
             }
             else {
-                button_repeatUntil.setText(dateUntil.toString(ProfileManager.simpleDateFormat));
+                button_repeatUntil.setText(dateUntil.toString(Helper.getString(R.string.date_format)));
             }
         }
     }

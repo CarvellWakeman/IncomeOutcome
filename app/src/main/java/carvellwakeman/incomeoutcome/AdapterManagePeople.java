@@ -9,6 +9,8 @@ public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeopl
 {
     ActivityManagePeople parent;
 
+    boolean selectMode = false;
+
     public AdapterManagePeople(ActivityManagePeople _parent)
     {
         parent = _parent;
@@ -46,18 +48,21 @@ public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeopl
 
         @Override
         public void onClick(View v) {
-            Person person = PersonManager.getInstance().GetPeople().get(getAdapterPosition());
-            Helper.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, person.GetName(), "", String.valueOf(person.GetID()),
-                    new ParentCallBack() {
-                        @Override public void call(String data, DialogFragmentManagePPC dialogFragment) {
-                            parent.EditPerson(Integer.valueOf(data), dialogFragment);
-                        }
-                    },
-                    null,
-                    new ParentCallBack() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeletePerson(Integer.valueOf(data), dialogFragment); } }
-            ), true); //TODO: Handle mIsLargeDisplay
-            //ProfileManager.OpenDialogFragment(parent, DialogFragmentManageProfile.newInstance(parent, ProfileManager.getInstance().GetProfileByIndex(getAdapterPosition())), true); //TODO: Handle mIsLargeDisplay
-            //parent.EditPerson(ProfileManager.GetOtherPersonByIndex(getAdapterPosition()));
+            //Select only, don't give option to edit or delete
+            if (selectMode){
+                parent.SelectPerson(PersonManager.getInstance().GetPeople().get(getAdapterPosition()));
+            } else {
+                Person person = PersonManager.getInstance().GetPeople().get(getAdapterPosition());
+                Helper.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, person.GetName(), "", String.valueOf(person.GetID()),
+                        new ParentCallBack() {
+                            @Override public void call(String data, DialogFragmentManagePPC dialogFragment) {
+                                parent.EditPerson(Integer.valueOf(data), dialogFragment);
+                            }
+                        },
+                        null,
+                        new ParentCallBack() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeletePerson(Integer.valueOf(data), dialogFragment); } }
+                ), true); //TODO: Handle mIsLargeDisplay
+            }
         }
     }
 }

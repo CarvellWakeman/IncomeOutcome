@@ -2,6 +2,7 @@ package carvellwakeman.incomeoutcome;
 
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -75,7 +76,6 @@ public class ActivityManageCategories extends AppCompatActivity {
         imageView_colorindicator = (ImageView) findViewById(R.id.imageView_dialogcat);
 
         layout_edit = (LinearLayout) findViewById(R.id.linearLayout_dialog_editcategory);
-        //layout_add = (LinearLayout) findViewById(R.id.linearLayout_dialog_newcategory);
 
         recyclerView = (RecyclerView) findViewById(R.id.dialog_recyclerView_categories);
 
@@ -84,9 +84,6 @@ public class ActivityManageCategories extends AppCompatActivity {
 
         //Configure toolbar
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        //toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-        //    @Override public void onClick(View v) { BackAction(); }
-        //});
         toolbar.inflateMenu(R.menu.toolbar_menu_save);
         toolbar.setTitle(R.string.title_managecategories);
         setSupportActionBar(toolbar);
@@ -96,11 +93,9 @@ public class ActivityManageCategories extends AppCompatActivity {
         editText_name = TIL.getEditText();
 
         editText_name.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
                 CheckCanSave();
 
                 String str = editText_name.getText().toString();
@@ -117,8 +112,7 @@ public class ActivityManageCategories extends AppCompatActivity {
                 }
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {}
+            @Override public void afterTextChanged(Editable s) {}
         });
 
 
@@ -167,8 +161,6 @@ public class ActivityManageCategories extends AppCompatActivity {
 
         //LinearLayoutManager for RecyclerView
         linearLayoutManager = new NpaLinearLayoutManager(this);
-        linearLayoutManager.setOrientation(NpaLinearLayoutManager.VERTICAL);
-        linearLayoutManager.scrollToPosition(0);
         recyclerView.setLayoutManager(linearLayoutManager);
 
 
@@ -179,6 +171,7 @@ public class ActivityManageCategories extends AppCompatActivity {
                 OpenAddMenu();
             }
         });
+
         //Hide floating action button when recyclerView is scrolled
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -196,6 +189,13 @@ public class ActivityManageCategories extends AppCompatActivity {
         Card DefaultCategories = new Card(this, inflater, layout_edit, 0);
         Setting loadDefCat = new Setting(inflater, R.drawable.ic_database_plus_white_24dp, getString(R.string.title_settings_defaultcategories), getString(R.string.subtitle_settings_defaultcategories),
                 new View.OnClickListener() { @Override public void onClick(View v) {
+                    //Hide soft keyboard
+                    Helper.hideSoftKeyboard(ActivityManageCategories.this, v);
+
+                    //Close sub menus
+                    CloseSubMenus();
+
+                    //Replace categories with defaults
                     CategoryManager.getInstance().RemoveAllCategories();
                     DatabaseManager.getInstance().deleteTableContent(DatabaseManager.TABLE_SETTINGS_CATEGORIES);
                     CategoryManager.getInstance().LoadDefaultCategories();
@@ -205,7 +205,13 @@ public class ActivityManageCategories extends AppCompatActivity {
         );
         DefaultCategories.AddView(loadDefCat.getView());
 
+    }
 
+
+    //Option to automatically open the add menu
+    @Override public void onWindowFocusChanged(boolean hasFocus){
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra("addnew", false)){ OpenAddMenu(); }
     }
 
 

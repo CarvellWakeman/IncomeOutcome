@@ -26,11 +26,10 @@
 
         <activity android:name=".ActivityDetailsTransaction" android:label="@string/app_name"
             android:launchMode="singleTop"/>
-        <!--
+
         <activity android:name=".ActivityNewTransaction" android:label="@string/title_newtransaction"
             android:launchMode="singleTop"/>
-
-        -->
+        
 
 
         <activity android:name=".ActivitySettings" android:label="@string/title_settings"

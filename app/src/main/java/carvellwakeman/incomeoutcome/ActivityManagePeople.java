@@ -2,6 +2,7 @@ package carvellwakeman.incomeoutcome;
 
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -66,9 +67,6 @@ public class ActivityManagePeople extends AppCompatActivity {
 
         //Configure toolbar
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        //toolbar.setNavigationOnClickListener(new View.OnClickListener() { //Back button while editing closes editing menu (Does not exit activity)
-        //    @Override  public void onClick(View v) { BackAction(); }
-        //});
         toolbar.inflateMenu(R.menu.toolbar_menu_save);
         toolbar.setTitle(R.string.title_managepeople);
         setSupportActionBar(toolbar);
@@ -78,8 +76,7 @@ public class ActivityManagePeople extends AppCompatActivity {
         editText_name = TIL.getEditText();
 
         editText_name.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -95,10 +92,8 @@ public class ActivityManagePeople extends AppCompatActivity {
                 else{ SetSaveButtonEnabled(false); TIL.setError("Enter a name"); } //TODO: Put in strings
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {}
+            @Override public void afterTextChanged(Editable s) {}
         });
-
 
 
         //Set adapter
@@ -107,8 +102,6 @@ public class ActivityManagePeople extends AppCompatActivity {
 
         //LinearLayoutManager for RecyclerView
         linearLayoutManager = new NpaLinearLayoutManager(this);
-        linearLayoutManager.setOrientation(NpaLinearLayoutManager.VERTICAL);
-        linearLayoutManager.scrollToPosition(0);
         recyclerView.setLayoutManager(linearLayoutManager);
 
 
@@ -126,8 +119,15 @@ public class ActivityManagePeople extends AppCompatActivity {
                 else if (dy < 0 && !button_new.isShown()){button_new.show(); }
             }
         });
+
     }
 
+    //Option to automatically open the add menu
+    @Override public void onWindowFocusChanged(boolean hasFocus){
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra("addnew", false)){ OpenAddMenu(); }
+        if (intent.getBooleanExtra("select", false)){ OpenSelectMode(); }
+    }
 
     @Override
     public void onBackPressed() { BackAction(); }
@@ -257,6 +257,42 @@ public class ActivityManagePeople extends AppCompatActivity {
         //Set title
         toolbar.setTitle( R.string.title_addnewperson );
     }
+
+    public void OpenSelectMode(){
+        //Hide add new button
+        button_new.setVisibility( View.GONE );
+
+        //Hide save button
+        button_save.setVisible(false);
+
+        //Set adapter to select
+        adapter.selectMode = true;
+
+        //Set title
+        toolbar.setTitle( R.string.title_selectperson );
+    }
+
+    public void CloseSelectMode(){
+        //Show add new button
+        button_new.setVisibility( View.VISIBLE );
+
+        //Show save button
+        button_save.setVisible(true);
+
+        //Set adapter to not select
+        adapter.selectMode = false;
+
+        //Set title
+        toolbar.setTitle( R.string.title_managepeople );
+    }
+
+    public void SelectPerson(Person p){
+        Intent intent = new Intent();
+        intent.putExtra("person", p.GetID());
+        setResult(1, intent);
+        finish();
+    }
+
 
     public void CloseSubMenus(){
         AppBarLayoutExpanded(false);

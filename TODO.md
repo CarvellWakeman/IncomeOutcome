@@ -1,9 +1,11 @@
-PREV:Refactoring ActivityDetailsTransaction
-NEXT:Get adding/editing working THEN Get sorting and filtering remade
+PREV:working on activityNewTransaction, updating split functionality
+NEXT:Continue rewriting split functionality THEN Get Paid Back working THEN Get adding/editing working THEN get totals working THEN paidBack working THEN Get sorting and filtering remade
 
 
 TODO
 -High
+*[BUGFIX] Cannot delete categories or people that are in use by transactions (Provide user with choice - change all to _ or delete all?)
+*[BUGFIX] Handle when people are deleted but are used by a transaction
 *[BUGFIX] Transaction Split rows (in details activity) not updating when some changes are made
 *[BUGFIX] Importing a transaction should be done in the background
 *[BUGFIX] Transaction parentID sometimes set to non-zero even when transaction has no parent. Clone Transaction? Result:overflow menu won't open
@@ -30,14 +32,14 @@ TODO
 *[CHANGE] Filter dialog windows shrunk to wrap content
 *[CHANGE] DialogFragmentManagePPC windows shrunk to wrap content
 
-*[ADD] Snackbar notifications for database functions
+*[ADD] Use Butterknife
+*[ADD] Snackbar notifications for database functions / Notification of progress when async deleting data
 *[ADD] Per Person Payback Dates
 *[ADD] FAB on Overview page to add transaction
 *[ADD] Time period option "All Unpaid"
 *[ADD] Toolbar changes color when current day is within timeperiod (Or some other indicator)
 *[ADD] Overview of category/source
 *[ADD] Rate in playstore button on Changelog
-*[ADD] Notification of progress when async deleting data
 *[ADD] Android 7.1 app shortcuts
 *[ADD] Testing framework
 *[ADD] Tool to convert repeating individual transactions

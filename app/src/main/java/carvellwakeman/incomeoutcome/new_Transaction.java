@@ -42,6 +42,7 @@ public class new_Transaction implements java.io.Serializable
 
 
     public new_Transaction() { this(TRANSACTION_TYPE.Expense); } //Default constructor, assuming type will be changed using SetType()
+    public new_Transaction(int type){ this( type == 1 ? TRANSACTION_TYPE.Income : TRANSACTION_TYPE.Expense ); }
     public new_Transaction(TRANSACTION_TYPE ttype)
     {
         _type = ttype;
@@ -214,6 +215,7 @@ public class new_Transaction implements java.io.Serializable
 
     //Mutators
     public void SetType(TRANSACTION_TYPE type) { _type = type; }
+    public void SetType(int type) { SetType( type == 1 ? TRANSACTION_TYPE.Income : TRANSACTION_TYPE.Expense ); }
     public void SetID(int ID) { _uniqueID = ID; }
     public void SetParentID(int ID) { _parentID = ID; }
     public void SetBudgetID(int ID) { _budgetID = ID; }

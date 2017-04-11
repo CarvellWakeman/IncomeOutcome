@@ -69,8 +69,6 @@ public class DialogFragmentTransferTransaction extends DialogFragment
 
         //LinearLayoutManager for RecyclerView
         linearLayoutManager = new NpaLinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(NpaLinearLayoutManager.VERTICAL);
-        linearLayoutManager.scrollToPosition(0);
         recyclerView.setLayoutManager(linearLayoutManager);
 
         //Delete all
