@@ -120,12 +120,13 @@
                             android:textAlignment="viewEnd"
                             android:layout_marginBottom="10dp" />
 
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/recyclerView_newTransaction_split"
+                        <LinearLayout
+                            android:id="@+id/linearLayout_newTransaction_splitContainer"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
 
-                        </android.support.v7.widget.RecyclerView>
+                        </LinearLayout>
 
                       <LinearLayout
                           android:layout_width="match_parent"

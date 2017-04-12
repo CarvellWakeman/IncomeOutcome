@@ -1,5 +1,5 @@
-PREV:working on activityNewTransaction, updating split functionality
-NEXT:Continue rewriting split functionality THEN Get Paid Back working THEN Get adding/editing working THEN get totals working THEN paidBack working THEN Get sorting and filtering remade
+PREV:Split functionality is working in its basic state (Needs refinement)
+NEXT:Get editing/ghost editing working THEN get totals working THEN paidBack working THEN Get sorting and filtering remade
 
 
 TODO
@@ -17,6 +17,7 @@ TODO
 *[BUGFIX] Permissions revoked on runtime leaves import activity empty
 *[BUGFIX] Some MyTab import expenses are not split
 
+*[CHANGE] SplitAdapter has a data structure (class) that represents the holder's values. That data structure is updated (Don't hold references to viewHolders)
 *[CHANGE] Move details page date inbetween next/prev period buttons
 *[CHANGE] Show All / Show Unpaid moved to overflow menu
 *[CHANGE] Transaction uses category ID and person ID instead of strings
@@ -58,6 +59,7 @@ TODO
 
 
 UNRELEASED
+*[ADD] Transactions can now be split between many people
 *[BUGFIX] Database manager correctly loads transactions that are not split
 #[ADD] Category: Parking, membership
 *[CHANGE] Major rewrite of data structures and database, UI updated to comply with new standards

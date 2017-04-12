@@ -24,6 +24,8 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ActivityNewTransaction extends AppCompatActivity
@@ -50,7 +52,11 @@ public class ActivityNewTransaction extends AppCompatActivity
 
     //Adapters
     ArrayAdapter<String> categoryAdapter;
-    AdapterSplitCost splitAdapter;
+
+    //Split dynamic views
+    HashMap<Person, SplitViewHolder> active_people;
+    SplitViewHolder modifyingSplitHolder;
+
 
     //Views
     Toolbar toolbar;
@@ -85,14 +91,13 @@ public class ActivityNewTransaction extends AppCompatActivity
     CheckBox checkBox_paidBack;
 
     LinearLayout linearLayout_split;
+    LinearLayout linearLayout_splitContainer;
     LinearLayout linearLayout_timeperiod_date;
     LinearLayout linearLayout_timeperiod_repeat;
 
 
-    RecyclerView recyclerView_split;
     RecyclerView recyclerView_blacklistDates;
 
-    NpaLinearLayoutManager linearLayoutManager;
 
 
     @Override
@@ -118,6 +123,9 @@ public class ActivityNewTransaction extends AppCompatActivity
                 _start_date = LocalDate.now();
                 _timePeriod = new TimePeriod(_start_date);
 
+                active_people = new HashMap<>();
+                modifyingSplitHolder = null;
+
 
                 //Find Views
                 toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -132,6 +140,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                 cardView_blacklist = (CardView) findViewById(R.id.card_timeperiod_blacklist);
 
                 linearLayout_split = (LinearLayout) findViewById(R.id.linearLayout_newTransaction_split);
+                linearLayout_splitContainer = (LinearLayout) findViewById(R.id.linearLayout_newTransaction_splitContainer);
                 linearLayout_timeperiod_date = (LinearLayout) findViewById(R.id.linearLayout_newTransaction_date) ;
                 linearLayout_timeperiod_repeat = (LinearLayout) findViewById(R.id.linearLayout_newTransaction_repeat) ;
 
@@ -153,7 +162,6 @@ public class ActivityNewTransaction extends AppCompatActivity
                 button_removeSplit = (Button) findViewById(R.id.button_newTransaction_removesplit);
                 button_categoryNotice = (Button) findViewById(R.id.button_newTransaction_categorynotice);
 
-                recyclerView_split = (RecyclerView) findViewById(R.id.recyclerView_newTransaction_split);
                 recyclerView_blacklistDates = (RecyclerView) findViewById(R.id.recyclerView_blacklistDates);
 
 
@@ -209,14 +217,6 @@ public class ActivityNewTransaction extends AppCompatActivity
                 //Format repeat text
                 textView_repeat.setText( _timePeriod.GetRepeatStringShort() );
 
-                //Cost formatting
-                editText_cost.setKeyListener(DigitsKeyListener.getInstance(false, true));
-                editText_cost.addTextChangedListener(new TextWatcher() {
-                    @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                    @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }//UpdateCostBasedOnSeekBar(); }
-                    @Override public void afterTextChanged(Editable s) {}
-                });
-
 
                 //Scrollview
                 scrollView.setOnTouchListener(new View.OnTouchListener() {
@@ -233,6 +233,16 @@ public class ActivityNewTransaction extends AppCompatActivity
                     //Expense related views
                     textView_source.setVisibility(View.VISIBLE);
                     spinner_categories.setVisibility(View.VISIBLE);
+
+                    //Cost formatting
+                    editText_cost.setKeyListener(DigitsKeyListener.getInstance(false, true));
+                    editText_cost.addTextChangedListener(new TextWatcher() {
+                        @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                        @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            UpdateSplitViewHolderCosts();
+                        }
+                        @Override public void afterTextChanged(Editable s) {}
+                    });
 
                     //Split Cost checkbox
                     checkBox_split.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -270,13 +280,12 @@ public class ActivityNewTransaction extends AppCompatActivity
                         }
                     });
 
-                    //Split recyclerview
-                    splitAdapter = new AdapterSplitCost(this);
-                    recyclerView_split.setAdapter(splitAdapter);
+                    //Split dynamic views
+                    Person you = new Person(Helper.getString(R.string.misc_your));
+                    you.SetID(0);
 
-                    linearLayoutManager = new NpaLinearLayoutManager(this);
-                    recyclerView_split.setLayoutManager(linearLayoutManager);
-
+                    //Person visibility
+                    AddSplitPerson(you);
 
 
 
@@ -391,12 +400,12 @@ public class ActivityNewTransaction extends AppCompatActivity
             switch (requestCode){
                 case 1: //Add person
                     if (person != null) {
-                        splitAdapter.SetActive(person, true);
+                        AddSplitPerson(person);
                     }
                     break;
                 case 2: //Remove person
                     if (person != null) {
-                        splitAdapter.SetActive(person, false);
+                        RemoveSplitPerson(person);
                     }
                     break;
                 default: //Repeat dialog fragment
@@ -452,6 +461,63 @@ public class ActivityNewTransaction extends AppCompatActivity
     }
 
 
+    //Split person dynamic views
+    public void AddSplitPerson(Person person){
+        if (!active_people.containsKey(person)) {
+            //Create new split person view group
+            SplitViewHolder svh = new SplitViewHolder(ActivityNewTransaction.this, person, getLayoutInflater(), linearLayout_splitContainer);
+
+            //Special case for you
+            if (person.GetID() == 0) {
+                modifyingSplitHolder = svh;
+                svh.paid.setChecked(true);
+                svh.percentage.setProgress(100);
+                modifyingSplitHolder = null;
+            }
+
+            active_people.put(person, svh);
+
+            UpdateSplitViewHolderCosts();
+
+            //Disable viewholder if only one split person
+            if (active_people.size() == 1){
+                svh.SetEnabled(false);
+            } else {
+                for (Map.Entry<Person, SplitViewHolder> entry : active_people.entrySet()){
+                    entry.getValue().SetEnabled(true);
+                    entry.getValue().cost.setText( String.valueOf( GetCost() / active_people.size() ) ); //Set split to be even
+                }
+            }
+        }
+    }
+    public void RemoveSplitPerson(Person person){
+        if (active_people.containsKey(person)) {
+            linearLayout_splitContainer.removeView(active_people.get(person).base);
+
+            active_people.remove(person);
+            UpdateSplitViewHolderCosts();
+
+            //Disable viewholder if only one split person
+            for (Map.Entry<Person, SplitViewHolder> entry : active_people.entrySet()){
+                entry.getValue().SetEnabled(active_people.size() != 1);
+                entry.getValue().cost.setText( String.valueOf( GetCost() / active_people.size() ) ); //Set split to be even
+            }
+        }
+    }
+
+    public void UpdateSplitViewHolderCosts(){
+        for (Map.Entry<Person, SplitViewHolder> entry : active_people.entrySet()) {
+            if (entry != null) {
+                SplitViewHolder svh = entry.getValue();
+
+                modifyingSplitHolder = svh;
+                svh.cost.setText( String.valueOf( (svh.percentage.getProgress()/100.0) * GetCost() )  );
+                modifyingSplitHolder = null;
+            }
+        }
+    }
+
+
     //Set adapter data
     public void SetAdapterData(){
         //Categories
@@ -461,10 +527,16 @@ public class ActivityNewTransaction extends AppCompatActivity
 
         categoryAdapter.clear();
         categoryAdapter.addAll(categories);
-
     }
 
-
+    public double GetCost(){
+        if (!editText_cost.getText().toString().equals("")) {
+            try {
+                return Double.valueOf(editText_cost.getText().toString());
+            } catch (Exception ex){ return 0.0d; }
+        }
+        return 0.0d;
+    }
 
     //Gather data from views, build a transaction object, and save it to the database
     public void FinishTransaction()
@@ -487,7 +559,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                 }
 
                 //Get cost
-                double cost = Double.valueOf(editText_cost.getText().toString());
+                double cost = GetCost();
 
                 //Set Type
                 _transaction.SetType(_activitytype);
@@ -511,14 +583,16 @@ public class ActivityNewTransaction extends AppCompatActivity
                     if (category != null){ _transaction.SetCategory(category.GetID()); }
 
                     //Set Split value
-                    if (checkBox_split.isChecked()) {
-                        for (Person p : splitAdapter.GetPeople()){
-                            _transaction.SetSplit(p.GetID(), splitAdapter.GetSplit(p));
-                            if (splitAdapter.Getpaid(p)) { _transaction.SetPaidBy(p.GetID()); }
+                    if (checkBox_split.isChecked() && active_people.size() > 1) {
+                        for (Map.Entry<Person, SplitViewHolder> entry : active_people.entrySet()) {
+                            if (entry != null) {
+                                _transaction.SetSplit(entry.getKey().GetID(), entry.getValue().GetCost());
+                                if (entry.getValue().GetPaid()) { _transaction.SetPaidBy(entry.getKey().GetID()); }
+                            }
                         }
                     } else {
                         _transaction.SetPaidBy( 0 );
-                        _transaction.SetSplit( 0,cost );
+                        _transaction.SetSplit( 0, GetCost() );
                     }
 
                     //Set paidback
@@ -528,6 +602,14 @@ public class ActivityNewTransaction extends AppCompatActivity
                         _transaction.SetPaidBack(null);
                     }
 
+                }
+
+                //Set budget id
+                _transaction.SetBudgetID(_budget.GetID());
+
+                //Add to budget
+                if (_editState == EDIT_STATE.NewTransaction || _editState == EDIT_STATE.Duplicate){
+                    _budget.AddTransaction(_transaction);
                 }
 
                 //Add to/update database
