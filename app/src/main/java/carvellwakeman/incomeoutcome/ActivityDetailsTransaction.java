@@ -154,7 +154,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                         Intent intent = new Intent(ActivityDetailsTransaction.this, ActivityNewTransaction.class);
                         intent.putExtra("activitytype", activityType);
                         intent.putExtra("budget", _budget.GetID());
-                        startActivity(intent);
+                        startActivityForResult(intent, 1);
                     }
                     else {
                         Helper.PrintUser(ActivityDetailsTransaction.this, "ERROR: Budget not found, could not start New Transaction Activity");
@@ -270,6 +270,33 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
     //Get return results from activities
     protected void onActivityResult(int requestCode, int resultCode, Intent data) { //TODO: Necessary?
+
+        switch (requestCode){
+            case 1: // New Transaction
+                if (resultCode==1){
+                    if (data != null){
+                        final new_Transaction _transaction = (new_Transaction)data.getSerializableExtra("transaction");
+                        final TimePeriod _timePeriod = (TimePeriod)data.getSerializableExtra("timeperiod");
+
+                        //Add to/update database synchronously
+                        final DatabaseManager dm = DatabaseManager.getInstance();
+
+                        dm._insert(_transaction, true);
+                        dm._insert(_transaction.GetID(), _timePeriod, true);
+                        dm._insertSetting(_budget, true);
+
+                        // Refresh activity to show changes
+                        RefreshActivity();
+                        Helper.Log(ActivityDetailsTransaction.this, "ActDetTran", "Transaction added");
+                    }
+                } else {
+                    // Failure
+                }
+                break;
+            default:
+
+
+        }
         //if (data != null) {}
 
         //Update timeframe for budget

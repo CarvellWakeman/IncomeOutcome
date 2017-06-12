@@ -541,21 +541,23 @@ public class ActivityNewTransaction extends AppCompatActivity
     //Gather data from views, build a transaction object, and save it to the database
     public void FinishTransaction()
     {
+        Helper.Log(this, "ActNewTran", "Initial");
         //If the user selected a category
         if (spinner_categories.getSelectedItemPosition() != 0 || _activitytype == 1) {
-
+            Helper.Log(this, "ActNewTran", "Category was selected");
             //If budget exists
             if (_budget != null) { //Not really necessary
-
+                Helper.Log(this, "ActNewTran", "Budget is not null");
                 //Determine if we are editing an existing transaction (EditUpdate), or creating a new one (EditGhost, Duplicate, _transactionID == 0)
                 if (_editState == EDIT_STATE.NewTransaction){
+                    Helper.Log(this, "ActNewTran", "EditState: New transaction");
                     _transaction = new new_Transaction(_activitytype);
                 }
                 else if (_editState == EDIT_STATE.Edit){
-
+                    Helper.Log(this, "ActNewTran", "EditState: Edit Transaction");
                 }
                 else if (_editState == EDIT_STATE.Duplicate) {
-
+                    Helper.Log(this, "ActNewTran", "EditState: Duplicate Transaction");
                 }
 
                 //Get cost
@@ -578,6 +580,7 @@ public class ActivityNewTransaction extends AppCompatActivity
 
                 //Expense only
                 if (_activitytype == 0){
+                    Helper.Log(this, "ActNewTran", "Expense transaction");
                     //Set Category
                     Category category = CategoryManager.getInstance().GetCategory(spinner_categories.getSelectedItem().toString());
                     if (category != null){ _transaction.SetCategory(category.GetID()); }
@@ -612,16 +615,15 @@ public class ActivityNewTransaction extends AppCompatActivity
                     _budget.AddTransaction(_transaction);
                 }
 
-                //Add to/update database
-                DatabaseManager dm = DatabaseManager.getInstance();
-
-                dm.insert(_transaction, true);
-                dm.insert(_transaction.GetID(), _timePeriod, true);
-                dm.insertSetting(_budget, true);
-
+                // Send back in intent
+                Intent intent = new Intent();
+                intent.putExtra("transaction", _transaction);
+                intent.putExtra("timeperiod", _timePeriod);
+                setResult(1, intent);
                 finish();
             }
         } else {
+            Helper.Log(this, "ActNewTran", "Error: Pick a category");
             Helper.PrintUser(this, Helper.getString(R.string.info_select_category));
         }
 

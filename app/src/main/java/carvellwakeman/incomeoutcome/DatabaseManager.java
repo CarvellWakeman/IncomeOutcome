@@ -992,7 +992,10 @@ public class DatabaseManager extends SQLiteOpenHelper
     //Object Specific Operations
     //Insertion
     public void insertSetting(final Category category, final boolean tryUpdate) { runDBTask( new CallBack() { @Override public void call() { _insertSetting(category, tryUpdate); } } ); }
-    private long _insertSetting(Category category, boolean tryUpdate)
+    public void insertSetting(final Category category, final CallBack postCallback, final boolean tryUpdate) {
+        runDBTask( new CallBack() { @Override public void call() { _insertSetting(category, tryUpdate); } }, null, postCallback );
+    }
+    public long _insertSetting(Category category, boolean tryUpdate)
     {
         database = getWritableDatabase();
 
@@ -1014,7 +1017,10 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
     public void insertSetting(final Person person, final boolean tryUpdate) { runDBTask(new CallBack() { @Override public void call() { _insertSetting(person, tryUpdate); } } ); }
-    private long _insertSetting(Person person, boolean tryUpdate)
+    public void insertSetting(final Person person, final CallBack postCallback, final boolean tryUpdate) {
+        runDBTask( new CallBack() { @Override public void call() { _insertSetting(person, tryUpdate); } }, null, postCallback );
+    }
+    public long _insertSetting(Person person, boolean tryUpdate)
     {
         database = getWritableDatabase();
 
@@ -1035,7 +1041,10 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
     public void insertSetting(final Budget budget, final boolean tryUpdate) { runDBTask( new CallBack() { @Override public void call() { _insertSetting(budget, tryUpdate); } } ); }
-    private long _insertSetting(Budget budget, boolean tryUpdate)
+    public void insertSetting(final Budget budget, final CallBack postCallback, final boolean tryUpdate) {
+        runDBTask( new CallBack() { @Override public void call() { _insertSetting(budget, tryUpdate); } }, null, postCallback );
+    }
+    public long _insertSetting(Budget budget, boolean tryUpdate)
     {
         database = getWritableDatabase();
 
@@ -1079,7 +1088,10 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
     public void insert(final new_Transaction transaction, final boolean tryupdate) { runDBTask(new CallBack() { @Override public void call() { _insert(transaction, tryupdate); } } ); }
-    private long _insert(new_Transaction transaction, boolean tryupdate)
+    public void insert(final new_Transaction transaction, CallBack postCallback, final boolean tryUpdate) {
+        runDBTask( new CallBack() { @Override public void call() { _insert(transaction, tryUpdate); } }, null, postCallback );
+    }
+    public long _insert(new_Transaction transaction, boolean tryupdate)
     {
         database = getWritableDatabase();
 
@@ -1119,7 +1131,10 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
     public void insert(final int transactionUID, final TimePeriod tp, final boolean tryupdate) { runDBTask( new CallBack() { @Override public void call() { _insert(transactionUID, tp, tryupdate); } } ); }
-    private long _insert(int transactionUID, TimePeriod tp, Boolean tryupdate)
+    public void insert(final int transactionUID, final TimePeriod tp, final CallBack postCallback, final boolean tryUpdate) {
+        runDBTask( new CallBack() { @Override public void call() { _insert(transactionUID, tp, tryUpdate); } }, null, postCallback );
+    }
+    public long _insert(int transactionUID, TimePeriod tp, Boolean tryupdate)
     {
         database = getWritableDatabase();
 
@@ -1204,8 +1219,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 
     //Loading
     public void loadSettings(CallBack callback) { runDBTask( new CallBack() { @Override public void call() { _loadSettings(); } }, null, callback ); }
-    //public void loadSettings(CallBack callback) { _loadSettings(); callback.call(); }
-    private void _loadSettings() {
+    public void _loadSettings() {
         //Get managers
         CategoryManager cm = CategoryManager.getInstance();
         PersonManager pm = PersonManager.getInstance();
@@ -1286,8 +1300,7 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
     public void loadTransactions(CallBack callback) { runDBTask( new CallBack() { @Override public void call() { _loadTransactions(); } }, null, callback); }
-    //public void loadTransactions(CallBack callback) { _loadTransactions(); callback.call(); }
-    private void _loadTransactions() {
+    public void _loadTransactions() {
         database = getWritableDatabase();
 
         try {
@@ -1365,24 +1378,36 @@ public class DatabaseManager extends SQLiteOpenHelper
 
     //Removal
     public void removeCategorySetting(final Category category) { runDBTask( new CallBack() { @Override public void call() { _removeCategorySetting(category); } } ); }
-    private boolean _removeCategorySetting(Category category){
+    public void removeCategorySetting(final Category category, final CallBack postCallback) {
+        runDBTask( new CallBack() { @Override public void call() { _removeCategorySetting(category); } }, null, postCallback );
+    }
+    public boolean _removeCategorySetting(Category category){
         database = getWritableDatabase();
         return category != null && database.delete(TABLE_SETTINGS_CATEGORIES, COLUMN_uniqueID + "=?", new String[]{ String.valueOf(category.GetID()) }) > 0;
     }
 
     public void removePersonSetting(final Person person) { runDBTask(new CallBack() { @Override public void call() { _removePersonSetting(person); } } ); }
-    private boolean _removePersonSetting(Person person){
+    public void removePersonSetting(final Person person, final CallBack preCallback, final CallBack postCallback) {
+        runDBTask( new CallBack() { @Override public void call() { _removePersonSetting(person); } }, preCallback, postCallback );
+    }
+    public boolean _removePersonSetting(Person person){
         database = getWritableDatabase();
         return person != null && database.delete(TABLE_SETTINGS_OTHERPEOPLE, COLUMN_uniqueID + "=?", new String[]{ String.valueOf(person.GetID()) }) > 0;
     }
 
     public void removeBudgetSetting(final Budget budget) { runDBTask( new CallBack() { @Override public void call() { _removeBudgetSetting(budget); } } ); }
-    private boolean _removeBudgetSetting(Budget budget){
+    public void removeBudgetSetting(final Budget budget, final CallBack postCallback) {
+        runDBTask( new CallBack() { @Override public void call() { _removeBudgetSetting(budget); } }, null, postCallback );
+    }
+    public boolean _removeBudgetSetting(Budget budget){
         database = getWritableDatabase();
         return budget != null && database.delete(TABLE_SETTINGS_BUDGETS, COLUMN_uniqueID + "=?", new String[]{String.valueOf(budget.GetID())}) > 0;
     }
 
     public void remove(final new_Transaction transaction) { runDBTask( new CallBack() { @Override public void call() { _remove(transaction); } } ); }
+    public void remove(final new_Transaction transaction, final CallBack postCallback) {
+        runDBTask( new CallBack() { @Override public void call() { _remove(transaction); } }, null, postCallback );
+    }
     public boolean _remove(new_Transaction transaction){
         database = getWritableDatabase();
 
