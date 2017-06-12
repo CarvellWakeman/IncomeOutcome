@@ -6,8 +6,6 @@
     android:clickable="false"
     android:orientation="vertical">
 
-
-    <!-- Profiles, people, categories settings -->
     <android.support.v7.widget.CardView
         android:id="@+id/row_layout_settingscard"
         android:layout_width="match_parent"

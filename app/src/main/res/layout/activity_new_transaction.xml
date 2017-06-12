@@ -106,19 +106,19 @@
                         android:id="@+id/linearLayout_newTransaction_split"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
                         android:layout_below="@+id/TIL_newTransaction_cost"
-                        android:layout_marginTop="5dp">
+                        android:layout_marginTop="5dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
                             android:layout_marginEnd="5dp"
                             android:text="@string/tt_paid"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
                             android:textAlignment="viewEnd"
-                            android:layout_marginBottom="10dp" />
+                            android:textAppearance="?android:attr/textAppearanceSmall" />
 
                         <LinearLayout
                             android:id="@+id/linearLayout_newTransaction_splitContainer"
@@ -128,37 +128,37 @@
 
                         </LinearLayout>
 
-                      <LinearLayout
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="horizontal"
-                          android:weightSum="2">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="2">
 
-                          <Button
-                              android:id="@+id/button_newTransaction_addsplit"
-                              style="@style/FlatButtonTheme"
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_weight="1"
-                              android:paddingBottom="16dp"
-                              android:paddingTop="16dp"
-                              android:text="@string/action_addsplit"
-                              android:textAllCaps="false"
-                              android:textAlignment="viewStart" />
+                            <Button
+                                android:id="@+id/button_newTransaction_addsplit"
+                                style="@style/FlatButtonTheme"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:paddingBottom="16dp"
+                                android:paddingTop="16dp"
+                                android:text="@string/action_addsplit"
+                                android:textAlignment="viewStart"
+                                android:textAllCaps="false" />
 
-                          <Button
-                              android:id="@+id/button_newTransaction_removesplit"
-                              style="@style/FlatButtonTheme"
-                              android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_weight="1"
-                              android:paddingBottom="16dp"
-                              android:paddingTop="16dp"
-                              android:text="@string/action_removesplit"
-                              android:textAllCaps="false"
-                              android:textAlignment="viewEnd"
-                              android:gravity="center_vertical" />
-                      </LinearLayout>
+                            <Button
+                                android:id="@+id/button_newTransaction_removesplit"
+                                style="@style/FlatButtonTheme"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:paddingBottom="16dp"
+                                android:paddingTop="16dp"
+                                android:text="@string/action_removesplit"
+                                android:textAlignment="viewEnd"
+                                android:textAllCaps="false" />
+                        </LinearLayout>
 
                     </LinearLayout>
 

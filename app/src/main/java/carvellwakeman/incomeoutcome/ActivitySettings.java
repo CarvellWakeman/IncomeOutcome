@@ -42,8 +42,7 @@ public class ActivitySettings extends AppCompatActivity
         //toolbar.inflateMenu(R.menu.toolbar_menu_sort_filter_paidback);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            @Override public void onClick(View v) {
                 onBackPressed();
             }
         });

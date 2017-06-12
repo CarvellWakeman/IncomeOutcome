@@ -74,6 +74,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
         if (_budget != null) {
             new_Transaction transaction = _transactions.get(position);
             holder.bind(transaction);
+            Helper.Print(App.GetContext(), "Bind ViewHolder" + String.valueOf(position));
         }
 
     }
