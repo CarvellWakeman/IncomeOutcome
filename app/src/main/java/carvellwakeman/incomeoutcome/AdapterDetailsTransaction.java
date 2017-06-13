@@ -1,6 +1,7 @@
 package carvellwakeman.incomeoutcome;
 
 import android.animation.LayoutTransition;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v7.widget.CardView;
@@ -85,6 +86,103 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
     }
 
 
+    // ViewHolder overflow actions
+    public new_Transaction GetTransactionParent(new_Transaction transaction) {
+        if (transaction.GetParentID() != 0) {
+            return _budget.GetTransaction(transaction.GetParentID());
+        }
+        return transaction;
+    }
+
+    public void handleOverflowAction(new_Transaction tran, MenuItem action){
+        //Find parent transaction
+        final new_Transaction tranp = GetTransactionParent(tran);
+
+        //Take action on it
+        if (tranp != null) {
+            //If the expense is not a ghost expense (only exists in the _timeframe array), then edit it normally, else clone it and blacklist the old date
+            switch (action.getItemId()) {
+                case R.id.transaction_edit_instance: //Edit(instance)
+                    //If edited expense exists, edit it. If not, duplicate it
+                    if ( _budget.GetTransaction(tran.GetID()) != null ) {
+                        //If tranp has children (ie, tranp and tran are not the same transaction)
+                        if (tranp.GetTimePeriod().DoesRepeat()){ //tranp has children, duplicate and blacklist it
+                            Intent intent = new Intent(_activity, ActivityNewTransaction.class);
+                            intent.putExtra("activitytype", activityType);
+                            intent.putExtra("budget", _budget.GetID());
+                            intent.putExtra("transaction", tranp.GetID());
+                            intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Duplicate.ordinal());
+                            _activity.startActivity(intent);
+                        } else { //Standard transaction
+                            Intent intent = new Intent(_activity, ActivityNewTransaction.class);
+                            intent.putExtra("activitytype", activityType);
+                            intent.putExtra("budget", _budget.GetID());
+                            intent.putExtra("transaction", tranp.GetID());
+                            intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Edit.ordinal());
+                            _activity.startActivity(intent);
+                        }
+                    } else { //Ghost
+                        Intent intent = new Intent(_activity, ActivityNewTransaction.class);
+                        intent.putExtra("activitytype", activityType);
+                        intent.putExtra("budget", _budget.GetID());
+                        intent.putExtra("transaction", tran.GetID());
+                        intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Duplicate.ordinal());
+                        _activity.startActivity(intent);
+                    }
+                    break;
+
+                case R.id.transaction_edit_all: //Edit(all / parent)
+                    Intent intent = new Intent(_activity, ActivityNewTransaction.class);
+                    intent.putExtra("activitytype", activityType);
+                    intent.putExtra("budget", _budget.GetID());
+                    intent.putExtra("transaction", tranp.GetID());
+                    intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Edit.ordinal());
+                    _activity.startActivity(intent);
+                    break;
+
+                case R.id.transaction_delete_instance: //Delete(instance)
+                    //If edited expense exists (is not a ghost)
+                    if (_budget.GetTransaction(tran.GetID()) != null) {
+                        //If tranp has children (ie, tranp and tran are not the same transaction)
+                        if (tranp.GetTimePeriod().DoesRepeat()){ //tranp has children, blacklist its date
+                            tranp.GetTimePeriod().AddBlacklistDate(tranp.GetTimePeriod().GetDate(), false);
+                            DatabaseManager.getInstance().insert(tranp, true);
+                        } else {
+                            //ArrayList<Integer> children = tranp.GetChildren();
+                            //for (int i = 0; i < children.size(); i++){ _budget.RemoveTransaction(children.get(i)); }
+                            _budget.RemoveTransaction(tranp);
+                            DatabaseManager.getInstance().remove(tranp);
+                        }
+                    } else { //Ghost
+                        tranp.GetTimePeriod().AddBlacklistDate(tran.GetTimePeriod().GetDate(), false);
+                        DatabaseManager.getInstance().insert(tranp, true);
+                    }
+
+                    break;
+
+                case R.id.transaction_delete_all: //Delete(all, parent)
+                    ArrayList<Integer> children = tranp.GetChildren();
+                    for (int i = 0; i < children.size(); i++){
+                        new_Transaction child = _budget.GetTransaction(children.get(i));
+                        DatabaseManager.getInstance().remove(child);
+                        _budget.RemoveTransaction(child);
+                    }
+
+                    _budget.RemoveTransaction(tranp);
+                    DatabaseManager.getInstance().remove(tranp);
+
+                    break;
+
+                //case R.id.transaction_duplicate: //Duplicate
+                //    duplicateTransaction(tran, _budget.GetID());
+                //    break;
+            }
+
+
+        }
+    }
+
+
 
     //View Holder class
     public class TransactionViewHolder extends RecyclerView.ViewHolder implements PopupMenu.OnMenuItemClickListener, View.OnClickListener
@@ -116,7 +214,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
         int overflowMenu;
         boolean moreInfo;
 
-        int datebox_collapsed_height;
+        //int datebox_collapsed_height;
 
 
         public TransactionViewHolder(View itemView)
@@ -317,6 +415,12 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
                 }
 
+                // Behavior
+                if (!description.getText().equals("") || !repeat.getText().equals("")){
+                    expandCard.setVisibility(View.VISIBLE);
+                }
+
+
             }
 
         }
@@ -325,7 +429,12 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
         //Overflow menu
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-           _activity.handleTransaction(_transactions.get(getAdapterPosition()), item);
+            //handleOverflowAction(_transactions.get(getAdapterPosition()), item);
+            new_Transaction tran = _transactions.get(getAdapterPosition());
+
+            // Handle action
+            handleOverflowAction(tran, item);
+
             return false;
         }
 
@@ -333,7 +442,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
         public void OpenOverflowMenu(){
             //Get parent if it exists (if it doesn't, get the current transaction)
-            new_Transaction tran = _activity.GetTransactionParent(_transactions.get(getAdapterPosition()));
+            new_Transaction tran = GetTransactionParent(_transactions.get(getAdapterPosition()));
             if (tran != null) {
                 //Menu object
                 PopupMenu popup = new PopupMenu(_activity, overflow);

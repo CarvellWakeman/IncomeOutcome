@@ -288,7 +288,6 @@ public class ActivityNewTransaction extends AppCompatActivity
                     AddSplitPerson(you);
 
 
-
                     //Category spinner
                     categoryAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_title){
                         @Override public boolean isEnabled(int position){ return position != 0; } //Can't select the first or last item
@@ -333,12 +332,12 @@ public class ActivityNewTransaction extends AppCompatActivity
                 else if (_editState == EDIT_STATE.Edit) {
                     //Toolbar title
                     toolbar.setTitle(R.string.title_edittransaction);
-
+                    //TODO: Implement
                 }
                 else if (_editState == EDIT_STATE.Duplicate) {
                     //Toolbar title
                     toolbar.setTitle(R.string.title_copytransaction);
-
+                    //TODO: Implement
                 }
 
 

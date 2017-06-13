@@ -63,7 +63,7 @@ UNRELEASED
 *[BUGFIX] Database manager correctly loads transactions that are not split
 #[ADD] Category: Parking, membership
 *[CHANGE] Major rewrite of data structures and database, UI updated to comply with new standards
-*[CHANGE] Refactored activityManageBudgets/activityManageCategories/activityManagePeople
+*[CHANGE] Refactored budget, category, and people management
 
 
 FORMAT

@@ -238,7 +238,8 @@
                     android:layout_centerVertical="true"
 
                     android:src="@drawable/ic_keyboard_arrow_down_white_24dp"
-                    android:tint="@color/black" />
+                    android:tint="@color/black"
+                    android:visibility="gone" />
             </RelativeLayout>
 
 
