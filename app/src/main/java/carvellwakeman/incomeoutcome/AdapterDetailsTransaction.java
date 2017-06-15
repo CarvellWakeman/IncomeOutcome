@@ -112,14 +112,14 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                             intent.putExtra("budget", _budget.GetID());
                             intent.putExtra("transaction", tranp.GetID());
                             intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Duplicate.ordinal());
-                            _activity.startActivity(intent);
+                            _activity.startActivityForResult(intent, 2);
                         } else { //Standard transaction
                             Intent intent = new Intent(_activity, ActivityNewTransaction.class);
                             intent.putExtra("activitytype", activityType);
                             intent.putExtra("budget", _budget.GetID());
                             intent.putExtra("transaction", tranp.GetID());
                             intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Edit.ordinal());
-                            _activity.startActivity(intent);
+                            _activity.startActivityForResult(intent, 2);
                         }
                     } else { //Ghost
                         Intent intent = new Intent(_activity, ActivityNewTransaction.class);
@@ -127,7 +127,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                         intent.putExtra("budget", _budget.GetID());
                         intent.putExtra("transaction", tran.GetID());
                         intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Duplicate.ordinal());
-                        _activity.startActivity(intent);
+                        _activity.startActivityForResult(intent, 2);
                     }
                     break;
 
@@ -137,7 +137,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     intent.putExtra("budget", _budget.GetID());
                     intent.putExtra("transaction", tranp.GetID());
                     intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Edit.ordinal());
-                    _activity.startActivity(intent);
+                    _activity.startActivityForResult(intent, 2);
                     break;
 
                 case R.id.transaction_delete_instance: //Delete(instance)
@@ -425,6 +425,9 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
         }
 
+        //Open overflow menu
+        @Override public void onClick(View v){ OpenOverflowMenu(); }
+
 
         //Overflow menu
         @Override
@@ -438,7 +441,6 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
             return false;
         }
 
-        @Override public void onClick(View v){ OpenOverflowMenu(); }
 
         public void OpenOverflowMenu(){
             //Get parent if it exists (if it doesn't, get the current transaction)

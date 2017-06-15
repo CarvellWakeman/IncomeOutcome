@@ -213,6 +213,10 @@ public class ActivityManageBudgets extends AppCompatActivity {
                         editingBudget.SetStartDate(new LocalDate());
                         editingBudget.SetEndDate(null);
                         editingBudget.SetPeriod(period);
+                        //Active if it's the first
+                        if (BudgetManager.getInstance().GetBudgetCount() == 0){
+                            editingBudget.SetSelected(true);
+                        }
                     } else { //Update
                         //Name
                         editingBudget.SetName(newBudget);
@@ -220,7 +224,7 @@ public class ActivityManageBudgets extends AppCompatActivity {
                         editingBudget.SetPeriod(period);
                     }
 
-                    //Add or update old person
+                    //Add or update old budget
                     BudgetManager.getInstance().AddBudget(editingBudget);
                     DatabaseManager.getInstance().insertSetting(editingBudget, true);
 

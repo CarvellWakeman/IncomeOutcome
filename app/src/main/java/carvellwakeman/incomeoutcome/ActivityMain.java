@@ -116,7 +116,9 @@ public class ActivityMain extends AppCompatActivity
 
         button_suggestaddbudget.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                startActivity(new Intent(ActivityMain.this, ActivityManageBudgets.class));
+                intent = new Intent(ActivityMain.this, ActivityManageBudgets.class);
+                intent.putExtra("addnew", true);
+                startActivity(intent);
             }
         });
 
