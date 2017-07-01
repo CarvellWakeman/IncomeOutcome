@@ -363,5 +363,5 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
         //CheckShowNoDataNotice();
     }
-    
+
 }
