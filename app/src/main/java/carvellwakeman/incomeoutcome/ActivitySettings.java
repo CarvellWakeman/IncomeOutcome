@@ -21,6 +21,9 @@ import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Random;
 
+import carvellwakeman.incomeoutcome.TimePeriod.Repeat;
+import carvellwakeman.incomeoutcome.TimePeriod.RepeatUntil;
+
 
 public class ActivitySettings extends AppCompatActivity
 {

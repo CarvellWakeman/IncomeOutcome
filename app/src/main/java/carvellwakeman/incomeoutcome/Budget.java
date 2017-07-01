@@ -3,8 +3,8 @@ package carvellwakeman.incomeoutcome;
 
 import org.joda.time.*;
 import org.joda.time.format.PeriodFormat;
-
 import java.util.*;
+import carvellwakeman.incomeoutcome.TimePeriod.Repeat;
 
 
 public class Budget implements java.io.Serializable, BaseEntity

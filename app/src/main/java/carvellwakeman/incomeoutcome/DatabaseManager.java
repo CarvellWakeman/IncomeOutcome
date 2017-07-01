@@ -32,7 +32,7 @@ public class DatabaseManager extends SQLiteOpenHelper
     private ContentValues contentValues_tp;
 
     //DATABASE_VERSION
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
     //File information
     private static final String FILE_NAME = "data.db";
     private File EXPORT_DIRECTORY;
@@ -178,7 +178,8 @@ public class DatabaseManager extends SQLiteOpenHelper
             COLUMN_when + INT_TYPE
             + ");";
 
-    private static final String CREATE_TABLE_TIMEPERIOD = "CREATE TABLE IF NOT EXISTS " + TABLE_TIMEPERIODS + "(" + COLUMN_ID + INT_TYPE + PRIMARYKEY + "," +
+    private static final String CREATE_TABLE_TIMEPERIOD = "CREATE TABLE IF NOT EXISTS " + TABLE_TIMEPERIODS + "(" +
+            COLUMN_uniqueID + INT_TYPE + "," +
             COLUMN_tp_parent + TEXT_TYPE + "," +
             COLUMN_tp_date + DATE_TYPE + "," +
             COLUMN_tp_repeatFreq + INT_TYPE + "," +
@@ -315,104 +316,108 @@ public class DatabaseManager extends SQLiteOpenHelper
                     DROP_TABLE_SETTINGS_PROFILES + STATEMENT_DELIMITER +
 
 
-                    //Reformat otherPerson table
-                    "ALTER TABLE " + TABLE_SETTINGS_OTHERPEOPLE + " RENAME TO " + "temp_otherpeople" + STATEMENT_DELIMITER +
+                //Reformat otherPerson table
+                "ALTER TABLE " + TABLE_SETTINGS_OTHERPEOPLE + " RENAME TO " + "temp_otherpeople" + STATEMENT_DELIMITER +
 
-                    //Create correctly formatted table
-                    CREATE_TABLE_SETTINGS_OTHERPEOPLE + STATEMENT_DELIMITER +
+                //Create correctly formatted table
+                CREATE_TABLE_SETTINGS_OTHERPEOPLE + STATEMENT_DELIMITER +
 
-                    //Copy data from temp to TABLE_SETTINGS_OTHERPEOPLE
-                    "INSERT INTO " + TABLE_SETTINGS_OTHERPEOPLE + "(" +
+                //Copy data from temp to TABLE_SETTINGS_OTHERPEOPLE
+                "INSERT INTO " + TABLE_SETTINGS_OTHERPEOPLE + "(" +
+                COLUMN_uniqueID + "," +
+                COLUMN_splitWith + "," +
+                COLUMN_splitWith2 +
+                ") SELECT " +
+                "NULL," +
+                COLUMN_splitWith + "," +
+                COLUMN_splitWith2 +
+                " FROM temp_otherpeople" + STATEMENT_DELIMITER +
+
+                //Drop the temp table
+                "DROP TABLE temp_otherpeople" + STATEMENT_DELIMITER +
+
+
+                //Reformat data from TABLE_TRANSACTIONS by rebuilding it
+
+                //Rename loaded table
+                "ALTER TABLE " + TABLE_TRANSACTIONS + " RENAME TO " + "temp_transactions" + STATEMENT_DELIMITER +
+
+                //Create correctly formatted table
+                CREATE_TABLE_TRANSACTIONS + STATEMENT_DELIMITER +
+
+                //Copy data from temp to TABLE_TRANSACTIONS
+                "INSERT INTO " + TABLE_TRANSACTIONS + "(" +
+                    COLUMN_type + "," +
+                    COLUMN_budget + "," +
                     COLUMN_uniqueID + "," +
-                    COLUMN_splitWith + "," +
-                    COLUMN_splitWith2 +
-                    ") SELECT " +
-                    "NULL," +
-                    COLUMN_splitWith + "," +
-                    COLUMN_splitWith2 +
-                    " FROM temp_otherpeople" + STATEMENT_DELIMITER +
+                    COLUMN_parentID + "," +
+                    COLUMN_category + "," +
+                    COLUMN_source + "," +
+                    COLUMN_description  + "," +
+                    COLUMN_value  + "," +
+                    COLUMN_paidBy + "," +
+                    COLUMN_split + "," +
+                    COLUMN_paidBack + "," +
+                    COLUMN_children + "," +
+                    COLUMN_when +
+                ") SELECT " +
+                    COLUMN_type + "," +
+                    COLUMN_profile + "," +
+                    COLUMN_uniqueID + "," +
+                    COLUMN_parentID + "," +
+                    "(SELECT "  + COLUMN_uniqueID + " FROM " + TABLE_SETTINGS_CATEGORIES + " WHERE " + "temp_transactions." + COLUMN_category + " = " + TABLE_SETTINGS_CATEGORIES + "." + COLUMN_category + ")," +
+                    COLUMN_source + "," +
+                    COLUMN_description  + "," +
+                    COLUMN_value  + "," +
+                    //COLUMN_IPaid becomes COLUMN_paidBy
+                        "CASE WHEN " + COLUMN_IPaid + " = 0 THEN " + COLUMN_splitWith + " ELSE (SELECT '"+Helper.getString(R.string.format_me)+"') END" + "," +
+                    //COLUMN_split is made from COLUMN_value, COLUMN_splitValue and COLUMN_splitWith
+                        "(SELECT '"+Helper.getString(R.string.format_me)+"') || ':' || (" + COLUMN_value + "-" + COLUMN_splitValue + ") || (CASE WHEN " + COLUMN_splitWith + " = '' THEN '' ELSE '|' || " + COLUMN_splitWith + " || ':' || " + COLUMN_splitValue + " END)" + "," +
+                    COLUMN_paidBack + "," +
+                    COLUMN_children + "," +
+                    COLUMN_when +
+                " FROM temp_transactions" + STATEMENT_DELIMITER +
 
-                    //Drop the temp table
-                    "DROP TABLE temp_otherpeople" + STATEMENT_DELIMITER +
-
-
-                    //Reformat data from TABLE_TRANSACTIONS by rebuilding it
-
-                    //Rename loaded table
-                    "ALTER TABLE " + TABLE_TRANSACTIONS + " RENAME TO " + "temp_transactions" + STATEMENT_DELIMITER +
-
-                    //Create correctly formatted table
-                    CREATE_TABLE_TRANSACTIONS + STATEMENT_DELIMITER +
-
-                    //Copy data from temp to TABLE_TRANSACTIONS
-                    "INSERT INTO " + TABLE_TRANSACTIONS + "(" +
-                        COLUMN_type + "," +
-                        COLUMN_budget + "," +
-                        COLUMN_uniqueID + "," +
-                        COLUMN_parentID + "," +
-                        COLUMN_category + "," +
-                        COLUMN_source + "," +
-                        COLUMN_description  + "," +
-                        COLUMN_value  + "," +
-                        COLUMN_paidBy + "," +
-                        COLUMN_split + "," +
-                        COLUMN_paidBack + "," +
-                        COLUMN_children + "," +
-                        COLUMN_when +
-                    ") SELECT " +
-                        COLUMN_type + "," +
-                        COLUMN_profile + "," +
-                        COLUMN_uniqueID + "," +
-                        COLUMN_parentID + "," +
-                        "(SELECT "  + COLUMN_uniqueID + " FROM " + TABLE_SETTINGS_CATEGORIES + " WHERE " + "temp_transactions." + COLUMN_category + " = " + TABLE_SETTINGS_CATEGORIES + "." + COLUMN_category + ")," +
-                        COLUMN_source + "," +
-                        COLUMN_description  + "," +
-                        COLUMN_value  + "," +
-                        //COLUMN_IPaid becomes COLUMN_paidBy
-                            "CASE WHEN " + COLUMN_IPaid + " = 0 THEN " + COLUMN_splitWith + " ELSE (SELECT '"+Helper.getString(R.string.format_me)+"') END" + "," +
-                        //COLUMN_split is made from COLUMN_value, COLUMN_splitValue and COLUMN_splitWith
-                            "(SELECT '"+Helper.getString(R.string.format_me)+"') || ':' || (" + COLUMN_value + "-" + COLUMN_splitValue + ") || (CASE WHEN " + COLUMN_splitWith + " = '' THEN '' ELSE '|' || " + COLUMN_splitWith + " || ':' || " + COLUMN_splitValue + " END)" + "," +
-                        COLUMN_paidBack + "," +
-                        COLUMN_children + "," +
-                        COLUMN_when +
-                    " FROM temp_transactions" + STATEMENT_DELIMITER +
-
-                    //Drop the temp table
-                    "DROP TABLE temp_transactions";
+                //Drop the temp table
+                "DROP TABLE temp_transactions";
 
 
 
-                    /*
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_profile     + ") SELECT " + COLUMN_profile     + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_uniqueID    + ") SELECT " + COLUMN_uniqueID    + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_parentID    + ") SELECT " + COLUMN_parentID    + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_category    + ") SELECT " + COLUMN_category    + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_source  + ") SELECT " + COLUMN_source  + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_description + ") SELECT " + COLUMN_description + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_value       + ") SELECT " + COLUMN_value       + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_staticValue + ") SELECT " + COLUMN_staticValue + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_IPaid       + ") SELECT " + COLUMN_IPaid       + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_splitWith   + ") SELECT " + COLUMN_splitWith   + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_splitValue  + ") SELECT " + COLUMN_splitValue  + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_paidBack    + ") SELECT " + COLUMN_paidBack    + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_children    + ") SELECT " + COLUMN_children    + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_when        + ") SELECT " + COLUMN_when        + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
-                    "UPDATE "      + TABLE_TRANSACTIONS + " SET " + COLUMN_type     + "='0' WHERE " + COLUMN_type        + " IS NULL"                + STATEMENT_DELIMITER +
+                /*
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_profile     + ") SELECT " + COLUMN_profile     + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_uniqueID    + ") SELECT " + COLUMN_uniqueID    + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_parentID    + ") SELECT " + COLUMN_parentID    + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_category    + ") SELECT " + COLUMN_category    + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_source  + ") SELECT " + COLUMN_source  + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_description + ") SELECT " + COLUMN_description + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_value       + ") SELECT " + COLUMN_value       + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_staticValue + ") SELECT " + COLUMN_staticValue + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_IPaid       + ") SELECT " + COLUMN_IPaid       + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_splitWith   + ") SELECT " + COLUMN_splitWith   + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_splitValue  + ") SELECT " + COLUMN_splitValue  + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_paidBack    + ") SELECT " + COLUMN_paidBack    + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_children    + ") SELECT " + COLUMN_children    + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_when        + ") SELECT " + COLUMN_when        + " FROM " + TABLE_EXPENSES + STATEMENT_DELIMITER +
+                "UPDATE "      + TABLE_TRANSACTIONS + " SET " + COLUMN_type     + "='0' WHERE " + COLUMN_type        + " IS NULL"                + STATEMENT_DELIMITER +
 
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_profile     + ") SELECT " + COLUMN_profile     + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_uniqueID    + ") SELECT " + COLUMN_uniqueID    + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_parentID    + ") SELECT " + COLUMN_parentID    + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_category    + ") SELECT " + COLUMN_category    + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_source  + ") SELECT " + COLUMN_source  + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_description + ") SELECT " + COLUMN_description + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_value       + ") SELECT " + COLUMN_value       + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_staticValue + ") SELECT " + COLUMN_staticValue + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_children    + ") SELECT " + COLUMN_children    + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
-                    "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_when        + ") SELECT " + COLUMN_when        + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
-                    "UPDATE "      + TABLE_TRANSACTIONS + " SET " + COLUMN_type     + "='1' WHERE " + COLUMN_type      + " IS NULL";//             + STATEMENT_DELIMITER +
-                    //DROP_TABLE_EXPENSES                                                                                                        + STATEMENT_DELIMITER +
-                    //DROP_TABLE_INCOME;
-                    */
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_profile     + ") SELECT " + COLUMN_profile     + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_uniqueID    + ") SELECT " + COLUMN_uniqueID    + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_parentID    + ") SELECT " + COLUMN_parentID    + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_category    + ") SELECT " + COLUMN_category    + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_source  + ") SELECT " + COLUMN_source  + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_description + ") SELECT " + COLUMN_description + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_value       + ") SELECT " + COLUMN_value       + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_staticValue + ") SELECT " + COLUMN_staticValue + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_children    + ") SELECT " + COLUMN_children    + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                "INSERT INTO " + TABLE_TRANSACTIONS + " (" + COLUMN_when        + ") SELECT " + COLUMN_when        + " FROM " + TABLE_INCOME + STATEMENT_DELIMITER +
+                "UPDATE "      + TABLE_TRANSACTIONS + " SET " + COLUMN_type     + "='1' WHERE " + COLUMN_type      + " IS NULL";//             + STATEMENT_DELIMITER +
+                //DROP_TABLE_EXPENSES                                                                                                        + STATEMENT_DELIMITER +
+                //DROP_TABLE_INCOME;
+                */
+
+    private static final String UPGRADE_7_8 =
+                //Reformat timeperiods table to replace the ID column with a UID column
+                "ALTER TABLE " + TABLE_TIMEPERIODS + " CHANGE " + COLUMN_ID + " " + COLUMN_uniqueID + INT_TYPE;
 
     private DatabaseManager(){ super(App.GetContext(), FILE_NAME, null, DATABASE_VERSION); }
     static DatabaseManager getInstance(){ return instance; }
@@ -517,6 +522,10 @@ public class DatabaseManager extends SQLiteOpenHelper
 
                     Helper.Print(App.GetContext(), "Upgrade from Ver.6 to Ver.7");
                 case 7: //To version 8
+                    SQLExecuteMultiple(db, UPGRADE_7_8);
+
+                    Helper.Print(App.GetContext(), "Upgrade from Ver.7 to Ver.8");
+                case 8: //To version 9
             }
             //OLD
             //if (newVersion > oldVersion){
@@ -861,8 +870,6 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
 
-
-
     //Import and Export
     public void exportDatabase(final String name) { runDBTask( new CallBack() { @Override public void call() { _exportDatabase(name); } } ); }
     private void _exportDatabase(String name) { _exportDatabase(name, EXPORT_DIRECTORY); }
@@ -910,6 +917,7 @@ public class DatabaseManager extends SQLiteOpenHelper
         }
 
     }
+
 
     //public void importDatabase(final File importFile, final boolean backup) { runDBTask( new CallBack() { @Override public void call() { _importDatabase(importFile, backup); } }); }
     //private void _importDatabase(File importFile){ _importDatabase(importFile, false); }
@@ -969,8 +977,6 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
 
-
-
     //Helpers
     //Date conversion for loading
     public static LocalDate ConvertDateFromString(String str){
@@ -987,16 +993,13 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
 
-
-
     //Object Specific Operations
     //Insertion
     public void insertSetting(final Category category, final boolean tryUpdate) { runDBTask( new CallBack() { @Override public void call() { _insertSetting(category, tryUpdate); } } ); }
     public void insertSetting(final Category category, final CallBack postCallback, final boolean tryUpdate) {
         runDBTask( new CallBack() { @Override public void call() { _insertSetting(category, tryUpdate); } }, null, postCallback );
     }
-    public long _insertSetting(Category category, boolean tryUpdate)
-    {
+    public long _insertSetting(Category category, boolean tryUpdate) {
         database = getWritableDatabase();
 
         if (database != null && isTableExists(TABLE_SETTINGS_CATEGORIES, false) && category != null) {
@@ -1020,8 +1023,7 @@ public class DatabaseManager extends SQLiteOpenHelper
     public void insertSetting(final Person person, final CallBack postCallback, final boolean tryUpdate) {
         runDBTask( new CallBack() { @Override public void call() { _insertSetting(person, tryUpdate); } }, null, postCallback );
     }
-    public long _insertSetting(Person person, boolean tryUpdate)
-    {
+    public long _insertSetting(Person person, boolean tryUpdate) {
         database = getWritableDatabase();
 
         if (database != null && isTableExists(TABLE_SETTINGS_OTHERPEOPLE, false) && person != null) {
@@ -1044,8 +1046,7 @@ public class DatabaseManager extends SQLiteOpenHelper
     public void insertSetting(final Budget budget, final CallBack postCallback, final boolean tryUpdate) {
         runDBTask( new CallBack() { @Override public void call() { _insertSetting(budget, tryUpdate); } }, null, postCallback );
     }
-    public long _insertSetting(Budget budget, boolean tryUpdate)
-    {
+    public long _insertSetting(Budget budget, boolean tryUpdate) {
         database = getWritableDatabase();
 
         if (budget != null) {
@@ -1091,15 +1092,15 @@ public class DatabaseManager extends SQLiteOpenHelper
     public void insert(final new_Transaction transaction, CallBack postCallback, final boolean tryUpdate) {
         runDBTask( new CallBack() { @Override public void call() { _insert(transaction, tryUpdate); } }, null, postCallback );
     }
-    public long _insert(new_Transaction transaction, boolean tryupdate)
-    {
+    public long _insert(new_Transaction transaction, boolean tryupdate) {
         database = getWritableDatabase();
 
         if (database != null && isTableExists(TABLE_TRANSACTIONS, false)) {
             contentValues_tr = new ContentValues();
 
             //Timeperiod
-            long tp_id = _insert(transaction.GetID(), transaction.GetTimePeriod(), tryupdate);
+            //long tp_id = _insert(transaction.GetID(), transaction.GetTimePeriod(), tryupdate);
+            _insert(transaction.GetID(), transaction.GetTimePeriod(), tryupdate);
 
             //Fill out row
             contentValues_tr.put(COLUMN_type, transaction.GetType().ordinal());
@@ -1111,7 +1112,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             contentValues_tr.put(COLUMN_description, transaction.GetDescription());
             contentValues_tr.put(COLUMN_value, transaction.GetValue());
             //contentValues_tr.put(COLUMN_staticValue, transaction.GetStatic()); //New transactions no longer have the static field (It was never used)
-            contentValues_tr.put(COLUMN_when, tp_id); //if (!tryupdate) { }
+            contentValues_tr.put(COLUMN_when, transaction.GetTimePeriod().GetID()); //if (!tryupdate) { }
 
             contentValues_tr.put(COLUMN_paidBy, transaction.GetPaidBy());
             contentValues_tr.put(COLUMN_split, transaction.GetSplitArrayString());
@@ -1134,14 +1135,14 @@ public class DatabaseManager extends SQLiteOpenHelper
     public void insert(final int transactionUID, final TimePeriod tp, final CallBack postCallback, final boolean tryUpdate) {
         runDBTask( new CallBack() { @Override public void call() { _insert(transactionUID, tp, tryUpdate); } }, null, postCallback );
     }
-    public long _insert(int transactionUID, TimePeriod tp, Boolean tryupdate)
-    {
+    public void _insert(int transactionUID, TimePeriod tp, Boolean tryupdate) {
         database = getWritableDatabase();
 
         if (database != null&& isTableExists(TABLE_TIMEPERIODS, false)) {
             contentValues_tp = new ContentValues();
 
             if (tp != null) {
+                contentValues_tr.put(COLUMN_uniqueID, tp.GetID());
                 contentValues_tp.put(COLUMN_tp_parent, transactionUID);
                 contentValues_tp.put(COLUMN_tp_date, (tp.GetDate() != null ? tp.GetDate().toString(Helper.getString(R.string.date_format_saving)) : ""));
                 //contentValues_tp.put(COLUMN_tp_firstOcc, (tp.GetFirstOccurrence() != null ? tp.GetFirstOccurrence().toString(ProfileManager.simpleDateFormatSaving) : ""));
@@ -1162,17 +1163,13 @@ public class DatabaseManager extends SQLiteOpenHelper
                 if (tryupdate) { result = database.update(TABLE_TIMEPERIODS, contentValues_tp, COLUMN_tp_parent + "=" + transactionUID, null); }
                 if (result == 0) { result = database.insert(TABLE_TIMEPERIODS, null, contentValues_tp); }
             }
-
-            return result;
         }
-        return -1;
     }
 
-    private TimePeriod _queryTimeperiod(int id)
-    {
+    private TimePeriod _queryTimeperiod(int id) {
         database = getWritableDatabase();
 
-        Cursor c = database.query(TABLE_TIMEPERIODS, null, COLUMN_ID + "=" + id, null, null, null, null);
+        Cursor c = database.query(TABLE_TIMEPERIODS, null, COLUMN_uniqueID + "=" + id, null, null, null, null);
 
         //Loop through data
         while (c.moveToNext()) {
@@ -1216,6 +1213,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 
         return null;
     }
+
 
     //Loading
     public void loadSettings(CallBack callback) { runDBTask( new CallBack() { @Override public void call() { _loadSettings(); } }, null, callback ); }

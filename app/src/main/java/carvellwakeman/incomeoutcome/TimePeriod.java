@@ -7,21 +7,24 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-enum Repeat{
-    NEVER,
-    DAILY,
-    WEEKLY,
-    MONTHLY,
-    YEARLY
-}
-enum RepeatUntil{
-    FOREVER,
-    DATE,
-    TIMES
-}
 
-public class TimePeriod implements java.io.Serializable
+public class TimePeriod implements java.io.Serializable, BaseEntity
 {
+    enum Repeat{
+        NEVER,
+        DAILY,
+        WEEKLY,
+        MONTHLY,
+        YEARLY
+    }
+    enum RepeatUntil{
+        FOREVER,
+        DATE,
+        TIMES
+    }
+
+    private int _uniqueID;
+
     //Date of occurence (Null if repeatUntil is not Repeat.NEVER)
     private LocalDate date;
     private LocalDate _firstOccurenceDate;
@@ -54,6 +57,8 @@ public class TimePeriod implements java.io.Serializable
 
     public TimePeriod()
     {
+        _uniqueID = System.identityHashCode(this);
+
         //Dates
         date = LocalDate.now();
         _firstOccurenceDate = null;
@@ -122,6 +127,10 @@ public class TimePeriod implements java.io.Serializable
         this();
         date = _date;
     }
+
+
+    public int GetID() { return _uniqueID; }
+    public void SetID(int ID){ _uniqueID = ID; }
 
 
     //Blacklist
