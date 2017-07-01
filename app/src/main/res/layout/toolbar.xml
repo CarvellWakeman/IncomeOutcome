@@ -6,6 +6,5 @@
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
     android:minHeight="?android:attr/actionBarSize"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    app:title="@string/app_name"></android.support.v7.widget.Toolbar>
+    android:theme="@style/ToolbarDefault"
+    app:title="@string/app_name"/>

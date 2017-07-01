@@ -5,31 +5,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeople.PersonViewHolder>
+public class AdapterManagePeople extends AdapterManageEntity
 {
-    ActivityManagePeople parent;
 
-    boolean selectMode = false;
+    public AdapterManagePeople(ActivityManagePeople _parent) { super(_parent); }
 
-    public AdapterManagePeople(ActivityManagePeople _parent)
+    @Override
+    public ViewHolderPerson onCreateViewHolder(ViewGroup vg, int viewType)
     {
-        parent = _parent;
+        View itemView = LayoutInflater.from(vg.getContext()).inflate(R.layout.row_layout_text_underline, vg, false);
+        return new ViewHolderPerson(parent, itemView);
     }
 
     @Override
-    public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-    {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout_text_underline, parent, false);
-        return new PersonViewHolder(itemView);
-    }
-
-    @Override
-    public void onBindViewHolder(final PersonViewHolder holder, int position)
-    {
-        //Person
+    public void onBindViewHolder(final ViewHolderEntity holder, int position) {
         Person pr = PersonManager.getInstance().GetPeople().get(position);
         if (pr != null) {
-            //Textview
+            holder.mEntity = pr;
+
+            // Fields
             holder.title.setText(pr.GetName());
             holder.icon.setImageDrawable(Helper.getDrawable(R.drawable.ic_face_white_24dp));
             holder.secondaryIcon.setVisibility(View.GONE);
@@ -41,28 +35,4 @@ public class AdapterManagePeople extends RecyclerView.Adapter<AdapterManagePeopl
         return PersonManager.getInstance().GetPeopleCount();
     }
 
-
-    public class PersonViewHolder extends ViewHolderTextUnderline implements View.OnClickListener
-    {
-        public PersonViewHolder(View itemView) { super(itemView); }
-
-        @Override
-        public void onClick(View v) {
-            //Select only, don't give option to edit or delete
-            if (selectMode){
-                parent.SelectPerson(PersonManager.getInstance().GetPeople().get(getAdapterPosition()));
-            } else {
-                Person person = PersonManager.getInstance().GetPeople().get(getAdapterPosition());
-                Helper.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, person.GetName(), "", String.valueOf(person.GetID()),
-                        new ParentCallBack() {
-                            @Override public void call(String data, DialogFragmentManagePPC dialogFragment) {
-                                parent.EditPerson(Integer.valueOf(data), dialogFragment);
-                            }
-                        },
-                        null,
-                        new ParentCallBack() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeletePerson(Integer.valueOf(data), dialogFragment); } }
-                ), true); //TODO: Handle mIsLargeDisplay
-            }
-        }
-    }
 }

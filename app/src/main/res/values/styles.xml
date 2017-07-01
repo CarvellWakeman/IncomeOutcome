@@ -1,7 +1,7 @@
 <resources>
 
     <!-- My Main Theme -->
-    <style name="MaterialTheme" parent="Theme.AppCompat.Light">
+    <style name="MaterialTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowNoTitle">true</item>
         <!--We will be using the toolbar so no need to show ActionBar-->
         <item name="windowActionBar">false</item>
@@ -24,8 +24,28 @@
         <!--Widgets-->
         <item name="android:spinnerStyle">@style/SpinnerTheme</item>
         <item name="discreteSeekBarStyle">@style/Widget.DiscreteSeekBar</item>
+        <item name="actionBarTheme">@style/ToolbarDefault</item>
+
+    </style>
 
 
+    <!-- Toolbar -->
+    <style name="ToolbarDefault" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:background">@color/colorPrimary</item>
+
+        <item name="android:titleTextColor">@color/white</item>
+        <item name="titleTextColor">@color/white</item>
+
+        <item name="android:subtitleTextColor">@color/white</item>
+        <item name="subtitleTextColor">@color/white</item>
+
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+
+        <item name="android:actionMenuTextColor">@drawable/selector_menu_item</item>
+        <item name="actionMenuTextColor">@drawable/selector_menu_item</item>
+        
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
     </style>
 
 

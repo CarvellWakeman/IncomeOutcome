@@ -149,6 +149,8 @@
     <string name="tt_add_to_split">Add a person to split this transaction with</string>
     <string name="tt_add_to_category">Add a category</string>
     <string name="tt_loading">Loading</string>
+    <string name="tt_enter_title">Enter a Title</string>
+    <string name="tt_already_exists">Already exists</string>
 
     <!-- ERROR -->
     <string name="error_transaction_not_found">Transaction not found</string>

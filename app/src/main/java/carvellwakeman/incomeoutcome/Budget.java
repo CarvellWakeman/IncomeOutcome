@@ -7,7 +7,7 @@ import org.joda.time.format.PeriodFormat;
 import java.util.*;
 
 
-public class Budget implements java.io.Serializable
+public class Budget implements java.io.Serializable, BaseEntity
 {
     //Info
     private int _uniqueID;

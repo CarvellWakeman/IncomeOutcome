@@ -1,18 +1,10 @@
 package carvellwakeman.incomeoutcome;
 
 
-import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.*;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.*;
@@ -20,61 +12,25 @@ import android.widget.*;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 
-public class ActivityManageBudgets extends AppCompatActivity {
-    Boolean menustate = true;
-    Budget editingBudget = null;
+public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
 
     Period period;
 
-    AdapterManageBudgets adapter;
-
-    AppBarLayout appBarLayout;
-    Toolbar toolbar;
-    MenuItem button_save;
-
-    FloatingActionButton button_new;
-    //Button button_startdate;
-    //Button button_enddate;
-    //CheckBox checkbox_override_enddate;
-
-    TextInputLayout TIL;
-    EditText editText_name;
     EditText editText_period;
 
     Spinner spinner_period;
 
-    LinearLayout layout_edit;
 
-    NpaLinearLayoutManager linearLayoutManager;
-    RecyclerView recyclerView_profiles;
-
-    /** The system calls this to get the DialogFragment's layout, regardless
-     of whether it's being displayed as a dialog or an embedded fragment. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_managebudgets);
-        //view.setBackgroundColor(Color.WHITE);
+        super.onCreate(savedInstanceState);
 
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        appBarLayout = (AppBarLayout) findViewById(R.id.appbarlayout);
-        AppBarLayoutExpanded(false);
-
-
-        button_new = (FloatingActionButton) findViewById(R.id.FAB_dialogmpr_new);
-        //button_startdate = (Button) findViewById(R.id.button_dialogmpr_startdate);
-        //button_enddate = (Button) findViewById(R.id.button_dialogmpr_enddate);
-
-        //checkbox_override_enddate = (CheckBox) findViewById(R.id.checkbox_override_enddate);
-
-        layout_edit = (LinearLayout) findViewById(R.id.linearLayout_dialogmpr_editbudget);
 
         editText_period = (EditText) findViewById(R.id.editText_profile_period);
 
         spinner_period = (Spinner) findViewById(R.id.spinner_profile_period);
 
-        recyclerView_profiles = (RecyclerView) findViewById(R.id.recyclerView_dialogmpr_budgets);
 
         //Calculate the default period
         CalculatePeriod();
@@ -104,153 +60,48 @@ public class ActivityManageBudgets extends AppCompatActivity {
             }
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
+        spinner_period.setSelection(2); // Months default
 
-
-        //Title input
-        TIL = (TextInputLayout)findViewById(R.id.TIL_dialogmpr_profilename);
-        if (TIL != null) {
-            TIL.setErrorEnabled(true);
-            editText_name = TIL.getEditText();
-        }
-
-        //Configure toolbar
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.inflateMenu(R.menu.toolbar_menu_save);
         toolbar.setTitle(R.string.title_managebudgets);
-        setSupportActionBar(toolbar);
-        //button_save = toolbar.getMenu().findItem(R.id.toolbar_save);
-        //button_save.setVisible(false);
-
 
         //Set profiles adapter
         adapter = new AdapterManageBudgets(this);
-        recyclerView_profiles.setAdapter(adapter);
-
-        //LinearLayoutManager for RecyclerView
-        linearLayoutManager = new NpaLinearLayoutManager(this);
-        recyclerView_profiles.setLayoutManager(linearLayoutManager);
-
-
-        editText_name.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String str = editText_name.getText().toString();
-
-                if (!str.equals("")) {
-                    if (BudgetManager.getInstance().GetBudget(str) == null) {
-                        TIL.setError("");
-                    }
-                    else{ TIL.setError("Budget already exists"); }
-                }
-                else{ TIL.setError("Enter a title"); }
-
-                CheckCanSave();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-
-        //Button listeners
-        button_new.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                OpenAddMenu();
-            }
-        });
-
-        //Hide floating action button when recyclerView is scrolled
-        recyclerView_profiles.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 10 && button_new.isShown()) { button_new.hide(); }
-                else if (dy < 0 && !button_new.isShown()){button_new.show(); }
-            }
-        });
+        recyclerView.setAdapter(adapter);
 
     }
 
-    //Option to automatically open the add menu
-    @Override public void onWindowFocusChanged(boolean hasFocus){
-        Intent intent = getIntent();
-        if (intent.getBooleanExtra("addnew", false)){ OpenAddMenu(); }
-    }
 
+    //Check if the user is allowed to save
+    public void CheckCanSave() {
+        String name = editText_name.getText().toString();
 
-    @Override
-    public void onBackPressed() { BackAction(); }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu_save, menu);
-        button_save = menu.findItem(R.id.toolbar_save);
-        button_save.setVisible(false);
-        return true;
-    }
-
-    //Toolbar button handling
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home: //Back button
-                BackAction();
-                return true;
-            case R.id.toolbar_save: //SAVE button
-
-                String newBudget = editText_name.getText().toString();
-
-                if (!newBudget.equals("")) {
-                    //New
-                    if (editingBudget == null){
-                        //Create budget
-                        editingBudget = new Budget(newBudget);
-                        //Date and Period
-                        editingBudget.SetStartDate(new LocalDate());
-                        editingBudget.SetEndDate(null);
-                        editingBudget.SetPeriod(period);
-                        //Active if it's the first
-                        if (BudgetManager.getInstance().GetBudgetCount() == 0){
-                            editingBudget.SetSelected(true);
-                        }
-                    } else { //Update
-                        //Name
-                        editingBudget.SetName(newBudget);
-                        //Period
-                        editingBudget.SetPeriod(period);
-                    }
-
-                    //Add or update old budget
-                    BudgetManager.getInstance().AddBudget(editingBudget);
-                    DatabaseManager.getInstance().insertSetting(editingBudget, true);
-
-                    adapter.notifyDataSetChanged();
-
-                   CloseSubMenus();
-                }
-                return true;
-            default:
-                return false;
+        if (name.equals("")) {
+            SetSaveButtonEnabled(false);
+        } else {
+            if (BudgetManager.getInstance().GetBudget(name) != null) {
+                Period pe = editingEntity.GetPeriod();
+                SetSaveButtonEnabled(!pe.equals(period));
+            } else {
+                SetSaveButtonEnabled(true);
+            }
         }
     }
 
-    //Update positive button text
-    public void SetSaveButtonEnabled(Boolean enabled){
-        if (button_save != null) {
-            button_save.setEnabled(enabled);
-            if (button_save.getIcon() != null) button_save.getIcon().setAlpha((enabled ? 255 : 130));
-        }
+
+    // Get category
+    @Override
+    public Budget GetEntity(){
+        return BudgetManager.getInstance().GetBudget(editText_name.getText().toString());
     }
 
     //Edit budget
-    public void EditBudget(final Integer id, DialogFragmentManagePPC dialogFragment){
+    @Override
+    public void EditEntity(final Integer id, DialogFragmentManagePPC dialogFragment){
         Budget br = BudgetManager.getInstance().GetBudget(id);
         if (br != null) {
-            editingBudget = br;
+            menuState = MENU_STATE.EDIT;
+
+            editingEntity = br;
 
             //Open add new layout
             OpenEditMenu();
@@ -274,22 +125,9 @@ public class ActivityManageBudgets extends AppCompatActivity {
         }
     }
 
-    //Select profile
-    public void SelectBudget(Integer id, final DialogFragmentManagePPC dialogFragment){
-        Budget br = BudgetManager.getInstance().GetBudget(id);
-        if (br != null) {
-            BudgetManager.getInstance().SetSelectedBudget(br);
-            for (Budget b : BudgetManager.getInstance().GetBudgets()){
-                DatabaseManager.getInstance().insertSetting(b, true);
-            }
-
-            adapter.notifyDataSetChanged();
-            if (dialogFragment != null) { dialogFragment.dismiss(); }
-        }
-    }
-
     //Delete budget
-    public void RemoveBudget(Integer id, final DialogFragmentManagePPC dialogFragment){
+    @Override
+    public void DeleteEntity(Integer id, final DialogFragmentManagePPC dialogFragment){
         final Budget br = BudgetManager.getInstance().GetBudget(id);
         if (br != null) {
             if (br.GetTransactionCount() > 0 && BudgetManager.getInstance().GetBudgetCount() > 1) {
@@ -304,7 +142,7 @@ public class ActivityManageBudgets extends AppCompatActivity {
                                 DatabaseManager.getInstance().removeBudgetSetting(br);
                                 BudgetManager.getInstance().RemoveBudget(br);
                                 //Select a new budget if the one being deleted was the selected one
-                                if (br.GetSelected()) { BudgetManager.getInstance().SetSelectedBudget(BudgetManager.getInstance().GetBudgets().get(0)); }
+                                if (br.GetSelected() && BudgetManager.getInstance().GetBudgetCount() > 0) { BudgetManager.getInstance().SetSelectedBudget(BudgetManager.getInstance().GetBudgets().get(0)); }
 
                                 adapter.notifyDataSetChanged();
 
@@ -319,28 +157,105 @@ public class ActivityManageBudgets extends AppCompatActivity {
         }
     }
 
-    //Check if the user is allowed to save
-    public void CheckCanSave() {
-        String name = editText_name.getText().toString();
+    //Select budget (for return from activity)
+    @Override
+    public void SelectEntity(Budget budget){
+        Intent intent = new Intent();
+        intent.putExtra("entity", budget.GetID());
+        setResult(1, intent);
+        finish();
+    }
 
-        if (name.equals("")) {
-            SetSaveButtonEnabled(false);
-        } else {
-            if (BudgetManager.getInstance().GetBudget(name) != null) {
-                Period pe = editingBudget.GetPeriod();
-                SetSaveButtonEnabled(!pe.equals(period)); //Check if color is different
-            } else {
-                SetSaveButtonEnabled(true);
+    // Select budget (budget.Selected)
+    public void SelectBudget(Integer id, final DialogFragmentManagePPC dialogFragment){
+        Budget budget = BudgetManager.getInstance().GetBudget(id);
+        if (budget != null) {
+            // Set selected budget
+            BudgetManager.getInstance().SetSelectedBudget(budget);
+
+            // Updated other budges (they are not selected anymore)
+            for (Budget b : BudgetManager.getInstance().GetBudgets()){
+                DatabaseManager.getInstance().insertSetting(b, true);
             }
+
+            adapter.notifyDataSetChanged();
+
+            if (dialogFragment != null) { dialogFragment.dismiss(); }
         }
     }
 
+    // Save budget
+    @Override
+    public void SaveAction(){
+        String newBudget = editText_name.getText().toString();
+
+        if (!newBudget.equals("")) {
+            //New
+            if (editingEntity == null){
+                //Create budget
+                editingEntity = new Budget(newBudget);
+                //Date and Period
+                editingEntity.SetStartDate(new LocalDate());
+                editingEntity.SetEndDate(null);
+                editingEntity.SetPeriod(period);
+                //Active if it's the first
+                if (BudgetManager.getInstance().GetBudgetCount() == 0){
+                    editingEntity.SetSelected(true);
+                }
+            } else { //Update
+                //Name
+                editingEntity.SetName(newBudget);
+                //Period
+                editingEntity.SetPeriod(period);
+            }
+
+            //Add or update old budget
+            BudgetManager.getInstance().AddBudget(editingEntity);
+            DatabaseManager.getInstance().insertSetting(editingEntity, true);
+        }
+
+    }
+
+
+    //Expand and retract sub menus
+    @Override
+    public void OpenEditMenu(){
+        super.OpenEditMenu();
+
+        //Set title
+        toolbar.setTitle( R.string.title_editbudget );
+    }
+
+    @Override
+    public void OpenAddMenu(){
+        super.OpenAddMenu();
+
+        //Set title
+        toolbar.setTitle( R.string.title_addnewbudget );
+    }
+
+    @Override
+    public void CloseSubMenus(){
+        super.CloseSubMenus();
+
+        //Set title
+        toolbar.setTitle( R.string.title_managebudgets );
+    }
+
+    @Override
+    public void ClearSubMenuData(){
+        super.ClearSubMenuData();
+        period = null;
+
+        editText_period.setText("1");
+        spinner_period.setSelection(2);
+    }
 
 
     //Update period
     public void UpdatePeriod(){
-        if (editingBudget != null) {
-            Period pe = editingBudget.GetPeriod();
+        if (editingEntity != null) {
+            Period pe = editingEntity.GetPeriod();
             if (pe != null) {
                 int YEARS = pe.getYears();
                 int MONTHS = pe.getMonths();
@@ -370,107 +285,4 @@ public class ActivityManageBudgets extends AppCompatActivity {
 
         } catch (Exception e) { e.printStackTrace(); }
     }
-
-    //Back button / toolbar back button action
-    public void BackAction(){
-        if (!menustate) { finish(); }
-        else { CloseSubMenus(); }
-    }
-
-
-    //Expand and retract sub menus
-    public void OpenEditMenu(){
-        AppBarLayoutExpanded(true);
-
-        //Show add new button
-        button_new.setVisibility( View.VISIBLE );
-
-        //Show save button
-        button_save.setVisible(true);
-
-        //Set title
-        toolbar.setTitle( R.string.title_editbudget );
-    }
-
-    public void OpenAddMenu(){
-        AppBarLayoutExpanded(true);
-
-        //Clear old data
-        ClearSubMenuData();
-
-        //Focus on text input
-        editText_name.requestFocus();
-        Helper.showSoftKeyboard(ActivityManageBudgets.this, editText_name);
-
-        //Hide add new button
-        button_new.setVisibility( View.GONE );
-
-        //Show save button
-        button_save.setVisible(true);
-
-        //Set title
-        toolbar.setTitle( R.string.title_addnewbudget );
-    }
-
-    public void CloseSubMenus(){
-        AppBarLayoutExpanded(false);
-
-        //Show add new button
-        button_new.setVisibility( View.VISIBLE );
-
-        //Set title
-        toolbar.setTitle( R.string.title_managebudgets );
-
-        //Hide save button
-        button_save.setVisible(false);
-
-        //Hide soft keyboard
-        Helper.hideSoftKeyboard(ActivityManageBudgets.this, editText_name);
-    }
-
-    public void ClearSubMenuData(){
-        period = null;
-
-        editText_name.setText("");
-        editText_period.setText("1");
-        spinner_period.setSelection(2);
-
-        editingBudget = null;
-    }
-
-    public void AppBarLayoutExpanded(boolean expanded){
-        menustate = expanded;
-
-        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
-        lp.height = (expanded ? ViewGroup.LayoutParams.WRAP_CONTENT : (int) getResources().getDimension(R.dimen.toolbar_size));
-    }
-
-    /*
-    // The system calls this only when creating the layout in a dialog.
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // The only reason you might override this method when using onCreateView() is
-        // to modify any dialog characteristics. For example, the dialog includes a
-        // title by default, but your custom layout might not need it. So here you can
-        // remove the dialog title, but you must call the superclass to get the Dialog.
-
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-
-        //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //dialog.setCanceledOnTouchOutside(false); //Disable closing dialog by clicking outside of it
-        return dialog;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Dialog dialog = getDialog();
-        if (dialog != null) {
-            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            //dialog.getWindow().setBackgroundDrawable(null);
-        }
-    }
-    */
 }

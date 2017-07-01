@@ -287,7 +287,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
                 // Refresh activity to show changes
                 RefreshActivity();
-                Helper.Log(ActivityDetailsTransaction.this, "ActDetTran", "Transaction added");
+                Helper.Log(ActivityDetailsTransaction.this, "ActDetTran", "Transaction added or updated");
             }
         } else { // Failure
         }

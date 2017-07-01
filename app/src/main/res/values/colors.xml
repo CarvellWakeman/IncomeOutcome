@@ -26,6 +26,8 @@
     <item name="ltgray" type="color">#FFCCCCCC</item>
     <item name="turquoise" type="color">#009688</item>
 
+    <item name="disabled_white" type="color">#82ffffff</item>
+
     <item name="halfTransparent" type="color">#fdffffff</item>
 
     <color name="unpressed_color">#ffffff</color>

@@ -1,6 +1,6 @@
 package carvellwakeman.incomeoutcome;
 
-public class Category
+public class Category implements BaseEntity
 {
     private int _uniqueID;
     private String _title;

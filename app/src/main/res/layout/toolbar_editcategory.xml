@@ -25,7 +25,7 @@
             app:layout_collapseParallaxMultiplier="0.7">
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/TIL_dialog_categoryname"
+                android:id="@+id/TIL_name_AME"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -46,7 +46,7 @@
                 android:id="@+id/imageView_dialogcat"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:layout_below="@+id/TIL_dialog_categoryname"
+                android:layout_below="@+id/TIL_name_AME"
                 android:src="@drawable/square" />
 
             <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
@@ -94,14 +94,11 @@
 
 
         <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
             app:layout_collapseMode="pin"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"></android.support.v7.widget.Toolbar>
+            android:theme="@style/ToolbarDefault" />
 
     </android.support.design.widget.CollapsingToolbarLayout>
 </android.support.design.widget.AppBarLayout>

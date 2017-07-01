@@ -5,14 +5,13 @@
     android:layout_height="match_parent">
 
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/coordinatorLayout_managepeople"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <include layout="@layout/toolbar_editbudget" />
 
         <LinearLayout
-            android:id="@+id/linearLayout_dialogmpr_editbudget"
+            android:id="@+id/linearLayout_edit_AME"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/toolbar_top"
@@ -20,7 +19,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView_dialogmpr_budgets"
+                android:id="@+id/recyclerView_AME"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
@@ -29,7 +28,7 @@
     </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/FAB_dialogmpr_new"
+        android:id="@+id/FAB_AME"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

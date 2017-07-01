@@ -1,37 +1,32 @@
 package carvellwakeman.incomeoutcome;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 
-public class AdapterManageCategories extends RecyclerView.Adapter<AdapterManageCategories.CategoryViewHolder>
+public class AdapterManageCategories extends AdapterManageEntity
 {
-    ActivityManageCategories parent;
-
-    public AdapterManageCategories(ActivityManageCategories _parent) {
-        parent = _parent;
-    }
+    public AdapterManageCategories(ActivityManageCategories _parent) { super(_parent); }
 
 
     @Override
-    public CategoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public ViewHolderCategory onCreateViewHolder(ViewGroup vg, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout_text_underline, parent, false);
-        return new CategoryViewHolder(itemView);
+        View itemView = LayoutInflater.from(vg.getContext()).inflate(R.layout.row_layout_text_underline, vg, false);
+        return new ViewHolderCategory(parent, itemView);
     }
 
     @Override
-    public void onBindViewHolder(final CategoryViewHolder holder, int position)
-    {
-        //Category
-        Category cr = CategoryManager.getInstance().GetCategories().get(position);
-        if (cr != null) {
-            //Textview
-            holder.title.setText(cr.GetTitle());
+    public void onBindViewHolder(final ViewHolderEntity holder, int position) {
+        Category cat = CategoryManager.getInstance().GetCategories().get(position);
+        if (cat != null) {
+            holder.mEntity = cat;
+
+            // Fields
+            holder.title.setText(cat.GetTitle());
             holder.icon.setImageDrawable(Helper.getDrawable(R.drawable.ic_view_list_white_24dp));
-            holder.icon.setColorFilter(cr.GetColor());
+            holder.icon.setColorFilter(cat.GetColor());
             holder.secondaryIcon.setVisibility(View.GONE);
         }
     }
@@ -41,22 +36,4 @@ public class AdapterManageCategories extends RecyclerView.Adapter<AdapterManageC
         return CategoryManager.getInstance().GetCategoriesCount();
     }
 
-
-    public class CategoryViewHolder extends ViewHolderTextUnderline implements View.OnClickListener
-    {
-        public CategoryViewHolder(View itemView) { super(itemView); }
-
-        @Override
-        public void onClick(View v) {
-            Category cr = CategoryManager.getInstance().GetCategories().get(getAdapterPosition());
-            if (cr != null) {
-
-                Helper.OpenDialogFragment(parent, DialogFragmentManagePPC.newInstance(parent, cr.GetTitle(), "", String.valueOf(cr.GetID()),
-                        new ParentCallBack() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.EditCategory(Integer.valueOf(data), dialogFragment); } },
-                        null,
-                        new ParentCallBack() { @Override public void call(String data, DialogFragmentManagePPC dialogFragment) { parent.DeleteCategory(Integer.valueOf(data), dialogFragment); } }),
-                        true); //TODO: Handle mIsLargeDisplay
-            }
-        }
-    }
 }

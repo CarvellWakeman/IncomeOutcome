@@ -22,52 +22,22 @@ import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import java.util.Random;
 
-public class ActivityManageCategories extends AppCompatActivity {
-    Boolean menustate = true;
-    Category editingCategory;
-
-    AdapterManageCategories adapter;
-
-    AppBarLayout appBarLayout;
-    android.support.v7.widget.Toolbar toolbar;
-    MenuItem button_save;
-
-    FloatingActionButton button_new;
-
+public class ActivityManageCategories extends ActivityManageEntity<Category> {
 
     DiscreteSeekBar seekBar_red;
     DiscreteSeekBar seekBar_green;
     DiscreteSeekBar seekBar_blue;
 
     ImageView imageView_colorindicator;
-    TextInputLayout TIL;
-    EditText editText_name;
-
-    LinearLayout layout_edit;
-    //LinearLayout layout_add;
-
-    NpaLinearLayoutManager linearLayoutManager;
-    RecyclerView recyclerView;
 
 
     public ActivityManageCategories() {}
 
-
-    /** The system calls this to get the DialogFragment's layout, regardless
-     of whether it's being displayed as a dialog or an embedded fragment. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_managecategories);
-        //public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //View view = inflater.inflate(R.layout.activity_managecategories, container, false);
-        //view.setBackgroundColor(Color.WHITE);
+        super.onCreate(savedInstanceState);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        appBarLayout = (AppBarLayout) findViewById(R.id.appbarlayout);
-        AppBarLayoutExpanded(false);
-
-        button_new = (FloatingActionButton) findViewById(R.id.FAB_dialogmc_new);
 
         seekBar_red = (DiscreteSeekBar) findViewById(R.id.seekBar_dialogcat_red);
         seekBar_green = (DiscreteSeekBar) findViewById(R.id.seekBar_dialogcat_green);
@@ -75,45 +45,7 @@ public class ActivityManageCategories extends AppCompatActivity {
 
         imageView_colorindicator = (ImageView) findViewById(R.id.imageView_dialogcat);
 
-        layout_edit = (LinearLayout) findViewById(R.id.linearLayout_dialog_editcategory);
-
-        recyclerView = (RecyclerView) findViewById(R.id.dialog_recyclerView_categories);
-
-        TIL = (TextInputLayout) findViewById(R.id.TIL_dialog_categoryname);
-
-
-        //Configure toolbar
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.inflateMenu(R.menu.toolbar_menu_save);
         toolbar.setTitle(R.string.title_managecategories);
-        setSupportActionBar(toolbar);
-
-
-        TIL.setErrorEnabled(true);
-        editText_name = TIL.getEditText();
-
-        editText_name.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                CheckCanSave();
-
-                String str = editText_name.getText().toString();
-
-                if (str.equals("")) {
-                     TIL.setError("Enter a title");
-                }
-                else{
-                    if (CategoryManager.getInstance().GetCategory(str) == null) {
-                        TIL.setError("");
-                    } else {
-                        TIL.setError("Category already exists");
-                    }
-                }
-            }
-
-            @Override public void afterTextChanged(Editable s) {}
-        });
 
 
         //Color bars
@@ -159,40 +91,18 @@ public class ActivityManageCategories extends AppCompatActivity {
         adapter = new AdapterManageCategories(this);
         recyclerView.setAdapter(adapter);
 
-        //LinearLayoutManager for RecyclerView
-        linearLayoutManager = new NpaLinearLayoutManager(this);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-
-        //Button listeners
-        button_new.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                OpenAddMenu();
-            }
-        });
-
-        //Hide floating action button when recyclerView is scrolled
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 10 && button_new.isShown()) { button_new.hide(); }
-                else if (dy < 0 && !button_new.isShown()){button_new.show(); }
-            }
-        });
-
 
         LayoutInflater inflater = getLayoutInflater();
 
         //Default categories button
-        Card DefaultCategories = new Card(this, inflater, layout_edit, 0);
+        Card DefaultCategories = new Card(this, inflater, edit_layout, 0);
         Setting loadDefCat = new Setting(inflater, R.drawable.ic_database_plus_white_24dp, getString(R.string.title_settings_defaultcategories), getString(R.string.subtitle_settings_defaultcategories),
                 new View.OnClickListener() { @Override public void onClick(View v) {
                     //Hide soft keyboard
                     Helper.hideSoftKeyboard(ActivityManageCategories.this, v);
 
                     //Close sub menus
+                    menuState = MENU_STATE.VIEW;
                     CloseSubMenus();
 
                     //Replace categories with defaults
@@ -208,61 +118,8 @@ public class ActivityManageCategories extends AppCompatActivity {
     }
 
 
-    //Option to automatically open the add menu
-    @Override public void onWindowFocusChanged(boolean hasFocus){
-        Intent intent = getIntent();
-        if (intent.getBooleanExtra("addnew", false)){ OpenAddMenu(); }
-    }
-
-
-    @Override
-    public void onBackPressed() { BackAction(); }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu_save, menu);
-        button_save = menu.findItem(R.id.toolbar_save);
-        button_save.setVisible(false);
-        return true;
-    }
-
-
-    //Toolbar button handling
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId())
-        {
-            case android.R.id.home: //Back Button
-                BackAction();
-                return true;
-            case R.id.toolbar_save: //SAVE button
-                String newCategory = editText_name.getText().toString();
-
-                if (!newCategory.equals("")) {
-                    //New category
-                    if (editingCategory == null){
-                        editingCategory = new Category(newCategory, GetSeekbarColor());
-                    } else { //Update category
-                        editingCategory.SetTitle(newCategory);
-                        editingCategory.SetColor(GetSeekbarColor());
-                    }
-
-                    //Add or update old category
-                    CategoryManager.getInstance().AddCategory(editingCategory);
-                    DatabaseManager.getInstance().insertSetting(editingCategory, true);
-
-                    adapter.notifyDataSetChanged();
-
-                    CloseSubMenus();
-                }
-                return true;
-            default:
-                return false;
-        }
-    }
-
-
     //Check if the user is allowed to save
+    @Override
     public void CheckCanSave() {
         String name = editText_name.getText().toString();
 
@@ -270,27 +127,27 @@ public class ActivityManageCategories extends AppCompatActivity {
             SetSaveButtonEnabled(false);
         } else {
             if (CategoryManager.getInstance().GetCategory(name) != null) {
-                SetSaveButtonEnabled(editingCategory.GetColor() != GetSeekbarColor()); //Check if color is different
+                SetSaveButtonEnabled(editingEntity.GetColor() != GetSeekbarColor()); //Check if color is different
             } else {
                 SetSaveButtonEnabled(true);
             }
         }
     }
 
-
-    //Update positive button text
-    public void SetSaveButtonEnabled(boolean enabled){
-        if (button_save != null) {
-            button_save.setEnabled(enabled);
-            if (button_save.getIcon() != null) button_save.getIcon().setAlpha((enabled ? 255 : 130));
-        }
+    // Get category
+    @Override
+    public Category GetEntity(){
+        return CategoryManager.getInstance().GetCategory(editText_name.getText().toString());
     }
 
     //Edit category
-    public void EditCategory(final Integer id, DialogFragmentManagePPC dialogFragment){
+    @Override
+    public void EditEntity(final Integer id, DialogFragmentManagePPC dialogFragment){
         Category cr = CategoryManager.getInstance().GetCategory(id);
         if (cr != null) {
-            editingCategory = cr;
+            menuState = MENU_STATE.EDIT;
+
+            editingEntity = cr;
 
             //Open add new layout
             OpenEditMenu();
@@ -308,8 +165,6 @@ public class ActivityManageCategories extends AppCompatActivity {
 
             SetIndicatorColor(cr.GetColor()); //Already done by seekbar listeners
 
-            //CheckCanSave();
-
             //Disable save button
             SetSaveButtonEnabled(false);
 
@@ -319,8 +174,8 @@ public class ActivityManageCategories extends AppCompatActivity {
     }
 
     //Delete category
-    public void DeleteCategory(final Integer id, final DialogFragmentManagePPC dialogFragment)
-    {
+    @Override
+    public void DeleteEntity(final Integer id, final DialogFragmentManagePPC dialogFragment) {
         final Category cr = CategoryManager.getInstance().GetCategory(id);
         if (cr != null) {
             new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle).setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
@@ -341,92 +196,76 @@ public class ActivityManageCategories extends AppCompatActivity {
         }
     }
 
-    public int GetSeekbarColor(){
-        int red =   (int) ( ((double)seekBar_red.getProgress() / 100.0) * 255);
-        int green = (int) ( ((double)seekBar_green.getProgress() / 100.0) * 255);
-        int blue =  (int) ( ((double)seekBar_blue.getProgress() / 100.0) * 255);
-        return Color.argb(255, red, green, blue);
+    // Select category
+    @Override
+    public void SelectEntity(Category cat){
+        Intent intent = new Intent();
+        intent.putExtra("entity", cat.GetID());
+        setResult(1, intent);
+        finish();
     }
 
-    public void SetIndicatorColor(int color){ imageView_colorindicator.setColorFilter(color); }
+    // Save category
+    @Override
+    public void SaveAction(){
+        String newCategory = editText_name.getText().toString();
 
+        if (!newCategory.equals("")) {
+            //New category
+            if (editingEntity == null){
+                editingEntity = new Category(newCategory, GetSeekbarColor());
+            } else { //Update category
+                editingEntity.SetTitle(newCategory);
+                editingEntity.SetColor(GetSeekbarColor());
+            }
 
-    //Back button / toolbar back button action
-    public void BackAction(){
-        if (!menustate) { finish(); }
-        else { CloseSubMenus(); }
+            //Add or update old category
+            CategoryManager.getInstance().AddCategory(editingEntity);
+            DatabaseManager.getInstance().insertSetting(editingEntity, new CallBack() {
+                @Override public void call() { adapter.notifyDataSetChanged(); }
+            }, true);
+        }
+
+        // Add New short circuit
+        if (menuState == MENU_STATE.ADDNEW) {
+            Intent intent = new Intent();
+            intent.putExtra("category", editingEntity.GetID());
+            setResult(1, intent);
+            finish();
+        }
     }
 
 
     //Expand and retract sub menus
     public void OpenEditMenu(){
-        AppBarLayoutExpanded(true);
-
-        //Show add new button
-        button_new.setVisibility( View.VISIBLE );
-
-        //Show save button
-        button_save.setVisible(true);
+        super.OpenEditMenu();
 
         //Set title
         toolbar.setTitle( R.string.title_editcategory );
     }
 
     public void OpenAddMenu(){
-        AppBarLayoutExpanded(true);
-
-        //Clear old data
-        ClearSubMenuData();
-
-        //Set color bar initial color
-        Random rand = new Random();
-        seekBar_red.setProgress(rand.nextInt(100));
-        seekBar_green.setProgress(rand.nextInt(100));
-        seekBar_blue.setProgress(rand.nextInt(100));
-        SetIndicatorColor(GetSeekbarColor());
-
-        //Focus on text input
-        editText_name.requestFocus();
-        Helper.showSoftKeyboard(ActivityManageCategories.this, editText_name);
-
-        //Hide add new button
-        button_new.setVisibility( View.GONE );
-
-        //Show save button
-        button_save.setVisible(true);
+        super.OpenAddMenu();
 
         //Set title
         toolbar.setTitle( R.string.title_addnewcategory );
     }
 
     public void CloseSubMenus(){
-        AppBarLayoutExpanded(false);
-
-        //Show add new button
-        button_new.setVisibility( View.VISIBLE );
+        super.CloseSubMenus();
 
         //Set title
         toolbar.setTitle( R.string.title_managecategories );
-
-        //Hide save button
-        button_save.setVisible(false);
-
-        //Hide soft keyboard
-        Helper.hideSoftKeyboard(ActivityManageCategories.this, editText_name);
     }
 
-    public void ClearSubMenuData(){
-        editingCategory = null;
 
-        editText_name.setText("");
+    // Category unique fields
+    public int GetSeekbarColor(){
+        int red =   (int) ( ((double)seekBar_red.getProgress() / 100.0) * 255);
+        int green = (int) ( ((double)seekBar_green.getProgress() / 100.0) * 255);
+        int blue =  (int) ( ((double)seekBar_blue.getProgress() / 100.0) * 255);
+        return Color.argb(255, red, green, blue);
     }
-
-    public void AppBarLayoutExpanded(boolean expanded){
-        menustate = expanded;
-
-        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
-        lp.height = (expanded ? ViewGroup.LayoutParams.WRAP_CONTENT : (int) getResources().getDimension(R.dimen.toolbar_size));
-    }
-
+    public void SetIndicatorColor(int color){ imageView_colorindicator.setColorFilter(color); }
 
 }

@@ -294,7 +294,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                                 spinner_categories.setSelection(0);
                                 Intent intent = new Intent(ActivityNewTransaction.this, ActivityManageCategories.class);
                                 intent.putExtra("addnew", true);
-                                startActivity(intent);
+                                startActivityForResult(intent, 3);
                             }
                         }
                         @Override public void onNothingSelected(AdapterView<?> adapterView) {}
@@ -393,26 +393,30 @@ public class ActivityNewTransaction extends AppCompatActivity
     //Repeat dialog result
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data != null) {
-            int id = data.getIntExtra("person", -1);
-            Person person = PersonManager.getInstance().GetPerson(id);
+            int id = data.getIntExtra("entity", -1);
 
-            switch (requestCode){
-                case 1: //Add person
-                    if (person != null) {
-                        AddSplitPerson(person);
-                    }
-                    break;
-                case 2: //Remove person
-                    if (person != null) {
-                        RemoveSplitPerson(person);
-                    }
-                    break;
-                default: //Repeat dialog fragment
-                    _timePeriod = (TimePeriod) data.getSerializableExtra("timeperiod");
+            if (requestCode == 1){ // Add split person
+                Person person = PersonManager.getInstance().GetPerson(id);
+                if (person != null) {
+                    AddSplitPerson(person);
+                }
+            } else if (requestCode == 2){ // Remove split person
+                Person person = PersonManager.getInstance().GetPerson(id);
+                if (person != null) {
+                    RemoveSplitPerson(person);
+                }
+            } else if (requestCode == 3){ // Add category (and select it)
+                Category category = CategoryManager.getInstance().GetCategory(id);
 
-                    //Format repeat text
-                    textView_repeat.setText(_timePeriod.GetRepeatStringShort());
-                    break;
+                if (category != null) {
+                    spinner_categories.setSelection(CategoryManager.getInstance().GetCategories().indexOf(category)+1); //+1 for 'Add New...'
+                }
+            }
+
+            // Format repeat text
+            _timePeriod = (TimePeriod) data.getSerializableExtra("timeperiod");
+            if (_timePeriod != null) {
+                textView_repeat.setText(_timePeriod.GetRepeatStringShort());
             }
         }
     }
@@ -433,8 +437,24 @@ public class ActivityNewTransaction extends AppCompatActivity
                 BackAction();
                 return true;
             case R.id.toolbar_save: //SAVE button
-                FinishTransaction();
-                finish();
+                // Close keyboard
+                Helper.hideSoftKeyboard(ActivityNewTransaction.this, null);
+
+                // Try to finish up transaction
+                int result = FinishTransaction();
+
+                if (result == 1){
+                    // Send back in intent
+                    Intent intent = new Intent();
+                    intent.putExtra("transaction", _transaction);
+                    intent.putExtra("timeperiod", _timePeriod);
+                    setResult(1, intent);
+                    finish();
+                }
+                else if (result == 0){
+                    Helper.Log(this, "ActNewTran", "1Error: Pick a category");
+                    Helper.PrintUser(this, Helper.getString(R.string.info_select_category));
+                }
                 return true;
         }
         return false;
@@ -571,7 +591,8 @@ public class ActivityNewTransaction extends AppCompatActivity
         }
 
         // Category
-        spinner_categories.setSelection(categoryAdapter.getPosition(CategoryManager.getInstance().GetCategory(_transaction.GetCategory()).GetTitle()));
+        Category cat = CategoryManager.getInstance().GetCategory(_transaction.GetCategory());
+        if (cat != null){ spinner_categories.setSelection(categoryAdapter.getPosition(cat.GetTitle())); }
 
         // Source
         editText_source.setText(_transaction.GetSource());
@@ -586,90 +607,80 @@ public class ActivityNewTransaction extends AppCompatActivity
     }
 
     //Gather data from views, build a transaction object, and save it to the database
-    public void FinishTransaction()
+    public int FinishTransaction()
     {
         Helper.Log(this, "ActNewTran", "Initial");
         //If the user selected a category
         if (spinner_categories.getSelectedItemPosition() != 0 || _activitytype == 1) {
             Helper.Log(this, "ActNewTran", "Category was selected");
-            //If budget exists
-            if (_budget != null) { //Not really necessary
-                Helper.Log(this, "ActNewTran", "Budget is not null");
-                //Determine if we are editing an existing transaction (EditUpdate), or creating a new one (EditGhost, Duplicate, _transactionID == 0)
-                if (_editState == EDIT_STATE.NewTransaction){
-                    Helper.Log(this, "ActNewTran", "EditState: New transaction");
-                    _transaction = new new_Transaction(_activitytype);
-                }
-                else if (_editState == EDIT_STATE.Edit){
-                    Helper.Log(this, "ActNewTran", "EditState: Edit Transaction");
-                }
-                else if (_editState == EDIT_STATE.Duplicate) {
-                    Helper.Log(this, "ActNewTran", "EditState: Duplicate Transaction");
-                }
 
-                //Get cost
-                double cost = GetCost();
-
-                //Set Type
-                _transaction.SetType(_activitytype);
-
-                //Set Cost
-                _transaction.SetValue( cost );
-
-                //Set source
-                _transaction.SetSource( editText_source.getText().toString() );
-
-                //Set Description
-                _transaction.SetDescription( editText_description.getText().toString() );
-
-                //Set Time Period
-                _transaction.SetTimePeriod( _timePeriod );
-
-                //Expense only
-                if (_activitytype == 0){
-                    Helper.Log(this, "ActNewTran", "Expense transaction");
-                    //Set Category
-                    Category category = CategoryManager.getInstance().GetCategory(spinner_categories.getSelectedItem().toString());
-                    if (category != null){ _transaction.SetCategory(category.GetID()); }
-
-                    //Set Split value
-                    if (checkBox_split.isChecked()) {
-                        for (Map.Entry<Person, SplitViewHolder> entry : active_people.entrySet()) {
-                            Helper.Log(this, "ActNewTran", "SplitWith:" + entry.getKey().GetName() + " for " + String.valueOf(entry.getValue().GetCost()));
-                            _transaction.SetSplit(entry.getKey().GetID(), entry.getValue().GetCost());
-                            if (entry.getValue().GetPaid()) { _transaction.SetPaidBy(entry.getKey().GetID()); }
-                        }
-                    }
-
-                    //Set paidback
-                    if (checkBox_paidBack.isChecked()) {
-                        _transaction.SetPaidBack( _paidBack );
-                    } else {
-                        _transaction.SetPaidBack(null);
-                    }
-
-                }
-
-                //Set budget id
-                _transaction.SetBudgetID(_budget.GetID());
-
-                //Add to budget
-                if (_editState == EDIT_STATE.NewTransaction || _editState == EDIT_STATE.Duplicate){
-                    _budget.AddTransaction(_transaction);
-                }
-
-                // Send back in intent
-                Intent intent = new Intent();
-                intent.putExtra("transaction", _transaction);
-                intent.putExtra("timeperiod", _timePeriod);
-                setResult(1, intent);
-                finish();
+            //Determine if we are editing an existing transaction (EditUpdate), or creating a new one (EditGhost, Duplicate, _transactionID == 0)
+            if (_editState == EDIT_STATE.NewTransaction){
+                Helper.Log(this, "ActNewTran", "EditState: New transaction");
+                _transaction = new new_Transaction(_activitytype);
             }
-        } else {
-            Helper.Log(this, "ActNewTran", "Error: Pick a category");
-            Helper.PrintUser(this, Helper.getString(R.string.info_select_category));
-        }
+            else if (_editState == EDIT_STATE.Edit){
+                Helper.Log(this, "ActNewTran", "EditState: Edit Transaction");
+            }
+            else if (_editState == EDIT_STATE.Duplicate) {
+                Helper.Log(this, "ActNewTran", "EditState: Duplicate Transaction");
+            }
 
+            //Get cost
+            double cost = GetCost();
+
+            //Set Type
+            _transaction.SetType(_activitytype);
+
+            //Set Cost
+            _transaction.SetValue( cost );
+
+            //Set source
+            _transaction.SetSource( editText_source.getText().toString() );
+
+            //Set Description
+            _transaction.SetDescription( editText_description.getText().toString() );
+
+            //Set Time Period
+            _transaction.SetTimePeriod( _timePeriod );
+
+            //Expense only
+            if (_activitytype == 0){
+                Helper.Log(this, "ActNewTran", "Expense transaction");
+                //Set Category
+                Category category = CategoryManager.getInstance().GetCategory(spinner_categories.getSelectedItem().toString());
+                if (category != null){ _transaction.SetCategory(category.GetID()); }
+
+                //Set Split value
+                if (checkBox_split.isChecked()) {
+                    for (Map.Entry<Person, SplitViewHolder> entry : active_people.entrySet()) {
+                        Helper.Log(this, "ActNewTran", "SplitWith:" + entry.getKey().GetName() + " for " + String.valueOf(entry.getValue().GetCost()));
+                        _transaction.SetSplit(entry.getKey().GetID(), entry.getValue().GetCost());
+                        if (entry.getValue().GetPaid()) { _transaction.SetPaidBy(entry.getKey().GetID()); }
+                    }
+                }
+
+                //Set paidback
+                if (checkBox_paidBack.isChecked()) {
+                    _transaction.SetPaidBack( _paidBack );
+                } else {
+                    _transaction.SetPaidBack(null);
+                }
+
+            }
+
+            //Set budget id
+            _transaction.SetBudgetID(_budget.GetID());
+
+            //Add to budget
+            if (_editState == EDIT_STATE.NewTransaction || _editState == EDIT_STATE.Duplicate){
+                _budget.AddTransaction(_transaction);
+            }
+
+            return 1; //Success
+        } else {
+            return 0; //Failure (no category)
+        }
     }
 
 

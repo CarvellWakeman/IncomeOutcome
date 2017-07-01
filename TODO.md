@@ -1,4 +1,4 @@
-PREV:Split functionality is working in its basic state (Needs refinement), Database not saving split values?
+PREV:Toolbar styles, activityManage[categories,people,budgets] refactored using abstract super class
 NEXT:Get editing/ghost editing working THEN get totals working THEN paidBack working THEN Get sorting and filtering remade
 
 
