@@ -46,7 +46,6 @@ public class ActivityNewTransaction extends AppCompatActivity
 
 
     //Configuration data
-    LocalDate _start_date;
     LocalDate _paidBack;
     TimePeriod _timePeriod;
 
@@ -120,7 +119,7 @@ public class ActivityNewTransaction extends AppCompatActivity
             if (_activitytype >= 0) {
 
                 //Initial data
-                _start_date = LocalDate.now();
+                LocalDate _start_date = LocalDate.now();
                 _timePeriod = new TimePeriod(_start_date);
 
                 active_people = new HashMap<>();
@@ -196,6 +195,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                         Helper.hideSoftKeyboard(ActivityNewTransaction.this, view);
 
                         //Open date picker dialog
+                        LocalDate _start_date = _timePeriod.GetDate();
                         new DatePickerDialog(ActivityNewTransaction.this, datePickerDate, _start_date.getYear(), _start_date.getMonthOfYear()-1, _start_date.getDayOfMonth()).show();
                     }
                 });
@@ -265,7 +265,8 @@ public class ActivityNewTransaction extends AppCompatActivity
                             } else { //Open people manager to add people
                                 Intent intent = new Intent(ActivityNewTransaction.this, ActivityManagePeople.class);
                                 intent.putExtra("addnew", true);
-                                startActivity(intent);
+                                intent.putExtra("select",true);
+                                startActivityForResult(intent, 1);
                             }
                         }
                     });
@@ -279,13 +280,6 @@ public class ActivityNewTransaction extends AppCompatActivity
                             startActivityForResult(intent, 2);
                         }
                     });
-
-                    //Split dynamic views
-                    Person you = new Person(Helper.getString(R.string.misc_your));
-                    you.SetID(0);
-
-                    //Person visibility
-                    AddSplitPerson(you);
 
 
                     //Category spinner
@@ -320,6 +314,13 @@ public class ActivityNewTransaction extends AppCompatActivity
                 else if (_activitytype == 1) { //Income
                 }
 
+                //You
+                Person you = new Person(Helper.getString(R.string.misc_your));
+                you.SetID(0);
+
+                //Person visibility
+                AddSplitPerson(you);
+
                 if (_editState == EDIT_STATE.NewTransaction) {
                     //Toolbar title
                     if (_activitytype == 0) { //Expense
@@ -328,16 +329,19 @@ public class ActivityNewTransaction extends AppCompatActivity
                     else if (_activitytype == 1) { //Income
                         toolbar.setTitle(R.string.title_newincome);
                     }
+
                 }
                 else if (_editState == EDIT_STATE.Edit) {
                     //Toolbar title
                     toolbar.setTitle(R.string.title_edittransaction);
-                    //TODO: Implement
+
+                    LoadTransaction(_transaction);
                 }
                 else if (_editState == EDIT_STATE.Duplicate) {
                     //Toolbar title
                     toolbar.setTitle(R.string.title_copytransaction);
-                    //TODO: Implement
+
+                    LoadTransaction(_transaction);
                 }
 
 
@@ -354,7 +358,7 @@ public class ActivityNewTransaction extends AppCompatActivity
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
         {
             //Set date
-            _start_date = new LocalDate(year, monthOfYear+1, dayOfMonth);
+            LocalDate _start_date = new LocalDate(year, monthOfYear+1, dayOfMonth);
 
             //Time Period
             _timePeriod.SetDate(_start_date);
@@ -371,11 +375,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                     break;
             }
 
-            //Format date text
-            textView_date.setText( _start_date.toString(Helper.getString(R.string.date_format)) );
-
-            //Format repeat text
-            textView_repeat.setText( _timePeriod.GetRepeatStringShort() );
+            UpdateDateFormat();
         }
     };
     DatePickerDialog.OnDateSetListener datePickerDate2 = new DatePickerDialog.OnDateSetListener() {
@@ -459,6 +459,14 @@ public class ActivityNewTransaction extends AppCompatActivity
         finish();
     }
 
+    // Updaters
+    public void UpdateDateFormat(){
+        //Format date text
+        textView_date.setText( _timePeriod.GetDate().toString(Helper.getString(R.string.date_format)) );
+
+        //Format repeat text
+        textView_repeat.setText( _timePeriod.GetRepeatStringShort() );
+    }
 
     //Split person dynamic views
     public void AddSplitPerson(Person person){
@@ -537,6 +545,46 @@ public class ActivityNewTransaction extends AppCompatActivity
         return 0.0d;
     }
 
+    // Load transaction into fields
+    public void LoadTransaction(new_Transaction _transaction){
+        // Cost
+        editText_cost.setText(String.valueOf(_transaction.GetValue()));
+
+        // Split
+        if (_transaction.IsSplit()) {
+            checkBox_split.setChecked(true);
+        }
+        for (Map.Entry<Integer, Double> entry : _transaction.GetSplitArray().entrySet()){
+            Person p = PersonManager.getInstance().GetPerson(entry.getKey());
+            Double v = entry.getValue();
+
+            // Not me
+            if (p.GetID()!=0) {
+                AddSplitPerson(p);
+            }
+
+            SplitViewHolder svh = active_people.get(p);
+            if (svh != null) {
+                svh.cost.setText(String.valueOf(v));
+            }
+
+        }
+
+        // Category
+        spinner_categories.setSelection(categoryAdapter.getPosition(CategoryManager.getInstance().GetCategory(_transaction.GetCategory()).GetTitle()));
+
+        // Source
+        editText_source.setText(_transaction.GetSource());
+
+        // Descsription
+        editText_description.setText(_transaction.GetDescription());
+
+        // Date
+        _timePeriod = _transaction.GetTimePeriod();
+
+        UpdateDateFormat();
+    }
+
     //Gather data from views, build a transaction object, and save it to the database
     public void FinishTransaction()
     {
@@ -585,16 +633,12 @@ public class ActivityNewTransaction extends AppCompatActivity
                     if (category != null){ _transaction.SetCategory(category.GetID()); }
 
                     //Set Split value
-                    if (checkBox_split.isChecked() && active_people.size() > 1) {
+                    if (checkBox_split.isChecked()) {
                         for (Map.Entry<Person, SplitViewHolder> entry : active_people.entrySet()) {
-                            if (entry != null) {
-                                _transaction.SetSplit(entry.getKey().GetID(), entry.getValue().GetCost());
-                                if (entry.getValue().GetPaid()) { _transaction.SetPaidBy(entry.getKey().GetID()); }
-                            }
+                            Helper.Log(this, "ActNewTran", "SplitWith:" + entry.getKey().GetName() + " for " + String.valueOf(entry.getValue().GetCost()));
+                            _transaction.SetSplit(entry.getKey().GetID(), entry.getValue().GetCost());
+                            if (entry.getValue().GetPaid()) { _transaction.SetPaidBy(entry.getKey().GetID()); }
                         }
-                    } else {
-                        _transaction.SetPaidBy( 0 );
-                        _transaction.SetSplit( 0, GetCost() );
                     }
 
                     //Set paidback

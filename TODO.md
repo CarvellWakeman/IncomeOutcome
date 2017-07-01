@@ -1,4 +1,4 @@
-PREV:Split functionality is working in its basic state (Needs refinement)
+PREV:Split functionality is working in its basic state (Needs refinement), Database not saving split values?
 NEXT:Get editing/ghost editing working THEN get totals working THEN paidBack working THEN Get sorting and filtering remade
 
 
