@@ -1,27 +1,19 @@
 package carvellwakeman.incomeoutcome;
 
 import android.app.DatePickerDialog;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
-import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.joda.time.LocalDate;
-import org.joda.time.Period;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,8 +45,8 @@ public class ActivityNewTransaction extends AppCompatActivity
     ArrayAdapter<String> categoryAdapter;
 
     //Split dynamic views
-    HashMap<Person, SplitViewHolder> active_people;
-    SplitViewHolder modifyingSplitHolder;
+    HashMap<Person, ViewHolderSplit> active_people;
+    ViewHolderSplit modifyingSplitHolder;
 
 
     //Views
@@ -115,12 +107,15 @@ public class ActivityNewTransaction extends AppCompatActivity
         //Check that intent data is good
         if (_budget != null) {
             _transaction = _budget.GetTransaction(intent.getIntExtra("transaction", -1));
+            Helper.Log(this, "ActNewTran", "ActNewTran passed " + String.valueOf(intent.getIntExtra("transaction", -1)));
+            if (_transaction != null){ Helper.Log(this, "ActNewTran", "ActNewTran passed " + _transaction.GetSource()); }
 
             if (_activitytype >= 0) {
 
                 //Initial data
                 LocalDate _start_date = LocalDate.now();
                 _timePeriod = new TimePeriod(_start_date);
+                Helper.Log(this, "ActNewTran", "Init TimePeriod:" + (_timePeriod==null ? "null" : String.valueOf(_timePeriod.GetID())));
 
                 active_people = new HashMap<>();
                 modifyingSplitHolder = null;
@@ -311,12 +306,12 @@ public class ActivityNewTransaction extends AppCompatActivity
                     SetAdapterData(); //Adds "select a category" and "add new"
 
                 }
-                else if (_activitytype == 1) { //Income
+                else if (_activitytype == 1) { // TODO Income
                 }
 
                 //You
                 Person you = new Person(Helper.getString(R.string.misc_your));
-                you.SetID(0);
+                you.SetID(-1);
 
                 //Person visibility
                 AddSplitPerson(you);
@@ -411,13 +406,17 @@ public class ActivityNewTransaction extends AppCompatActivity
                 if (category != null) {
                     spinner_categories.setSelection(CategoryManager.getInstance().GetCategories().indexOf(category)+1); //+1 for 'Add New...'
                 }
+            } else if (requestCode == 4) { // Repeating (time period)
+                // Format repeat text
+                _timePeriod = (TimePeriod) data.getSerializableExtra("timeperiod");
+                Helper.Log(this, "ActNewTran", "OnActRes TimePeriod:" + (_timePeriod==null ? "null" : String.valueOf(_timePeriod.GetID())));
+
+                if (_timePeriod != null) {
+                    textView_repeat.setText(_timePeriod.GetRepeatStringShort());
+                }
             }
 
-            // Format repeat text
-            _timePeriod = (TimePeriod) data.getSerializableExtra("timeperiod");
-            if (_timePeriod != null) {
-                textView_repeat.setText(_timePeriod.GetRepeatStringShort());
-            }
+
         }
     }
 
@@ -492,7 +491,7 @@ public class ActivityNewTransaction extends AppCompatActivity
     public void AddSplitPerson(Person person){
         if (!active_people.containsKey(person)) {
             //Create new split person view group
-            SplitViewHolder svh = new SplitViewHolder(ActivityNewTransaction.this, person, getLayoutInflater(), linearLayout_splitContainer);
+            ViewHolderSplit svh = new ViewHolderSplit(ActivityNewTransaction.this, person, getLayoutInflater(), linearLayout_splitContainer);
 
             //Special case for you
             if (person.GetID() == 0) {
@@ -510,7 +509,7 @@ public class ActivityNewTransaction extends AppCompatActivity
             if (active_people.size() == 1){
                 svh.SetEnabled(false);
             } else {
-                for (Map.Entry<Person, SplitViewHolder> entry : active_people.entrySet()){
+                for (Map.Entry<Person, ViewHolderSplit> entry : active_people.entrySet()){
                     entry.getValue().SetEnabled(true);
                     entry.getValue().cost.setText( String.valueOf( GetCost() / active_people.size() ) ); //Set split to be even
                 }
@@ -525,7 +524,7 @@ public class ActivityNewTransaction extends AppCompatActivity
             UpdateSplitViewHolderCosts();
 
             //Disable viewholder if only one split person
-            for (Map.Entry<Person, SplitViewHolder> entry : active_people.entrySet()){
+            for (Map.Entry<Person, ViewHolderSplit> entry : active_people.entrySet()){
                 entry.getValue().SetEnabled(active_people.size() != 1);
                 entry.getValue().cost.setText( String.valueOf( GetCost() / active_people.size() ) ); //Set split to be even
             }
@@ -533,9 +532,9 @@ public class ActivityNewTransaction extends AppCompatActivity
     }
 
     public void UpdateSplitViewHolderCosts(){
-        for (Map.Entry<Person, SplitViewHolder> entry : active_people.entrySet()) {
+        for (Map.Entry<Person, ViewHolderSplit> entry : active_people.entrySet()) {
             if (entry != null) {
-                SplitViewHolder svh = entry.getValue();
+                ViewHolderSplit svh = entry.getValue();
 
                 modifyingSplitHolder = svh;
                 svh.cost.setText( String.valueOf( (svh.percentage.getProgress()/100.0) * GetCost() )  );
@@ -567,6 +566,9 @@ public class ActivityNewTransaction extends AppCompatActivity
 
     // Load transaction into fields
     public void LoadTransaction(new_Transaction _transaction){
+        Helper.Log(this, "ActNewTran", "LoadTransaction");
+        Helper.Log(this, "ActNewTran", "LoadTransaction TimePeriod:" + (_timePeriod==null ? "null" : String.valueOf(_timePeriod.GetID())));
+
         // Cost
         editText_cost.setText(String.valueOf(_transaction.GetValue()));
 
@@ -579,11 +581,11 @@ public class ActivityNewTransaction extends AppCompatActivity
             Double v = entry.getValue();
 
             // Not me
-            if (p.GetID()!=0) {
+            if (entry.getKey()!=0 && p!=null) {
                 AddSplitPerson(p);
             }
 
-            SplitViewHolder svh = active_people.get(p);
+            ViewHolderSplit svh = active_people.get(p);
             if (svh != null) {
                 svh.cost.setText(String.valueOf(v));
             }
@@ -610,6 +612,8 @@ public class ActivityNewTransaction extends AppCompatActivity
     public int FinishTransaction()
     {
         Helper.Log(this, "ActNewTran", "Initial");
+        Helper.Log(this, "ActNewTran", "FinishTran TimePeriod:" + (_timePeriod==null ? "null" : String.valueOf(_timePeriod.GetID())));
+
         //If the user selected a category
         if (spinner_categories.getSelectedItemPosition() != 0 || _activitytype == 1) {
             Helper.Log(this, "ActNewTran", "Category was selected");
@@ -642,7 +646,9 @@ public class ActivityNewTransaction extends AppCompatActivity
             _transaction.SetDescription( editText_description.getText().toString() );
 
             //Set Time Period
+            Helper.Log(this, "ActNewTran", "TimePeriod:" + (_timePeriod==null ? "null" : String.valueOf(_timePeriod.GetID())));
             _transaction.SetTimePeriod( _timePeriod );
+            Helper.Log(this, "ActNewTran", "Transaction TimePeriod:" + (_transaction.GetTimePeriod()==null ? "null" : String.valueOf(_transaction.GetTimePeriod().GetID())));
 
             //Expense only
             if (_activitytype == 0){
@@ -653,7 +659,7 @@ public class ActivityNewTransaction extends AppCompatActivity
 
                 //Set Split value
                 if (checkBox_split.isChecked()) {
-                    for (Map.Entry<Person, SplitViewHolder> entry : active_people.entrySet()) {
+                    for (Map.Entry<Person, ViewHolderSplit> entry : active_people.entrySet()) {
                         Helper.Log(this, "ActNewTran", "SplitWith:" + entry.getKey().GetName() + " for " + String.valueOf(entry.getValue().GetCost()));
                         _transaction.SetSplit(entry.getKey().GetID(), entry.getValue().GetCost());
                         if (entry.getValue().GetPaid()) { _transaction.SetPaidBy(entry.getKey().GetID()); }

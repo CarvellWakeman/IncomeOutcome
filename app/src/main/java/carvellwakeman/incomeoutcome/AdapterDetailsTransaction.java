@@ -107,6 +107,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     if ( _budget.GetTransaction(tran.GetID()) != null ) {
                         //If tranp has children (ie, tranp and tran are not the same transaction)
                         if (tranp.GetTimePeriod().DoesRepeat()){ //tranp has children, duplicate and blacklist it
+                            Helper.Log(App.GetContext(), "AdaDetTran", "Edit(Instance) of repeating tran " + tranp.GetSource());
                             Intent intent = new Intent(_activity, ActivityNewTransaction.class);
                             intent.putExtra("activitytype", activityType);
                             intent.putExtra("budget", _budget.GetID());
@@ -114,6 +115,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                             intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Duplicate.ordinal());
                             _activity.startActivityForResult(intent, 2);
                         } else { //Standard transaction
+                            Helper.Log(App.GetContext(), "AdaDetTran", "Edit(Instance) of std tran " + tranp.GetSource());
                             Intent intent = new Intent(_activity, ActivityNewTransaction.class);
                             intent.putExtra("activitytype", activityType);
                             intent.putExtra("budget", _budget.GetID());
@@ -122,16 +124,18 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                             _activity.startActivityForResult(intent, 2);
                         }
                     } else { //Ghost
+                        Helper.Log(App.GetContext(), "AdaDetTran", "Edit(Instance) of ghost tran " + tran.GetSource());
                         Intent intent = new Intent(_activity, ActivityNewTransaction.class);
                         intent.putExtra("activitytype", activityType);
                         intent.putExtra("budget", _budget.GetID());
-                        intent.putExtra("transaction", tran.GetID());
+                        intent.putExtra("transaction", tranp.GetID());
                         intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Duplicate.ordinal());
                         _activity.startActivityForResult(intent, 2);
                     }
                     break;
 
                 case R.id.transaction_edit_all: //Edit(all / parent)
+                    Helper.Log(App.GetContext(), "AdaDetTran", "Edit(All) of " + tranp.GetSource());
                     Intent intent = new Intent(_activity, ActivityNewTransaction.class);
                     intent.putExtra("activitytype", activityType);
                     intent.putExtra("budget", _budget.GetID());
@@ -141,19 +145,24 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     break;
 
                 case R.id.transaction_delete_instance: //Delete(instance)
-                    //If edited expense exists (is not a ghost)
+                    //If deleted expense exists (is not a ghost)
                     if (_budget.GetTransaction(tran.GetID()) != null) {
                         //If tranp has children (ie, tranp and tran are not the same transaction)
                         if (tranp.GetTimePeriod().DoesRepeat()){ //tranp has children, blacklist its date
+                            Helper.Log(App.GetContext(), "AdaDetTran", "Delete(instance) of Repeat tran " + tranp.GetSource());
+
                             tranp.GetTimePeriod().AddBlacklistDate(tranp.GetTimePeriod().GetDate(), false);
                             DatabaseManager.getInstance().insert(tranp, true);
                         } else {
+                            Helper.Log(App.GetContext(), "AdaDetTran", "Delete(instance) of individual tran " + tranp.GetSource());
                             //ArrayList<Integer> children = tranp.GetChildren();
                             //for (int i = 0; i < children.size(); i++){ _budget.RemoveTransaction(children.get(i)); }
                             _budget.RemoveTransaction(tranp);
                             DatabaseManager.getInstance().remove(tranp);
                         }
                     } else { //Ghost
+                        Helper.Log(App.GetContext(), "AdaDetTran", "Delete(instance) of ghost tran " + tranp.GetSource());
+
                         tranp.GetTimePeriod().AddBlacklistDate(tran.GetTimePeriod().GetDate(), false);
                         DatabaseManager.getInstance().insert(tranp, true);
                     }
@@ -161,6 +170,8 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     break;
 
                 case R.id.transaction_delete_all: //Delete(all, parent)
+                    Helper.Log(App.GetContext(), "AdaDetTran", "Delete(all) of " + tranp.GetSource());
+
                     ArrayList<Integer> children = tranp.GetChildren();
                     for (int i = 0; i < children.size(); i++){
                         new_Transaction child = _budget.GetTransaction(children.get(i));
@@ -178,6 +189,8 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                 //    break;
             }
 
+            GetTransactions();
+            notifyDataSetChanged();
 
         }
     }
@@ -363,12 +376,15 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
                     //PaidBy
                     paidBy.setVisibility(View.VISIBLE);
-
+                    //Helper.Log(App.GetContext(), "AdaDetTran", transaction.GetSource() + " paidby(" + String.valueOf(transaction.GetPaidBy()) + ")");
                     if (transaction.GetPaidBy() >= 0) {
                         Person p = PersonManager.getInstance().GetPerson(transaction.GetPaidBy());
+                        //Helper.Log(App.GetContext(), "AdaDetTran", transaction.GetSource() + " PaidBy Person:" + (p==null?"null":p.GetName()));
                         if (p != null){
                             paidBy.setText(String.format(Helper.getString(R.string.info_paidby), p.GetName()));
                         }
+                    } else {
+                        paidBy.setText(String.format(Helper.getString(R.string.info_paidby), Helper.getString(R.string.format_me)));
                     }
 
                 }

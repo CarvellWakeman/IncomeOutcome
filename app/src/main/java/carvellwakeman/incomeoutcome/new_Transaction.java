@@ -35,7 +35,7 @@ public class new_Transaction implements java.io.Serializable
     private ArrayList<Integer> _children;
 
     //Expense type only
-    private int _paidBy;
+    private int _paidBy; // -1 is 'you', else person ID
     private HashMap<Integer,Double> _split; //Split[($,me),($,p1),...]
 
     private LocalDate _paidBack;
@@ -199,6 +199,12 @@ public class new_Transaction implements java.io.Serializable
                     }
                     else { //Make ghost transactions
                         new_Transaction temp = new new_Transaction(this);
+                        // Add split to temp transaction
+                        for (HashMap.Entry<Integer, Double> entry : GetSplitArray().entrySet()){
+                            temp.SetSplit(entry.getKey(), entry.getValue());
+                        }
+                        temp.SetPaidBy(GetPaidBy());
+                        // Set timeperiod to temp transaction
                         temp.SetTimePeriod(new TimePeriod(tp_dates.get(ii)));
                         temp.SetParentID(GetID());
                         occurrences.add(temp);

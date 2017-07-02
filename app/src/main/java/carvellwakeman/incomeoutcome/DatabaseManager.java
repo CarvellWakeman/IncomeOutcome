@@ -35,10 +35,11 @@ public class DatabaseManager extends SQLiteOpenHelper
     private static final int DATABASE_VERSION = 8;
     //File information
     private static final String FILE_NAME = "data.db";
-    private File EXPORT_DIRECTORY;
-    private File EXPORT_DIRECTORY_BACKUP;
-    private String BACKUP_FILENAME;
-    public File EXPORT_BACKUP;
+
+    private File EXPORT_DIRECTORY = new File(Environment.getExternalStorageDirectory() + "/" + Helper.getString(R.string.app_name_nospace) + "/");
+    private File EXPORT_DIRECTORY_BACKUP = new File(EXPORT_DIRECTORY.getAbsolutePath() + "/backup/");
+    private String BACKUP_FILENAME = "data_backup.db"; //TODO Read from strings file
+    public File EXPORT_BACKUP = new File(EXPORT_DIRECTORY_BACKUP, BACKUP_FILENAME);
     //Other
     //private static final String ITEM_DELIMITER = "\\|";
     private static final String STATEMENT_DELIMITER = "\n";
@@ -336,7 +337,6 @@ public class DatabaseManager extends SQLiteOpenHelper
                 //Drop the temp table
                 "DROP TABLE temp_otherpeople" + STATEMENT_DELIMITER +
 
-
                 //Reformat data from TABLE_TRANSACTIONS by rebuilding it
 
                 //Rename loaded table
@@ -417,34 +417,79 @@ public class DatabaseManager extends SQLiteOpenHelper
 
     private static final String UPGRADE_7_8 =
                 //Reformat timeperiods table to replace the ID column with a UID column
-                "ALTER TABLE " + TABLE_TIMEPERIODS + " CHANGE " + COLUMN_ID + " " + COLUMN_uniqueID + INT_TYPE;
+                //"ALTER TABLE " + TABLE_TIMEPERIODS + " CHANGE " + COLUMN_ID + " " + COLUMN_uniqueID + INT_TYPE;
 
-    private DatabaseManager(){ super(App.GetContext(), FILE_NAME, null, DATABASE_VERSION); }
+                //Rename timeperiods table
+                "ALTER TABLE " + TABLE_TIMEPERIODS + " RENAME TO " + "temp_tp" + STATEMENT_DELIMITER +
+
+                //Create correctly formatted table
+                CREATE_TABLE_TIMEPERIOD + STATEMENT_DELIMITER +
+
+                //Copy data from temp to TABLE_TRANSACTIONS
+                "INSERT INTO " + TABLE_TIMEPERIODS + "(" +
+                        COLUMN_uniqueID + "," +
+                        COLUMN_tp_parent + "," +
+                        COLUMN_tp_date + "," +
+                        COLUMN_tp_repeatFreq + "," +
+                        COLUMN_tp_repeatUntil + "," +
+                        COLUMN_tp_repeatNTimes + "," +
+                        COLUMN_tp_repeatUntilDate + "," +
+                        COLUMN_tp_repeatEveryN + "," +
+                        COLUMN_tp_repeatDayOfWeek + ",  " +
+                        COLUMN_tp_repeatDayOfMonth + "," +
+                        COLUMN_tp_dateOfYear + "," +
+                        COLUMN_tp_blacklistDates +
+                ") SELECT " +
+                        COLUMN_ID + "," +
+                        COLUMN_tp_parent + "," +
+                        COLUMN_tp_date + "," +
+                        COLUMN_tp_repeatFreq + "," +
+                        COLUMN_tp_repeatUntil + "," +
+                        COLUMN_tp_repeatNTimes + "," +
+                        COLUMN_tp_repeatUntilDate + "," +
+                        COLUMN_tp_repeatEveryN + "," +
+                        COLUMN_tp_repeatDayOfWeek + "," +
+                        COLUMN_tp_repeatDayOfMonth + "," +
+                        COLUMN_tp_dateOfYear + "," +
+                        COLUMN_tp_blacklistDates +
+                " FROM temp_tp" + STATEMENT_DELIMITER +
+
+                //Drop the temp table
+                "DROP TABLE temp_tp";
+
+    private DatabaseManager(){
+        super(App.GetContext(), FILE_NAME, null, DATABASE_VERSION);
+    }
     static DatabaseManager getInstance(){ return instance; }
-    public void initialize() {
-        EXPORT_DIRECTORY = new File(Environment.getExternalStorageDirectory() + "/" + Helper.getString(R.string.app_name_nospace) + "/");
-
-        EXPORT_DIRECTORY_BACKUP = new File(EXPORT_DIRECTORY.getAbsolutePath() + "/backup/");
-        BACKUP_FILENAME = "data_backup.db"; //TODO Read from strings file
-        EXPORT_BACKUP = new File(EXPORT_DIRECTORY_BACKUP, BACKUP_FILENAME);
+    //public void initialize() {
+        //Helper.Log(App.GetContext(), "DBM", "initialize called");
 
         //Triggers onUpgrade (if necessary)
-        database = getReadableDatabase();
+        //database = getWritableDatabase();
+        //Helper.Log(App.GetContext(), "DBM", "initialize called ver." + String.valueOf(database.getVersion()));
 
-        tryCreateDatabase();
-    }
+        //tryCreateDatabase(database);
+    //}
 
     //Database constructor and updating
     @Override
     public void onCreate(SQLiteDatabase db) {
+        //Helper.Log(App.GetContext(), "DBM", "OnCreate called ver." + String.valueOf(db.getVersion()));
         tryCreateDatabase(db);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Helper.Log(App.GetContext(), "DBM", "OnUpgrade called (" + oldVersion + "->" + newVersion + ")");
+        Helper.Log(App.GetContext(), "DBM", "onUpgrade() ver." + String.valueOf(db.getVersion()));
+        Helper.Log(App.GetContext(), "DBM", "onUpgrade() oldVersion " + String.valueOf(oldVersion));
+        Helper.Log(App.GetContext(), "DBM", "onUpgrade() newVersion " + String.valueOf(newVersion));
+
         Upgrade(db, oldVersion, newVersion);
     }
     public void Upgrade(SQLiteDatabase db, int oldVersion, int newVersion){
-        Helper.Print(App.GetContext(), "OnUpgrade (" + oldVersion + "->" + newVersion + ")");
+        Helper.Log(App.GetContext(), "DBM", "Upgrading from " + oldVersion + " to " + newVersion);
+        Helper.Log(App.GetContext(), "DBM", "Upgrade() ver." + String.valueOf(db.getVersion()));
+
         //Helper.PrintLong(App.GetContext(), UPGRADE_6_7);
         //Helper.PrintLong(App.GetContext(), "(SELECT "  + COLUMN_uniqueID + " FROM " + TABLE_SETTINGS_CATEGORIES + " WHERE " + "temp_transactions." + COLUMN_category + " = " + TABLE_SETTINGS_CATEGORIES + "." + COLUMN_category + "),");
 
@@ -518,15 +563,13 @@ public class DatabaseManager extends SQLiteOpenHelper
                     }
                     c.close();
 
-
-
                     Helper.Print(App.GetContext(), "Upgrade from Ver.6 to Ver.7");
                 case 7: //To version 8
                     SQLExecuteMultiple(db, UPGRADE_7_8);
-
                     Helper.Print(App.GetContext(), "Upgrade from Ver.7 to Ver.8");
                 case 8: //To version 9
             }
+
             //OLD
             //if (newVersion > oldVersion){
             //DATABASE_VERSION 1 -> 2
@@ -554,6 +597,10 @@ public class DatabaseManager extends SQLiteOpenHelper
             //ProfileManager.PrintLong(activityContext, ex.getMessage());
             //ProfileManager.Print(activityContext, "Error upgrading database");
         }
+
+        // If all went correctly, set database version
+        db.setVersion(newVersion);
+
     }
 
     //SQL
@@ -782,7 +829,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                 //else { Log.e("DATABASE", "Profiles Table Exists"); }
                 //ProfileManager.Print("Settings tables created");
             } catch (SQLException ex){
-                //ProfileManager.Print(activityContext, "Error creating Settings table");
+                //Helper.Print(App.GetContext(), "DBM", "Error creating Settings tables");
                 ex.printStackTrace();
             }
             //Try create transactions table
@@ -825,8 +872,8 @@ public class DatabaseManager extends SQLiteOpenHelper
         }
     }
 
-    private void dropAndRecreateAllTables() { runDBTask( new CallBack() { @Override public void call() { _dropAndRecreateAllTables(); } } ); }
-    private void _dropAndRecreateAllTables(){
+    private void dropAndRecreateAllTables(final SQLiteDatabase database) { runDBTask(new CallBack() { @Override public void call() { _dropAndRecreateAllTables(database); } } ); }
+    private void _dropAndRecreateAllTables(SQLiteDatabase database){
         _dropTable(TABLE_SETTINGS_CATEGORIES);
         _dropTable(TABLE_SETTINGS_OTHERPEOPLE);
         _dropTable(TABLE_SETTINGS_PROFILES);
@@ -839,12 +886,13 @@ public class DatabaseManager extends SQLiteOpenHelper
 
 
         //Recreate
+        Helper.Log(App.GetContext(), "DBM", "Try create database");
         tryCreateDatabase(database);
     }
 
     private void dropTable(final String tableName) { runDBTask( new CallBack() { @Override public void call() { _dropTable(tableName); } } ); }
     private void _dropTable(String tableName){
-        SQLExecuteMultiple(database, "DROP TABLE IF EXISTS " + tableName);
+        database.execSQL("DROP TABLE IF EXISTS " + tableName);
     }
 
 
@@ -856,8 +904,9 @@ public class DatabaseManager extends SQLiteOpenHelper
         _deleteTableContent(TABLE_SETTINGS_BUDGETS);
         _deleteTableContent(TABLE_TRANSACTIONS);
         _deleteTableContent(TABLE_TIMEPERIODS);
-        SQLExecuteMultiple(database, "DELETE FROM sqlite_sequence WHERE name='"+TABLE_TIMEPERIODS+"';"); //Reset autoincrement id counter for TABLE_TIMEPERIODS
+
         //Legacy
+        //SQLExecuteMultiple(database, "DELETE FROM sqlite_sequence WHERE name='"+TABLE_TIMEPERIODS+"';"); //Reset autoincrement id counter for TABLE_TIMEPERIODS
         _deleteTableContent(TABLE_EXPENSES);
         _deleteTableContent(TABLE_INCOME);
     }
@@ -938,18 +987,22 @@ public class DatabaseManager extends SQLiteOpenHelper
                         }
 
                         //Delete current database
-                        _dropAndRecreateAllTables();
+                        Helper.Log(App.GetContext(), "DBM", "Delete and recreate all tables");
+                        //_dropAndRecreateAllTables(getWritableDatabase());
+                        _deleteAllTableContent();
                         //Create new empty database
-                        tryCreateDatabase();
+                        Helper.Log(App.GetContext(), "DBM", "Try create database");
+                        tryCreateDatabase(getWritableDatabase());
 
-                        //Transfer database from import to local directory (ASyncTask)
+                        //Transfer database from import to local directory (ASyncTask?)
                         FileUtils.copyFile(importFile, currentDB);
 
 
                         //Force upgrade even though DATABASE_VERSION has not changed because the database we are importing may be older than DATABASE_VERSION (WHY DOES THIS WORK?)
                         //Call getWritableDatabase() to trigger onUpgrade if it is necessary
-                        //getWritableDatabase();
+                        //getWritableDatabase(); // Do it forcefully now.
                         //Force call onUpgrade
+                        Helper.Log(App.GetContext(), "DBM", "Force upgrade");
                         final int oldVersion = SQLiteDatabase.openDatabase(importFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
                         Upgrade(getWritableDatabase(), oldVersion, getVersion());
                         //getWritableDatabase().close();

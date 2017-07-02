@@ -1,11 +1,9 @@
 package carvellwakeman.incomeoutcome;
 
-import android.graphics.Color;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -16,7 +14,7 @@ import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import java.util.Map;
 
 
-public class SplitViewHolder //implements View.OnClickListener
+public class ViewHolderSplit //implements View.OnClickListener
 {
     LinearLayout base;
     TextInputLayout TIL;
@@ -31,7 +29,7 @@ public class SplitViewHolder //implements View.OnClickListener
     //Avoid the infinite loop
     boolean oneViewAtATime = false;
 
-    public SplitViewHolder(ActivityNewTransaction parent, final Person person, LayoutInflater inflater, ViewGroup root) {
+    public ViewHolderSplit(ActivityNewTransaction parent, final Person person, LayoutInflater inflater, ViewGroup root) {
         base = (LinearLayout) inflater.inflate(R.layout.row_layout_split, null);
         root.addView(base);
 
@@ -63,7 +61,7 @@ public class SplitViewHolder //implements View.OnClickListener
 
             @Override public void onProgressChanged(DiscreteSeekBar discreteSeekBar, int i, boolean b) {
                 if (_parent.modifyingSplitHolder == null && !oneViewAtATime) {
-                    _parent.modifyingSplitHolder = SplitViewHolder.this;
+                    _parent.modifyingSplitHolder = ViewHolderSplit.this;
                     oneViewAtATime = true;
 
                     numOtherVH = _parent.active_people.size() - 1;
@@ -78,10 +76,10 @@ public class SplitViewHolder //implements View.OnClickListener
                     cost.setText(Helper.decimalFormat.format(tv));
 
                     //Update all other viewholders
-                    for (Map.Entry<Person, SplitViewHolder> entry : _parent.active_people.entrySet()) {
+                    for (Map.Entry<Person, ViewHolderSplit> entry : _parent.active_people.entrySet()) {
                         if (entry != null && entry.getKey().GetID() != _person.GetID()) { //Comment out to update THTS cost editText
                             //Other splitviewholder
-                            SplitViewHolder svh = entry.getValue();
+                            ViewHolderSplit svh = entry.getValue();
 
                             //Update percentage slider
                             svh.percentage.setProgress(diff / numOtherVH);
@@ -113,7 +111,7 @@ public class SplitViewHolder //implements View.OnClickListener
 
             @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (_parent.modifyingSplitHolder == null && !oneViewAtATime) {
-                    _parent.modifyingSplitHolder = SplitViewHolder.this;
+                    _parent.modifyingSplitHolder = ViewHolderSplit.this;
                     oneViewAtATime = true;
 
                     numOtherVH = _parent.active_people.size() - 1;
@@ -130,10 +128,10 @@ public class SplitViewHolder //implements View.OnClickListener
                     //cost.setText(Helper.decimalFormat.format(GetCost()));
 
                     //Update all other viewHolders
-                    for (Map.Entry<Person, SplitViewHolder> entry : _parent.active_people.entrySet()) {
+                    for (Map.Entry<Person, ViewHolderSplit> entry : _parent.active_people.entrySet()) {
                         if (entry != null && entry.getKey().GetID() != _person.GetID()) { //Comment out to update THTS cost editText
                             //Other splitviewholder
-                            SplitViewHolder svh = entry.getValue();
+                            ViewHolderSplit svh = entry.getValue();
 
                             //Update cost textbox
                             svh.cost.setText(Helper.decimalFormat.format(diff / numOtherVH));
@@ -159,10 +157,10 @@ public class SplitViewHolder //implements View.OnClickListener
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (_parent.modifyingSplitHolder == null && !oneViewAtATime) {
-                    _parent.modifyingSplitHolder = SplitViewHolder.this;
+                    _parent.modifyingSplitHolder = ViewHolderSplit.this;
                     oneViewAtATime = true;
 
-                    for (Map.Entry<Person, SplitViewHolder> entry : _parent.active_people.entrySet()) {
+                    for (Map.Entry<Person, ViewHolderSplit> entry : _parent.active_people.entrySet()) {
                         if (entry != null && entry.getKey().GetID() != _person.GetID()) {
                             entry.getValue().paid.setChecked(false);
                         }

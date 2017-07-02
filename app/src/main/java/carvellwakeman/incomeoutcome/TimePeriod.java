@@ -93,6 +93,8 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
     }
     public TimePeriod(TimePeriod copy)
     {
+        this(); // TODO: Deep or shallow copy? Which is this. (ID field?)
+
         //Dates
         date = copy.GetDate();
         _firstOccurenceDate = copy.GetFirstOccurrence();

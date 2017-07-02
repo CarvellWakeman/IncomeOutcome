@@ -281,6 +281,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                 //Add to/update database synchronously
                 final DatabaseManager dm = DatabaseManager.getInstance();
 
+                Helper.Log(this, "ActDetTran", "Transaction TimePeriod:" + (_transaction.GetTimePeriod()==null ? "null" : String.valueOf(_transaction.GetTimePeriod().GetID())));
                 dm._insert(_transaction, true);
                 dm._insert(_transaction.GetID(), _timePeriod, true);
                 dm._insertSetting(_budget, true);

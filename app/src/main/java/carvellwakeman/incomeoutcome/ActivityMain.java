@@ -62,7 +62,8 @@ public class ActivityMain extends AppCompatActivity
 
         //Initialize the Database
         databaseManager = DatabaseManager.getInstance();
-        databaseManager.initialize();
+        //Helper.Log(App.GetContext(), "ActMain", "Initialize");
+        //databaseManager.initialize();
 
         //Load data from database
         databaseManager.loadSettings( //Load settings

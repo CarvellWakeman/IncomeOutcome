@@ -113,7 +113,7 @@ public class DialogFragmentRepeat extends DialogFragment
                 //Sent timeperiod back to parent
                 Intent intent = new Intent();
                 intent.putExtra("timeperiod", _timePeriod);
-                _parent.onActivityResult(0,0,intent);
+                _parent.onActivityResult(4,1,intent);
                 dismiss();
             }
         });
