@@ -115,6 +115,12 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
         );
         DefaultCategories.AddView(loadDefCat.getView());
 
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra("addnew", false)){
+            menuState = MENU_STATE.ADDNEW;
+            edit_layout.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
     }
 
 

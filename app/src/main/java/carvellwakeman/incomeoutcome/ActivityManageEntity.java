@@ -185,6 +185,7 @@ public abstract class ActivityManageEntity<T extends BaseEntity> extends AppComp
                     menuState = MENU_STATE.SELECT;
 
                     edit_layout.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.VISIBLE);
 
                     CloseSubMenus();
                     OpenSelectMode();

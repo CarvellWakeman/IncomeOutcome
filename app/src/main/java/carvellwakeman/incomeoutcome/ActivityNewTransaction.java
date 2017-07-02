@@ -35,6 +35,7 @@ public class ActivityNewTransaction extends AppCompatActivity
     //Object data
     Budget _budget;
     new_Transaction _transaction;
+    Category _category;
 
 
     //Configuration data
@@ -54,7 +55,7 @@ public class ActivityNewTransaction extends AppCompatActivity
 
     ScrollView scrollView;
 
-    Spinner spinner_categories;
+    //Spinner spinner_categories;
 
     CheckBox checkBox_split;
 
@@ -68,9 +69,9 @@ public class ActivityNewTransaction extends AppCompatActivity
     TextView textView_date;
     TextView textView_repeat;
 
-    Button button_categoryNotice;
     Button button_addSplit;
     Button button_removeSplit;
+    Button button_selectCategory;
 
     CardView cardView_paidBack;
     CardView cardView_cost;
@@ -138,7 +139,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                 linearLayout_timeperiod_date = (LinearLayout) findViewById(R.id.linearLayout_newTransaction_date) ;
                 linearLayout_timeperiod_repeat = (LinearLayout) findViewById(R.id.linearLayout_newTransaction_repeat) ;
 
-                spinner_categories = (Spinner) findViewById(R.id.spinner_newTransaction_categories);
+                //spinner_categories = (Spinner) findViewById(R.id.spinner_newTransaction_categories);
 
                 checkBox_paidBack = (CheckBox) findViewById(R.id.checkBox_newTransaction_paidback);
                 checkBox_split = (CheckBox) findViewById(R.id.checkBox_newTransaction_splitEnabled);
@@ -154,7 +155,7 @@ public class ActivityNewTransaction extends AppCompatActivity
 
                 button_addSplit = (Button) findViewById(R.id.button_newTransaction_addsplit);
                 button_removeSplit = (Button) findViewById(R.id.button_newTransaction_removesplit);
-                button_categoryNotice = (Button) findViewById(R.id.button_newTransaction_categorynotice);
+                button_selectCategory = (Button) findViewById(R.id.button_newTransaction_selectCategory);
 
                 recyclerView_blacklistDates = (RecyclerView) findViewById(R.id.recyclerView_blacklistDates);
 
@@ -227,7 +228,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                 if (_activitytype == 0) { //Expense
                     //Expense related views
                     textView_source.setVisibility(View.VISIBLE);
-                    spinner_categories.setVisibility(View.VISIBLE);
+                    //spinner_categories.setVisibility(View.VISIBLE);
 
                     //Cost formatting
                     editText_cost.setKeyListener(DigitsKeyListener.getInstance(false, true));
@@ -276,6 +277,24 @@ public class ActivityNewTransaction extends AppCompatActivity
                         }
                     });
 
+                    // Select Category
+                    button_selectCategory.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //Check if there are any categories
+                            if (CategoryManager.getInstance().GetCategoriesCount() > 0) {
+                                Intent intent = new Intent(ActivityNewTransaction.this, ActivityManageCategories.class);
+                                intent.putExtra("select", true);
+                                startActivityForResult(intent, 3);
+                            } else { //Open category manager to add people
+                                Intent intent = new Intent(ActivityNewTransaction.this, ActivityManageCategories.class);
+                                intent.putExtra("addnew", true);
+                                intent.putExtra("select",true);
+                                startActivityForResult(intent, 3);
+                            }
+                        }
+                    });
+
 
                     //Category spinner
                     categoryAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_title){
@@ -283,6 +302,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                     };
                     categoryAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list_primary);
                     //Add new category if "add new" is selected
+                    /*
                     spinner_categories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                             if (i == spinner_categories.getCount()-1) {
@@ -304,7 +324,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                     spinner_categories.setAdapter(categoryAdapter);
 
                     SetAdapterData(); //Adds "select a category" and "add new"
-
+                    */
                 }
                 else if (_activitytype == 1) { // TODO Income
                 }
@@ -404,7 +424,9 @@ public class ActivityNewTransaction extends AppCompatActivity
                 Category category = CategoryManager.getInstance().GetCategory(id);
 
                 if (category != null) {
-                    spinner_categories.setSelection(CategoryManager.getInstance().GetCategories().indexOf(category)+1); //+1 for 'Add New...'
+                    _category = category;
+                    button_selectCategory.setText(category.GetTitle());
+                    //spinner_categories.setSelection(CategoryManager.getInstance().GetCategories().indexOf(category)+1); //+1 for 'Add New...'
                 }
             } else if (requestCode == 4) { // Repeating (time period)
                 // Format repeat text
@@ -594,7 +616,11 @@ public class ActivityNewTransaction extends AppCompatActivity
 
         // Category
         Category cat = CategoryManager.getInstance().GetCategory(_transaction.GetCategory());
-        if (cat != null){ spinner_categories.setSelection(categoryAdapter.getPosition(cat.GetTitle())); }
+        if (cat != null){
+            //spinner_categories.setSelection(categoryAdapter.getPosition(cat.GetTitle()));
+            _category = cat;
+            button_selectCategory.setText(cat.GetTitle());
+        }
 
         // Source
         editText_source.setText(_transaction.GetSource());
@@ -615,7 +641,7 @@ public class ActivityNewTransaction extends AppCompatActivity
         Helper.Log(this, "ActNewTran", "FinishTran TimePeriod:" + (_timePeriod==null ? "null" : String.valueOf(_timePeriod.GetID())));
 
         //If the user selected a category
-        if (spinner_categories.getSelectedItemPosition() != 0 || _activitytype == 1) {
+        if ( _category != null || _activitytype == 1) { //spinner_categories.getSelectedItemPosition() != 0
             Helper.Log(this, "ActNewTran", "Category was selected");
 
             //Determine if we are editing an existing transaction (EditUpdate), or creating a new one (EditGhost, Duplicate, _transactionID == 0)
@@ -654,8 +680,7 @@ public class ActivityNewTransaction extends AppCompatActivity
             if (_activitytype == 0){
                 Helper.Log(this, "ActNewTran", "Expense transaction");
                 //Set Category
-                Category category = CategoryManager.getInstance().GetCategory(spinner_categories.getSelectedItem().toString());
-                if (category != null){ _transaction.SetCategory(category.GetID()); }
+                if (_category != null){ _transaction.SetCategory(_category.GetID()); }
 
                 //Set Split value
                 if (checkBox_split.isChecked()) {
