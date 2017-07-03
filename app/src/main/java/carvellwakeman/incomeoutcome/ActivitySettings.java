@@ -229,7 +229,7 @@ public class ActivitySettings extends AppCompatActivity
 
                     t1.SetValue(10.0d);
                     t1.SetPaidBy(pB.GetID());
-                    t1.SetSplit(0, 5.0d);
+                    t1.SetSplit(-1, 5.0d);
                     t1.SetSplit(pA.GetID(), 2.5d);
                     t1.SetSplit(pB.GetID(), 2.5d);
                     //t1.SetPaidBack(LocalDate.now());

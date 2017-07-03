@@ -602,16 +602,18 @@ public class ActivityNewTransaction extends AppCompatActivity
             Person p = PersonManager.getInstance().GetPerson(entry.getKey());
             Double v = entry.getValue();
 
-            // Not me
-            if (entry.getKey()!=0 && p!=null) {
-                AddSplitPerson(p);
-            }
+            if (p!=null) {
+                // Ignore the user ('you')
+                if (entry.getKey() != -1) {
+                    AddSplitPerson(p);
+                }
 
-            ViewHolderSplit svh = active_people.get(p);
-            if (svh != null) {
-                svh.cost.setText(String.valueOf(v));
+                ViewHolderSplit svh = active_people.get(p);
+                if (svh != null) {
+                    svh.cost.setText(String.valueOf(v));
+                    svh.paid.setChecked(p.GetID() == _transaction.GetPaidBy());
+                }
             }
-
         }
 
         // Category

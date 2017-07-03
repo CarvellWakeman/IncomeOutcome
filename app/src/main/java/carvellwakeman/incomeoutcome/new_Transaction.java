@@ -62,7 +62,7 @@ public class new_Transaction implements java.io.Serializable
         _children = new ArrayList<>();
 
         //Expense only
-        _paidBy = 0;
+        _paidBy = -1; // Paid by you (-1)
         _split = new HashMap<>();
 
         _paidBack = null;

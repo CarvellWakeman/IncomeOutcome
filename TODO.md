@@ -1,6 +1,9 @@
-PREV:Toolbar styles, activityManage[categories,people,budgets] refactored using abstract super class
+PREV:Making sure all information is loaded when transaction is edited, checking editing for repeating transactions (rewrite as necessary)
+	Updated app throughout so that '-1' represents 'you', instead of zero in some places, and -1 in others
 NEXT:Get editing/ghost editing working THEN get totals working THEN paidBack working THEN Get sorting and filtering remade
-
+	Making sure all information is loaded when transaction is edited, checking editing for repeating transactions (rewrite as necessary)
+	Database not saving timeperiod UID
+	PaidBy radio button in new transaction not being checked initially (and not being saved when 'you' paid)
 
 TODO
 -High
@@ -35,6 +38,7 @@ TODO
 
 *[ADD] Use Butterknife
 *[ADD] Snackbar notifications for database functions / Notification of progress when async deleting data
+*[ADD] Snackbar notifications for object delete (undo function?)
 *[ADD] Per Person Payback Dates
 *[ADD] FAB on Overview page to add transaction
 *[ADD] Time period option "All Unpaid"
