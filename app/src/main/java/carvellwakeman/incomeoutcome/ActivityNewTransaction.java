@@ -622,6 +622,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                     modifyingSplitHolder = svh;
                     svh.cost.setText(String.valueOf(v));
                     svh.paid.setChecked(p.GetID() == _transaction.GetPaidBy());
+                    svh.percentage.setProgress( (int) ((v / _transaction.GetValue()) * 100) );
                     modifyingSplitHolder = null;
                 }
             }

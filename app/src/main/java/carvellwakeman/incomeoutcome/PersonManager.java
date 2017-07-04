@@ -14,7 +14,6 @@ public class PersonManager
     static PersonManager getInstance(){ return instance; }
     public void initialize(){
         _people = new ArrayList<>();
-        _people.add(Person.Me);
     }
 
 
@@ -47,7 +46,7 @@ public class PersonManager
     //Get person by index
     public Person GetPerson(int ID){
         //Override for "ME"
-        //if (ID == -1){ return Person.Me; }
+        if (ID == Person.Me.GetID()){ return Person.Me; }
 
         for (Person p : _people) {
             if (p.GetID() == ID) { return p; }
