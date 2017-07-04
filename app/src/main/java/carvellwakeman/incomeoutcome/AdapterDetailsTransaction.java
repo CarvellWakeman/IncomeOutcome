@@ -322,7 +322,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                         split.setVisibility(View.VISIBLE);
                         paidBack.setVisibility(View.VISIBLE);
 
-                        HashMap<Integer,Double> valueSplit = transaction.GetSplitArray();
+                        HashMap<Integer, Double> valueSplit = transaction.GetSplitArray();
 
                         for (Map.Entry<Integer, Double> entry : valueSplit.entrySet()) {
                             //Ignore the user if they paid
@@ -377,7 +377,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     //PaidBy
                     paidBy.setVisibility(View.VISIBLE);
                     //Helper.Log(App.GetContext(), "AdaDetTran", transaction.GetSource() + " paidby(" + String.valueOf(transaction.GetPaidBy()) + ")");
-                    if (transaction.GetPaidBy() >= 0) {
+                    if (transaction.GetPaidBy() != Person.Me.GetID()) {
                         Person p = PersonManager.getInstance().GetPerson(transaction.GetPaidBy());
                         //Helper.Log(App.GetContext(), "AdaDetTran", transaction.GetSource() + " PaidBy Person:" + (p==null?"null":p.GetName()));
                         if (p != null){

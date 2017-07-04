@@ -42,9 +42,6 @@ public class ActivityNewTransaction extends AppCompatActivity
     LocalDate _paidBack;
     TimePeriod _timePeriod;
 
-    // You (Split costs)
-    Person you;
-
     //Adapters
     ArrayAdapter<String> categoryAdapter;
 
@@ -332,12 +329,8 @@ public class ActivityNewTransaction extends AppCompatActivity
                 else if (_activitytype == 1) { // TODO Income
                 }
 
-                //You
-                you = new Person(Helper.getString(R.string.misc_your));
-                you.SetID(-1);
-
-                //Person visibility
-                AddSplitPerson(you);
+                // Add user as a split
+                AddSplitPerson(Person.Me);
 
                 if (_editState == EDIT_STATE.NewTransaction) {
                     //Toolbar title
@@ -488,8 +481,8 @@ public class ActivityNewTransaction extends AppCompatActivity
     @Override
     public void onResume(){
         //Refresh adapters
-        SetAdapterData();
-        categoryAdapter.notifyDataSetChanged();
+        //SetAdapterData();
+        //categoryAdapter.notifyDataSetChanged();
 
         super.onResume();
     }
@@ -519,7 +512,7 @@ public class ActivityNewTransaction extends AppCompatActivity
             ViewHolderSplit svh = new ViewHolderSplit(ActivityNewTransaction.this, person, getLayoutInflater(), linearLayout_splitContainer);
 
             //Special case for you
-            if (person.GetID() == -1) {
+            if (person.GetID() == Person.Me.GetID()) {
                 modifyingSplitHolder = svh;
                 svh.percentage.setProgress(100);
                 modifyingSplitHolder = null;
@@ -551,7 +544,7 @@ public class ActivityNewTransaction extends AppCompatActivity
 
             // Case when person paid
             if (svh.paid.isChecked()){
-                active_people.get(you).paid.setChecked(true);
+                active_people.get(Person.Me).paid.setChecked(true);
             }
 
             // Disable viewholder if only one split person
@@ -607,20 +600,29 @@ public class ActivityNewTransaction extends AppCompatActivity
         if (_transaction.IsSplit()) {
             checkBox_split.setChecked(true);
         }
+        // Add all split users
+        for (Map.Entry<Integer, Double> entry : _transaction.GetSplitArray().entrySet()){
+            Person p = PersonManager.getInstance().GetPerson(entry.getKey());
+
+            if (p!=null) {
+                // Ignore the user
+                if (entry.getKey() != Person.Me.GetID()) {
+                    AddSplitPerson(p);
+                }
+            }
+        }
+        // Set values for all split people (Done seperately because AddSplitPerson adjusts cost
         for (Map.Entry<Integer, Double> entry : _transaction.GetSplitArray().entrySet()){
             Person p = PersonManager.getInstance().GetPerson(entry.getKey());
             Double v = entry.getValue();
 
             if (p!=null) {
-                // Ignore the user ('you')
-                if (entry.getKey() != -1) {
-                    AddSplitPerson(p);
-                }
-
                 ViewHolderSplit svh = active_people.get(p);
                 if (svh != null) {
+                    modifyingSplitHolder = svh;
                     svh.cost.setText(String.valueOf(v));
                     svh.paid.setChecked(p.GetID() == _transaction.GetPaidBy());
+                    modifyingSplitHolder = null;
                 }
             }
         }

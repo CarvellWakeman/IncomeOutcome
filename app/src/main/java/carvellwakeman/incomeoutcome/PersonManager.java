@@ -7,13 +7,14 @@ public class PersonManager
     static PersonManager instance = new PersonManager();
 
     //Categories
-    private ArrayList<Person> _People;
+    private ArrayList<Person> _people;
 
     //Constructor and Init
     private PersonManager(){}
     static PersonManager getInstance(){ return instance; }
     public void initialize(){
-        _People = new ArrayList<>();
+        _people = new ArrayList<>();
+        _people.add(Person.Me);
     }
 
 
@@ -24,7 +25,7 @@ public class PersonManager
             if (cat != null) { //Update
                 cat.SetName(person.GetName());
             } else { //Add new
-                _People.add(person);
+                _people.add(person);
             }
         }
         return person;
@@ -33,42 +34,42 @@ public class PersonManager
         return AddPerson(new Person(name));
     }
 
-    public void RemovePerson(Person person) { _People.remove(person); }
+    public void RemovePerson(Person person) { _people.remove(person); }
     public void RemovePerson(String title) {
-        for (int i = 0; i < _People.size(); i++) {
-            if (_People.get(i).GetName().equals(title)) {
-                RemovePerson(_People.get(i));
+        for (int i = 0; i < _people.size(); i++) {
+            if (_people.get(i).GetName().equals(title)) {
+                RemovePerson(_people.get(i));
             }
         }
     }
-    public void RemoveAllPeople() { _People.clear(); }
+    public void RemoveAllPeople() { _people.clear(); }
 
     //Get person by index
     public Person GetPerson(int ID){
         //Override for "ME"
-        if (ID==0){ return Person.Me; }
+        //if (ID == -1){ return Person.Me; }
 
-        for (Person p : _People) {
+        for (Person p : _people) {
             if (p.GetID() == ID) { return p; }
         }
         return null;
     }
     public Person GetPerson(String title) {
-        for (Person p : _People) {
+        for (Person p : _people) {
             if (p.GetName().equals(title)) { return p; }
         }
         return null;
     }
 
-    public ArrayList<Person> GetPeople() { return _People; }
+    public ArrayList<Person> GetPeople() { return _people; }
     public ArrayList<String> GetPeopleNames(){
         ArrayList<String> arr = new ArrayList<>();
-        for (Person p : _People) {
+        for (Person p : _people) {
             arr.add(p.GetName());
         }
         return arr;
     }
 
-    public int GetPeopleCount() { return _People.size(); }
+    public int GetPeopleCount() { return _people.size(); }
 
 }

@@ -8,7 +8,7 @@ public class Person implements BaseEntity
     static Person Me;
     static {
         Me = new Person(Helper.getString(R.string.format_me));
-        Me._uniqueID = 0;
+        Me._uniqueID = -1; // -1 for you
     }
 
     public Person(String name){

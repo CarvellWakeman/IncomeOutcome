@@ -102,7 +102,7 @@ public class MyTabConversion {
                                 }
                                 Person person = PersonManager.getInstance().GetPerson(tab.GetPersonB());
 
-                                NewTransaction.SetPaidBy( (tran.GetPersonAPaid() ? -1 : person.GetID()) );
+                                NewTransaction.SetPaidBy( (tran.GetPersonAPaid() ? Person.Me.GetID() : person.GetID()) );
                                 NewTransaction.SetPaidBack((tab.GetDatePaid() == null ? null : new LocalDate(tab.GetDatePaid())));
 
                                 br.AddTransaction(NewTransaction);
