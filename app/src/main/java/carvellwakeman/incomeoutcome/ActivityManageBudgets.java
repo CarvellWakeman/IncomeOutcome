@@ -41,7 +41,7 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 CalculatePeriod();
-                CheckCanSave();
+                SetSaveButtonEnabled(CanSave());
             }
             @Override public void afterTextChanged(Editable s) {}
         });
@@ -55,8 +55,7 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 CalculatePeriod();
-
-                CheckCanSave();
+                SetSaveButtonEnabled(CanSave());
             }
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
@@ -72,19 +71,9 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
 
 
     //Check if the user is allowed to save
-    public void CheckCanSave() {
-        String name = editText_name.getText().toString();
-
-        if (name.equals("")) {
-            SetSaveButtonEnabled(false);
-        } else {
-            if (BudgetManager.getInstance().GetBudget(name) != null) {
-                Period pe = editingEntity.GetPeriod();
-                SetSaveButtonEnabled(!pe.equals(period));
-            } else {
-                SetSaveButtonEnabled(true);
-            }
-        }
+    @Override
+    public boolean CanSave() {
+        return super.CanSave() || (editingEntity != null && !editingEntity.GetPeriod().equals(period));
     }
 
 

@@ -479,16 +479,16 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Helper.Log(App.GetContext(), "DBM", "OnUpgrade called (" + oldVersion + "->" + newVersion + ")");
-        Helper.Log(App.GetContext(), "DBM", "onUpgrade() ver." + String.valueOf(db.getVersion()));
-        Helper.Log(App.GetContext(), "DBM", "onUpgrade() oldVersion " + String.valueOf(oldVersion));
-        Helper.Log(App.GetContext(), "DBM", "onUpgrade() newVersion " + String.valueOf(newVersion));
+        //Helper.Log(App.GetContext(), "DBM", "OnUpgrade called (" + oldVersion + "->" + newVersion + ")");
+        //Helper.Log(App.GetContext(), "DBM", "onUpgrade() ver." + String.valueOf(db.getVersion()));
+        //Helper.Log(App.GetContext(), "DBM", "onUpgrade() oldVersion " + String.valueOf(oldVersion));
+        //Helper.Log(App.GetContext(), "DBM", "onUpgrade() newVersion " + String.valueOf(newVersion));
 
         Upgrade(db, oldVersion, newVersion);
     }
     public void Upgrade(SQLiteDatabase db, int oldVersion, int newVersion){
-        Helper.Log(App.GetContext(), "DBM", "Upgrading from " + oldVersion + " to " + newVersion);
-        Helper.Log(App.GetContext(), "DBM", "Upgrade() ver." + String.valueOf(db.getVersion()));
+        //elper.Log(App.GetContext(), "DBM", "Upgrading from " + oldVersion + " to " + newVersion);
+        //Helper.Log(App.GetContext(), "DBM", "Upgrade() ver." + String.valueOf(db.getVersion()));
 
         //Helper.PrintLong(App.GetContext(), UPGRADE_6_7);
         //Helper.PrintLong(App.GetContext(), "(SELECT "  + COLUMN_uniqueID + " FROM " + TABLE_SETTINGS_CATEGORIES + " WHERE " + "temp_transactions." + COLUMN_category + " = " + TABLE_SETTINGS_CATEGORIES + "." + COLUMN_category + "),");
@@ -886,7 +886,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 
 
         //Recreate
-        Helper.Log(App.GetContext(), "DBM", "Try create database");
+        //Helper.Log(App.GetContext(), "DBM", "Try create database");
         tryCreateDatabase(database);
     }
 
@@ -987,11 +987,11 @@ public class DatabaseManager extends SQLiteOpenHelper
                         }
 
                         //Delete current database
-                        Helper.Log(App.GetContext(), "DBM", "Delete and recreate all tables");
+                        //Helper.Log(App.GetContext(), "DBM", "Delete and recreate all tables");
                         //_dropAndRecreateAllTables(getWritableDatabase());
                         _deleteAllTableContent();
                         //Create new empty database
-                        Helper.Log(App.GetContext(), "DBM", "Try create database");
+                        //Helper.Log(App.GetContext(), "DBM", "Try create database");
                         tryCreateDatabase(getWritableDatabase());
 
                         //Transfer database from import to local directory (ASyncTask?)
@@ -1002,7 +1002,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                         //Call getWritableDatabase() to trigger onUpgrade if it is necessary
                         //getWritableDatabase(); // Do it forcefully now.
                         //Force call onUpgrade
-                        Helper.Log(App.GetContext(), "DBM", "Force upgrade");
+                        //Helper.Log(App.GetContext(), "DBM", "Force upgrade");
                         final int oldVersion = SQLiteDatabase.openDatabase(importFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
                         Upgrade(getWritableDatabase(), oldVersion, getVersion());
                         //getWritableDatabase().close();
@@ -1184,18 +1184,19 @@ public class DatabaseManager extends SQLiteOpenHelper
         }
     }
 
-    public void insert(final int transactionUID, final TimePeriod tp, final boolean tryupdate) { runDBTask( new CallBack() { @Override public void call() { _insert(transactionUID, tp, tryupdate); } } ); }
-    public void insert(final int transactionUID, final TimePeriod tp, final CallBack postCallback, final boolean tryUpdate) {
-        runDBTask( new CallBack() { @Override public void call() { _insert(transactionUID, tp, tryUpdate); } }, null, postCallback );
-    }
-    public void _insert(int transactionUID, TimePeriod tp, Boolean tryupdate) {
+    // Shouldn't be used, this is done by _insert(Transaction)
+    //public void insert(final int transactionUID, final TimePeriod tp, final boolean tryupdate) { runDBTask( new CallBack() { @Override public void call() { _insert(transactionUID, tp, tryupdate); } } ); }
+    //public void insert(final int transactionUID, final TimePeriod tp, final CallBack postCallback, final boolean tryUpdate) {
+    //    runDBTask( new CallBack() { @Override public void call() { _insert(transactionUID, tp, tryUpdate); } }, null, postCallback );
+    //}
+    private void _insert(int transactionUID, TimePeriod tp, Boolean tryupdate) {
         database = getWritableDatabase();
 
-        if (database != null&& isTableExists(TABLE_TIMEPERIODS, false)) {
+        if (database != null && isTableExists(TABLE_TIMEPERIODS, false)) {
             contentValues_tp = new ContentValues();
 
             if (tp != null) {
-                contentValues_tr.put(COLUMN_uniqueID, tp.GetID());
+                contentValues_tp.put(COLUMN_uniqueID, tp.GetID());
                 contentValues_tp.put(COLUMN_tp_parent, transactionUID);
                 contentValues_tp.put(COLUMN_tp_date, (tp.GetDate() != null ? tp.GetDate().toString(Helper.getString(R.string.date_format_saving)) : ""));
                 //contentValues_tp.put(COLUMN_tp_firstOcc, (tp.GetFirstOccurrence() != null ? tp.GetFirstOccurrence().toString(ProfileManager.simpleDateFormatSaving) : ""));

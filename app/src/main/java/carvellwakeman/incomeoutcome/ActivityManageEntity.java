@@ -85,8 +85,6 @@ public abstract class ActivityManageEntity<T extends BaseEntity> extends AppComp
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                CheckCanSave();
-
                 String str = editText_name.getText().toString();
 
                 if (str.equals("")) {
@@ -99,6 +97,8 @@ public abstract class ActivityManageEntity<T extends BaseEntity> extends AppComp
                         TIL.setError(getString(R.string.tt_already_exists));
                     }
                 }
+
+                SetSaveButtonEnabled(CanSave());
             }
 
             @Override public void afterTextChanged(Editable s) {}
@@ -117,7 +117,13 @@ public abstract class ActivityManageEntity<T extends BaseEntity> extends AppComp
         //Button listeners
         button_new.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                menuState = MENU_STATE.ADD;
+                // If select state, new state should be addselect
+                if (menuState == MENU_STATE.SELECT){
+                    menuState = MENU_STATE.ADDNEWSELECT;
+                } else {
+                    menuState = MENU_STATE.ADD;
+                }
+
                 OpenAddMenu();
             }
         });
@@ -211,7 +217,10 @@ public abstract class ActivityManageEntity<T extends BaseEntity> extends AppComp
 
 
     // Check if the user is allowed to save
-    public abstract void CheckCanSave();
+    public boolean CanSave(){
+        String str = editText_name.getText().toString();
+        return !str.equals("") && GetEntity() == null;
+    }
 
 
     // Update positive button text
@@ -282,7 +291,7 @@ public abstract class ActivityManageEntity<T extends BaseEntity> extends AppComp
 
     public void OpenSelectMode(){
         //Hide add new button
-        button_new.setVisibility(View.GONE);
+        //button_new.setVisibility(View.GONE);
 
         //Hide save button
         button_save.setVisible(false);

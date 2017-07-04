@@ -42,6 +42,9 @@ public class ActivityNewTransaction extends AppCompatActivity
     LocalDate _paidBack;
     TimePeriod _timePeriod;
 
+    // You (Split costs)
+    Person you;
+
     //Adapters
     ArrayAdapter<String> categoryAdapter;
 
@@ -330,7 +333,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                 }
 
                 //You
-                Person you = new Person(Helper.getString(R.string.misc_your));
+                you = new Person(Helper.getString(R.string.misc_your));
                 you.SetID(-1);
 
                 //Person visibility
@@ -468,7 +471,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                     // Send back in intent
                     Intent intent = new Intent();
                     intent.putExtra("transaction", _transaction);
-                    intent.putExtra("timeperiod", _timePeriod);
+                    //intent.putExtra("timeperiod", _timePeriod); Unnecessary
                     setResult(1, intent);
                     finish();
                 }
@@ -516,9 +519,8 @@ public class ActivityNewTransaction extends AppCompatActivity
             ViewHolderSplit svh = new ViewHolderSplit(ActivityNewTransaction.this, person, getLayoutInflater(), linearLayout_splitContainer);
 
             //Special case for you
-            if (person.GetID() == 0) {
+            if (person.GetID() == -1) {
                 modifyingSplitHolder = svh;
-                svh.paid.setChecked(true);
                 svh.percentage.setProgress(100);
                 modifyingSplitHolder = null;
             }
@@ -530,25 +532,32 @@ public class ActivityNewTransaction extends AppCompatActivity
             //Disable viewholder if only one split person
             if (active_people.size() == 1){
                 svh.SetEnabled(false);
+                svh.paid.setChecked(true);
             } else {
                 for (Map.Entry<Person, ViewHolderSplit> entry : active_people.entrySet()){
                     entry.getValue().SetEnabled(true);
-                    entry.getValue().cost.setText( String.valueOf( GetCost() / active_people.size() ) ); //Set split to be even
+                    entry.getValue().cost.setText( String.valueOf( GetCost() / active_people.size() ) ); // Even split
                 }
             }
         }
     }
     public void RemoveSplitPerson(Person person){
         if (active_people.containsKey(person)) {
-            linearLayout_splitContainer.removeView(active_people.get(person).base);
+            ViewHolderSplit svh = active_people.get(person);
+            linearLayout_splitContainer.removeView(svh.base);
 
             active_people.remove(person);
             UpdateSplitViewHolderCosts();
 
-            //Disable viewholder if only one split person
+            // Case when person paid
+            if (svh.paid.isChecked()){
+                active_people.get(you).paid.setChecked(true);
+            }
+
+            // Disable viewholder if only one split person
             for (Map.Entry<Person, ViewHolderSplit> entry : active_people.entrySet()){
                 entry.getValue().SetEnabled(active_people.size() != 1);
-                entry.getValue().cost.setText( String.valueOf( GetCost() / active_people.size() ) ); //Set split to be even
+                entry.getValue().cost.setText( String.valueOf( GetCost() / active_people.size() ) ); // Even split
             }
         }
     }

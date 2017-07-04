@@ -27,7 +27,7 @@ public class AdapterManageBudgets extends AdapterManageEntity
 
             // Fields
             holder.title.setText(br.GetName());
-            holder.subTitle.setText(br.GetDateFormatted());
+            holder.subTitle.setText(br.GetDateFormatted() + "\n" + br.GetPeriodFormatted());
 
             if (holder.subTitle.getText() != null) { holder.subTitle.setVisibility(View.VISIBLE); }
 

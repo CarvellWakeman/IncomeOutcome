@@ -255,8 +255,8 @@ public class ActivitySettings extends AppCompatActivity
                     dm.insertSetting(b1, true);
                     dm.insert(t1,true);
                     dm.insert(t2,true);
-                    dm.insert(t1.GetID(), tp1, true);
-                    dm.insert(t2.GetID(), tp2, true);
+                    //dm.insert(t1.GetID(), tp1, true);
+                    //dm.insert(t2.GetID(), tp2, true);
 
 
 

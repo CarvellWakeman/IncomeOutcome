@@ -28,6 +28,7 @@
     <string name="title_addnewcategory">New Category</string>
     <string name="title_selectbudget">Select Budget</string>
     <string name="title_selectperson">Select Person</string>
+    <string name="title_selectcategory">Select Category</string>
     <string name="title_selectcurrentbudget">Select Current Budget</string>
     <string name="title_delete">Delete Budget</string>
     <string name="title_edittransaction">Edit Transaction</string>

@@ -27,31 +27,12 @@ public class ActivityManagePeople extends ActivityManageEntity<Person> {
         setContentView(R.layout.activity_managepeople);
         super.onCreate(savedInstanceState);
 
-
         toolbar.setTitle(R.string.title_managepeople);
-
 
         //Set adapter
         adapter = new AdapterManagePeople(this);
         recyclerView.setAdapter(adapter);
 
-    }
-
-
-    //Check if the user is allowed to save
-    @Override
-    public void CheckCanSave() {
-        String name = editText_name.getText().toString();
-
-        if (name.equals("")) {
-            SetSaveButtonEnabled(false);
-        } else {
-            if (PersonManager.getInstance().GetPerson(name) != null) {
-                SetSaveButtonEnabled(false);
-            } else {
-                SetSaveButtonEnabled(true);
-            }
-        }
     }
 
 
@@ -131,6 +112,7 @@ public class ActivityManagePeople extends ActivityManageEntity<Person> {
 
 
     //Expand and retract sub menus
+    @Override
     public void OpenEditMenu(){
         super.OpenEditMenu();
 
@@ -138,6 +120,7 @@ public class ActivityManagePeople extends ActivityManageEntity<Person> {
         toolbar.setTitle( R.string.title_editperson );
     }
 
+    @Override
     public void OpenAddMenu(){
         super.OpenAddMenu();
 
@@ -145,6 +128,7 @@ public class ActivityManagePeople extends ActivityManageEntity<Person> {
         toolbar.setTitle( R.string.title_addnewperson );
     }
 
+    @Override
     public void OpenSelectMode(){
         super.OpenSelectMode();
 
@@ -152,6 +136,7 @@ public class ActivityManagePeople extends ActivityManageEntity<Person> {
         toolbar.setTitle( R.string.title_selectperson );
     }
 
+    @Override
     public void CloseSubMenus(){
         super.CloseSubMenus();
 

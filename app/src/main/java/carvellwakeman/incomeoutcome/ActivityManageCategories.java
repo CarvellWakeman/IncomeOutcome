@@ -58,7 +58,7 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
             public void onStartTrackingTouch(DiscreteSeekBar seekBar) {}
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-                CheckCanSave();
+                SetSaveButtonEnabled(CanSave());
             }
         });
         seekBar_green.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
@@ -70,7 +70,7 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
             public void onStartTrackingTouch(DiscreteSeekBar seekBar) {}
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-                CheckCanSave();
+                SetSaveButtonEnabled(CanSave());
             }
         });
         seekBar_blue.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
@@ -82,7 +82,7 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
             public void onStartTrackingTouch(DiscreteSeekBar seekBar) {}
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-                CheckCanSave();
+                SetSaveButtonEnabled(CanSave());
             }
         });
 
@@ -117,7 +117,6 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
 
         Intent intent = getIntent();
         if (intent.getBooleanExtra("addnew", false)){
-            menuState = MENU_STATE.ADDNEW;
             edit_layout.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
         }
@@ -126,18 +125,9 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
 
     //Check if the user is allowed to save
     @Override
-    public void CheckCanSave() {
-        String name = editText_name.getText().toString();
-
-        if (name.equals("")) {
-            SetSaveButtonEnabled(false);
-        } else {
-            if (CategoryManager.getInstance().GetCategory(name) != null) {
-                SetSaveButtonEnabled(editingEntity.GetColor() != GetSeekbarColor()); //Check if color is different
-            } else {
-                SetSaveButtonEnabled(true);
-            }
-        }
+    public boolean CanSave() {
+        // Check if color is different
+        return super.CanSave() || (editingEntity != null && editingEntity.GetColor() != GetSeekbarColor());
     }
 
     // Get category
@@ -243,6 +233,7 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
 
 
     //Expand and retract sub menus
+    @Override
     public void OpenEditMenu(){
         super.OpenEditMenu();
 
@@ -250,6 +241,7 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
         toolbar.setTitle( R.string.title_editcategory );
     }
 
+    @Override
     public void OpenAddMenu(){
         super.OpenAddMenu();
 
@@ -257,6 +249,15 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
         toolbar.setTitle( R.string.title_addnewcategory );
     }
 
+    @Override
+    public void OpenSelectMode(){
+        super.OpenSelectMode();
+
+        //Set title
+        toolbar.setTitle( R.string.title_selectcategory );
+    }
+
+    @Override
     public void CloseSubMenus(){
         super.CloseSubMenus();
 

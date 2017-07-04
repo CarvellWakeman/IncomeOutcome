@@ -1,9 +1,8 @@
-PREV:Making sure all information is loaded when transaction is edited, checking editing for repeating transactions (rewrite as necessary)
-	Updated app throughout so that '-1' represents 'you', instead of zero in some places, and -1 in others
-NEXT:Get editing/ghost editing working THEN get totals working THEN paidBack working THEN Get sorting and filtering remade
+STAGING:
 	Making sure all information is loaded when transaction is edited, checking editing for repeating transactions (rewrite as necessary)
-	Database not saving timeperiod UID
-	PaidBy radio button in new transaction not being checked initially (and not being saved when 'you' paid)
+	
+	NEXT:Get editing/ghost editing working THEN get totals working THEN paidBack working THEN Get sorting and filtering remade
+	
 
 TODO
 -High
@@ -64,8 +63,11 @@ TODO
 
 UNRELEASED
 *[ADD] Transactions can now be split between many people
-*[BUGFIX] Database manager correctly loads transactions that are not split
 #[ADD] Category: Parking, membership
+#[ADD] Updated app throughout so that '-1' represents 'you', instead of zero in some places, and -1 in others
+*[BUGFIX] Database manager correctly loads transactions that are not split
+#[BUGFIX] PaidBy radio button in new transaction not being checked initially (and not being saved when 'you' paid)
+#[BUGFIX] Database not saving timeperiod UID
 *[CHANGE] Major rewrite of data structures and database, UI updated to comply with new standards
 *[CHANGE] Refactored budget, category, and people management
 

@@ -276,14 +276,11 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         if (resultCode==1){
             if (data != null){
                 final new_Transaction _transaction = (new_Transaction)data.getSerializableExtra("transaction");
-                final TimePeriod _timePeriod = (TimePeriod)data.getSerializableExtra("timeperiod");
 
                 //Add to/update database synchronously
                 final DatabaseManager dm = DatabaseManager.getInstance();
 
-                Helper.Log(this, "ActDetTran", "Transaction TimePeriod:" + (_transaction.GetTimePeriod()==null ? "null" : String.valueOf(_transaction.GetTimePeriod().GetID())));
                 dm._insert(_transaction, true);
-                dm._insert(_transaction.GetID(), _timePeriod, true);
                 dm._insertSetting(_budget, true);
 
                 // Refresh activity to show changes
