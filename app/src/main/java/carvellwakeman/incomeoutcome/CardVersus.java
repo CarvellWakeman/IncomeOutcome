@@ -9,23 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.github.mikephil.charting.animation.Easing;
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.*;
 import com.github.mikephil.charting.formatter.AxisValueFormatter;
 import org.joda.time.LocalDate;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class CardVersus extends Card
@@ -142,14 +136,14 @@ public class CardVersus extends Card
             _budget.MoveTimePeriod( (monthsBack-1)*-1 );
 
             int nonNullPeriods = 0;
-            final ArrayList<new_Transaction> pastTransactionPeriods = new ArrayList<>();
-            new_Transaction tran;
+            final ArrayList<Transaction> pastTransactionPeriods = new ArrayList<>();
+            Transaction tran;
             for (int i = 0; i < monthsBack; i++){
 
                 //_profile.CalculateTimeFrame(null);
                 //_profile.SetShowAll(b);
 
-                pastTransactionPeriods.addAll(_budget.GetTransactions( new_Transaction.TRANSACTION_TYPE.Expense ));
+                pastTransactionPeriods.addAll(_budget.GetTransactions( Transaction.TRANSACTION_TYPE.Expense ));
                 if (pastTransactionPeriods.size() > 0) { nonNullPeriods++; }
                 _budget.MoveTimePeriod(1);
             }
@@ -166,7 +160,7 @@ public class CardVersus extends Card
                 List<BarEntry> entries = new ArrayList<>();
                 List<Integer> colors = new ArrayList<>();
                 for (int i = 0; i < pastTransactionPeriods.size(); i++){
-                    new_Transaction tr = pastTransactionPeriods.get(i);
+                    Transaction tr = pastTransactionPeriods.get(i);
                     Double val = 0.0d;
                     if (tr != null) {
                         val = tr.GetValue();
@@ -190,7 +184,7 @@ public class CardVersus extends Card
                     public String getFormattedValue(float value, AxisBase axis) {
                         int index = Math.round(value);
                         if (index < monthsBack) {
-                            new_Transaction tr = pastTransactionPeriods.get(index);
+                            Transaction tr = pastTransactionPeriods.get(index);
 
                             if (tr != null) {
                                 TimePeriod tp = tr.GetTimePeriod();

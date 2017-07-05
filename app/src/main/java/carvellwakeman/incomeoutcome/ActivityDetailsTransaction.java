@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
 import android.widget.*;
-import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 
@@ -270,22 +269,22 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
     //Get return results from activities
     protected void onActivityResult(int requestCode, int resultCode, Intent data) { //TODO: Necessary?
+        RefreshActivity();
 
         //switch (requestCode){
             //case 1: // New Transaction
         if (resultCode==1){
             if (data != null){
-                final new_Transaction _transaction = (new_Transaction)data.getSerializableExtra("transaction");
+                //final Transaction _transaction = (Transaction)data.getSerializableExtra("transaction");
 
                 //Add to/update database synchronously
-                final DatabaseManager dm = DatabaseManager.getInstance();
+                //final DatabaseManager dm = DatabaseManager.getInstance();
 
-                dm._insert(_transaction, true);
-                dm._insertSetting(_budget, true);
+                //dm._insert(_transaction, true);
+                //dm._insertSetting(_budget, true);
 
                 // Refresh activity to show changes
-                RefreshActivity();
-                Helper.Log(ActivityDetailsTransaction.this, "ActDetTran", "Transaction added or updated");
+                //Helper.Log(ActivityDetailsTransaction.this, "ActDetTran", "Transaction added or updated");
             }
         } else { // Failure
         }

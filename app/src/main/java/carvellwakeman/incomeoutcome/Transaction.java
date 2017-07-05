@@ -1,13 +1,12 @@
 package carvellwakeman.incomeoutcome;
 
 
-import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
 import java.util.*;
 
 
-public class new_Transaction implements java.io.Serializable
+public class Transaction implements java.io.Serializable
 {
     public static String ME = Helper.getString(R.string.format_me);
 
@@ -41,9 +40,9 @@ public class new_Transaction implements java.io.Serializable
     private LocalDate _paidBack;
 
 
-    public new_Transaction() { this(TRANSACTION_TYPE.Expense); } //Default constructor, assuming type will be changed using SetType()
-    public new_Transaction(int type){ this( type == 1 ? TRANSACTION_TYPE.Income : TRANSACTION_TYPE.Expense ); }
-    public new_Transaction(TRANSACTION_TYPE ttype)
+    public Transaction() { this(TRANSACTION_TYPE.Expense); } //Default constructor, assuming type will be changed using SetType()
+    public Transaction(int type){ this( type == 1 ? TRANSACTION_TYPE.Income : TRANSACTION_TYPE.Expense ); }
+    public Transaction(TRANSACTION_TYPE ttype)
     {
         _type = ttype;
 
@@ -67,7 +66,7 @@ public class new_Transaction implements java.io.Serializable
 
         _paidBack = null;
     }
-    public new_Transaction(new_Transaction copy){
+    public Transaction(Transaction copy){
         this(copy.GetType());
 
         _parentID = copy.GetID();
@@ -96,7 +95,7 @@ public class new_Transaction implements java.io.Serializable
 
 
     //Children
-    public void AddChild(new_Transaction child) {
+    public void AddChild(Transaction child) {
         AddChild(child.GetID());
         child.SetParentID(GetID());
         //Blacklist child's date
@@ -112,7 +111,7 @@ public class new_Transaction implements java.io.Serializable
             }
         }
     }
-    public void RemoveChild(new_Transaction child){
+    public void RemoveChild(Transaction child){
         _children.remove(child.GetID());
         //Un-Blacklist child's date
         TimePeriod tp = child.GetTimePeriod();
@@ -133,7 +132,7 @@ public class new_Transaction implements java.io.Serializable
 
 
     //Accessors
-    public new_Transaction.TRANSACTION_TYPE GetType() { return _type; }
+    public Transaction.TRANSACTION_TYPE GetType() { return _type; }
     public int GetID() { return _uniqueID; }
     public int GetParentID() { return _parentID; }
     public int GetBudgetID() { return _budgetID; }
@@ -172,8 +171,8 @@ public class new_Transaction implements java.io.Serializable
 
     public TimePeriod GetTimePeriod() { return _when; }
 
-    public ArrayList<new_Transaction> GetOccurrences(LocalDate startDate, LocalDate endDate, new_Transaction.TRANSACTION_TYPE type) {
-        ArrayList<new_Transaction> occurrences = new ArrayList<>();
+    public ArrayList<Transaction> GetOccurrences(LocalDate startDate, LocalDate endDate, Transaction.TRANSACTION_TYPE type) {
+        ArrayList<Transaction> occurrences = new ArrayList<>();
 
         //Check transaction type match
         if (GetType() == type) {
@@ -198,7 +197,7 @@ public class new_Transaction implements java.io.Serializable
                         //Helper.Print(App.GetContext(), "Add OG: " + this.GetParentID());
                     }
                     else { //Make ghost transactions
-                        new_Transaction temp = new new_Transaction(this);
+                        Transaction temp = new Transaction(this);
                         // Add split to temp transaction
                         for (HashMap.Entry<Integer, Double> entry : GetSplitArray().entrySet()){
                             temp.SetSplit(entry.getKey(), entry.getValue());

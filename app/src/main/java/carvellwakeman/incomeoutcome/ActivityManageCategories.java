@@ -98,12 +98,19 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
         Card DefaultCategories = new Card(this, inflater, edit_layout, 0);
         Setting loadDefCat = new Setting(inflater, R.drawable.ic_database_plus_white_24dp, getString(R.string.title_settings_defaultcategories), getString(R.string.subtitle_settings_defaultcategories),
                 new View.OnClickListener() { @Override public void onClick(View v) {
+                    recyclerView.setVisibility(View.VISIBLE);
+
                     //Hide soft keyboard
                     Helper.hideSoftKeyboard(ActivityManageCategories.this, v);
 
                     //Close sub menus
-                    menuState = MENU_STATE.VIEW;
                     CloseSubMenus();
+
+                    // Select short circuit
+                    if (menuState == MENU_STATE.ADDNEWSELECT){
+                        menuState = MENU_STATE.SELECT;
+                        OpenSelectMode();
+                    }
 
                     //Replace categories with defaults
                     CategoryManager.getInstance().RemoveAllCategories();

@@ -33,6 +33,7 @@
     <string name="title_delete">Delete Budget</string>
     <string name="title_edittransaction">Edit Transaction</string>
     <string name="title_edittransactionseries">Edit Transaction Series</string>
+    <string name="title_edittransactioninstance">Edit Transaction Instance</string>
     <string name="title_editbudget">Edit Budget</string>
     <string name="title_editbudgets">Edit Budgets</string>
     <string name="title_editpeople">Edit People</string>

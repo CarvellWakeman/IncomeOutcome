@@ -1141,11 +1141,11 @@ public class DatabaseManager extends SQLiteOpenHelper
         } else { return -1; }//ProfileManager.Print(activityContext, "Budget is null"); return -1; }
     }
 
-    public void insert(final new_Transaction transaction, final boolean tryupdate) { runDBTask(new CallBack() { @Override public void call() { _insert(transaction, tryupdate); } } ); }
-    public void insert(final new_Transaction transaction, CallBack postCallback, final boolean tryUpdate) {
+    public void insert(final Transaction transaction, final boolean tryupdate) { runDBTask(new CallBack() { @Override public void call() { _insert(transaction, tryupdate); } } ); }
+    public void insert(final Transaction transaction, CallBack postCallback, final boolean tryUpdate) {
         runDBTask( new CallBack() { @Override public void call() { _insert(transaction, tryUpdate); } }, null, postCallback );
     }
-    public long _insert(new_Transaction transaction, boolean tryupdate) {
+    public long _insert(Transaction transaction, boolean tryupdate) {
         database = getWritableDatabase();
 
         if (database != null && isTableExists(TABLE_TRANSACTIONS, false)) {
@@ -1369,13 +1369,13 @@ public class DatabaseManager extends SQLiteOpenHelper
 
                 if (br != null) {
                     //Create new transaction
-                    new_Transaction tr = new new_Transaction();
+                    Transaction tr = new Transaction();
 
                     //Load and apply transaction properties
 
 
                     //COLUMN_type + TEXT_TYPE + "," +
-                    tr.SetType(new_Transaction.TRANSACTION_TYPE.values()[c.getInt(c.getColumnIndex(COLUMN_type))]);
+                    tr.SetType(Transaction.TRANSACTION_TYPE.values()[c.getInt(c.getColumnIndex(COLUMN_type))]);
                     //COLUMN_uniqueID + TEXT_TYPE + "," +
                     tr.SetID(c.getInt(c.getColumnIndex(COLUMN_uniqueID)));
                     //COLUMN_parentID + TEXT_TYPE + "," +
@@ -1456,11 +1456,11 @@ public class DatabaseManager extends SQLiteOpenHelper
         return budget != null && database.delete(TABLE_SETTINGS_BUDGETS, COLUMN_uniqueID + "=?", new String[]{String.valueOf(budget.GetID())}) > 0;
     }
 
-    public void remove(final new_Transaction transaction) { runDBTask( new CallBack() { @Override public void call() { _remove(transaction); } } ); }
-    public void remove(final new_Transaction transaction, final CallBack postCallback) {
+    public void remove(final Transaction transaction) { runDBTask(new CallBack() { @Override public void call() { _remove(transaction); } } ); }
+    public void remove(final Transaction transaction, final CallBack postCallback) {
         runDBTask( new CallBack() { @Override public void call() { _remove(transaction); } }, null, postCallback );
     }
-    public boolean _remove(new_Transaction transaction){
+    public boolean _remove(Transaction transaction){
         database = getWritableDatabase();
 
         if (transaction != null) {

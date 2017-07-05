@@ -155,12 +155,12 @@ public class ActivitySettings extends AppCompatActivity
                 for (int i = 0; i < 100; i++){
                     Random rand = new Random();
 
-                    new_Transaction.TRANSACTION_TYPE[] types =new_Transaction. TRANSACTION_TYPE.values();
-                    new_Transaction.TRANSACTION_TYPE TranType = types[rand.nextInt(2)];
+                    Transaction.TRANSACTION_TYPE[] types = Transaction. TRANSACTION_TYPE.values();
+                    Transaction.TRANSACTION_TYPE TranType = types[rand.nextInt(2)];
                     ArrayList<Category> categories = CategoryManager.getInstance().GetCategories();
                     LocalDate beginning = new LocalDate(2000,1,1);
 
-                    new_Transaction tr = new new_Transaction(TranType);
+                    Transaction tr = new Transaction(TranType);
 
                     tr.SetSource("Source" + String.valueOf(Math.abs(rand.nextInt(2000))));
                     if (categories!=null && categories.size()>0) { tr.SetCategory(categories.get(rand.nextInt(categories.size()-1)).GetID()); }
@@ -222,7 +222,7 @@ public class ActivitySettings extends AppCompatActivity
 
 
                     //Create new transactions
-                    new_Transaction t1 = new new_Transaction();
+                    Transaction t1 = new Transaction();
                     t1.SetCategory(c1.GetID());
                     t1.SetSource("The Store");
                     t1.SetDescription("We bought some things");
@@ -235,7 +235,7 @@ public class ActivitySettings extends AppCompatActivity
                     //t1.SetPaidBack(LocalDate.now());
                     t1.SetTimePeriod(tp1);
 
-                    new_Transaction t2 = new new_Transaction();
+                    Transaction t2 = new Transaction();
                     t2.SetValue(20.0d);
                     t2.SetCategory(c2.GetID());
                     t2.SetSource("The Other Store");
@@ -273,7 +273,7 @@ public class ActivitySettings extends AppCompatActivity
                                 "\nPeriod:" + bs.get(i).GetPeriod().toString()
                         );
 
-                        ArrayList<new_Transaction> ts = bs.get(i).GetTransactions(bs.get(i).GetStartDate(), bs.get(i).GetEndDate(), new_Transaction.TRANSACTION_TYPE.Expense);
+                        ArrayList<Transaction> ts = bs.get(i).GetTransactions(bs.get(i).GetStartDate(), bs.get(i).GetEndDate(), Transaction.TRANSACTION_TYPE.Expense);
                         for (int ii = 0; ii < ts.size(); ii++){
                             Helper.PrintLong(ActivitySettings.this, "\nValue:" + String.valueOf(ts.get(ii).GetValue()) +
                                     "\nSource:" + ts.get(ii).GetSource() +

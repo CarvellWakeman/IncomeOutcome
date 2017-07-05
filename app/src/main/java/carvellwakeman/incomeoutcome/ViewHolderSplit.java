@@ -22,12 +22,12 @@ public class ViewHolderSplit //implements View.OnClickListener
     DiscreteSeekBar percentage;
     RadioButton paid;
 
+    //Properties
+    boolean edited = false;
+
     //Data
     ActivityNewTransaction _parent;
     Person _person;
-
-    //Avoid the infinite loop
-    boolean oneViewAtATime = false;
 
     public ViewHolderSplit(ActivityNewTransaction parent, final Person person, LayoutInflater inflater, ViewGroup root) {
         base = (LinearLayout) inflater.inflate(R.layout.row_layout_split, null);
@@ -48,8 +48,6 @@ public class ViewHolderSplit //implements View.OnClickListener
         percentage.setProgress(0);
 
 
-
-
         //View listeners
 
         //Seekbar editText_cost split percentage
@@ -60,9 +58,8 @@ public class ViewHolderSplit //implements View.OnClickListener
             double mainCost;
 
             @Override public void onProgressChanged(DiscreteSeekBar discreteSeekBar, int i, boolean b) {
-                if (_parent.modifyingSplitHolder == null && !oneViewAtATime) {
+                if (_parent.modifyingSplitHolder == null) {
                     _parent.modifyingSplitHolder = ViewHolderSplit.this;
-                    oneViewAtATime = true;
 
                     numOtherVH = _parent.active_people.size() - 1;
 
@@ -77,9 +74,12 @@ public class ViewHolderSplit //implements View.OnClickListener
 
                     //Update all other viewholders
                     for (Map.Entry<Person, ViewHolderSplit> entry : _parent.active_people.entrySet()) {
-                        if (entry != null && entry.getKey().GetID() != _person.GetID()) { //Comment out to update THTS cost editText
-                            //Other splitviewholder
-                            ViewHolderSplit svh = entry.getValue();
+                        ViewHolderSplit svh = entry.getValue();
+
+                        //Mark svh as not edited
+                        svh.edited = false;
+
+                        if (entry.getKey().GetID() != _person.GetID()) { //Comment out to update THTS cost editText
 
                             //Update percentage slider
                             svh.percentage.setProgress(diff / numOtherVH);
@@ -94,7 +94,6 @@ public class ViewHolderSplit //implements View.OnClickListener
                     }
 
                     _parent.modifyingSplitHolder = null;
-                    oneViewAtATime = false;
                 }
             }
             @Override public void onStartTrackingTouch(DiscreteSeekBar discreteSeekBar) {
@@ -106,59 +105,62 @@ public class ViewHolderSplit //implements View.OnClickListener
 
         cost.addTextChangedListener(new TextWatcher() {
             //Temporary variables
-            double mainCost;
             int numOtherVH;
+            double totalCost;
+            double localCost;
+            double diff;
+            int prog;
 
             @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (_parent.modifyingSplitHolder == null && !oneViewAtATime) {
+                if (_parent.modifyingSplitHolder == null) {
                     _parent.modifyingSplitHolder = ViewHolderSplit.this;
-                    oneViewAtATime = true;
 
-                    numOtherVH = _parent.active_people.size() - 1;
+                    numOtherVH = 0;
+                    for(ViewHolderSplit svh : _parent.active_people.values()){ if (!svh.edited) { numOtherVH++; } }
 
                     //Cost
-                    int tc = percentage.getProgress();
-                    double diff = (mainCost - GetCost());
+                    totalCost = _parent.GetCost();
+                    for (Map.Entry<Person, ViewHolderSplit> entry : _parent.active_people.entrySet()) {
+                        if (entry.getValue().edited && entry.getKey().GetID() != _person.GetID()) { totalCost -= entry.getValue().GetCost(); }
+                    }
+                    localCost = GetCost();
+                    diff = (totalCost - localCost);
 
                     //Update this viewHolder's percentage
-                    int prog = (int) Math.round((GetCost() / mainCost) * 100);
-                    percentage.setProgress(prog);
-
-                    //Clamp this viewHolder's cost to 3 digits
-                    //cost.setText(Helper.decimalFormat.format(GetCost()));
+                    percentage.setProgress( (int)( (localCost / _parent.GetCost()) * 100 ) );
 
                     //Update all other viewHolders
                     for (Map.Entry<Person, ViewHolderSplit> entry : _parent.active_people.entrySet()) {
-                        if (entry != null && entry.getKey().GetID() != _person.GetID()) { //Comment out to update THTS cost editText
+                        if (entry != null && entry.getKey().GetID() != _person.GetID()) { // Ignore THTS cost editText
                             //Other splitviewholder
                             ViewHolderSplit svh = entry.getValue();
 
-                            //Update cost textbox
-                            svh.cost.setText(Helper.decimalFormat.format(diff / numOtherVH));
+                            if (!svh.edited) {
+                                //Update cost textbox
+                                svh.cost.setText(Helper.decimalFormat.format(diff / numOtherVH));
 
-                            //Update percentage slider
-                            svh.percentage.setProgress((100 - prog) / numOtherVH);
+                                //Update percentage slider
+                                svh.percentage.setProgress( (int)( (svh.GetCost() / _parent.GetCost()) * 100 ) );
+                            }
                         }
                     }
 
+                    // Set this view holder as edited
+                    edited = true;
+
                     _parent.modifyingSplitHolder = null;
-                    oneViewAtATime = false;
                 }
             }
 
-            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                mainCost = _parent.GetCost();
-            }
-
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
             @Override public void afterTextChanged(Editable editable) {}
         });
 
         paid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (_parent.modifyingSplitHolder == null && !oneViewAtATime) {
+                if (_parent.modifyingSplitHolder == null) {
                     _parent.modifyingSplitHolder = ViewHolderSplit.this;
-                    oneViewAtATime = true;
 
                     for (Map.Entry<Person, ViewHolderSplit> entry : _parent.active_people.entrySet()) {
                         if (entry != null && entry.getKey().GetID() != _person.GetID()) {
@@ -166,7 +168,6 @@ public class ViewHolderSplit //implements View.OnClickListener
                         }
                     }
 
-                    oneViewAtATime = false;
                     _parent.modifyingSplitHolder = null;
                 }
 

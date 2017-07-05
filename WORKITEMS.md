@@ -2,7 +2,6 @@ STAGING:
 	Making sure all information is loaded when transaction is edited, checking editing for repeating transactions (rewrite as necessary)
 	
 	NEXT:Get editing/ghost editing working THEN get totals working THEN paidBack working THEN Get sorting and filtering remade
-	View Split Holder split cost > 100% of transaction value, what do?
 	
 
 TODO
@@ -71,6 +70,7 @@ UNRELEASED
 #[BUGFIX] Database not saving timeperiod UID
 *[CHANGE] Major rewrite of data structures and database, UI updated to comply with new standards
 *[CHANGE] Refactored budget, category, and people management
+#[CHANGE] Transactions can be split among multiple people with individual costs
 
 
 FORMAT

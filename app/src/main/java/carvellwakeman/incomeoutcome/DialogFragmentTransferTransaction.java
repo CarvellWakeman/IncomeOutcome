@@ -79,7 +79,7 @@ public class DialogFragmentTransferTransaction extends DialogFragment
                         .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                for (new_Transaction t : _budget.GetAllTransactions()){ DatabaseManager.getInstance().remove(t); }
+                                for (Transaction t : _budget.GetAllTransactions()){ DatabaseManager.getInstance().remove(t); }
                                 DatabaseManager.getInstance().removeBudgetSetting(_budget);
                                 BudgetManager.getInstance().RemoveBudget(_budget);
 
@@ -114,7 +114,7 @@ public class DialogFragmentTransferTransaction extends DialogFragment
         //Select budget 'to' if _budget was selected
         if (_budget.GetSelected()) { BudgetManager.getInstance().SetSelectedBudget(to); }
         //Transfer transactions from _budget -> to
-        for (new_Transaction tr : _budget.GetAllTransactions()){
+        for (Transaction tr : _budget.GetAllTransactions()){
             to.AddTransaction(tr);
             DatabaseManager.getInstance().insert(tr, true);
         }

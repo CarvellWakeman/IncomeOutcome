@@ -127,7 +127,7 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
                         .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                for (new_Transaction t : br.GetAllTransactions()){ DatabaseManager.getInstance().remove(t); }
+                                for (Transaction t : br.GetAllTransactions()){ DatabaseManager.getInstance().remove(t); }
                                 DatabaseManager.getInstance().removeBudgetSetting(br);
                                 BudgetManager.getInstance().RemoveBudget(br);
                                 //Select a new budget if the one being deleted was the selected one

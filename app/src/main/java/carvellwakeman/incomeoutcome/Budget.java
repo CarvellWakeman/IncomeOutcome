@@ -22,8 +22,8 @@ public class Budget implements java.io.Serializable, BaseEntity
     private Period _period;
     private Repeat _periodFrequency;
 
-    //new_Transaction sources
-    private ArrayList<new_Transaction> _transactions;
+    //Transaction sources
+    private ArrayList<Transaction> _transactions;
 
     public Budget(String name){
         _uniqueID = System.identityHashCode(this);
@@ -94,12 +94,12 @@ public class Budget implements java.io.Serializable, BaseEntity
 
 
     //Transactions
-    public void AddTransaction(new_Transaction transaction) {
+    public void AddTransaction(Transaction transaction) {
         _transactions.add(transaction);
         transaction.SetBudgetID(GetID());
     }
 
-    public void RemoveTransaction(new_Transaction transaction) { _transactions.remove(transaction); }
+    public void RemoveTransaction(Transaction transaction) { _transactions.remove(transaction); }
     public void RemoveTransaction(int ID){
         for (int i = 0; i < _transactions.size(); i++) {
             if (_transactions.get(i).GetID() == ID){
@@ -115,7 +115,7 @@ public class Budget implements java.io.Serializable, BaseEntity
         _transactions.clear();
     }
 
-    public new_Transaction GetTransaction(int ID){
+    public Transaction GetTransaction(int ID){
         //Short circuit for invalid ID
         if (ID == -1){ return null; }
 
@@ -126,11 +126,11 @@ public class Budget implements java.io.Serializable, BaseEntity
         }
         return null;
     }
-    public ArrayList<new_Transaction> GetAllTransactions() { return _transactions; }
-    public ArrayList<new_Transaction> GetTransactions(new_Transaction.TRANSACTION_TYPE type) { return GetTransactions(null, null, type); }
-    public ArrayList<new_Transaction> GetTransactionsInTimeframe(new_Transaction.TRANSACTION_TYPE type){ return GetTransactions(GetStartDate(), GetEndDate(), type); }
-    public ArrayList<new_Transaction> GetTransactions(LocalDate startDate, LocalDate endDate, new_Transaction.TRANSACTION_TYPE type){
-        ArrayList<new_Transaction> tmp = new ArrayList<>();
+    public ArrayList<Transaction> GetAllTransactions() { return _transactions; }
+    public ArrayList<Transaction> GetTransactions(Transaction.TRANSACTION_TYPE type) { return GetTransactions(null, null, type); }
+    public ArrayList<Transaction> GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE type){ return GetTransactions(GetStartDate(), GetEndDate(), type); }
+    public ArrayList<Transaction> GetTransactions(LocalDate startDate, LocalDate endDate, Transaction.TRANSACTION_TYPE type){
+        ArrayList<Transaction> tmp = new ArrayList<>();
         for (int i = 0; i < _transactions.size(); i++) {
             tmp.addAll(_transactions.get(i).GetOccurrences(startDate, endDate, type));
         }

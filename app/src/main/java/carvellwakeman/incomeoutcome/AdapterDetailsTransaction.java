@@ -10,8 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
-import android.view.animation.Transformation;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -30,7 +28,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
     Budget _budget;
 
     //Transactions
-    ArrayList<new_Transaction> _transactions;
+    ArrayList<Transaction> _transactions;
 
     //Activity type (Expense or income) (0 or 1)
     int activityType = -1;
@@ -55,10 +53,10 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
         _transactions.clear();
 
         if (activityType == 0) { //Expense
-            _transactions.addAll(_budget.GetTransactionsInTimeframe(new_Transaction.TRANSACTION_TYPE.Expense));
+            _transactions.addAll(_budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Expense));
         }
         else if (activityType == 1) { //Income
-            _transactions.addAll(_budget.GetTransactionsInTimeframe(new_Transaction.TRANSACTION_TYPE.Income ));
+            _transactions.addAll(_budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Income ));
         }
     }
 
@@ -73,7 +71,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
     public void onBindViewHolder(final TransactionViewHolder holder, int position)
     {
         if (_budget != null) {
-            new_Transaction transaction = _transactions.get(position);
+            Transaction transaction = _transactions.get(position);
             holder.bind(transaction);
             //Helper.Print(App.GetContext(), "Bind ViewHolder" + String.valueOf(position));
         }
@@ -87,85 +85,53 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
 
     // ViewHolder overflow actions
-    public new_Transaction GetTransactionParent(new_Transaction transaction) {
+    public Transaction GetTransactionParent(Transaction transaction) {
         if (transaction.GetParentID() != 0) {
             return _budget.GetTransaction(transaction.GetParentID());
         }
         return transaction;
     }
 
-    public void handleOverflowAction(new_Transaction tran, MenuItem action){
+    public void handleOverflowAction(Transaction tran, MenuItem action){
         //Find parent transaction
-        final new_Transaction tranp = GetTransactionParent(tran);
+        final Transaction tranp = GetTransactionParent(tran);
 
         //Take action on it
         if (tranp != null) {
+            Intent intent;
+
             //If the expense is not a ghost expense (only exists in the _timeframe array), then edit it normally, else clone it and blacklist the old date
             switch (action.getItemId()) {
+
                 case R.id.transaction_edit_instance: //Edit(instance)
-                    //If edited expense exists, edit it. If not, duplicate it
-                    if ( _budget.GetTransaction(tran.GetID()) != null ) {
-                        //If tranp has children (ie, tranp and tran are not the same transaction)
-                        if (tranp.GetTimePeriod().DoesRepeat()){ //tranp has children, duplicate and blacklist it
-                            Helper.Log(App.GetContext(), "AdaDetTran", "Edit(Instance) of repeating tran " + tranp.GetSource());
-                            Intent intent = new Intent(_activity, ActivityNewTransaction.class);
-                            intent.putExtra("activitytype", activityType);
-                            intent.putExtra("budget", _budget.GetID());
-                            intent.putExtra("transaction", tranp.GetID());
-                            intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Duplicate.ordinal());
-                            _activity.startActivityForResult(intent, 2);
-                        } else { //Standard transaction
-                            Helper.Log(App.GetContext(), "AdaDetTran", "Edit(Instance) of std tran " + tranp.GetSource());
-                            Intent intent = new Intent(_activity, ActivityNewTransaction.class);
-                            intent.putExtra("activitytype", activityType);
-                            intent.putExtra("budget", _budget.GetID());
-                            intent.putExtra("transaction", tranp.GetID());
-                            intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Edit.ordinal());
-                            _activity.startActivityForResult(intent, 2);
-                        }
-                    } else { //Ghost
-                        Helper.Log(App.GetContext(), "AdaDetTran", "Edit(Instance) of ghost tran " + tran.GetSource());
-                        Intent intent = new Intent(_activity, ActivityNewTransaction.class);
-                        intent.putExtra("activitytype", activityType);
-                        intent.putExtra("budget", _budget.GetID());
-                        intent.putExtra("transaction", tranp.GetID());
-                        intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Duplicate.ordinal());
-                        _activity.startActivityForResult(intent, 2);
-                    }
+                    Helper.Log(App.GetContext(), "AdaDetTran", "Edit(Instance) of repeating tran " + tranp.GetSource());
+
+                    intent = new Intent(_activity, ActivityNewTransaction.class);
+                    intent.putExtra("activitytype", activityType);
+                    intent.putExtra("budget", _budget.GetID());
+                    intent.putExtra("transaction", tran);
+                    intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.EditGhost.ordinal());
+                    _activity.startActivityForResult(intent, 1);
+
                     break;
 
                 case R.id.transaction_edit_all: //Edit(all / parent)
                     Helper.Log(App.GetContext(), "AdaDetTran", "Edit(All) of " + tranp.GetSource());
-                    Intent intent = new Intent(_activity, ActivityNewTransaction.class);
+
+                    intent = new Intent(_activity, ActivityNewTransaction.class);
                     intent.putExtra("activitytype", activityType);
                     intent.putExtra("budget", _budget.GetID());
-                    intent.putExtra("transaction", tranp.GetID());
+                    intent.putExtra("transaction", tranp);
                     intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Edit.ordinal());
                     _activity.startActivityForResult(intent, 2);
+
                     break;
 
                 case R.id.transaction_delete_instance: //Delete(instance)
-                    //If deleted expense exists (is not a ghost)
-                    if (_budget.GetTransaction(tran.GetID()) != null) {
-                        //If tranp has children (ie, tranp and tran are not the same transaction)
-                        if (tranp.GetTimePeriod().DoesRepeat()){ //tranp has children, blacklist its date
-                            Helper.Log(App.GetContext(), "AdaDetTran", "Delete(instance) of Repeat tran " + tranp.GetSource());
+                    Helper.Log(App.GetContext(), "AdaDetTran", "Delete(instance) of Repeat tran " + tranp.GetSource());
 
-                            tranp.GetTimePeriod().AddBlacklistDate(tranp.GetTimePeriod().GetDate(), false);
-                            DatabaseManager.getInstance().insert(tranp, true);
-                        } else {
-                            Helper.Log(App.GetContext(), "AdaDetTran", "Delete(instance) of individual tran " + tranp.GetSource());
-                            //ArrayList<Integer> children = tranp.GetChildren();
-                            //for (int i = 0; i < children.size(); i++){ _budget.RemoveTransaction(children.get(i)); }
-                            _budget.RemoveTransaction(tranp);
-                            DatabaseManager.getInstance().remove(tranp);
-                        }
-                    } else { //Ghost
-                        Helper.Log(App.GetContext(), "AdaDetTran", "Delete(instance) of ghost tran " + tranp.GetSource());
-
-                        tranp.GetTimePeriod().AddBlacklistDate(tran.GetTimePeriod().GetDate(), false);
-                        DatabaseManager.getInstance().insert(tranp, true);
-                    }
+                    tranp.GetTimePeriod().AddBlacklistDate(tran.GetTimePeriod().GetDate(), false);
+                    DatabaseManager.getInstance().insert(tranp, true);
 
                     break;
 
@@ -174,7 +140,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
                     ArrayList<Integer> children = tranp.GetChildren();
                     for (int i = 0; i < children.size(); i++){
-                        new_Transaction child = _budget.GetTransaction(children.get(i));
+                        Transaction child = _budget.GetTransaction(children.get(i));
                         DatabaseManager.getInstance().remove(child);
                         _budget.RemoveTransaction(child);
                     }
@@ -183,10 +149,6 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     DatabaseManager.getInstance().remove(tranp);
 
                     break;
-
-                //case R.id.transaction_duplicate: //Duplicate
-                //    duplicateTransaction(tran, _budget.GetID());
-                //    break;
             }
 
             GetTransactions();
@@ -286,10 +248,10 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
         }
 
-        public void bind(new_Transaction transaction){
+        public void bind(Transaction transaction){
             if (transaction != null) {
                 //Parent
-                new_Transaction parent = _budget.GetTransaction(transaction.GetParentID());
+                Transaction parent = _budget.GetTransaction(transaction.GetParentID());
 
                 //Value
                 cost.setText(Helper.currencyFormat.format(transaction.GetValue()));
@@ -449,7 +411,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             //handleOverflowAction(_transactions.get(getAdapterPosition()), item);
-            new_Transaction tran = _transactions.get(getAdapterPosition());
+            Transaction tran = _transactions.get(getAdapterPosition());
 
             // Handle action
             handleOverflowAction(tran, item);
@@ -460,7 +422,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
         public void OpenOverflowMenu(){
             //Get parent if it exists (if it doesn't, get the current transaction)
-            new_Transaction tran = GetTransactionParent(_transactions.get(getAdapterPosition()));
+            Transaction tran = GetTransactionParent(_transactions.get(getAdapterPosition()));
             if (tran != null) {
                 //Menu object
                 PopupMenu popup = new PopupMenu(_activity, overflow);

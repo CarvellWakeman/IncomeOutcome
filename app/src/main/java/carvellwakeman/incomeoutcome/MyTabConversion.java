@@ -74,10 +74,10 @@ public class MyTabConversion {
                     if (tab != null && tab._transactions != null) {
                         for (MyTabTransaction tran : tab._transactions) {
                             if (tran != null) {
-                                new_Transaction NewTransaction = new new_Transaction();
+                                Transaction NewTransaction = new Transaction();
 
                                 //Mutators
-                                NewTransaction.SetType(new_Transaction.TRANSACTION_TYPE.Expense);
+                                NewTransaction.SetType(Transaction.TRANSACTION_TYPE.Expense);
                                 NewTransaction.SetSource(tran.GetCompany());
                                 if (CategoryManager.getInstance().GetCategory(tran.GetCategory()) != null) {
                                     Category cat = new Category(tran.GetCategory(), CategoryColors.getColor(tran.GetCategory()));

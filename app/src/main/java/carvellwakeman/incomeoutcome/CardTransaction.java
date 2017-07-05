@@ -203,7 +203,7 @@ public class CardTransaction extends Card
             //_profile.CalculateTimeFrame(activityType);
             /*
             //Get expense data
-            HashMap<String,new_Transaction> transactions = _budget.GetTransactionsInTimeframe( (activityType==0 ? new_Transaction.TRANSACTION_TYPE.Expense : new_Transaction.TRANSACTION_TYPE.Income) );
+            HashMap<String,Transaction> transactions = _budget.GetTransactionsInTimeframe( (activityType==0 ? Transaction.TRANSACTION_TYPE.Expense : Transaction.TRANSACTION_TYPE.Income) );
 
             if (transactions.keySet().size() > 0) {
                 //Total
@@ -212,7 +212,7 @@ public class CardTransaction extends Card
                 //Convert transaction data to a list of PieEntry
                 List<PieEntry> entries = new ArrayList<>();
                 List<Integer> colors = new ArrayList<>();
-                for (Map.Entry<String, new_Transaction> entry : transactions.entrySet()) {
+                for (Map.Entry<String, Transaction> entry : transactions.entrySet()) {
                     if (entry.getValue().GetValue() > 0) {
                         total += (entry.getValue().GetValue() - entry.getValue().GetSplitValue());
 
