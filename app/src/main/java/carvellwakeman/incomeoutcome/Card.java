@@ -21,8 +21,8 @@ public class Card {
     private int _layout;
 
     View _base;
-    private CardView _cardBase;
     private LinearLayout _linearLayoutBase;
+    TextView _title;
 
     private ArrayList<View> _children;
 
@@ -39,8 +39,8 @@ public class Card {
         //Populate layout
         _base = _inflater.inflate(_layout, null);
 
-        //Get card containers
-        _cardBase = (CardView) _base.findViewById(R.id.card_base);
+        //Get card views
+        _title = (TextView) _base.findViewById(R.id.card_title);
         _linearLayoutBase = (LinearLayout) _base.findViewById(R.id.card_relativelayout);
 
         //Inflate parent
@@ -50,15 +50,30 @@ public class Card {
     //Accessors
     public View getBase() { return _base; }
 
+    //Title
+    public void setTitle(String title){
+        _title.setVisibility(View.VISIBLE);
+        _title.setText(title);
+    }
+    public void setTitle(int resource){
+        _title.setVisibility(View.VISIBLE);
+        _title.setText(resource);
+    }
 
     //Children
     public void AddView(View child) {
         _linearLayoutBase.addView(child, _children.size(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         _children.add(child);
     }
+    public void RemoveView(View child) {
+        _linearLayoutBase.removeView(child);
+        _children.remove(child);
+    }
     public void ClearViews(){
         _linearLayoutBase.removeAllViews();
         _children.clear();
     }
+
+    public int ChildCount(){ return _children.size(); }
 
 }

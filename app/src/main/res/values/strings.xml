@@ -153,6 +153,8 @@
     <string name="tt_loading">Loading</string>
     <string name="tt_enter_title">Enter a Title</string>
     <string name="tt_already_exists">Already exists</string>
+    <string name="tt_edited">Edited</string>
+    <string name="tt_deleted">Deleted</string>
 
     <!-- ERROR -->
     <string name="error_transaction_not_found">Transaction not found</string>

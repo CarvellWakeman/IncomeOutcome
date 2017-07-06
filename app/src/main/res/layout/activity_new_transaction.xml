@@ -200,17 +200,6 @@
                         android:orientation="horizontal"
                         android:weightSum="9">
 
-                        <!-- carvellwakeman.incomeoutcome.NoDefaultSpinner
-                        <Spinner
-                            android:id="@+id/spinner_newTransaction_categories"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="3"
-                            android:spinnerMode="dropdown"
-                            android:theme="@style/MaterialTheme"
-                            android:visibility="gone" />
-                            -->
-
                         <Button
                             android:id="@+id/button_newTransaction_selectCategory"
                             style="@style/FlatButtonTheme"
@@ -349,6 +338,7 @@
                         android:paddingTop="20dp">
 
                         <ImageView
+                            android:id="@+id/imageView_repeatIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
@@ -378,44 +368,13 @@
             </android.support.v7.widget.CardView>
 
             <!-- BlackList -->
-            <android.support.v7.widget.CardView
-                android:id="@+id/card_timeperiod_blacklist"
+            <FrameLayout
+                android:id="@+id/frameLayout_blacklistdates"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/cardview_default_margin"
-                android:layout_marginStart="@dimen/cardview_default_margin"
-                android:layout_marginTop="@dimen/cardview_default_margin"
-                android:theme="@style/Base.Theme.AppCompat.Light"
-                android:visibility="gone"
-                card_view:cardCornerRadius="@dimen/cardview_default_radius"
-                card_view:cardElevation="@dimen/cardview_default_elevation"
-                card_view:cardUseCompatPadding="true"
-                card_view:contentPadding="@dimen/cardview_default_padding">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingEnd="5dp"
-                    android:paddingStart="5dp">
-
-                    <TextView
-                        android:id="@+id/textView_blacklist"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="@string/subtitle_blacklist"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recyclerView_blacklistDates"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="5dp" />
-
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/cardview_default_margin">
+            </FrameLayout>
 
         </LinearLayout>
     </ScrollView>

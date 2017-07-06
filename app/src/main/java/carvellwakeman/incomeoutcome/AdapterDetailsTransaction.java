@@ -100,22 +100,21 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
         if (tranp != null) {
             Intent intent;
 
-            //If the expense is not a ghost expense (only exists in the _timeframe array), then edit it normally, else clone it and blacklist the old date
             switch (action.getItemId()) {
 
-                case R.id.transaction_edit_instance: //Edit(instance)
+                case R.id.transaction_edit_instance: // Edit(instance)
                     Helper.Log(App.GetContext(), "AdaDetTran", "Edit(Instance) of repeating tran " + tranp.GetSource());
 
                     intent = new Intent(_activity, ActivityNewTransaction.class);
                     intent.putExtra("activitytype", activityType);
                     intent.putExtra("budget", _budget.GetID());
                     intent.putExtra("transaction", tran);
-                    intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.EditGhost.ordinal());
+                    intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.EditInstance.ordinal());
                     _activity.startActivityForResult(intent, 1);
 
                     break;
 
-                case R.id.transaction_edit_all: //Edit(all / parent)
+                case R.id.transaction_edit_all: // Edit(all / parent)
                     Helper.Log(App.GetContext(), "AdaDetTran", "Edit(All) of " + tranp.GetSource());
 
                     intent = new Intent(_activity, ActivityNewTransaction.class);
@@ -127,7 +126,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
                     break;
 
-                case R.id.transaction_delete_instance: //Delete(instance)
+                case R.id.transaction_delete_instance: // Delete(instance)
                     Helper.Log(App.GetContext(), "AdaDetTran", "Delete(instance) of Repeat tran " + tranp.GetSource());
 
                     tranp.GetTimePeriod().AddBlacklistDate(tran.GetTimePeriod().GetDate(), false);
@@ -135,7 +134,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
                     break;
 
-                case R.id.transaction_delete_all: //Delete(all, parent)
+                case R.id.transaction_delete_all: // Delete(all, parent)
                     Helper.Log(App.GetContext(), "AdaDetTran", "Delete(all) of " + tranp.GetSource());
 
                     ArrayList<Integer> children = tranp.GetChildren();

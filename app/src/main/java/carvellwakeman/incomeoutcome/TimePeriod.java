@@ -140,6 +140,7 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
     public void FlushBlacklistDateQueue(){
         if (_blacklistDatesQueue !=  null) {
             for (int i = 0; i < _blacklistDatesQueue.size(); i++) {
+                Helper.Log(App.GetContext(), "TP", "QueueBlacklistDateFlush:" + _blacklistDatesQueue.get(i).date.toString());
                 //Remove objects from queue
                 blacklistDates.remove(_blacklistDatesQueue.get(i));
             }
@@ -149,6 +150,7 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         if (blacklistDates != null) {
             for (int i = 0; i < blacklistDates.size(); i++) {
                 if (blacklistDates.get(i).date.compareTo(date) == 0) {
+                    Helper.Log(App.GetContext(), "TP", "QueueBlacklistDate:" + date.toString());
                     //Queue blacklist date for deletion
                     _blacklistDatesQueue.add(blacklistDates.get(i));
                 }
