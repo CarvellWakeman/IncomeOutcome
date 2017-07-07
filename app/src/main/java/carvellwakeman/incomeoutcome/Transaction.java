@@ -33,6 +33,8 @@ public class Transaction implements java.io.Serializable
 
     private ArrayList<Integer> _children;
 
+    public String debug_data = "";
+
     //Expense type only
     private int _paidBy; // -1 is 'you', else person ID
     private HashMap<Integer,Double> _split; //Split[($,me),($,p1),...]

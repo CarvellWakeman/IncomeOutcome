@@ -204,6 +204,7 @@
 
     <!-- DEBUG -->
     <string name="debug_database">View Database</string>
+    <string name="debug_data">Debug Data</string>
 
     <!-- Spinner -->
     <string name="select_category">Select a Category&#8230;</string>

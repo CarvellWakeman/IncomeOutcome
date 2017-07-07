@@ -271,6 +271,16 @@ public class ActivityDetailsTransaction extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) { //TODO: Necessary?
         RefreshActivity();
 
+        for (Transaction t : _budget.GetAllTransactions()){
+            if (t.GetTimePeriod() != null){
+                for (BlacklistDate bd : t.GetTimePeriod().GetBlacklistDates()){
+                    Helper.Log(this, "ActDetTran", "Transaction:" + String.valueOf(t.GetID()));
+                    Helper.Log(this, "ActDetTran", "TimeperiodID:" + String.valueOf(t.GetTimePeriod().GetID()));
+                    Helper.Log(this, "ActDetTran", "BlacklistDate:" + bd.date.toString());
+                }
+            }
+        }
+
         //switch (requestCode){
             //case 1: // New Transaction
         if (resultCode==1){

@@ -1208,7 +1208,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                 contentValues_tp.put(COLUMN_tp_repeatDayOfWeek, tp.GetRepeatDayOfWeekBinary());
                 contentValues_tp.put(COLUMN_tp_repeatDayOfMonth, tp.GetRepeatDayOfMonth());
                 contentValues_tp.put(COLUMN_tp_dateOfYear, (tp.GetDateOfYear() != null ? tp.GetDateOfYear().toString(Helper.getString(R.string.date_format_saving)) : ""));
-                contentValues_tp.put(COLUMN_tp_blacklistDates, tp.GetBlacklistDatesSaving());
+                contentValues_tp.put(COLUMN_tp_blacklistDates, tp.GetBlacklistDatesString());
             }
 
             //Insert/update row and return result

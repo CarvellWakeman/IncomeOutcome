@@ -136,7 +136,10 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
 
     //Blacklist
-    public void AddBlacklistDate(LocalDate date, Boolean edited){ blacklistDates.add(new BlacklistDate(date, edited)); }
+    public void AddBlacklistDate(LocalDate date, Boolean edited){
+        blacklistDates.add(new BlacklistDate(date, edited));
+        Helper.Log(App.GetContext(), "TP", "AddBlacklistDate " + date.toString());
+    }
     public void FlushBlacklistDateQueue(){
         if (_blacklistDatesQueue !=  null) {
             for (int i = 0; i < _blacklistDatesQueue.size(); i++) {
@@ -162,9 +165,15 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         FlushBlacklistDateQueue();
     }
     //public void ClearBlacklistDates(){ blacklistDates.clear(); }
-    public void ClearBlacklistQueue() { if (_blacklistDatesQueue != null){ _blacklistDatesQueue.clear(); } }
+    public void ClearBlacklistQueue() {
+        if (_blacklistDatesQueue != null){
+            _blacklistDatesQueue.clear();
+            Helper.Log(App.GetContext(), "TP", "ClearBlacklistQueue");
 
-    public String GetBlacklistDatesSaving(){
+        }
+    }
+
+    public String GetBlacklistDatesString(){
         String str = "";
 
         if (blacklistDates != null) {
@@ -659,7 +668,7 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
             if (!tp.GetDateOfYear().equals(this.GetDateOfYear())) { return false; }
 
-            if (!tp.GetBlacklistDatesSaving().equals(this.GetBlacklistDatesSaving())) { return false; }
+            if (!tp.GetBlacklistDatesString().equals(this.GetBlacklistDatesString())) { return false; }
 
 
             return true;

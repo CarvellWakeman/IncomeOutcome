@@ -2,6 +2,7 @@ STAGING:
 	Making sure all information is loaded when transaction is edited, checking editing for repeating transactions (rewrite as necessary)
 	
 	NEXT:Get editing/ghost editing working THEN get totals working THEN paidBack working THEN Get sorting and filtering remade
+	Blacklist dates
 	
 
 TODO

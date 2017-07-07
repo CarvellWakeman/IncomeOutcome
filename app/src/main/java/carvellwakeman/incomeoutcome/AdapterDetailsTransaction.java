@@ -177,6 +177,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
         TextView date;
         TextView repeat;
+        TextView debug;
 
         TextView paidBy;
         TextView cost;
@@ -211,6 +212,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
             date = (TextView) itemView.findViewById(R.id.transaction_row_date);
             repeat = (TextView) itemView.findViewById(R.id.transaction_row_repeat);
+            debug = (TextView) itemView.findViewById(R.id.transaction_row_debug);
 
             repeatIcon = (ImageView) itemView.findViewById(R.id.transaction_row_repeaticon);
 
@@ -397,7 +399,9 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     expandCard.setVisibility(View.VISIBLE);
                 }
 
-
+                // Debug
+                debug.setText(transaction.GetTimePeriod().GetBlacklistDatesString());
+                if (!debug.getText().toString().equals("")) { debug.setVisibility(View.VISIBLE); }
             }
 
         }
