@@ -34,6 +34,7 @@
     <string name="title_edittransaction">Edit Transaction</string>
     <string name="title_edittransactionseries">Edit Transaction Series</string>
     <string name="title_edittransactioninstance">Edit Transaction Instance</string>
+    <string name="title_duplicatetransaction">Duplicate Transaction</string>
     <string name="title_editbudget">Edit Budget</string>
     <string name="title_editbudgets">Edit Budgets</string>
     <string name="title_editpeople">Edit People</string>
@@ -45,7 +46,7 @@
     <!-- Sub titles -->
     <string name="subtitle_transferto">and transfer its transactions to</string>
     <string name="subtitle_or">OR</string>
-    <string name="subtitle_blacklist">Blacklisted dates</string>
+    <string name="subtitle_blacklist">Altered dates in series • tap to remove</string>
 
 
 
@@ -182,6 +183,8 @@
     <string name="info_selected">Selected</string>
     <string name="info_total_newline">Total\n</string>
     <string name="info_select_category">Select a category</string>
+    <string name="info_tran_instance_delete">Removing this date may delete a previously modified transaction!</string>
+    <string name="info_tran_repl_original">Restore original instance of this transaction?</string>
 
     <!-- Notice -->
     <string name="notice_deletesuccess">Successfully Deleted</string>

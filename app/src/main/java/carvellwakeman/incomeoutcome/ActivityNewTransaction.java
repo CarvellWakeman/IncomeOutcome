@@ -1,10 +1,12 @@
 package carvellwakeman.incomeoutcome;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -29,7 +31,8 @@ public class ActivityNewTransaction extends AppCompatActivity
     {
         NewTransaction,
         Edit,
-        EditInstance
+        EditInstance,
+        Duplicate
     }
 
     //Object data
@@ -66,6 +69,7 @@ public class ActivityNewTransaction extends AppCompatActivity
     TextView textView_repeat;
 
     ImageView imageView_repeatIcon;
+    ImageView imageView_dateIcon;
 
     Button button_addSplit;
     Button button_removeSplit;
@@ -145,6 +149,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                 textView_repeat = (TextView) findViewById(R.id.textView_newTransaction_repeat);
 
                 imageView_repeatIcon = (ImageView) findViewById(R.id.imageView_repeatIcon);
+                imageView_dateIcon = (ImageView) findViewById(R.id.imageView_dateIcon);
 
                 button_addSplit = (Button) findViewById(R.id.button_newTransaction_addsplit);
                 button_removeSplit = (Button) findViewById(R.id.button_newTransaction_removesplit);
@@ -301,6 +306,10 @@ public class ActivityNewTransaction extends AppCompatActivity
                 }
                 else if (_editState == EDIT_STATE.Edit) {
                     _transaction = _budget.GetTransaction(intent.getIntExtra("transaction", -1));
+                    if (_transaction == null) {
+                        Helper.Print(this, "Provided transaction could not be found.");
+                        finish();
+                    }
                     LoadTransaction(_transaction);
 
                     //Toolbar title
@@ -316,11 +325,29 @@ public class ActivityNewTransaction extends AppCompatActivity
 
                     //Toolbar title
                     toolbar.setTitle(R.string.title_edittransactioninstance);
+                }
+                else if (_editState == EDIT_STATE.Duplicate){
+                    Transaction tran = (Transaction) intent.getSerializableExtra("transaction");
+                    if (tran == null){
+                        Helper.Print(this, "Provided transaction could not be found.");
+                        finish();
+                    }
+                    LoadTransaction(tran);
 
+                    // Toolbar title
+                    toolbar.setTitle(R.string.title_duplicatetransaction);
+                }
+
+                 // Block repeat button for child transaction
+                if (_transaction != null && _transaction.GetParentID() > 0){
                     // Block repeat input
                     linearLayout_timeperiod_repeat.setEnabled(false);
                     imageView_repeatIcon.setColorFilter(getResources().getColor(R.color.ltgray));
                     textView_repeat.setTextColor(getResources().getColor(R.color.ltgray));
+                    // Block date input
+                    linearLayout_timeperiod_date.setEnabled(false);
+                    imageView_dateIcon.setColorFilter(getResources().getColor(R.color.ltgray));
+                    textView_date.setTextColor(getResources().getColor(R.color.ltgray));
                 }
 
                 UpdateDateFormat();
@@ -428,6 +455,15 @@ public class ActivityNewTransaction extends AppCompatActivity
                 // Flush blacklist queue
                 if (_transaction != null) {
                     for (LocalDate d : _blacklistDatesRemovalQueue) {
+                        // Delete associated transaction if it exists
+                        BlacklistDate bd = _timePeriod.GetBlacklistDate(d);
+                        if (bd != null){
+                            Transaction tran = _budget.GetTransaction(bd.transactionID);
+                            if (tran != null) {
+                                DatabaseManager.getInstance().remove(tran);
+                                _budget.RemoveTransaction(bd.transactionID);
+                            }
+                        }
                         _timePeriod.RemoveBlacklistDate(d);
                     }
                 }
@@ -541,6 +577,55 @@ public class ActivityNewTransaction extends AppCompatActivity
     }
 
 
+    // Setup blacklist dates
+    public void SetupBlacklistDates(){
+        if (_timePeriod != null && _timePeriod.GetBlacklistDates().size() > 0){
+            LayoutInflater inflater = getLayoutInflater();//(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)
+
+            blacklistDates = new Card(this, inflater, frameLayout_blacklistDates, 0);
+            blacklistDates.setTitle(R.string.subtitle_blacklist);
+
+            for (final BlacklistDate bd : _timePeriod.GetBlacklistDates()){
+                Setting setting = new Setting(getLayoutInflater(), R.drawable.ic_delete_white_24dp, bd.date.toString(Helper.getString(R.string.date_format)), getString(bd.edited ? R.string.tt_edited : R.string.tt_deleted),
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(final View view) {
+                            if (_blacklistDatesRemovalQueue.contains(bd.date)){
+                                _blacklistDatesRemovalQueue.remove(bd.date);
+                                view.setAlpha(1.0f);
+                            } else {
+                                // Remove associated transaction if it exists
+                                if (bd.transactionID > 0){
+                                    // Confirm removal of blacklist date
+                                    AlertDialog.Builder alert = new AlertDialog.Builder(ActivityNewTransaction.this);
+                                    alert.setMessage(R.string.info_tran_instance_delete);
+                                    alert.setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
+                                        @Override public void onClick(DialogInterface dialog, int which) {
+                                            _blacklistDatesRemovalQueue.add(bd.date);
+                                            view.setAlpha(130.0f/255.0f);
+                                        }
+                                    });
+                                    alert.setNegativeButton(R.string.action_cancel, null);
+                                    alert.show();
+                                } else {
+                                    _blacklistDatesRemovalQueue.add(bd.date);
+                                    view.setAlpha(130.0f/255.0f);
+                                }
+                            }
+
+                            //if (blacklistDates.ChildCount() == 0){
+                            //    blacklistDates.getBase().setVisibility(View.GONE);
+                            //}
+                        }
+                    }
+                );
+                //setting.SetIconColor(R.color.red); // Not working for some reason
+                blacklistDates.AddView(setting.getView());
+            }
+        }
+    }
+
+
     // Load transaction into fields
     public void LoadTransaction(final Transaction _transaction){
         // TimePeriod
@@ -582,33 +667,7 @@ public class ActivityNewTransaction extends AppCompatActivity
         }
 
         // Blacklist dates
-        if (_timePeriod != null && _timePeriod.GetBlacklistDates().size() > 0){
-            LayoutInflater inflater = getLayoutInflater();//(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)
-
-            blacklistDates = new Card(this, inflater, frameLayout_blacklistDates, 0);
-            blacklistDates.setTitle(R.string.subtitle_blacklist);
-
-            for (final BlacklistDate bd : _timePeriod.GetBlacklistDates()){
-                Setting setting = new Setting(getLayoutInflater(), R.drawable.ic_delete_white_24dp, bd.date.toString(Helper.getString(R.string.date_format)), getString(bd.edited ? R.string.tt_edited : R.string.tt_deleted), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (_blacklistDatesRemovalQueue.contains(bd.date)){
-                            _blacklistDatesRemovalQueue.remove(bd.date);
-                            view.setAlpha(1.0f);
-                        } else {
-                            _blacklistDatesRemovalQueue.add(bd.date);
-                            view.setAlpha(130.0f/255.0f);
-                        }
-
-                        //if (blacklistDates.ChildCount() == 0){
-                        //    blacklistDates.getBase().setVisibility(View.GONE);
-                        //}
-                    }
-                });
-                //setting.SetIconColor(R.color.red); // Not working for some reason
-                blacklistDates.AddView(setting.getView());
-            }
-        }
+        SetupBlacklistDates();
 
         // Category
         Category cat = CategoryManager.getInstance().GetCategory(_transaction.GetCategory());
@@ -635,7 +694,7 @@ public class ActivityNewTransaction extends AppCompatActivity
         if ( _category != null || _activitytype == 1) {
 
             // Determine if we are editing an existing transaction or creating a new one
-            if (_editState == EDIT_STATE.NewTransaction){
+            if (_editState == EDIT_STATE.NewTransaction | _editState == EDIT_STATE.Duplicate){
                 _transaction = new Transaction(_activitytype);
             }
 
@@ -677,18 +736,6 @@ public class ActivityNewTransaction extends AppCompatActivity
 
             }
 
-            // Set budget id
-            _transaction.SetBudgetID(_budget.GetID());
-
-            // Add to budget
-            if (_editState == EDIT_STATE.NewTransaction || _editState == EDIT_STATE.EditInstance){
-                // Set Time Period
-                _transaction.SetTimePeriod( _timePeriod );
-
-                _budget.AddTransaction(_transaction);
-                Helper.Log(this, "ActNewTran", "Add New Transaction:" + _transaction.GetID());
-            }
-
             //Add to/update database
             DatabaseManager dm = DatabaseManager.getInstance();
             dm.insert(_transaction, true);
@@ -697,8 +744,20 @@ public class ActivityNewTransaction extends AppCompatActivity
             // Blacklist date for instance transaction
             if (_editState == EDIT_STATE.EditInstance) {
                 Transaction tranp = _budget.GetTransaction(_transaction.GetParentID());
-                tranp.GetTimePeriod().AddBlacklistDate(_timePeriod.GetDate(), false);
+                tranp.GetTimePeriod().AddBlacklistDate(_transaction.GetID(), _timePeriod.GetDate(), true);
                 dm.insert(tranp, true); // Update parent
+            }
+
+            // Set budget id
+            _transaction.SetBudgetID(_budget.GetID());
+
+            // Add to budget
+            if (_editState == EDIT_STATE.NewTransaction || _editState == EDIT_STATE.EditInstance || _editState == EDIT_STATE.Duplicate){
+                // Set Time Period
+                _transaction.SetTimePeriod( _timePeriod );
+
+                _budget.AddTransaction(_transaction);
+                Helper.Log(this, "ActNewTran", "Add Transaction:" + _transaction.GetID());
             }
 
         } else { // Failure (no category)

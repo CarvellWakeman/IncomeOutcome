@@ -1030,22 +1030,6 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
 
-    //Helpers
-    //Date conversion for loading
-    public static LocalDate ConvertDateFromString(String str){
-        if (str != null && str.length() != 0) {
-            try {
-                DateTimeFormatter dtf = DateTimeFormat.forPattern(Helper.getString(R.string.date_format_saving));
-                return dtf.parseLocalDate(str);
-            }
-            catch (IllegalArgumentException ex) {
-                ex.printStackTrace();
-            }
-        }
-        return null;
-    }
-
-
     //Object Specific Operations
     //Insertion
     public void insertSetting(final Category category, final boolean tryUpdate) { runDBTask( new CallBack() { @Override public void call() { _insertSetting(category, tryUpdate); } } ); }
@@ -1233,7 +1217,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             //COLUMN_uniqueID INT_TYPE
             tp.SetID(c.getInt(c.getColumnIndex(COLUMN_uniqueID)));
             //COLUMN_tp_date DATE_TYPE
-            tp.SetDate(ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_tp_date))));
+            tp.SetDate(Helper.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_tp_date))));
             //COLUMN_tp_repeatFreq INT_TYPE
             tp.SetRepeatFrequency(tp.GetRepeatFrequencyFromIndex(c.getInt(c.getColumnIndex(COLUMN_tp_repeatFreq))));
             //COLUMN_tp_repeatUntil INT_TYPE
@@ -1241,7 +1225,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             //COLUMN_tp_repeatNTimes INT_TYPE
             tp.SetRepeatANumberOfTimes(c.getInt(c.getColumnIndex(COLUMN_tp_repeatNTimes)));
             //COLUMN_tp_repeatUntilDate DATE_TYPE
-            tp.SetRepeatUntilDate(ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_tp_repeatUntilDate))));
+            tp.SetRepeatUntilDate(Helper.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_tp_repeatUntilDate))));
             //COLUMN_tp_repeatEveryN INT_TYPE
             tp.SetRepeatEveryN(c.getInt(c.getColumnIndex(COLUMN_tp_repeatEveryN)));
             //COLUMN_tp_repeatDayOfWeek TEXT_TYPE
@@ -1249,17 +1233,9 @@ public class DatabaseManager extends SQLiteOpenHelper
             //COLUMN_tp_repeatDayOfMonth INT_TYPE
             tp.SetRepeatDayOfMonth(c.getInt(c.getColumnIndex(COLUMN_tp_repeatDayOfMonth)));
             //COLUMN_tp_dateOfYear DATE_TYPE
-            tp.SetDateOfYear(ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_tp_dateOfYear))));
+            tp.SetDateOfYear(Helper.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_tp_dateOfYear))));
             //COLUMN_tp_blacklistDates TEXT_TYPE
-            String[] s1 = c.getString(c.getColumnIndex(COLUMN_tp_blacklistDates)).split(Pattern.quote(","));
-            if (s1.length > 0) {
-                for (int i = 0; i < s1.length; i++) {
-                    String[] s2 = s1[i].split(Pattern.quote("|"));
-                    if (s2.length > 1) {
-                        tp.AddBlacklistDate(ConvertDateFromString(s2[0]), Integer.valueOf(s2[1]) == 1);
-                    }
-                }
-            }
+            tp.SetBlacklistDatesFromString(c.getString(c.getColumnIndex(COLUMN_tp_blacklistDates)));
 
             return tp;
         }
@@ -1327,8 +1303,8 @@ public class DatabaseManager extends SQLiteOpenHelper
                 if (title != null && !title.equals("")){
                     Budget br = new Budget(title);
                     br.SetID(uniqueID);
-                    if (start_date != null) { br.SetStartDate(ConvertDateFromString(start_date)); }
-                    if (end_date != null) { br.SetEndDate(ConvertDateFromString(end_date)); }
+                    if (start_date != null) { br.SetStartDate(Helper.ConvertDateFromString(start_date)); }
+                    if (end_date != null) { br.SetEndDate(Helper.ConvertDateFromString(end_date)); }
 
                     if (period != null) { br.SetPeriod(Period.parse(period)); }
                     bm.AddBudget(br);
@@ -1402,7 +1378,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                     //Helper.Print(App.GetContext(), "Transaction: " + tr.GetSource() + " SplitString:'" + splitString + "'");
                     if (!splitString.equals("")){ tr.SetSplitFromArrayString(splitString); }
                     //COLUMN_paidBack + TEXT_TYPE + "," +
-                    tr.SetPaidBack(ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_paidBack))));
+                    tr.SetPaidBack(Helper.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_paidBack))));
                     //COLUMN_when + INT_TYPE //+ "," +
                     tr.SetTimePeriod(_queryTimeperiod(c.getInt(c.getColumnIndex(COLUMN_when))));
                     //COLUMN_children

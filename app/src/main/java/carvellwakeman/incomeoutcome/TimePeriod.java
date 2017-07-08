@@ -3,6 +3,7 @@ package carvellwakeman.incomeoutcome;
 import org.joda.time.*;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 
 public class TimePeriod implements java.io.Serializable, BaseEntity
@@ -129,8 +130,8 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
 
     //Blacklist
-    public void AddBlacklistDate(LocalDate date, Boolean edited){
-        _blacklistDates.add(new BlacklistDate(date, edited));
+    public void AddBlacklistDate(int transactionID, LocalDate date, Boolean edited){
+        _blacklistDates.add(new BlacklistDate(transactionID, date, edited));
     }
     public void RemoveBlacklistDate(LocalDate date){
         Iterator<BlacklistDate> i = _blacklistDates.iterator();
@@ -143,18 +144,46 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         }
     }
 
+    public BlacklistDate GetBlacklistDate(LocalDate d){
+        for (BlacklistDate bd : _blacklistDates){
+            if (bd.date.equals(d)) {
+                return bd;
+            }
+        }
+        return null;
+    }
+
     public String GetBlacklistDatesString(){
         String str = "";
 
         if (_blacklistDates != null) {
             for (int i = 0; i < _blacklistDates.size(); i++) {
-                str += _blacklistDates.get(i).date.toString(Helper.getString(R.string.date_format_saving)) + "|" + (_blacklistDates.get(i).edited ? 1 : 0) + ",";
+                BlacklistDate bd = _blacklistDates.get(i);
+                str += bd.transactionID + "|" +  bd.date.toString(Helper.getString(R.string.date_format_saving)) + "|" + (bd.edited?1:0) + ",";
             }
             //Remove last comma
             if (str.length() > 0) { str = str.substring(0, str.length() - 1); }
         }
 
         return str;
+    }
+    public void SetBlacklistDatesFromString(String raw){
+        String[] s1 = raw.split(Pattern.quote(","));
+
+        if (s1.length > 0) {
+            for (int i = 0; i < s1.length; i++) {
+                String[] s2 = s1[i].split(Pattern.quote("|"));
+
+                // Old versions of DB did not have transaction ID in blacklist date
+                if (s2.length > 1) {
+                    if (s2.length == 2) {
+                        AddBlacklistDate(-1, Helper.ConvertDateFromString(s2[1]), Integer.valueOf(s2[2]) == 1);
+                    } else if (s2.length == 3){
+                        AddBlacklistDate(Integer.valueOf(s2[0]), Helper.ConvertDateFromString(s2[1]), Integer.valueOf(s2[2]) == 1);
+                    }
+                }
+            }
+        }
     }
 
     public ArrayList<BlacklistDate> GetBlacklistDates() { return _blacklistDates; }

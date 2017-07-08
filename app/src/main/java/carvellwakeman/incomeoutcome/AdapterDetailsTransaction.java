@@ -1,9 +1,12 @@
 package carvellwakeman.incomeoutcome;
 
 import android.animation.LayoutTransition;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.provider.ContactsContract;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -92,7 +95,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
         return transaction;
     }
 
-    public void handleOverflowAction(Transaction tran, MenuItem action){
+    public void handleOverflowAction(final Transaction tran, MenuItem action){
         //Find parent transaction
         final Transaction tranp = GetTransactionParent(tran);
 
@@ -103,19 +106,25 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
             switch (action.getItemId()) {
 
                 case R.id.transaction_edit_instance: // Edit(instance)
-                    Helper.Log(App.GetContext(), "AdaDetTran", "Edit(Instance) of repeating tran " + tranp.GetSource());
+                    Helper.Log(App.GetContext(), "AdaDetTran", "Edit(Instance) "+tran.GetID()+" of repeating tran " + tranp.GetID());
 
                     intent = new Intent(_activity, ActivityNewTransaction.class);
                     intent.putExtra("activitytype", activityType);
                     intent.putExtra("budget", _budget.GetID());
-                    intent.putExtra("transaction", tran);
-                    intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.EditInstance.ordinal());
+                    // If this 'instance' was edited previously (and now exists in the DB)
+                    if (_budget.GetTransaction(tran.GetID()) != null) {
+                        intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Edit.ordinal());
+                        intent.putExtra("transaction", tran.GetID());
+                    } else {
+                        intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.EditInstance.ordinal());
+                        intent.putExtra("transaction", tran);
+                    }
                     _activity.startActivityForResult(intent, 1);
 
                     break;
 
                 case R.id.transaction_edit_all: // Edit(all / parent)
-                    Helper.Log(App.GetContext(), "AdaDetTran", "Edit(All) of " + tranp.GetSource());
+                    Helper.Log(App.GetContext(), "AdaDetTran", "Edit(All) of " + tranp.GetID());
 
                     intent = new Intent(_activity, ActivityNewTransaction.class);
                     intent.putExtra("activitytype", activityType);
@@ -127,10 +136,33 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     break;
 
                 case R.id.transaction_delete_instance: // Delete(instance)
-                    Helper.Log(App.GetContext(), "AdaDetTran", "Delete(instance) of Repeat tran " + tranp.GetSource());
+                    Helper.Log(App.GetContext(), "AdaDetTran", "Delete(instance) "+tran.GetID()+" of Repeat tran " + tranp.GetID());
 
-                    tranp.GetTimePeriod().AddBlacklistDate(tran.GetTimePeriod().GetDate(), false);
-                    DatabaseManager.getInstance().insert(tranp, true);
+                    // Delete 'instance' transactions that were modified and became real in the DB
+                    if (_budget.GetTransaction(tran.GetID()) != null) {
+                        _budget.RemoveTransaction(tran.GetID());
+                        DatabaseManager.getInstance().remove(tran);
+
+                        // Ask to replace deleted transaction with its original instance
+                        AlertDialog.Builder alert = new AlertDialog.Builder(_activity);
+                        alert.setMessage(R.string.info_tran_repl_original);
+                        alert.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
+                            @Override public void onClick(DialogInterface dialog, int which) {
+                                tranp.GetTimePeriod().RemoveBlacklistDate(tran.GetTimePeriod().GetDate());
+                                DatabaseManager.getInstance().insert(tranp, true);
+
+                                _activity.RefreshActivity();
+                            }
+                        });
+                        alert.setNegativeButton(R.string.confirm_no, null);
+                        alert.show();
+                    } else {
+                        // Blacklist instance to parent
+                        tranp.GetTimePeriod().AddBlacklistDate(-1, tran.GetTimePeriod().GetDate(), false);
+                        DatabaseManager.getInstance().insert(tranp, true);
+                    }
+
+                    _activity.RefreshActivity();
 
                     break;
 
@@ -146,6 +178,20 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
                     _budget.RemoveTransaction(tranp);
                     DatabaseManager.getInstance().remove(tranp);
+
+                    _activity.RefreshActivity();
+
+                    break;
+
+                case R.id.transaction_duplicate:
+                    Helper.Log(App.GetContext(), "AdaDetTran", "Duplicate of " + tran.GetID());
+
+                    intent = new Intent(_activity, ActivityNewTransaction.class);
+                    intent.putExtra("activitytype", activityType);
+                    intent.putExtra("budget", _budget.GetID());
+                    intent.putExtra("transaction", tran);
+                    intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Duplicate.ordinal());
+                    _activity.startActivityForResult(intent, 3);
 
                     break;
             }

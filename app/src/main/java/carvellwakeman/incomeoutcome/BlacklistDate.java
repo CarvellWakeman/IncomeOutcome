@@ -6,8 +6,10 @@ public class BlacklistDate implements java.io.Serializable
 {
     public LocalDate date;
     public Boolean edited;
-    public BlacklistDate(LocalDate _date, Boolean _edited) {
-        this.date = _date;
-        this.edited = _edited;
+    public int transactionID;
+    public BlacklistDate(int _transactionID, LocalDate _date, Boolean _edited) {
+        transactionID = _transactionID;
+        date = _date;
+        edited = _edited;
     }
 }

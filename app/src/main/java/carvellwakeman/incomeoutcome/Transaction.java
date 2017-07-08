@@ -97,12 +97,6 @@ public class Transaction implements java.io.Serializable
 
 
     //Children
-    public void AddChild(Transaction child) {
-        AddChild(child.GetID());
-        child.SetParentID(GetID());
-        //Blacklist child's date
-        TimePeriod tp = child.GetTimePeriod();
-        if (tp != null && GetTimePeriod() != null) { GetTimePeriod().AddBlacklistDate(tp.GetDate(), true); }}
     private void AddChild(int ID) {
         _children.add(ID);
     }

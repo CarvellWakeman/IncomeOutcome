@@ -15,6 +15,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -163,6 +166,21 @@ public class Helper
         int b = (coli) & 0xFF;
 
         return Color.argb(255,r,g,b);
+    }
+
+
+    // Date parsing
+    public static LocalDate ConvertDateFromString(String str){
+        if (str != null && str.length() != 0) {
+            try {
+                DateTimeFormatter dtf = DateTimeFormat.forPattern(Helper.getString(R.string.date_format_saving));
+                return dtf.parseLocalDate(str);
+            }
+            catch (IllegalArgumentException ex) {
+                //ex.printStackTrace();
+            }
+        }
+        return null;
     }
 
 
