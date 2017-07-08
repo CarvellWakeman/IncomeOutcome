@@ -1,14 +1,12 @@
 package carvellwakeman.incomeoutcome;
 
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +15,7 @@ import android.view.*;
 import android.widget.*;
 import org.joda.time.LocalDate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +37,7 @@ public class ActivityNewTransaction extends AppCompatActivity
     Transaction _transaction;
     Category _category;
 
+    ArrayList<LocalDate> _blacklistDatesRemovalQueue;
 
     //Configuration data
     LocalDate _paidBack;
@@ -93,6 +93,7 @@ public class ActivityNewTransaction extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_transaction);
 
+        _blacklistDatesRemovalQueue = new ArrayList<>();
 
         //Get the intent that opened this activity
         Intent intent = getIntent();
@@ -103,10 +104,6 @@ public class ActivityNewTransaction extends AppCompatActivity
 
         //Check that intent data is good
         if (_budget != null) {
-            //_transaction = _budget.GetTransaction(intent.getIntExtra("transaction", -1));
-            _transaction = (Transaction) intent.getSerializableExtra("transaction");
-            //Helper.Log(this, "ActNewTran", "ActNewTran passed " + String.valueOf(intent.getIntExtra("transaction", -1)));
-            Helper.Log(this, "ActNewTran", "ActNewTran passed " + (_transaction != null?_transaction.GetSource():"null"));
 
             if (_activitytype >= 0) {
 
@@ -303,6 +300,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                     _timePeriod = new TimePeriod(_start_date);
                 }
                 else if (_editState == EDIT_STATE.Edit) {
+                    _transaction = _budget.GetTransaction(intent.getIntExtra("transaction", -1));
                     LoadTransaction(_transaction);
 
                     //Toolbar title
@@ -313,6 +311,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                     }
                 }
                 else if (_editState == EDIT_STATE.EditInstance){
+                    _transaction = (Transaction) intent.getSerializableExtra("transaction");
                     LoadTransaction(_transaction);
 
                     //Toolbar title
@@ -427,16 +426,14 @@ public class ActivityNewTransaction extends AppCompatActivity
                 Helper.hideSoftKeyboard(ActivityNewTransaction.this, null);
 
                 // Flush blacklist queue
-                Helper.Log(this, "ActNewTran", "TimePeriodB4(SaveButton):" + (_timePeriod==null?"null":_timePeriod.GetBlacklistDatesString()));
-                Helper.Log(this, "ActNewTran", "TimeperiodID:" + String.valueOf(_timePeriod.GetID()));
-                _timePeriod.FlushBlacklistDateQueue();
-                Helper.Log(this, "ActNewTran", "TimePeriodA4(SaveButton):" + (_timePeriod==null?"null":_timePeriod.GetBlacklistDatesString()));
+                if (_transaction != null) {
+                    for (LocalDate d : _blacklistDatesRemovalQueue) {
+                        _timePeriod.RemoveBlacklistDate(d);
+                    }
+                }
 
                 // Try to finish up transaction
                 FinishTransaction();
-                Helper.Log(this, "ActNewTran", "Transaction:" + String.valueOf(_transaction.GetID()));
-                Helper.Log(this, "ActNewTran", "TimePeriodA6(SaveButton):" + (_timePeriod==null?"null":_timePeriod.GetBlacklistDatesString()));
-
 
                 setResult(1);
                 finish();
@@ -449,11 +446,6 @@ public class ActivityNewTransaction extends AppCompatActivity
     @Override public void onBackPressed() { BackAction(); }
 
     public void BackAction(){
-        Helper.Log(App.GetContext(), "ActNewTran", "ClearBlacklistQueue");
-
-        // Clear blacklist queue
-        _timePeriod.ClearBlacklistQueue();
-
         //Send back a RESULT_CANCELED to MainActivity
         Intent intent = new Intent();
         setResult(RESULT_CANCELED, intent);
@@ -590,24 +582,30 @@ public class ActivityNewTransaction extends AppCompatActivity
         }
 
         // Blacklist dates
-        Helper.Log(this, "ActNewTran", "TimePeriod(loadtran):" + (_timePeriod==null?"null":_timePeriod.GetBlacklistDates().toString()));
-        if (_timePeriod != null && _timePeriod.GetBlacklistDatesCount() > 0){
+        if (_timePeriod != null && _timePeriod.GetBlacklistDates().size() > 0){
             LayoutInflater inflater = getLayoutInflater();//(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)
 
             blacklistDates = new Card(this, inflater, frameLayout_blacklistDates, 0);
             blacklistDates.setTitle(R.string.subtitle_blacklist);
 
             for (final BlacklistDate bd : _timePeriod.GetBlacklistDates()){
-                final Setting setting = new Setting(getLayoutInflater(), R.drawable.ic_calendar_white_18dp, bd.date.toString(Helper.getString(R.string.date_format)), getString(bd.edited ? R.string.tt_edited : R.string.tt_deleted), new View.OnClickListener() {
+                Setting setting = new Setting(getLayoutInflater(), R.drawable.ic_delete_white_24dp, bd.date.toString(Helper.getString(R.string.date_format)), getString(bd.edited ? R.string.tt_edited : R.string.tt_deleted), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        _timePeriod.QueueBlacklistDateRemoval(bd.date);
-                        blacklistDates.RemoveView(view);
-                        if (blacklistDates.ChildCount() == 0){
-                            blacklistDates.getBase().setVisibility(View.GONE);
+                        if (_blacklistDatesRemovalQueue.contains(bd.date)){
+                            _blacklistDatesRemovalQueue.remove(bd.date);
+                            view.setAlpha(1.0f);
+                        } else {
+                            _blacklistDatesRemovalQueue.add(bd.date);
+                            view.setAlpha(130.0f/255.0f);
                         }
+
+                        //if (blacklistDates.ChildCount() == 0){
+                        //    blacklistDates.getBase().setVisibility(View.GONE);
+                        //}
                     }
                 });
+                //setting.SetIconColor(R.color.red); // Not working for some reason
                 blacklistDates.AddView(setting.getView());
             }
         }
@@ -688,6 +686,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                 _transaction.SetTimePeriod( _timePeriod );
 
                 _budget.AddTransaction(_transaction);
+                Helper.Log(this, "ActNewTran", "Add New Transaction:" + _transaction.GetID());
             }
 
             //Add to/update database

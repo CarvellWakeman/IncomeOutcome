@@ -1230,25 +1230,27 @@ public class DatabaseManager extends SQLiteOpenHelper
             //Create timeperiod object
             TimePeriod tp = new TimePeriod();
 
-            //COLUMN_tp_date + DATE_TYPE + "," +
+            //COLUMN_uniqueID INT_TYPE
+            tp.SetID(c.getInt(c.getColumnIndex(COLUMN_uniqueID)));
+            //COLUMN_tp_date DATE_TYPE
             tp.SetDate(ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_tp_date))));
-            //COLUMN_tp_repeatFreq + INT_TYPE + "," +
+            //COLUMN_tp_repeatFreq INT_TYPE
             tp.SetRepeatFrequency(tp.GetRepeatFrequencyFromIndex(c.getInt(c.getColumnIndex(COLUMN_tp_repeatFreq))));
-            //COLUMN_tp_repeatUntil + INT_TYPE + "," +
+            //COLUMN_tp_repeatUntil INT_TYPE
             tp.SetRepeatUntil(tp.GetRepeatUntilFromIndex(c.getInt(c.getColumnIndex(COLUMN_tp_repeatUntil))));
-            //COLUMN_tp_repeatNTimes + INT_TYPE + "," +
+            //COLUMN_tp_repeatNTimes INT_TYPE
             tp.SetRepeatANumberOfTimes(c.getInt(c.getColumnIndex(COLUMN_tp_repeatNTimes)));
-            //COLUMN_tp_repeatUntilDate + DATE_TYPE + "," +
+            //COLUMN_tp_repeatUntilDate DATE_TYPE
             tp.SetRepeatUntilDate(ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_tp_repeatUntilDate))));
-            //COLUMN_tp_repeatEveryN + INT_TYPE + "," +
+            //COLUMN_tp_repeatEveryN INT_TYPE
             tp.SetRepeatEveryN(c.getInt(c.getColumnIndex(COLUMN_tp_repeatEveryN)));
-            //COLUMN_tp_repeatDayOfWeek + TEXT_TYPE + "," +
+            //COLUMN_tp_repeatDayOfWeek TEXT_TYPE
             tp.SetRepeatDayOfWeekFromBinary(c.getString(c.getColumnIndex(COLUMN_tp_repeatDayOfWeek)));
-            //COLUMN_tp_repeatDayOfMonth + INT_TYPE + "," +
+            //COLUMN_tp_repeatDayOfMonth INT_TYPE
             tp.SetRepeatDayOfMonth(c.getInt(c.getColumnIndex(COLUMN_tp_repeatDayOfMonth)));
-            //COLUMN_tp_dateOfYear + DATE_TYPE + "," +
+            //COLUMN_tp_dateOfYear DATE_TYPE
             tp.SetDateOfYear(ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_tp_dateOfYear))));
-            //COLUMN_tp_blacklistDates + TEXT_TYPE
+            //COLUMN_tp_blacklistDates TEXT_TYPE
             String[] s1 = c.getString(c.getColumnIndex(COLUMN_tp_blacklistDates)).split(Pattern.quote(","));
             if (s1.length > 0) {
                 for (int i = 0; i < s1.length; i++) {

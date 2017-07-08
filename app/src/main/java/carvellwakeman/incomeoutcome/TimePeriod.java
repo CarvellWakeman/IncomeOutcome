@@ -2,10 +2,7 @@ package carvellwakeman.incomeoutcome;
 
 import org.joda.time.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 
 
 public class TimePeriod implements java.io.Serializable, BaseEntity
@@ -51,9 +48,7 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
 
     // Blacklist dates
-    private ArrayList<BlacklistDate> blacklistDates;
-    private ArrayList<BlacklistDate> _blacklistDatesQueue;
-
+    private ArrayList<BlacklistDate> _blacklistDates;
 
     public TimePeriod()
     {
@@ -86,8 +81,7 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
 
         // Blacklist dates
-        blacklistDates = new ArrayList<>();
-        _blacklistDatesQueue = new ArrayList<>();
+        _blacklistDates = new ArrayList<>();
 
         CalculateFirstOccurrence();
     }
@@ -120,9 +114,8 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         dateOfYear = copy.GetDateOfYear();
 
         // Blacklist dates
-        blacklistDates = new ArrayList<>();
-        _blacklistDatesQueue = new ArrayList<>();
-        blacklistDates.addAll(copy.GetBlacklistDates());
+        _blacklistDates = new ArrayList<>();
+        _blacklistDates.addAll(copy.GetBlacklistDates());
     }
     public TimePeriod(LocalDate _date)
     {
@@ -137,48 +130,25 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
     //Blacklist
     public void AddBlacklistDate(LocalDate date, Boolean edited){
-        blacklistDates.add(new BlacklistDate(date, edited));
-        Helper.Log(App.GetContext(), "TP", "AddBlacklistDate " + date.toString());
+        _blacklistDates.add(new BlacklistDate(date, edited));
     }
-    public void FlushBlacklistDateQueue(){
-        if (_blacklistDatesQueue !=  null) {
-            for (int i = 0; i < _blacklistDatesQueue.size(); i++) {
-                Helper.Log(App.GetContext(), "TP", "QueueBlacklistDateFlush:" + _blacklistDatesQueue.get(i).date.toString());
-                //Remove objects from queue
-                blacklistDates.remove(_blacklistDatesQueue.get(i));
-            }
-        }
-    }
-    public void QueueBlacklistDateRemoval(LocalDate date) {
-        if (blacklistDates != null) {
-            for (int i = 0; i < blacklistDates.size(); i++) {
-                if (blacklistDates.get(i).date.compareTo(date) == 0) {
-                    Helper.Log(App.GetContext(), "TP", "QueueBlacklistDate:" + date.toString());
-                    //Queue blacklist date for deletion
-                    _blacklistDatesQueue.add(blacklistDates.get(i));
-                }
-            }
-        }
-    }
-    public void RemoveBlacklistDate(LocalDate date) {
-        QueueBlacklistDateRemoval(date);
-        FlushBlacklistDateQueue();
-    }
-    //public void ClearBlacklistDates(){ blacklistDates.clear(); }
-    public void ClearBlacklistQueue() {
-        if (_blacklistDatesQueue != null){
-            _blacklistDatesQueue.clear();
-            Helper.Log(App.GetContext(), "TP", "ClearBlacklistQueue");
+    public void RemoveBlacklistDate(LocalDate date){
+        Iterator<BlacklistDate> i = _blacklistDates.iterator();
+        while (i.hasNext()){
+            BlacklistDate bd = i.next();
 
+            if (bd.date.equals(date)){
+                i.remove();
+            }
         }
     }
 
     public String GetBlacklistDatesString(){
         String str = "";
 
-        if (blacklistDates != null) {
-            for (int i = 0; i < blacklistDates.size(); i++) {
-                str += blacklistDates.get(i).date.toString(Helper.getString(R.string.date_format_saving)) + "|" + (blacklistDates.get(i).edited ? 1 : 0) + ",";
+        if (_blacklistDates != null) {
+            for (int i = 0; i < _blacklistDates.size(); i++) {
+                str += _blacklistDates.get(i).date.toString(Helper.getString(R.string.date_format_saving)) + "|" + (_blacklistDates.get(i).edited ? 1 : 0) + ",";
             }
             //Remove last comma
             if (str.length() > 0) { str = str.substring(0, str.length() - 1); }
@@ -187,32 +157,7 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         return str;
     }
 
-    public ArrayList<BlacklistDate> GetBlacklistDates() { return blacklistDates; }
-    public BlacklistDate GetBlacklistDate(int index){
-        if (blacklistDates!=null && index >= 0 && blacklistDates.size() > 0){ return blacklistDates.get(index); }
-        return null;
-    }
-    public int GetBlacklistDatesCount() {
-        if (blacklistDates!=null){ return blacklistDates.size(); }
-        return -1;
-    }
-    public int GetBlacklistDatesCountWithoutQueue() {
-        if (blacklistDates != null && _blacklistDatesQueue != null) { return blacklistDates.size() - _blacklistDatesQueue.size(); }
-        return -1;
-    }
-
-
-    public String GetBlacklistDateString(int index) { //*Excluding _blacklistDatesQueue
-        if (blacklistDates!=null) {
-            if (blacklistDates.get(index) != null) {
-                if (!_blacklistDatesQueue.contains(blacklistDates.get(index))) {
-                    return blacklistDates.get(index).date.toString(Helper.getString(R.string.date_format)) + (blacklistDates.get(index).edited ? " (edited)" : " (deleted)");
-                }
-            }
-        }
-
-        return "";
-    }
+    public ArrayList<BlacklistDate> GetBlacklistDates() { return _blacklistDates; }
 
 
     //Helpers
@@ -327,17 +272,17 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
                                 //Mon-Sun (i) of current week is after timeFrame_start and before timeFrame_end
                                 if (dow.compareTo(event_start) >= 0 && dow.compareTo(event_end) <= 0) {
 
-                                    if (blacklistDates.size() == 0) {
+                                    if (_blacklistDates.size() == 0) {
                                         event_occurrences.add(dow);
                                     }
                                     else {
                                         // Blacklist dates check
-                                        for (int ii = 0; ii < blacklistDates.size(); ii++) {
-                                            if (dow.compareTo(blacklistDates.get(ii).date) == 0) {
+                                        for (int ii = 0; ii < _blacklistDates.size(); ii++) {
+                                            if (dow.compareTo(_blacklistDates.get(ii).date) == 0) {
                                                 break;
                                             }
 
-                                            if (ii == blacklistDates.size() - 1) {
+                                            if (ii == _blacklistDates.size() - 1) {
                                                 event_occurrences.add(dow);
                                             }
                                         }
@@ -352,17 +297,17 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
                         if (currentEvent.compareTo(event_start) >= 0 && currentEvent.compareTo(event_end) <= 0) {
 
                             // Blacklist dates check
-                            if (blacklistDates.size() == 0) {
+                            if (_blacklistDates.size() == 0) {
                                 event_occurrences.add(currentEvent);
                                 //ProfileManager.Print("currentEvent2:" + currentEvent.toString(ProfileManager.simpleDateFormat));
                             }
                             else {
-                                for (int ii = 0; ii < blacklistDates.size(); ii++) {
-                                    if (currentEvent.compareTo(blacklistDates.get(ii).date) == 0) {
+                                for (int ii = 0; ii < _blacklistDates.size(); ii++) {
+                                    if (currentEvent.compareTo(_blacklistDates.get(ii).date) == 0) {
                                         break;
                                     }
 
-                                    if (ii == blacklistDates.size() - 1) {
+                                    if (ii == _blacklistDates.size() - 1) {
                                         event_occurrences.add(currentEvent);
                                         //ProfileManager.Print("currentEvent1:" + currentEvent.toString(ProfileManager.simpleDateFormat));
                                     }

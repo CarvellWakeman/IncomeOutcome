@@ -120,7 +120,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     intent = new Intent(_activity, ActivityNewTransaction.class);
                     intent.putExtra("activitytype", activityType);
                     intent.putExtra("budget", _budget.GetID());
-                    intent.putExtra("transaction", tranp);
+                    intent.putExtra("transaction", tranp.GetID());
                     intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Edit.ordinal());
                     _activity.startActivityForResult(intent, 2);
 
@@ -400,8 +400,8 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                 }
 
                 // Debug
-                debug.setText(transaction.GetTimePeriod().GetBlacklistDatesString());
-                if (!debug.getText().toString().equals("")) { debug.setVisibility(View.VISIBLE); }
+                //debug.setText(transaction.GetTimePeriod().GetBlacklistDatesString() + "\n" + transaction.GetID());
+                //if (!debug.getText().toString().equals("")) { debug.setVisibility(View.VISIBLE); }
             }
 
         }
