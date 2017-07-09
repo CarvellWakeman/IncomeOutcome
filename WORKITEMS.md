@@ -3,6 +3,7 @@ STAGING:
 		Blacklist dates complete
 		Editing seems complete
 		Editing instance transactions and then editing its parent series transaction seems complete
+		Bugfixes in budget management
 		
 	NEXT:Get editing/ghost editing working THEN get totals working THEN paidBack working THEN Get sorting and filtering remade
 	
