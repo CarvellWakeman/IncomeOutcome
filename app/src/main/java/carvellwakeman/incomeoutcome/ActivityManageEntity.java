@@ -251,11 +251,7 @@ public abstract class ActivityManageEntity<T extends BaseEntity> extends AppComp
     // Back button / toolbar back button action
     public void BackAction(){
         ClearSubMenuData();
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> ac766579c3a0b6b17f85eed3b13ebac9551484a1
         if (menuState == MENU_STATE.ADD | menuState == MENU_STATE.EDIT) {
             menuState = MENU_STATE.VIEW;
             CloseSubMenus();

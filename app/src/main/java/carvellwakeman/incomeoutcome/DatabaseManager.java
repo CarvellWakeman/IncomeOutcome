@@ -1154,7 +1154,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             contentValues_tr.put(COLUMN_paidBy, transaction.GetPaidBy());
             contentValues_tr.put(COLUMN_split, transaction.GetSplitArrayString());
             contentValues_tr.put(COLUMN_paidBack, (transaction.GetPaidBack() != null ? transaction.GetPaidBack().toString(Helper.getString(R.string.date_format)) : "") );
-            contentValues_tr.put(COLUMN_children, transaction.GetChildrenFormatted());
+            //contentValues_tr.put(COLUMN_children, transaction.GetChildrenFormatted());
 
             //Insert/update row and return result
             long result = 0;
@@ -1382,7 +1382,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                     //COLUMN_when + INT_TYPE //+ "," +
                     tr.SetTimePeriod(_queryTimeperiod(c.getInt(c.getColumnIndex(COLUMN_when))));
                     //COLUMN_children
-                    tr.AddChildrenFromFormattedString(c.getString(c.getColumnIndex(COLUMN_children)));
+                    //tr.AddChildrenFromFormattedString(c.getString(c.getColumnIndex(COLUMN_children)));
 
 
                     //Helper.Print(App.GetContext(), "Transaction: " + tr.GetSource());

@@ -99,19 +99,23 @@ public class Budget implements java.io.Serializable, BaseEntity
         transaction.SetBudgetID(GetID());
     }
 
-    public void RemoveTransaction(Transaction transaction) { _transactions.remove(transaction); }
+    public void RemoveTransaction(Transaction transaction) { RemoveTransaction(transaction.GetID()); }
     public void RemoveTransaction(int ID){
         for (int i = 0; i < _transactions.size(); i++) {
             if (_transactions.get(i).GetID() == ID){
+                TimePeriod tp = _transactions.get(i).GetTimePeriod();
+                if (tp != null){
+                    for (BlacklistDate bd : tp.GetBlacklistDates()){
+                        Helper.Log(App.GetContext(), "Bud", "Remove Blacklist Tran:" + bd.transactionID);
+                        RemoveTransaction(bd.transactionID);
+                    }
+                }
+
                 _transactions.remove(i);
             }
         }
     }
     public void RemoveAllTransactions(){
-        for (int i = 0; i < _transactions.size(); i++) {
-            _transactions.get(i).RemoveAllChildren();
-        }
-
         _transactions.clear();
     }
 

@@ -306,6 +306,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         if (transactionsAdapter != null) {
             if (transactionsAdapter.getItemCount() == 0) {
                 textView_nodata.setVisibility(View.VISIBLE);
+                button_new.show();
                 return;
             }
         }

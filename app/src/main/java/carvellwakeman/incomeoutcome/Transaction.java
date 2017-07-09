@@ -31,7 +31,7 @@ public class Transaction implements java.io.Serializable
 
     private TimePeriod _when;
 
-    private ArrayList<Integer> _children;
+    //private ArrayList<Integer> _children;
 
     public String debug_data = "";
 
@@ -60,7 +60,7 @@ public class Transaction implements java.io.Serializable
 
         _when = new TimePeriod();
 
-        _children = new ArrayList<>();
+        //_children = new ArrayList<>();
 
         //Expense only
         _paidBy = -1; // Paid by you (-1)
@@ -82,7 +82,7 @@ public class Transaction implements java.io.Serializable
 
         _when = copy.GetTimePeriod();
 
-        _children.addAll(new ArrayList<>(copy.GetChildren()));
+        //_children.addAll(new ArrayList<>(copy.GetChildren()));
 
         //Expense only
         _paidBy = copy.GetPaidBy();
@@ -97,6 +97,7 @@ public class Transaction implements java.io.Serializable
 
 
     //Children
+    /*
     private void AddChild(int ID) {
         _children.add(ID);
     }
@@ -125,6 +126,7 @@ public class Transaction implements java.io.Serializable
         }
         return childrenString;
     }
+    */
 
 
     //Accessors

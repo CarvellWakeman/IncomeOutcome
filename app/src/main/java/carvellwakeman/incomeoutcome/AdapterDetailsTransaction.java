@@ -172,13 +172,6 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                 case R.id.transaction_delete_all: // Delete(all, parent)
                     Helper.Log(App.GetContext(), "AdaDetTran", "Delete(all) of " + tranp.GetSource());
 
-                    ArrayList<Integer> children = tranp.GetChildren();
-                    for (int i = 0; i < children.size(); i++){
-                        Transaction child = _budget.GetTransaction(children.get(i));
-                        DatabaseManager.getInstance().remove(child);
-                        _budget.RemoveTransaction(child);
-                    }
-
                     _budget.RemoveTransaction(tranp);
                     DatabaseManager.getInstance().remove(tranp);
 
