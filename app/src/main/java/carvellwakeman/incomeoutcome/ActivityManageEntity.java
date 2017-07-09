@@ -27,7 +27,7 @@ public abstract class ActivityManageEntity<T extends BaseEntity> extends AppComp
         ADD,
         ADDNEW,
         VIEW,
-        ADDNEWSELECT // Special case for adding split people and then selecting one
+        ADDNEWSELECT // Special case for adding an entity and then selecting one
     }
 
     MENU_STATE menuState = MENU_STATE.VIEW;
@@ -154,21 +154,19 @@ public abstract class ActivityManageEntity<T extends BaseEntity> extends AppComp
     }
 
 
-    // Option to set initial state
-    @Override public void onWindowFocusChanged(boolean hasFocus){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu_save, menu);
+        button_save = menu.findItem(R.id.toolbar_save);
+        button_save.setVisible(false);
+
+        // Open menus as necessary
         if (menuState == MENU_STATE.ADDNEW || menuState == MENU_STATE.ADDNEWSELECT){
             OpenAddMenu();
         }
         if (menuState == MENU_STATE.SELECT){
             OpenSelectMode();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu_save, menu);
-        button_save = menu.findItem(R.id.toolbar_save);
-        button_save.setVisible(false);
         return true;
     }
 
@@ -252,6 +250,8 @@ public abstract class ActivityManageEntity<T extends BaseEntity> extends AppComp
 
     // Back button / toolbar back button action
     public void BackAction(){
+        ClearSubMenuData();
+        
         if (menuState == MENU_STATE.ADD | menuState == MENU_STATE.EDIT) {
             menuState = MENU_STATE.VIEW;
             CloseSubMenus();
@@ -274,9 +274,6 @@ public abstract class ActivityManageEntity<T extends BaseEntity> extends AppComp
 
     public void OpenAddMenu(){
         AppBarLayoutExpanded(true);
-
-        //Clear old data
-        ClearSubMenuData();
 
         //Focus on text input
         editText_name.requestFocus();
