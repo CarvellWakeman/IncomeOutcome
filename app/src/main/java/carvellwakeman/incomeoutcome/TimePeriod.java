@@ -275,18 +275,19 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         if (per != null && date != null) {
             LocalDate ret = new LocalDate(date);
 
-            if (per.getYears() != 0) {
+            if (per.getYears() != 0) { // Years
                 return ret.yearOfEra().roundFloorCopy().minusYears(ret.getYearOfEra() % per.getYears());
             }
-            else if (per.getMonths() != 0) {
+            else if (per.getMonths() != 0) { // Months
                 return ret.monthOfYear().roundFloorCopy().minusMonths((ret.getMonthOfYear() - 1) % per.getMonths());
             }
-            else if (per.getWeeks() != 0) {
+            else if (per.getWeeks() != 0) { // Weeks
                 return ret.weekOfWeekyear().roundFloorCopy().minusWeeks((ret.getWeekOfWeekyear() - 1) % per.getWeeks());
             }
-            else if (per.getDays() != 0) {
+            else if (per.getDays() != 0) { // Days
                 return ret.dayOfMonth().roundFloorCopy().minusDays((ret.getDayOfMonth() - 1) % per.getDays());
             }
+            // Raw days?
             return ret.dayOfYear().roundCeilingCopy().minusDays(ret.getDayOfYear() % per.getMillis());
         }
         return null;

@@ -89,10 +89,11 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
     // ViewHolder overflow actions
     public Transaction GetTransactionParent(Transaction transaction) {
-        if (transaction.GetParentID() != 0) {
-            return _budget.GetTransaction(transaction.GetParentID());
+        Transaction tranp = _budget.GetTransaction(transaction.GetParentID());
+        if (tranp == null) {
+            return transaction;
         }
-        return transaction;
+        return tranp;
     }
 
     public void handleOverflowAction(final Transaction tran, MenuItem action){
@@ -162,6 +163,8 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                         DatabaseManager.getInstance().insert(tranp, true);
                     }
 
+                    GetTransactions();
+
                     _activity.RefreshActivity();
 
                     break;
@@ -178,6 +181,8 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
                     _budget.RemoveTransaction(tranp);
                     DatabaseManager.getInstance().remove(tranp);
+
+                    GetTransactions();
 
                     _activity.RefreshActivity();
 

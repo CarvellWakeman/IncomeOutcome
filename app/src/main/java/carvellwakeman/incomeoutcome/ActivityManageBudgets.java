@@ -187,6 +187,7 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
                 editingEntity.SetStartDate(new LocalDate());
                 editingEntity.SetEndDate(null);
                 editingEntity.SetPeriod(period);
+                editingEntity.MoveTimePeriod(0);
                 //Active if it's the first
                 if (BudgetManager.getInstance().GetBudgetCount() == 0){
                     editingEntity.SetSelected(true);
