@@ -25,7 +25,6 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
     //Date of occurence (Null if repeatUntil is not Repeat.NEVER)
     private LocalDate date;
-    private LocalDate _firstOccurenceDate;
 
     //Frequency of repeat (Never, Daily, Weekly, Monthly, Yearly)
     private Repeat repeatFrequency;
@@ -39,7 +38,7 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
     private int repeatEveryN;
 
     //Weekly
-    private Boolean[] repeatDayOfWeek;
+    private boolean[] repeatDayOfWeek = new boolean[7];
 
     //Monthly (and/or) yearly (This variable is reused depending on context, monthly or yearly time period repeat
     private int repeatDayOfMonth;
@@ -57,7 +56,6 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
         //Dates
         date = LocalDate.now();
-        _firstOccurenceDate = null;
 
         //Frequency of repeat (Never, Daily, Weekly, Monthly, Yearly)
         repeatFrequency = Repeat.NEVER;
@@ -71,8 +69,8 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         repeatEveryN = 1;
 
         //Weekly
-        repeatDayOfWeek = new Boolean[7];
-        repeatDayOfWeek[0] = repeatDayOfWeek[1] = repeatDayOfWeek[2] = repeatDayOfWeek[3] = repeatDayOfWeek[4] = repeatDayOfWeek[5] = repeatDayOfWeek[6] = false; //Set all days of the week to be unused
+        //repeatDayOfWeek = new boolean[7];
+        //repeatDayOfWeek[0] = repeatDayOfWeek[1] = repeatDayOfWeek[2] = repeatDayOfWeek[3] = repeatDayOfWeek[4] = repeatDayOfWeek[5] = repeatDayOfWeek[6] = false; //Set all days of the week to be unused
 
         //Monthly
         repeatDayOfMonth = 1;
@@ -83,45 +81,56 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
         // Blacklist dates
         _blacklistDates = new ArrayList<>();
-
-        CalculateFirstOccurrence();
     }
-    public TimePeriod(TimePeriod copy)
-    {
-        this(); // TODO: Deep or shallow copy? Which is this. (ID field?)
 
-        //Dates
-        date = copy.GetDate();
-        _firstOccurenceDate = copy.GetFirstOccurrence();
-
-        //Frequency of repeat (Never, Daily, Weekly, Monthly, Yearly)
-        repeatFrequency = copy.GetRepeatFrequency();
-
-        //Repeat until (Forever, a date, a number of times)
-        repeatUntil = copy.GetRepeatUntil();
-        repeatUntilTimes = copy.GetRepeatANumberOfTimes();
-        repeatUntilDate = copy.GetRepeatUntilDate();
-
-        //Daily, weekly, monthly, yearly
-        repeatEveryN = copy.GetRepeatEveryN();
-
-        //Weekly
-        repeatDayOfWeek = copy.repeatDayOfWeek;
-
-        //Monthly
-        repeatDayOfMonth = copy.GetRepeatDayOfMonth();
-
-        //Yearly
-        dateOfYear = copy.GetDateOfYear();
-
-        // Blacklist dates
-        _blacklistDates = new ArrayList<>();
-        _blacklistDates.addAll(copy.GetBlacklistDates());
-    }
     public TimePeriod(LocalDate _date)
     {
         this();
         date = _date;
+    }
+
+    public void DeepCopy(TimePeriod clone)
+    {
+        // TODO: Deep or shallow copy? Which is this. (ID field?)
+        _uniqueID = clone.GetID();
+        //_uniqueID = System.identityHashCode(this);
+
+        //Dates
+        date = new LocalDate(clone.GetDate());
+
+        //Frequency of repeat (Never, Daily, Weekly, Monthly, Yearly)
+        repeatFrequency = clone.GetRepeatFrequency();
+
+        //Repeat until (Forever, a date, a number of times)
+        repeatUntil = clone.GetRepeatUntil();
+        repeatUntilTimes = clone.GetRepeatANumberOfTimes();
+        if (clone.GetRepeatUntilDate() != null) {
+            repeatUntilDate = new LocalDate(clone.GetRepeatUntilDate());
+        }
+
+        //Daily, weekly, monthly, yearly
+        repeatEveryN = clone.GetRepeatEveryN();
+
+        //Weekly
+        for (int i = 0; i < 7; i++){
+            repeatDayOfWeek[i] = clone.repeatDayOfWeek[i];
+        }
+        //repeatDayOfWeek = clone.repeatDayOfWeek;
+
+        //Monthly
+        repeatDayOfMonth = clone.GetRepeatDayOfMonth();
+
+        //Yearly
+        if (clone.GetDateOfYear() != null) {
+            dateOfYear = new LocalDate(clone.GetDateOfYear());
+        }
+
+        // Blacklist dates
+        _blacklistDates = new ArrayList<>();
+        for (BlacklistDate bd : clone.GetBlacklistDates()){
+            _blacklistDates.add(new BlacklistDate(bd.transactionID, new LocalDate(bd.date), bd.edited));
+        }
+        //_blacklistDates.addAll(clone.GetBlacklistDates());
     }
 
 
@@ -139,6 +148,16 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
             BlacklistDate bd = i.next();
 
             if (bd.date.equals(date)){
+                i.remove();
+            }
+        }
+    }
+    public void RemoveBlacklistDate(int transactionID){
+        Iterator<BlacklistDate> i = _blacklistDates.iterator();
+        while (i.hasNext()){
+            BlacklistDate bd = i.next();
+
+            if (bd.transactionID == transactionID){
                 i.remove();
             }
         }
@@ -199,7 +218,7 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         else { return date2; }
     }
 
-    public static LocalDate calcFirstDayOfWeek(Boolean[] dayOfWeek, LocalDate date){
+    public static LocalDate calcFirstDayOfWeek(LocalDate date, Boolean[] dayOfWeek){
         if (dayOfWeek[0]) { return calcNextDayOfWeek(date, 1); }
         else if (dayOfWeek[1] && date.getDayOfWeek() <= 2) { return calcNextDayOfWeek(date, 2); }
         else if (dayOfWeek[2] && date.getDayOfWeek() <= 3) { return calcNextDayOfWeek(date, 3); }
@@ -391,7 +410,9 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
                 }
                 return occurrences;
             case WEEKLY:
-                event_start = calcFirstDayOfWeek(repeatDayOfWeek, event_start);
+                int dow = 1;
+                for (int i = 0; i < repeatDayOfWeek.length; i++){ if (repeatDayOfWeek[i]){ dow = i+1; break; } }
+                event_start = calcNextDayOfWeek(event_start, dow);
                 initialEvent = event_start;
                 break;
             case MONTHLY:
@@ -428,18 +449,16 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         return occurrences;
     }
 
-    public void CalculateFirstOccurrence(){
-        ArrayList<LocalDate> occurrences = GetOccurrencesWithin(date, null);
-        if (occurrences.size() > 0) {
-            _firstOccurenceDate = occurrences.get(0);
-            //ProfileManager.Print("FirstOccurrence:" + _firstOccurenceDate.toString(ProfileManager.simpleDateFormat));
-        }
-    }
-
 
     //Accessors
     public LocalDate GetDate() { return date; }
-    public LocalDate GetFirstOccurrence() { CalculateFirstOccurrence(); if (_firstOccurenceDate == null ) { return date; } else { return _firstOccurenceDate; } }
+    public LocalDate GetFirstOccurrence() {
+        ArrayList<LocalDate> occurrences = GetOccurrencesWithin(date, null);
+        if (occurrences.size() > 0) {
+            return occurrences.get(0);
+        }
+        return null;
+    }
 
     public Repeat GetRepeatFrequency() { return repeatFrequency; }
         public Boolean DoesRepeat() { return GetRepeatFrequency() != Repeat.NEVER; }
@@ -480,7 +499,6 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         repeatDayOfWeek[6] = str.length() >= 7 && str.charAt(6) == '1';
     }
     public void SetDate(LocalDate newDate) { date = newDate; }
-    //public void SetFirstOccurrence(LocalDate newDate) { _firstOccurenceDate = newDate; }
     public void SetRepeatFrequency(Repeat freq) { repeatFrequency = freq; }
     public void SetRepeatUntil(RepeatUntil until) { repeatUntil = until; }
     public void SetRepeatANumberOfTimes(int times) { repeatUntilTimes = times; }
@@ -492,13 +510,11 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
 
     //Formatting
-    public String GetDateFormatted()
-    {
+    public String GetDateFormatted() {
         if (date != null) { return date.toString(Helper.getString(R.string.date_format)); }
         else { return Helper.getString(R.string.time_nodate); }
     }
-    public String GetRepeatUntilDateFormatted()
-    {
+    public String GetRepeatUntilDateFormatted() {
         if (repeatUntilDate != null) { return repeatUntilDate.toString(Helper.getString(R.string.date_format)); }
         else { return ""; }
     }
@@ -617,8 +633,6 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         //Return
         return repeatTypeString;
     }
-
-
 
 
     //Equals

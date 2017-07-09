@@ -192,13 +192,15 @@ public class Transaction implements java.io.Serializable
                         occurrences.add(this);
                         //Helper.Print(App.GetContext(), "Add OG: " + this.GetParentID());
                     }
-                    else { //Make ghost transactions
+                    else { //Make instance transactions
                         Transaction temp = new Transaction(this);
+
                         // Add split to temp transaction
                         for (HashMap.Entry<Integer, Double> entry : GetSplitArray().entrySet()){
                             temp.SetSplit(entry.getKey(), entry.getValue());
                         }
                         temp.SetPaidBy(GetPaidBy());
+
                         // Set timeperiod to temp transaction
                         temp.SetTimePeriod(new TimePeriod(tp_dates.get(ii)));
                         temp.SetParentID(GetID());

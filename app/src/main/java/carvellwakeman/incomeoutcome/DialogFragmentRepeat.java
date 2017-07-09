@@ -50,7 +50,11 @@ public class DialogFragmentRepeat extends DialogFragment
     static DialogFragmentRepeat newInstance(ActivityNewTransaction parent, TimePeriod tp) {
         DialogFragmentRepeat fg = new DialogFragmentRepeat();
         fg._parent = parent;
-        fg._timePeriod = new TimePeriod(tp);
+        fg._timePeriod = new TimePeriod();
+        fg._timePeriod.DeepCopy(tp);
+        //Helper.Log(App.GetContext(),  "DFR", "FO Passed:" + tp.GetID());
+        //Helper.Log(App.GetContext(),  "DFR", "FO Made:" + fg._timePeriod.GetID());
+
         return fg;
     }
 
@@ -90,8 +94,6 @@ public class DialogFragmentRepeat extends DialogFragment
                             _timePeriod.SetDayOfWeek(4, GetValFri());
                             _timePeriod.SetDayOfWeek(5, GetValSat());
                             _timePeriod.SetDayOfWeek(6, GetValSun());
-
-
                         }
                         break;
                     case MONTHLY:
@@ -113,6 +115,9 @@ public class DialogFragmentRepeat extends DialogFragment
                 //Sent timeperiod back to parent
                 Intent intent = new Intent();
                 intent.putExtra("timeperiod", _timePeriod);
+                //Helper.Log(App.GetContext(),  "DFR", "Returning:" + _timePeriod.GetID());
+                //Helper.Log(App.GetContext(),  "DFR", "FO Returning:" + _timePeriod.GetFirstOccurrence().toString());
+
                 _parent.onActivityResult(4,1,intent);
                 dismiss();
             }
@@ -307,15 +312,13 @@ public class DialogFragmentRepeat extends DialogFragment
         super.onStart();
 
         //Time Period
-        SetTimePeriod(_timePeriod);
+        LoadTimePeriod();
     }
 
 
 
     //Time Period
-    public void SetTimePeriod(TimePeriod tp){
-        _timePeriod = tp;
-
+    public void LoadTimePeriod(){
         if (_timePeriod != null) {
 
             //Spinner repeat

@@ -114,7 +114,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     // If this 'instance' was edited previously (and now exists in the DB)
                     if (_budget.GetTransaction(tran.GetID()) != null) {
                         intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Edit.ordinal());
-                        intent.putExtra("transaction", tran.GetID());
+                        intent.putExtra("transaction", tran);
                     } else {
                         intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.EditInstance.ordinal());
                         intent.putExtra("transaction", tran);
@@ -148,7 +148,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                         alert.setMessage(R.string.info_tran_repl_original);
                         alert.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                             @Override public void onClick(DialogInterface dialog, int which) {
-                                tranp.GetTimePeriod().RemoveBlacklistDate(tran.GetTimePeriod().GetDate());
+                                tranp.GetTimePeriod().RemoveBlacklistDate(tran.GetID());
                                 DatabaseManager.getInstance().insert(tranp, true);
 
                                 _activity.RefreshActivity();
@@ -183,22 +183,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
                     break;
 
-                case R.id.transaction_duplicate:
-                    Helper.Log(App.GetContext(), "AdaDetTran", "Duplicate of " + tran.GetID());
-
-                    intent = new Intent(_activity, ActivityNewTransaction.class);
-                    intent.putExtra("activitytype", activityType);
-                    intent.putExtra("budget", _budget.GetID());
-                    intent.putExtra("transaction", tran);
-                    intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Duplicate.ordinal());
-                    _activity.startActivityForResult(intent, 3);
-
-                    break;
             }
-
-            GetTransactions();
-            notifyDataSetChanged();
-
         }
     }
 
@@ -446,7 +431,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                 }
 
                 // Debug
-                //debug.setText(transaction.GetTimePeriod().GetBlacklistDatesString() + "\n" + transaction.GetID());
+                //debug.setText("ID:" + transaction.GetID() + "\nPID:" + transaction.GetParentID());
                 //if (!debug.getText().toString().equals("")) { debug.setVisibility(View.VISIBLE); }
             }
 

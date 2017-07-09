@@ -3,9 +3,9 @@ package carvellwakeman.incomeoutcome;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -15,6 +15,7 @@ import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
 import android.view.*;
 import android.widget.*;
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
@@ -32,7 +33,6 @@ public class ActivityNewTransaction extends AppCompatActivity
         NewTransaction,
         Edit,
         EditInstance,
-        Duplicate
     }
 
     //Object data
@@ -57,6 +57,8 @@ public class ActivityNewTransaction extends AppCompatActivity
     ScrollView scrollView;
 
     CheckBox checkBox_split;
+    
+    Switch switch_override_series;
 
     TextInputLayout TIL_cost;
 
@@ -85,8 +87,9 @@ public class ActivityNewTransaction extends AppCompatActivity
 
     LinearLayout linearLayout_split;
     LinearLayout linearLayout_splitContainer;
-    LinearLayout linearLayout_timeperiod_date;
-    LinearLayout linearLayout_timeperiod_repeat;
+    LinearLayout linearLayout_newTransaction_series_override;
+    LinearLayout linearLayout_newTransaction_date;
+    LinearLayout linearLayout_newTransaction_repeat;
 
     FrameLayout frameLayout_blacklistDates;
     Card blacklistDates;
@@ -131,13 +134,14 @@ public class ActivityNewTransaction extends AppCompatActivity
 
                 linearLayout_split = (LinearLayout) findViewById(R.id.linearLayout_newTransaction_split);
                 linearLayout_splitContainer = (LinearLayout) findViewById(R.id.linearLayout_newTransaction_splitContainer);
-                linearLayout_timeperiod_date = (LinearLayout) findViewById(R.id.linearLayout_newTransaction_date) ;
-                linearLayout_timeperiod_repeat = (LinearLayout) findViewById(R.id.linearLayout_newTransaction_repeat) ;
-
-                //spinner_categories = (Spinner) findViewById(R.id.spinner_newTransaction_categories);
-
+                linearLayout_newTransaction_date = (LinearLayout) findViewById(R.id.linearLayout_newTransaction_date);
+                linearLayout_newTransaction_repeat = (LinearLayout) findViewById(R.id.linearLayout_newTransaction_repeat);
+                linearLayout_newTransaction_series_override = (LinearLayout) findViewById(R.id.linearLayout_newTransaction_series_override);
+                
                 checkBox_paidBack = (CheckBox) findViewById(R.id.checkBox_newTransaction_paidback);
                 checkBox_split = (CheckBox) findViewById(R.id.checkBox_newTransaction_splitEnabled);
+                
+                switch_override_series = (Switch) findViewById(R.id.switch_override_series);
 
                 editText_source = ((TextInputLayout) findViewById(R.id.TIL_newTransaction_source)).getEditText();
                 editText_description = ((TextInputLayout) findViewById(R.id.TIL_newTransaction_description)).getEditText();
@@ -182,7 +186,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                 });
 
                 //Configure date
-                linearLayout_timeperiod_date.setOnClickListener(new View.OnClickListener() {
+                linearLayout_newTransaction_date.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         //Hide soft keyboard
@@ -195,7 +199,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                 });
 
                 //Configure repeat
-                linearLayout_timeperiod_repeat.setOnClickListener(new View.OnClickListener() {
+                linearLayout_newTransaction_repeat.setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View view) {
                         //Hide soft keyboard
                         Helper.hideSoftKeyboard(ActivityNewTransaction.this, view);
@@ -204,6 +208,25 @@ public class ActivityNewTransaction extends AppCompatActivity
                         Helper.OpenDialogFragment(ActivityNewTransaction.this, DialogFragmentRepeat.newInstance(ActivityNewTransaction.this, _timePeriod), true);
                     }
                 });
+                
+                //Configure series override
+                switch_override_series.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        SetSeriesOverride(b);
+                        // Reset to original TP
+                        if (!b){
+                            _timePeriod = new TimePeriod();
+                            _timePeriod.DeepCopy(_transaction.GetTimePeriod());
+                            UpdateDateFormat();
+                        }
+                    }
+                });
+                linearLayout_newTransaction_series_override.setOnClickListener(new View.OnClickListener() {
+                    @Override public void onClick(View view) {
+                        switch_override_series.setChecked(!switch_override_series.isChecked());
+                    }
+                });
+                
 
                 //Scrollview
                 scrollView.setOnTouchListener(new View.OnTouchListener() {
@@ -293,6 +316,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                 // Add user as a split
                 AddSplitPerson(Person.Me);
 
+                // Edit state options
                 if (_editState == EDIT_STATE.NewTransaction) {
                     //Toolbar title
                     if (_activitytype == 0) { //Expense
@@ -310,6 +334,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                         Helper.Print(this, "Provided transaction could not be found.");
                         finish();
                     }
+
                     LoadTransaction(_transaction);
 
                     //Toolbar title
@@ -321,33 +346,18 @@ public class ActivityNewTransaction extends AppCompatActivity
                 }
                 else if (_editState == EDIT_STATE.EditInstance){
                     _transaction = (Transaction) intent.getSerializableExtra("transaction");
+
                     LoadTransaction(_transaction);
 
                     //Toolbar title
                     toolbar.setTitle(R.string.title_edittransactioninstance);
                 }
-                else if (_editState == EDIT_STATE.Duplicate){
-                    Transaction tran = (Transaction) intent.getSerializableExtra("transaction");
-                    if (tran == null){
-                        Helper.Print(this, "Provided transaction could not be found.");
-                        finish();
-                    }
-                    LoadTransaction(tran);
 
-                    // Toolbar title
-                    toolbar.setTitle(R.string.title_duplicatetransaction);
-                }
 
                  // Block repeat button for child transaction
                 if (_transaction != null && _transaction.GetParentID() > 0){
-                    // Block repeat input
-                    linearLayout_timeperiod_repeat.setEnabled(false);
-                    imageView_repeatIcon.setColorFilter(getResources().getColor(R.color.ltgray));
-                    textView_repeat.setTextColor(getResources().getColor(R.color.ltgray));
-                    // Block date input
-                    linearLayout_timeperiod_date.setEnabled(false);
-                    imageView_dateIcon.setColorFilter(getResources().getColor(R.color.ltgray));
-                    textView_date.setTextColor(getResources().getColor(R.color.ltgray));
+                    SetSeriesOverride(false);
+                    linearLayout_newTransaction_series_override.setVisibility(View.VISIBLE);
                 }
 
                 UpdateDateFormat();
@@ -363,8 +373,14 @@ public class ActivityNewTransaction extends AppCompatActivity
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
         {
+            //Original date
+            LocalDate _original_date = new LocalDate(_timePeriod.GetFirstOccurrence());
+            Helper.Log(ActivityNewTransaction.this, "ActNewTran", "DateChange Date:" + _timePeriod.GetDate().toString());
+
             //Set date
             LocalDate _start_date = new LocalDate(year, monthOfYear+1, dayOfMonth);
+            Helper.Log(ActivityNewTransaction.this, "ActNewTran", "DateChange To:" + _start_date.toString());
+
 
             //Time Period
             _timePeriod.SetDate(_start_date);
@@ -382,6 +398,7 @@ public class ActivityNewTransaction extends AppCompatActivity
             }
 
             UpdateDateFormat();
+            UpdateBlacklistDates(_original_date);
         }
     };
     DatePickerDialog.OnDateSetListener datePickerDate2 = new DatePickerDialog.OnDateSetListener() {
@@ -419,12 +436,18 @@ public class ActivityNewTransaction extends AppCompatActivity
                     button_selectCategory.setText(category.GetTitle());
                 }
             } else if (requestCode == 4) { // Repeating (time period)
+                LocalDate _original_date = new LocalDate(_timePeriod.GetFirstOccurrence());
+                Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Before Receiving FO:" + _timePeriod.GetFirstOccurrence());
+                Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Before Receiving:" + _timePeriod.GetID());
+
                 // Format repeat text
                 _timePeriod = (TimePeriod) data.getSerializableExtra("timeperiod");
-                Helper.Log(this, "ActNewTran", "OnActRes TimePeriod:" + (_timePeriod==null ? "null" : String.valueOf(_timePeriod.GetID())));
+                Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Receiving FO:" + _timePeriod.GetFirstOccurrence().toString());
+                Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Receiving:" + _timePeriod.GetID());
 
                 if (_timePeriod != null) {
                     UpdateDateFormat();
+                    UpdateBlacklistDates(_original_date);
                 }
             }
 
@@ -479,6 +502,7 @@ public class ActivityNewTransaction extends AppCompatActivity
         return false;
     }
 
+
     @Override public void onBackPressed() { BackAction(); }
 
     public void BackAction(){
@@ -496,6 +520,43 @@ public class ActivityNewTransaction extends AppCompatActivity
 
         //Format repeat text
         textView_repeat.setText( _timePeriod.GetRepeatStringShort() );
+    }
+
+    public void UpdateBlacklistDates(LocalDate originalDate){
+        Helper.Log(ActivityNewTransaction.this, "ActNewTran", "OriginalFO: " + originalDate.toString());
+        Helper.Log(ActivityNewTransaction.this, "ActNewTran", "CurrentFO: " + _timePeriod.GetFirstOccurrence().toString());
+
+        // Update blacklist dates by difference
+        for (BlacklistDate bd : _timePeriod.GetBlacklistDates()){
+            int dbt = Days.daysBetween(originalDate, _timePeriod.GetFirstOccurrence()).getDays();
+            Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Days Between:" + dbt);
+            LocalDate newDate = bd.date.plusDays( dbt );
+            Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Update bd " + bd.date.toString() + " to " + newDate.toString());
+
+            _timePeriod.RemoveBlacklistDate(bd.date);
+            _timePeriod.AddBlacklistDate(bd.transactionID, newDate, bd.edited);
+        }
+    }
+
+    public void SetSeriesOverride(boolean override){
+        // Block repeat input and date input
+        linearLayout_newTransaction_repeat.setEnabled(override);
+        linearLayout_newTransaction_date.setEnabled(override);
+
+        if (override) {
+            imageView_repeatIcon.clearColorFilter();
+            textView_repeat.setTextColor(ResourcesCompat.getColor(getResources(), R.color.black, getTheme()));
+
+            imageView_dateIcon.clearColorFilter();
+            textView_date.setTextColor(ResourcesCompat.getColor(getResources(), R.color.black, getTheme()));
+
+        } else {
+            imageView_repeatIcon.setColorFilter(getResources().getColor(R.color.ltgray));
+            textView_repeat.setTextColor(getResources().getColor(R.color.ltgray));
+
+            imageView_dateIcon.setColorFilter(getResources().getColor(R.color.ltgray));
+            textView_date.setTextColor(getResources().getColor(R.color.ltgray));
+        }
     }
 
 
@@ -628,8 +689,9 @@ public class ActivityNewTransaction extends AppCompatActivity
 
     // Load transaction into fields
     public void LoadTransaction(final Transaction _transaction){
-        // TimePeriod
-        _timePeriod = _transaction.GetTimePeriod();
+        // Copy timeperiod
+        _timePeriod = new TimePeriod();
+        _timePeriod.DeepCopy(_transaction.GetTimePeriod());
 
         // Cost
         editText_cost.setText(String.valueOf(_transaction.GetValue()));
@@ -686,15 +748,15 @@ public class ActivityNewTransaction extends AppCompatActivity
     }
 
     // Gather data from views, build a transaction object, and save it to the database
-    public void FinishTransaction()
-    {
+    public void FinishTransaction() {
         Helper.Log(this, "ActNewTran", "FinishTran TimePeriod:" + (_timePeriod==null ? "null" : String.valueOf(_timePeriod.GetID())));
+        Helper.Log(this, "ActNewTran", "FinishTran TimePeriod Date:" + (_timePeriod==null ? "null" : _timePeriod.GetDate().toString()));
 
         // If the user selected a category
         if ( _category != null || _activitytype == 1) {
 
             // Determine if we are editing an existing transaction or creating a new one
-            if (_editState == EDIT_STATE.NewTransaction | _editState == EDIT_STATE.Duplicate){
+            if (_editState == EDIT_STATE.NewTransaction){
                 _transaction = new Transaction(_activitytype);
             }
 
@@ -736,35 +798,46 @@ public class ActivityNewTransaction extends AppCompatActivity
 
             }
 
-            //Add to/update database
+
             DatabaseManager dm = DatabaseManager.getInstance();
-            dm.insert(_transaction, true);
-            //dm.insertSetting(_budget, true); //Unneccesary?
 
             // Blacklist date for instance transaction
             if (_editState == EDIT_STATE.EditInstance) {
                 Transaction tranp = _budget.GetTransaction(_transaction.GetParentID());
-                tranp.GetTimePeriod().AddBlacklistDate(_transaction.GetID(), _timePeriod.GetDate(), true);
-                dm.insert(tranp, true); // Update parent
+                if (tranp != null) {
+                    Helper.Log(this, "ActNewTran", "Parent:" + tranp.GetID());
+                    Helper.Log(this, "ActNewTran", "EditingTPDate:" + _transaction.GetTimePeriod().GetDate().toString());
+
+                    tranp.GetTimePeriod().AddBlacklistDate(_transaction.GetID(), _transaction.GetTimePeriod().GetDate(), true);
+                    dm.insert(tranp, true); // Update parent
+                } else { Helper.Log(this, "ActNewTran", "Parent:null ID:" + _transaction.GetParentID()); }
             }
 
             // Set budget id
             _transaction.SetBudgetID(_budget.GetID());
 
-            // Add to budget
-            if (_editState == EDIT_STATE.NewTransaction || _editState == EDIT_STATE.EditInstance || _editState == EDIT_STATE.Duplicate){
-                // Set Time Period
-                _transaction.SetTimePeriod( _timePeriod );
+            // Set Time Period
+            TimePeriod tp = new TimePeriod();
+            tp.DeepCopy(_timePeriod);
+            _transaction.SetTimePeriod( tp );
+            Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Finish Transaction ID:" + _transaction.GetID());
+            Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Finish TimePeriod  ID:" + _transaction.GetTimePeriod().GetID());
+            Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Finish Date:" + _transaction.GetTimePeriod().GetDate().toString());
 
+            // Add to budget
+            if (_editState == EDIT_STATE.NewTransaction || _editState == EDIT_STATE.EditInstance){
                 _budget.AddTransaction(_transaction);
                 Helper.Log(this, "ActNewTran", "Add Transaction:" + _transaction.GetID());
             }
+
+            //Add to/update database
+            dm.insert(_transaction, true);
+            //dm.insertSetting(_budget, true); //Unneccesary?
 
         } else { // Failure (no category)
             Helper.Log(this, "ActNewTran", "Error: Pick a category");
             Helper.PrintUser(this, Helper.getString(R.string.info_select_category));
         }
     }
-
 
 }

@@ -271,6 +271,13 @@ public class ActivityDetailsTransaction extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) { //TODO: Necessary?
         RefreshActivity();
 
+        for (Transaction t : _budget.GetAllTransactions()){
+            Helper.Log(ActivityDetailsTransaction.this, "ActDetTran", "Finish Transaction ID:" + t.GetID());
+            Helper.Log(ActivityDetailsTransaction.this, "ActDetTran", "Finish TimePeriod  ID:" + t.GetTimePeriod().GetID());
+            Helper.Log(ActivityDetailsTransaction.this, "ActDetTran", "Finish Date:" + t.GetTimePeriod().GetDate().toString());
+        }
+
+
         //switch (requestCode){
             //case 1: // New Transaction
         if (resultCode==1){

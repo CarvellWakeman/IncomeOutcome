@@ -185,6 +185,7 @@
     <string name="info_select_category">Select a category</string>
     <string name="info_tran_instance_delete">Removing this date may delete a previously modified transaction!</string>
     <string name="info_tran_repl_original">Restore original instance of this transaction?</string>
+    <string name="info_tran_series_override">Remove transaction from series to edit date</string>
 
     <!-- Notice -->
     <string name="notice_deletesuccess">Successfully Deleted</string>
