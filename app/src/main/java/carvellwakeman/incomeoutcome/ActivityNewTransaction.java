@@ -331,26 +331,32 @@ public class ActivityNewTransaction extends AppCompatActivity
                 else if (_editState == EDIT_STATE.Edit) {
                     _transaction = _budget.GetTransaction(intent.getIntExtra("transaction", -1));
                     if (_transaction == null) {
-                        Helper.Print(this, "Provided transaction could not be found.");
+                        Helper.Print(this, getString(R.string.error_transaction_not_found));
                         finish();
-                    }
-
-                    LoadTransaction(_transaction);
-
-                    //Toolbar title
-                    if (_timePeriod.DoesRepeat()){
-                        toolbar.setTitle(R.string.title_edittransactionseries);
                     } else {
-                        toolbar.setTitle(R.string.title_edittransaction);
+                        LoadTransaction(_transaction);
+
+                        //Toolbar title
+                        if (_timePeriod.DoesRepeat()) {
+                            toolbar.setTitle(R.string.title_edittransactionseries);
+                        }
+                        else {
+                            toolbar.setTitle(R.string.title_edittransaction);
+                        }
                     }
                 }
                 else if (_editState == EDIT_STATE.EditInstance){
                     _transaction = (Transaction) intent.getSerializableExtra("transaction");
+                    if (_transaction != null) {
+                        LoadTransaction(_transaction);
 
-                    LoadTransaction(_transaction);
-
-                    //Toolbar title
-                    toolbar.setTitle(R.string.title_edittransactioninstance);
+                        //Toolbar title
+                        toolbar.setTitle(R.string.title_edittransactioninstance);
+                    }
+                    else {
+                        Helper.Print(this, getString(R.string.error_transaction_not_found));
+                        finish();
+                    }
                 }
 
 
@@ -782,6 +788,7 @@ public class ActivityNewTransaction extends AppCompatActivity
 
                 // Set Split value
                 if (checkBox_split.isChecked()) {
+                    _transaction.ClearSplit();
                     for (Map.Entry<Person, ViewHolderSplit> entry : active_people.entrySet()) {
                         Helper.Log(this, "ActNewTran", "SplitWith:" + entry.getKey().GetName() + " for " + String.valueOf(entry.getValue().GetCost()));
                         _transaction.SetSplit(entry.getKey().GetID(), entry.getValue().GetCost());

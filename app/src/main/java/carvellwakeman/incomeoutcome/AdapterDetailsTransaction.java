@@ -78,7 +78,6 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
             holder.bind(transaction);
             //Helper.Print(App.GetContext(), "Bind ViewHolder" + String.valueOf(position));
         }
-
     }
 
     @Override
@@ -115,7 +114,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     // If this 'instance' was edited previously (and now exists in the DB)
                     if (_budget.GetTransaction(tran.GetID()) != null) {
                         intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Edit.ordinal());
-                        intent.putExtra("transaction", tran);
+                        intent.putExtra("transaction", tran.GetID());
                     } else {
                         intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.EditInstance.ordinal());
                         intent.putExtra("transaction", tran);
@@ -327,7 +326,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                                 if (payer != null && payee != null) {
                                     tv.setText(String.format(Helper.getString(R.string.format_paid),
                                             payee.GetName(),
-                                            (entry.getKey()==0 ? "" : "s"), //Plurality (You OWE A / A OWES You)
+                                            (entry.getKey()==Person.Me.GetID() ? "" : "s"), //Plurality (You OWE A / A OWES You)
                                             payer.GetName(),
                                             Helper.currencyFormat.format(entry.getValue()),
                                             transaction.GetSplitPercentage(entry.getKey())

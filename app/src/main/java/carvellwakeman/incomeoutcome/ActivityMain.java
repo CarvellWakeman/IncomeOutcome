@@ -281,7 +281,7 @@ public class ActivityMain extends AppCompatActivity
     //Refresh overview
     public void RefreshOverview(){
 
-        //Suggest the user add a profile if none exist
+        //Suggest the user add a budget if none exist
         if (_selectedBudget == null){
             versusCard.getBase().setVisibility(View.GONE);
             expensesCard.getBase().setVisibility(View.GONE);

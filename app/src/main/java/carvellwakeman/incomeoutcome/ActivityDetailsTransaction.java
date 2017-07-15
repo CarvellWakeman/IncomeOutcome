@@ -21,16 +21,16 @@ public class ActivityDetailsTransaction extends AppCompatActivity
     ArrayList<Integer> toolbar_menus;
 
     AdapterDetailsTransaction transactionsAdapter;
-    //AdapterTransactionTotals totalsAdapter;
+    AdapterDetailsTotals totalsAdapter;
 
-    NpaLinearLayoutManager linearLayoutManager;
-    //NpaLinearLayoutManager linearLayoutManager2;
+    NpaLinearLayoutManager linearLayoutManagerTransactions;
 
     CollapsingToolbarLayout collapsingToolbarLayout;
     Toolbar toolbar;
 
-    //RecyclerView totalsView;
     RecyclerView transactionsView;
+
+    LinearLayout totalsContainer;
 
     FloatingActionButton button_new;
 
@@ -140,7 +140,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             });
             */
 
-            //totalsView = (RecyclerView) findViewById(R.id.recyclerView_transaction_totals);
+            totalsContainer = (LinearLayout) findViewById(R.id.linearLayout_totals_container);
             transactionsView = (RecyclerView) findViewById(R.id.recyclerView_transaction_elements);
 
             textView_nodata = (TextView) findViewById(R.id.textView_transaction_nodata);
@@ -179,29 +179,15 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
             SetToolbarTitle();
 
-
-
-            //Set totals adapter
-            /*
-            if (_profile.GetStartTime() != null && _profile.GetEndTime() != null) { //Only set up totals if there is a valid timeframe
-                totalsAdapter = new AdapterTransactionTotals(this, _profileID, activityType, keyType);
-                totalsView.setAdapter(totalsAdapter);
-
-                //LinearLayoutManager for RecyclerView
-                linearLayoutManager2 = new NpaLinearLayoutManager(this);
-                linearLayoutManager2.setOrientation(NpaLinearLayoutManager.VERTICAL);
-                linearLayoutManager2.scrollToPosition(0);
-                totalsView.setLayoutManager(linearLayoutManager2);
-            }
-            */
+            // Set totals adapter
+            totalsAdapter = new AdapterDetailsTotals(this, totalsContainer, _budget.GetID(), activityType);
 
             //Set transactions adapter and linearLayoutManager
             transactionsAdapter = new AdapterDetailsTransaction(this, _budget.GetID(), activityType);
             transactionsView.setAdapter(transactionsAdapter);
 
-            linearLayoutManager = new NpaLinearLayoutManager(this);
-            transactionsView.setLayoutManager(linearLayoutManager);
-
+            linearLayoutManagerTransactions = new NpaLinearLayoutManager(this);
+            transactionsView.setLayoutManager(linearLayoutManagerTransactions);
 
 
             //No data, display message
@@ -347,15 +333,20 @@ public class ActivityDetailsTransaction extends AppCompatActivity
     }
 
     public void UpdateAdapters(){
+        // Transactions
         transactionsAdapter.GetTransactions();
         transactionsAdapter.notifyDataSetChanged();
+
+        // Totals
+        totalsAdapter.GetTotals();
+        totalsAdapter.PopulateContainer();
 
         //totalsView.setAdapter(null);
 
         //transactionsView.getRecycledViewPool().clear();
         //transactionsAdapter.notifyDataSetChanged();
 
-        //totalsAdapter = new AdapterTransactionTotals(this, _profileID, activityType, keyType);
+        //totalsAdapter = new AdapterDetailsTotals(this, _profileID, activityType, keyType);
         //totalsView.setAdapter(totalsAdapter);
 
         //CheckShowNoDataNotice();

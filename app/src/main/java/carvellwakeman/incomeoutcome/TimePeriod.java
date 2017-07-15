@@ -196,7 +196,7 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
                 // Old versions of DB did not have transaction ID in blacklist date
                 if (s2.length > 1) {
                     if (s2.length == 2) {
-                        AddBlacklistDate(-1, Helper.ConvertDateFromString(s2[1]), Integer.valueOf(s2[2]) == 1);
+                        AddBlacklistDate(-1, Helper.ConvertDateFromString(s2[0]), Integer.valueOf(s2[1]) == 1);
                     } else if (s2.length == 3){
                         AddBlacklistDate(Integer.valueOf(s2[0]), Helper.ConvertDateFromString(s2[1]), Integer.valueOf(s2[2]) == 1);
                     }

@@ -1204,8 +1204,7 @@ public class DatabaseManager extends SQLiteOpenHelper
         }
     }
 
-    private TimePeriod _queryTimeperiod(int id) {
-        database = getWritableDatabase();
+    private TimePeriod _queryTimeperiod(SQLiteDatabase database, int id) {
 
         Cursor c = database.query(TABLE_TIMEPERIODS, null, COLUMN_uniqueID + "=" + id, null, null, null, null);
 
@@ -1335,11 +1334,9 @@ public class DatabaseManager extends SQLiteOpenHelper
 
         try {
             Cursor c = database.query(TABLE_TRANSACTIONS, null, null, null, null, null, null);
-            //Helper.Print(App.GetContext(), "Count:" + String.valueOf(c.getCount()));
+            //Helper.Log(App.GetContext(), "DB", "TotalCount:" + String.valueOf(c.getCount()));
 
             while (c.moveToNext()) {
-                //Helper.Print(App.GetContext(), "Loop " + c.toString());
-
                 //Find budget
                 int ID = c.getInt(c.getColumnIndex(COLUMN_budget));
                 Budget br = BudgetManager.getInstance().GetBudget(ID);
@@ -1350,7 +1347,6 @@ public class DatabaseManager extends SQLiteOpenHelper
                     Transaction tr = new Transaction();
 
                     //Load and apply transaction properties
-
 
                     //COLUMN_type + TEXT_TYPE + "," +
                     tr.SetType(Transaction.TRANSACTION_TYPE.values()[c.getInt(c.getColumnIndex(COLUMN_type))]);
@@ -1376,11 +1372,13 @@ public class DatabaseManager extends SQLiteOpenHelper
                     //COLUMN_splitWith + TEXT_TYPE + "," + //COLUMN_splitValue + DOUBLE_TYPE  + "," +
                     String splitString = c.getString(c.getColumnIndex(COLUMN_split));
                     //Helper.Print(App.GetContext(), "Transaction: " + tr.GetSource() + " SplitString:'" + splitString + "'");
-                    if (!splitString.equals("")){ tr.SetSplitFromArrayString(splitString); }
+                    if (!splitString.equals("")) { tr.SetSplitFromArrayString(splitString); }
                     //COLUMN_paidBack + TEXT_TYPE + "," +
                     tr.SetPaidBack(Helper.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_paidBack))));
                     //COLUMN_when + INT_TYPE //+ "," +
-                    tr.SetTimePeriod(_queryTimeperiod(c.getInt(c.getColumnIndex(COLUMN_when))));
+                    TimePeriod tp = _queryTimeperiod(database, c.getInt(c.getColumnIndex(COLUMN_when)));
+                    //if (tp == null) { Helper.Log(App.GetContext(), "DB", "NULL TP for tran " + tr.GetID()); } else { Helper.Log(App.GetContext(), "DB", tp.GetDateFormatted()); }
+                    tr.SetTimePeriod(tp);
                     //COLUMN_children
                     //tr.AddChildrenFromFormattedString(c.getString(c.getColumnIndex(COLUMN_children)));
 
@@ -1392,11 +1390,10 @@ public class DatabaseManager extends SQLiteOpenHelper
                     //Helper.Print(App.GetContext(), "Count2:" + String.valueOf(br.GetTransactionCount()));
                 }
                 else { //NO UI WORK on worker thread
-                   // Helper.Print(App.GetContext(), "Transaction could not be loaded, budget not found.");
+                    //Helper.Log(App.GetContext(), "DB",  "Transaction could not be loaded, budget not found.");
                 }
 
             }
-
             //Helper.Print(App.GetContext(), "Count:" + String.valueOf(BudgetManager.getInstance().GetSelectedBudget().GetTransactionCount()));
 
             c.close();

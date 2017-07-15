@@ -4,7 +4,7 @@ Ver 1.0.5 ALPHA 2017-01-17
 #[BUGFIX] Transfered transactions are not saved
 *[BUGFIX] Re-sort transactions after a new one is added
 
-*[CHANGE] Updated target SDK to Android 7.1S
+*[CHANGE] Updated target SDK to Android 7.1
 #[CHANGE] Error displayed when changelog is missing
 *[CHANGE] Filters and sorting is persistent across activities
 #[CHANGE] If there are no profiles to transfer transactions to, don't ask the user to pick one

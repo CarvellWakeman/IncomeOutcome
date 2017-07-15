@@ -261,8 +261,11 @@ public class Transaction implements java.io.Serializable
 
 
     //Splits
-    //public void RemoveSplit(String person){
-    //    _split.remove(person);
-    //}
+    public void RemoveSplit(String person){
+        _split.remove(person);
+    }
+    public void ClearSplit(){
+        _split.clear();
+    }
 
 }

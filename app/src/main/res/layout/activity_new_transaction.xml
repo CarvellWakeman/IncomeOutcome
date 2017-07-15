@@ -403,7 +403,6 @@
                 android:id="@+id/frameLayout_blacklistdates"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginTop="@dimen/cardview_default_margin">
             </FrameLayout>
 
