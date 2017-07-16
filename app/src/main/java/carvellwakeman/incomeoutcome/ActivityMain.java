@@ -69,23 +69,17 @@ public class ActivityMain extends AppCompatActivity
         databaseManager.loadSettings( //Load settings
             new CallBack() {
                 @Override public void call() {
-                    databaseManager.loadTransactions( //THEN load transactions
-                        new CallBack() { //THEN load overview cards
-                            @Override
-                            public void call() {
-                                //if (versusCard!=null){ versusCard.getBase().setVisibility(View.VISIBLE); }
-                                if (incomeCard!=null){ incomeCard.getBase().setVisibility(View.VISIBLE); }
-                                if (expensesCard!=null){ expensesCard.getBase().setVisibility(View.VISIBLE); }
-                                if (progress_loadingData!=null){ progress_loadingData.setVisibility(View.GONE); }
-                                if (relativeLayout_period!=null){ relativeLayout_period.setVisibility(View.VISIBLE); }
+                    databaseManager._loadTransactions();
+                    //if (versusCard!=null){ versusCard.getBase().setVisibility(View.VISIBLE); }
+                    if (incomeCard!=null){ incomeCard.getBase().setVisibility(View.VISIBLE); }
+                    if (expensesCard!=null){ expensesCard.getBase().setVisibility(View.VISIBLE); }
+                    if (progress_loadingData!=null){ progress_loadingData.setVisibility(View.GONE); }
+                    if (relativeLayout_period!=null){ relativeLayout_period.setVisibility(View.VISIBLE); }
 
-                                //Selected budget
-                                _selectedBudget = budgetManager.GetSelectedBudget();
+                    //Selected budget
+                    _selectedBudget = budgetManager.GetSelectedBudget();
 
-                                RefreshOverview();
-                            }
-                        }
-                    );
+                    RefreshOverview();
                 }
             }
         );

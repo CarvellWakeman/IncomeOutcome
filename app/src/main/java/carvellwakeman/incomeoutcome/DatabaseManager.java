@@ -1152,8 +1152,10 @@ public class DatabaseManager extends SQLiteOpenHelper
             contentValues_tr.put(COLUMN_when, transaction.GetTimePeriod().GetID()); //if (!tryupdate) { }
 
             contentValues_tr.put(COLUMN_paidBy, transaction.GetPaidBy());
+            //Helper.Log(App.GetContext(), "DB", "SplitStringSave:'" + transaction.GetSplitArrayString() + "'");
+
             contentValues_tr.put(COLUMN_split, transaction.GetSplitArrayString());
-            contentValues_tr.put(COLUMN_paidBack, (transaction.GetPaidBack() != null ? transaction.GetPaidBack().toString(Helper.getString(R.string.date_format)) : "") );
+            contentValues_tr.put(COLUMN_paidBack, (transaction.GetPaidBack() != null ? transaction.GetPaidBack().toString(Helper.getString(R.string.date_format_saving)) : "") );
             //contentValues_tr.put(COLUMN_children, transaction.GetChildrenFormatted());
 
             //Insert/update row and return result
@@ -1348,33 +1350,38 @@ public class DatabaseManager extends SQLiteOpenHelper
 
                     //Load and apply transaction properties
 
-                    //COLUMN_type + TEXT_TYPE + "," +
+                    //COLUMN_type + TEXT_TYPE
                     tr.SetType(Transaction.TRANSACTION_TYPE.values()[c.getInt(c.getColumnIndex(COLUMN_type))]);
-                    //COLUMN_uniqueID + TEXT_TYPE + "," +
+                    //COLUMN_uniqueID + TEXT_TYPE
                     tr.SetID(c.getInt(c.getColumnIndex(COLUMN_uniqueID)));
-                    //COLUMN_parentID + TEXT_TYPE + "," +
+                    //COLUMN_parentID + TEXT_TYPE
                     tr.SetParentID(c.getInt(c.getColumnIndex(COLUMN_parentID)));
-                    //COLUMN_category + TEXT_TYPE + "," +
+                    //COLUMN_category + TEXT_TYPE
                     tr.SetCategory(c.getInt(c.getColumnIndex(COLUMN_category)));
-                    //COLUMN_source + TEXT_TYPE + "," +
+                    //COLUMN_source + TEXT_TYPE
                     tr.SetSource(c.getString(c.getColumnIndex(COLUMN_source)));
-                    //COLUMN_description + TEXT_TYPE  + "," +
+                    //COLUMN_description + TEXT_TYPE
                     tr.SetDescription(c.getString(c.getColumnIndex(COLUMN_description)));
-                    //COLUMN_value + DOUBLE_TYPE  + "," +
+                    //COLUMN_value + DOUBLE_TYPE
                     tr.SetValue(c.getDouble(c.getColumnIndex(COLUMN_value)));
-                    //COLUMN_staticValue + BOOLEAN_TYPE  + "," +
-                    //tr.SetStatic(c.getInt(c.getColumnIndex(COLUMN_staticValue)) == 1);
+                    //COLUMN_paidBack + DATE_TYPE
+                    tr.SetPaidBack(Helper.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_paidBack))));
 
-                    //COLUMN_IPaid + BOOLEAN_TYPE + "," +
+                    //COLUMN_IPaid + BOOLEAN_TYPE
                     Integer paidBy = c.getInt(c.getColumnIndex(COLUMN_paidBy));
                     //Helper.Print(App.GetContext(), "PaidBy:" + String.valueOf(paidBy));
                     tr.SetPaidBy(paidBy);
-                    //COLUMN_splitWith + TEXT_TYPE + "," + //COLUMN_splitValue + DOUBLE_TYPE  + "," +
+                    //COLUMN_splitWith + TEXT_TYPE + "," + //COLUMN_splitValue + DOUBLE_TYPE
                     String splitString = c.getString(c.getColumnIndex(COLUMN_split));
-                    //Helper.Print(App.GetContext(), "Transaction: " + tr.GetSource() + " SplitString:'" + splitString + "'");
+                    //Helper.Log(App.GetContext(), "DB", "Transaction: " + tr.GetSource() + " SplitString:'" + splitString + "'");
                     if (!splitString.equals("")) { tr.SetSplitFromArrayString(splitString); }
                     //COLUMN_paidBack + TEXT_TYPE + "," +
                     tr.SetPaidBack(Helper.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_paidBack))));
+                    if (tr.GetPaidBack()!=null){
+                        Helper.Log(App.GetContext(), "DB", tr.GetSource() + " PaidBackLoaded:" + tr.GetPaidBack().toString());
+                    } else {
+                        Helper.Log(App.GetContext(), "DB", "PaidBackNull:" + tr.GetSource());
+                    }
                     //COLUMN_when + INT_TYPE //+ "," +
                     TimePeriod tp = _queryTimeperiod(database, c.getInt(c.getColumnIndex(COLUMN_when)));
                     //if (tp == null) { Helper.Log(App.GetContext(), "DB", "NULL TP for tran " + tr.GetID()); } else { Helper.Log(App.GetContext(), "DB", tp.GetDateFormatted()); }

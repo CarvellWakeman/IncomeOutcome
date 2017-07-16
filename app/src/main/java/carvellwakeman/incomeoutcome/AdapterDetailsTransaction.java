@@ -307,6 +307,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
                     //Split
                     if (transaction.IsSplit()) {
+
                         //Clear previous split lines
                         split.removeAllViews();
 
@@ -428,7 +429,8 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                 }
 
                 // Debug
-                //debug.setText("ID:" + transaction.GetID() + "\nPID:" + transaction.GetParentID());
+                //String pb = (transaction.GetPaidBack() != null ? transaction.GetPaidBack().toString() : "null");
+                //debug.setText("ID:" + transaction.GetID() + "\nPID:" + transaction.GetParentID() + "\nPaidBack:" + pb);
                 //if (!debug.getText().toString().equals("")) { debug.setVisibility(View.VISIBLE); }
             }
 

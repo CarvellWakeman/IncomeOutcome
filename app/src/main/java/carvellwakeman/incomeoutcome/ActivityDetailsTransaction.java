@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
 import android.widget.*;
+import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 
@@ -225,11 +226,34 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                 BackAction();
                 finish();
                 return true;
-            case R.id.toolbar_paidback: //Expense only //TODO: Implement
-                //Helper.OpenDialogFragment(ActivityDetailsTransaction.this, DialogFragmentPaidBack.newInstance(ActivityDetailsTransaction.this, new CallBack() { @Override public void call() {
-                //    transactionsAdapter.notifyDataSetChanged();
-                //    totalsAdapter.notifyDataSetChanged();
-                //}}, _budget), true);
+            case R.id.toolbar_paidback: //Expense only
+                Helper.OpenDialogFragment(ActivityDetailsTransaction.this, DialogFragmentPaidBack.newInstance(ActivityDetailsTransaction.this,
+                    new CallBackDate() { @Override public void call(LocalDate date) {
+                        // Update transactions
+                        for (Transaction t : transactionsAdapter._transactions){
+                            // If transaction is an instance transaction
+                            if (_budget.GetTransaction(t.GetID()) == null){
+                                DatabaseManager dm = DatabaseManager.getInstance();
+
+                                // Duplicate transaction and set as paid back, blacklist on parent
+                                Transaction parentT = _budget.GetTransaction(t.GetParentID());
+                                if (parentT != null && t.IsSplit()) {
+                                    t.SetPaidBack(date);
+                                    t.SetParentID(parentT.GetID());
+
+                                    _budget.AddTransaction(t);
+                                    parentT.GetTimePeriod().AddBlacklistDate(t.GetID(), t.GetTimePeriod().GetDate(), true);
+
+                                    dm.insert(parentT, true); // Update parent
+                                    dm.insert(t, true);
+                                }
+                            } else { // Set paid back date
+                                t.SetPaidBack(date);
+                            }
+                        }
+                        RefreshActivity();
+                    }
+                }, _budget), true);
                 return true;
             default:
                 //SortFilterOptions.Run(this, _profile, item, sortFilterCallBack);

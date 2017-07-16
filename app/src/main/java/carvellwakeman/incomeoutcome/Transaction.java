@@ -148,9 +148,12 @@ public class Transaction implements java.io.Serializable
 
             t += name + ":" + value + "|";
 
-            //Helper.Print(App.GetContext(), "GetSplit " + name + ":" + value);
+            //Helper.Log(App.GetContext(), "Tran", "GetSplit " + name + ":" + value);
         }
-        return (t.length() > 1 ? t.substring(0,t.length()-2) : t); //Delete last comma if possible
+        if (t.length() > 0) {
+            return t.substring(0, t.length() - 1); //Delete last delimeter if possible (endIndex is exclusive, add 1 to regular index subtraction
+        }
+        return "";
     }
     public double GetDebt(int personA, int personB) {
         if (GetPaidBy() == personB && GetPaidBack() == null) {

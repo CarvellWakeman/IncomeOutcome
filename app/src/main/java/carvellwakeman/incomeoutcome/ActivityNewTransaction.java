@@ -170,16 +170,16 @@ public class ActivityNewTransaction extends AppCompatActivity
                 setSupportActionBar(toolbar);
 
                 //Paid back
-                checkBox_paidBack.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                cardView_paidBack.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                         if (b) {
-                            //Disable the rest of the layout
-
+                    public void onClick(View view) {
+                        if (!checkBox_paidBack.isChecked()) {
+                            checkBox_paidBack.setChecked(true);
                             //Open paidback date picker
-                             _paidBack = LocalDate.now();
+                            _paidBack = LocalDate.now();
                             new DatePickerDialog(ActivityNewTransaction.this, datePickerDate2, _paidBack.getYear(), _paidBack.getMonthOfYear() - 1, _paidBack.getDayOfMonth()).show();
                         } else {
+                            checkBox_paidBack.setChecked(false);
                             checkBox_paidBack.setText( Helper.getString(R.string.confirm_paidback) );
                         }
                     }
@@ -194,7 +194,7 @@ public class ActivityNewTransaction extends AppCompatActivity
 
                         //Open date picker dialog
                         LocalDate _start_date = _timePeriod.GetDate();
-                        new DatePickerDialog(ActivityNewTransaction.this, datePickerDate, _start_date.getYear(), _start_date.getMonthOfYear()-1, _start_date.getDayOfMonth()).show();
+                        new DatePickerDialog(ActivityNewTransaction.this, datePickerDate, _start_date.getYear(), _start_date.getMonthOfYear() - 1, _start_date.getDayOfMonth()).show();
                     }
                 });
 
@@ -330,10 +330,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                 }
                 else if (_editState == EDIT_STATE.Edit) {
                     _transaction = _budget.GetTransaction(intent.getIntExtra("transaction", -1));
-                    if (_transaction == null) {
-                        Helper.Print(this, getString(R.string.error_transaction_not_found));
-                        finish();
-                    } else {
+                    if (_transaction != null) {
                         LoadTransaction(_transaction);
 
                         //Toolbar title
@@ -343,6 +340,12 @@ public class ActivityNewTransaction extends AppCompatActivity
                         else {
                             toolbar.setTitle(R.string.title_edittransaction);
                         }
+
+                        // Show paid back
+                        cardView_paidBack.setVisibility(View.VISIBLE);
+                    } else {
+                        Helper.Print(this, getString(R.string.error_transaction_not_found));
+                        finish();
                     }
                 }
                 else if (_editState == EDIT_STATE.EditInstance){
@@ -352,6 +355,9 @@ public class ActivityNewTransaction extends AppCompatActivity
 
                         //Toolbar title
                         toolbar.setTitle(R.string.title_edittransactioninstance);
+
+                        // Show paid back
+                        cardView_paidBack.setVisibility(View.VISIBLE);
                     }
                     else {
                         Helper.Print(this, getString(R.string.error_transaction_not_found));
@@ -698,6 +704,13 @@ public class ActivityNewTransaction extends AppCompatActivity
         // Copy timeperiod
         _timePeriod = new TimePeriod();
         _timePeriod.DeepCopy(_transaction.GetTimePeriod());
+
+        // Paid back
+        if (_transaction.GetPaidBack() != null){
+            _paidBack = _transaction.GetPaidBack();
+            checkBox_paidBack.setChecked(true);
+            checkBox_paidBack.setText( String.format(Helper.getString(R.string.info_paidback_format), _paidBack.toString(Helper.getString(R.string.date_format))) );
+        }
 
         // Cost
         editText_cost.setText(String.valueOf(_transaction.GetValue()));
