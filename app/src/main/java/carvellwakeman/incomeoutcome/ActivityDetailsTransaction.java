@@ -229,15 +229,16 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             case R.id.toolbar_paidback: //Expense only
                 Helper.OpenDialogFragment(ActivityDetailsTransaction.this, DialogFragmentPaidBack.newInstance(ActivityDetailsTransaction.this,
                     new CallBackDate() { @Override public void call(LocalDate date) {
+                        DatabaseManager dm = DatabaseManager.getInstance();
+
                         // Update transactions
                         for (Transaction t : transactionsAdapter._transactions){
                             // If transaction is an instance transaction
                             if (_budget.GetTransaction(t.GetID()) == null){
-                                DatabaseManager dm = DatabaseManager.getInstance();
 
                                 // Duplicate transaction and set as paid back, blacklist on parent
                                 Transaction parentT = _budget.GetTransaction(t.GetParentID());
-                                if (parentT != null && t.IsSplit()) {
+                                if (parentT != null) {
                                     t.SetPaidBack(date);
                                     t.SetParentID(parentT.GetID());
 
@@ -245,11 +246,11 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                                     parentT.GetTimePeriod().AddBlacklistDate(t.GetID(), t.GetTimePeriod().GetDate(), true);
 
                                     dm.insert(parentT, true); // Update parent
-                                    dm.insert(t, true);
                                 }
                             } else { // Set paid back date
                                 t.SetPaidBack(date);
                             }
+                            dm.insert(t, true);
                         }
                         RefreshActivity();
                     }

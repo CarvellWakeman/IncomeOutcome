@@ -339,10 +339,11 @@ public class ActivityNewTransaction extends AppCompatActivity
                         }
                         else {
                             toolbar.setTitle(R.string.title_edittransaction);
+
+                            // Show paid back
+                            cardView_paidBack.setVisibility(View.VISIBLE);
                         }
 
-                        // Show paid back
-                        cardView_paidBack.setVisibility(View.VISIBLE);
                     } else {
                         Helper.Print(this, getString(R.string.error_transaction_not_found));
                         finish();
