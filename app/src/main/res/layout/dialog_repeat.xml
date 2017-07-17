@@ -55,7 +55,7 @@
                 android:layout_alignTop="@+id/editText_repeateveryn"
                 android:gravity="center_vertical"
                 android:text="@string/repeat_every"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
                 android:textColor="@color/black" />
 
             <TextView
@@ -67,7 +67,7 @@
                 android:layout_toEndOf="@+id/editText_repeateveryn"
                 android:gravity="center_vertical"
                 android:text="@string/repeat_days"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
                 android:textColor="@color/black" />
 
         </RelativeLayout>
@@ -190,7 +190,7 @@
                 android:layout_toEndOf="@+id/editText_repeatNumberOccurences"
                 android:gravity="center_vertical"
                 android:text="@string/repeat_event"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
                 android:visibility="gone" />
 
         </RelativeLayout>

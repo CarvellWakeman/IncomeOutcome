@@ -32,7 +32,7 @@
                 android:layout_marginBottom="5dp"
                 android:text="@string/placeholder_title"
                 android:visibility="gone"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
             <LinearLayout
                 android:id="@+id/card_relativelayout"

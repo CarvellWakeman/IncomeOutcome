@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:text="@string/placeholder_text"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
     </LinearLayout>
 

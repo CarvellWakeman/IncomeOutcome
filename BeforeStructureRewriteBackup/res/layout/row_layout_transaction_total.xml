@@ -27,7 +27,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="4dp"
                 android:text="@string/placeholder_text"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
             <TextView
                 android:id="@+id/transaction_who_owes_who"
@@ -36,7 +36,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/transaction_objectA"
                 android:text="@string/balance_uneven"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
             <TextView
                 android:id="@+id/transaction_objectB"
@@ -47,7 +47,7 @@
                 android:layout_toEndOf="@+id/transaction_who_owes_who"
                 android:gravity="center_vertical"
                 android:text="@string/placeholder_text"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
             <TextView
                 android:id="@+id/transaction_total_cost"
@@ -57,7 +57,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_toEndOf="@+id/transaction_objectB"
                 android:text="@string/format_zerocurrency"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
         </RelativeLayout>
 

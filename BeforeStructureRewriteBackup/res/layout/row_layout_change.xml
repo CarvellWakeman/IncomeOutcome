@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:text="@string/placeholder_Unknown"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
             android:textColor="@color/turquoise"
             android:textSize="24sp" />
     </LinearLayout>
@@ -48,7 +48,7 @@
             android:layout_marginStart="8dp"
             android:gravity="center_vertical"
             android:text="@string/placeholder_Unknown"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
             android:textColor="@color/black" />
     </LinearLayout>
 

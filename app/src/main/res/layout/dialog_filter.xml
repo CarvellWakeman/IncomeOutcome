@@ -16,7 +16,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:text="@string/filter"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
     <Spinner
         android:id="@+id/spinner_filter"

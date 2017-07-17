@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:text="@string/placeholder_text"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
         <TextView
             android:id="@+id/textView2_dialog"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:text="@string/placeholder_text"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
     </LinearLayout>
 

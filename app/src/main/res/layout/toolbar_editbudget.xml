@@ -58,7 +58,7 @@
                     android:layout_marginEnd="8dp"
                     android:gravity="center_vertical"
                     android:text="@string/repeat_occurevery"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
                     android:textColor="@color/white" />
 
                 <EditText

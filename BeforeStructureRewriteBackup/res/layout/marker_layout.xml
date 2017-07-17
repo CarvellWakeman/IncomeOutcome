@@ -17,6 +17,6 @@
         android:textColor="@android:color/white"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
 </RelativeLayout>

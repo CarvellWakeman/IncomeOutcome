@@ -94,7 +94,7 @@
                         android:layout_gravity="bottom"
                         android:layout_below="@id/TIL_newTransaction_cost"
                         android:text="@string/action_splitcost"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
                         android:textColor="@color/black"
                         android:theme="@style/BlackCheckboxTheme"
                         android:visibility="visible"
@@ -116,7 +116,7 @@
                             android:layout_marginEnd="5dp"
                             android:text="@string/tt_paid"
                             android:textAlignment="viewEnd"
-                            android:textAppearance="?android:attr/textAppearanceSmall" />
+                            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
                         <LinearLayout
                             android:id="@+id/linearLayout_newTransaction_splitContainer"
@@ -189,7 +189,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:text="@string/title_sourcecategory"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
                         android:visibility="gone" />
 
                     <LinearLayout
@@ -351,7 +351,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/time_setdate"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
                                 android:textColor="@color/black" />
 
                         </LinearLayout>
@@ -388,7 +388,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/repeat"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
                                 android:textColor="@color/black" />
 
                         </LinearLayout>

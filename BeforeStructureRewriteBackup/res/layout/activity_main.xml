@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="@string/tt_loading"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
             </LinearLayout>
 

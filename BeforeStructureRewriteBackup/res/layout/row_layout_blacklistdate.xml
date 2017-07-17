@@ -14,7 +14,7 @@
         android:id="@+id/textview_row_layout_blacklistdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
 
 </LinearLayout>
