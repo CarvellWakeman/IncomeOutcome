@@ -139,7 +139,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/transaction_row_linearlayout_split"
-                    android:text="@string/info_paidback"
+                    android:text="@string/paidback"
                     android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
                     android:textColor="@color/darkgreen"
                     android:visibility="visible" />
