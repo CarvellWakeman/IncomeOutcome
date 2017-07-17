@@ -131,14 +131,25 @@ public class Budget implements java.io.Serializable, BaseEntity
         return null;
     }
     public ArrayList<Transaction> GetAllTransactions() { return _transactions; }
-    public ArrayList<Transaction> GetTransactions(Transaction.TRANSACTION_TYPE type) { return GetTransactions(null, null, type); }
-    public ArrayList<Transaction> GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE type){ return GetTransactions(GetStartDate(), GetEndDate(), type); }
-    public ArrayList<Transaction> GetTransactions(LocalDate startDate, LocalDate endDate, Transaction.TRANSACTION_TYPE type){
+    public ArrayList<Transaction> GetTransactions(Transaction.TRANSACTION_TYPE type) { return GetTransactions(null, null, type, Helper.SORT_METHODS.DATE_UP, null); }
+    public ArrayList<Transaction> GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE type){ return GetTransactions(GetStartDate(), GetEndDate(), type, Helper.SORT_METHODS.DATE_UP, null); }
+    public ArrayList<Transaction> GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE type, Helper.SORT_METHODS sort, ArrayList<Helper.FILTER_METHODS> filters){
+        return GetTransactions(GetStartDate(), GetEndDate(), type, sort, filters);
+    }
+    public ArrayList<Transaction> GetTransactions(LocalDate startDate, LocalDate endDate, Transaction.TRANSACTION_TYPE type, final Helper.SORT_METHODS sort, ArrayList<Helper.FILTER_METHODS> filters){
+
         ArrayList<Transaction> tmp = new ArrayList<>();
         for (int i = 0; i < _transactions.size(); i++) {
             tmp.addAll(_transactions.get(i).GetOccurrences(startDate, endDate, type));
         }
-        Helper.Print(App.GetContext(), "GetTransactions");
+
+        // Sorting
+        if (sort != null) {
+            Collections.sort(tmp, new Comparator<Transaction>() {
+                @Override public int compare(Transaction t1, Transaction t2) { return t1.sortCompare(t2, sort); }
+            });
+        }
+
         return tmp;
     }
 

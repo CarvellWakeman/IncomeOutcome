@@ -25,21 +25,23 @@ import java.util.HashMap;
 
 public class Helper
 {
-    //TODO: Rework sorting and filtering to be objects that are passed around in activities
     //Sort and filter methods
-    enum SORT_METHODS
+    enum SORT_METHODS // Even are UP, Odd are DOWN (zero is considered even)
     {
         DATE_UP,
-        COST_UP,
-        PAIDBY_UP,
-        CATEGORY_UP,
-        SOURCE_UP,
-
         DATE_DOWN,
+
+        COST_UP,
         COST_DOWN,
-        PAIDBY_DOWN,
+
+        CATEGORY_UP,
         CATEGORY_DOWN,
-        SOURCE_DOWN
+
+        SOURCE_UP,
+        SOURCE_DOWN,
+
+        PAIDBY_UP,
+        PAIDBY_DOWN
     }
     enum FILTER_METHODS
     {
@@ -52,8 +54,7 @@ public class Helper
         SOURCE
     }
 
-
-    //Sort and Filter methods string titles
+    // Sort and Filter methods string titles
     private static HashMap<SORT_METHODS, String> sortSubtitles;
     static HashMap<FILTER_METHODS, Integer> filterTitles;
     static HashMap<FILTER_METHODS, String> filterSubtitles;
@@ -89,12 +90,24 @@ public class Helper
         filterTitles.put(FILTER_METHODS.SOURCE, R.string.filter_source);
     }
 
-    //Formatters
+    // Sort and filter
+    public static SORT_METHODS SortDirectionFlip(int method){
+        return SORT_METHODS.values()[method + (method % 2 == 0 ? 1 : -1)];
+    }
+    public static SORT_METHODS SortSelect(int current, int target){
+        if ( current == target || current+1 == target ){
+            return Helper.SortDirectionFlip(current);
+        } else {
+            return Helper.SORT_METHODS.values()[target];
+        }
+    }
+
+    // Formatters
     static DecimalFormat decimalFormat = new DecimalFormat("#.###");
     static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(); //new DecimalFormat("¤#.###");
 
 
-    //Universal print
+    // Universal print
     public static void Print(Context c, String msg){ if (c!=null && isDebugMode(c)) { Toast.makeText(c, msg, Toast.LENGTH_SHORT).show(); } }
     public static void PrintLong(Context c, String msg){ if (c!=null && isDebugMode(c)) { Toast.makeText(c, msg, Toast.LENGTH_LONG).show(); } }
     public static void PrintUser(Context c, String msg){ if (c!=null){ Toast.makeText(c, msg, Toast.LENGTH_SHORT).show(); } }

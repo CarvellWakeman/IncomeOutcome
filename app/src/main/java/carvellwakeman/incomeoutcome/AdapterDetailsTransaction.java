@@ -21,6 +21,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Filter;
 
 public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetailsTransaction.TransactionViewHolder>
 {
@@ -47,19 +48,19 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
         this._transactions = new ArrayList<>();
 
         //Load up transactions from budget
-        GetTransactions();
+        GetTransactions(_activity.sortMethod, _activity.filterMethods);
     }
 
 
     //Custom transaction getters
-    public void GetTransactions(){
+    public void GetTransactions(Helper.SORT_METHODS sort, ArrayList<Helper.FILTER_METHODS> filters){
         _transactions.clear();
 
         if (activityType == 0) { //Expense
-            _transactions.addAll(_budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Expense));
+            _transactions.addAll(_budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Expense, sort, filters));
         }
         else if (activityType == 1) { //Income
-            _transactions.addAll(_budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Income ));
+            _transactions.addAll(_budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Income, sort, filters));
         }
     }
 
@@ -162,8 +163,6 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                         DatabaseManager.getInstance().insert(tranp, true);
                     }
 
-                    GetTransactions();
-
                     _activity.RefreshActivity();
 
                     break;
@@ -173,8 +172,6 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
                     _budget.RemoveTransaction(tranp);
                     DatabaseManager.getInstance().remove(tranp);
-
-                    GetTransactions();
 
                     _activity.RefreshActivity();
 

@@ -57,7 +57,8 @@
                 android:layout_marginStart="4dp"
                 android:layout_toEndOf="@+id/total_personB"
                 android:text="@string/format_zerocurrency"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold" />
 
         </RelativeLayout>
 

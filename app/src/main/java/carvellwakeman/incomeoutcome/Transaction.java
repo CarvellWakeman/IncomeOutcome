@@ -175,14 +175,14 @@ public class Transaction implements java.io.Serializable
     public ArrayList<Transaction> GetOccurrences(LocalDate startDate, LocalDate endDate, Transaction.TRANSACTION_TYPE type) {
         ArrayList<Transaction> occurrences = new ArrayList<>();
 
-        //Check transaction type match
+        // Check transaction type match
         if (GetType() == type) {
 
-            //Valid TimePeriod
+            // Valid TimePeriod
             TimePeriod tp = GetTimePeriod();
             if (tp != null && tp.GetDate() != null) {
 
-                //Get Dates
+                // Get Dates
                 LocalDate start = (startDate != null ? startDate : tp.GetDate());
                 LocalDate end = (endDate != null ? endDate : LocalDate.now());
 
@@ -263,12 +263,45 @@ public class Transaction implements java.io.Serializable
     public void SetTimePeriod(TimePeriod timePeriod) { _when = timePeriod; }
 
 
-    //Splits
-    public void RemoveSplit(String person){
-        _split.remove(person);
-    }
+    // Splits
     public void ClearSplit(){
         _split.clear();
     }
 
+
+    // Sorting
+    public int sortCompare(Transaction t, Helper.SORT_METHODS method) {
+        CategoryManager cm = CategoryManager.getInstance();
+        PersonManager pm = PersonManager.getInstance();
+
+        switch (method) {
+            case DATE_UP:
+                return GetTimePeriod().GetDate().compareTo(t.GetTimePeriod().GetDate());
+            case DATE_DOWN:
+                return t.GetTimePeriod().GetDate().compareTo(GetTimePeriod().GetDate());
+
+            case COST_UP:
+                return (int)Math.signum( (GetValue()) - (t.GetValue()) );
+            case COST_DOWN:
+                return (int)Math.signum( (t.GetValue()) - (GetValue()) );
+
+            case CATEGORY_UP:
+                return cm.GetCategory(GetCategory()).GetTitle().compareTo(cm.GetCategory(t.GetCategory()).GetTitle());
+            case CATEGORY_DOWN:
+                return cm.GetCategory(t.GetCategory()).GetTitle().compareTo(cm.GetCategory(GetCategory()).GetTitle());
+
+            case SOURCE_UP:
+                return GetSource().compareTo(t.GetSource());
+            case SOURCE_DOWN:
+                return t.GetSource().compareTo(GetSource());
+
+            case PAIDBY_UP:
+                return pm.GetPerson(GetPaidBy()).GetName().compareTo(pm.GetPerson(t.GetPaidBy()).GetName());
+            case PAIDBY_DOWN:
+                return pm.GetPerson(t.GetPaidBy()).GetName().compareTo(pm.GetPerson(GetPaidBy()).GetName());
+
+            default:
+                return 0;
+        }
+    }
 }

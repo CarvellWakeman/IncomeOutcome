@@ -42,28 +42,24 @@ public class AdapterDetailsTotals
 
 
         //Load up transactions from budget
-        GetTotals();
+        GetTotals(_activity.sortMethod, _activity.filterMethods);
     }
 
 
     //Custom transaction getters
-    public void GetTotals(){
+    public void GetTotals(Helper.SORT_METHODS sort, ArrayList<Helper.FILTER_METHODS> filters){
         _totals.clear();
 
         if (activityType == 0) { //Expense
-            for (Transaction t : _budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Expense)){
+            for (Transaction t : _budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Expense, sort, filters)){
                 for (HashMap.Entry<Integer, Double> entry : t.GetSplitArray().entrySet()){
-                    Double debt;
-                    Double currVal;
-                    if ( t.GetPaidBy() == Person.Me.GetID() && entry.getKey() != Person.Me.GetID())  { // Split with me, or paid by me, but not both
-                        //_totals.get(entry.getKey()).put(t.GetPaidBy(), t.GetDebt(entry.getKey(), t.GetPaidBy()));
-                        debt = t.GetDebt(entry.getKey(), Person.Me.GetID());
-                        currVal = (_totals.get(entry.getKey()) != null ? _totals.get(entry.getKey()) : 0.0d);
-                        _totals.put(entry.getKey(), currVal + debt);
+                    Double currVal = (_totals.get(entry.getKey()) != null ? _totals.get(entry.getKey()) : 0.0d);
+
+                    // You paid or you were involved in the payment
+                    if ( t.GetPaidBy() == Person.Me.GetID() && entry.getKey() != Person.Me.GetID())  {
+                        _totals.put(entry.getKey(), currVal + t.GetDebt(entry.getKey(), Person.Me.GetID()));
                     } else if (t.GetPaidBy() != Person.Me.GetID() && entry.getKey() == Person.Me.GetID()){
-                        debt = t.GetDebt(Person.Me.GetID(), t.GetPaidBy());
-                        currVal = (_totals.get(entry.getKey()) != null ? _totals.get(entry.getKey()) : 0.0d);
-                        _totals.put(t.GetPaidBy(), currVal - debt);
+                        _totals.put(t.GetPaidBy(), currVal - t.GetDebt(Person.Me.GetID(), t.GetPaidBy()));
                     }
 
                 }

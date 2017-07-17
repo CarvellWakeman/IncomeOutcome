@@ -37,18 +37,16 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
     TextView textView_nodata;
 
-
-    //int _profileID;
     Budget _budget;
 
     ImageView button_nextPeriod;
     ImageView button_prevPeriod;
     //CheckBox checkbox_showall;
 
-    //ProfileManager.CallBack sortFilterCallBack;
+    // Sort and Filter
+    Helper.SORT_METHODS sortMethod;
+    ArrayList<Helper.FILTER_METHODS> filterMethods;
 
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_transaction);
@@ -56,22 +54,15 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         //Toolbar menus
         toolbar_menus = new ArrayList<>();
 
+        // Sorting and filtering
+        sortMethod = Helper.SORT_METHODS.DATE_UP;
+        filterMethods = new ArrayList<>();
+
         //Get the intent that opened this activity
         Intent intent = getIntent();
 
-        //Callback for sorting and filtering
-        //sortFilterCallBack = new ProfileManager.CallBack() { @Override public void call() {
-        //    _profile.CalculateTimeFrame(activityType);
-        //    _profile.CalculateTotalsInTimeFrame(activityType, keyType);
-        //    transactionsAdapter.notifyDataSetChanged();
-        //    totalsAdapter.notifyDataSetChanged();
-        //    CheckShowNoDataNotice();
-        //}};
-
-
         //Determine if this is an expense or income activity
         activityType = intent.getIntExtra("activitytype", -1);
-        //keyType = intent.getIntExtra("keytype", -1);
 
         //Toolbar menu options (dependent upon transaction type)
         if (activityType == -1){ //None (error)
@@ -82,12 +73,10 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             toolbar_menus.add(R.menu.submenu_sort_expense);
             toolbar_menus.add(R.menu.submenu_filter_expense);
             toolbar_menus.add(R.menu.submenu_paidback);
-            //ac_editing_activity = ActivityNewTransaction.class;
         }
         else if (activityType == 1) { //Income
             toolbar_menus.add(R.menu.submenu_sort_income);
             toolbar_menus.add(R.menu.submenu_filter_income);
-            //ac_editing_activity = ActivityNewTransaction.class;
         }
 
 
@@ -97,11 +86,12 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             Helper.PrintUser(this, "Invalid Budget Provided, Cannot Open details activity.");
             finish();
         } else {
-            //Find Views
+
+            // Find Views
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar) ;
 
-            //Period management
+            // Period management
             button_nextPeriod = (ImageView) findViewById(R.id.button_nextPeriod);
             button_prevPeriod = (ImageView) findViewById(R.id.button_prevPeriod);
             //checkbox_showall = (CheckBox) findViewById(R.id.checkbox_showall);
@@ -109,7 +99,6 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             button_nextPeriod.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
                     if (_budget != null){
-                        //checkbox_showall.setChecked(false);
                         _budget.MoveTimePeriod(1);
                         RefreshActivity();
                     }
@@ -118,28 +107,11 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             button_prevPeriod.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
                     if (_budget != null){
-                        //checkbox_showall.setChecked(false);
                         _budget.MoveTimePeriod(-1);
                         RefreshActivity();
                     }
                 }
             });
-            /*
-            checkbox_showall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    if (_profile != null){
-                        //if (b){
-                        //    storedStartTime = _profile.GetStartTime();
-                        //    storedEndTime = _profile.GetEndTime();
-                        //}
-                        //_profile.SetStartTime( (b ? null : storedStartTime) );
-                        //_profile.SetEndTime( (b ? null : storedEndTime) );
-                        _profile.SetShowAll(b);
-                        RefreshActivity();
-                    }
-                }
-            });
-            */
 
             totalsContainer = (LinearLayout) findViewById(R.id.linearLayout_totals_container);
             transactionsView = (RecyclerView) findViewById(R.id.recyclerView_transaction_elements);
@@ -162,7 +134,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                 }
             });
 
-            //Hide floating action button when recyclerView is scrolled
+            // Hide floating action button when recyclerView is scrolled
             transactionsView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -173,7 +145,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             });
 
 
-            //Configure toolbar
+            // Configure toolbar
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
             for(int m : toolbar_menus){ toolbar.inflateMenu(m); }
             setSupportActionBar(toolbar);
@@ -183,107 +155,88 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             // Set totals adapter
             totalsAdapter = new AdapterDetailsTotals(this, totalsContainer, _budget.GetID(), activityType);
 
-            //Set transactions adapter and linearLayoutManager
+            // Set transactions adapter and linearLayoutManager
             transactionsAdapter = new AdapterDetailsTransaction(this, _budget.GetID(), activityType);
             transactionsView.setAdapter(transactionsAdapter);
 
             linearLayoutManagerTransactions = new NpaLinearLayoutManager(this);
             transactionsView.setLayoutManager(linearLayoutManagerTransactions);
 
-
-            //No data, display message
+            // No data, display message
             CheckShowNoDataNotice();
 
-            CheckHideRecyclerviews();
-
-            //Sort and filter bubbles
+            // Sort and filter bubbles
             //SortFilterOptions.DisplayFilter(this, _profile.GetFilterMethod(), _profile.GetFilterData(), sortFilterCallBack);
             //SortFilterOptions.DisplaySort(this, _profile.GetSortMethod(), sortFilterCallBack);
         }
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
 
+    @Override
+    public void onResume(){ // TODO: Necessary?
+        super.onResume();
         RefreshActivity();
     }
 
+
+    // Options menu creation
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         for(int m : toolbar_menus){ getMenuInflater().inflate(m, menu); }
         return true;
     }
 
-
-    //Toolbar button handling
+    // Options menu handling
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         super.onOptionsItemSelected(item);
 
         switch (item.getItemId()) {
-            case android.R.id.home: //Back button
+            case android.R.id.home: // Up button
                 BackAction();
-                finish();
                 return true;
-            case R.id.toolbar_paidback: //Expense only
+            case R.id.toolbar_paidback: // Paid Back (expenses only)
                 Helper.OpenDialogFragment(ActivityDetailsTransaction.this, DialogFragmentPaidBack.newInstance(ActivityDetailsTransaction.this,
                     new CallBackDate() { @Override public void call(LocalDate date) {
-                        DatabaseManager dm = DatabaseManager.getInstance();
-
-                        // Update transactions
-                        for (Transaction t : transactionsAdapter._transactions){
-                            // If transaction is an instance transaction
-                            if (_budget.GetTransaction(t.GetID()) == null){
-
-                                // Duplicate transaction and set as paid back, blacklist on parent
-                                Transaction parentT = _budget.GetTransaction(t.GetParentID());
-                                if (parentT != null) {
-                                    t.SetPaidBack(date);
-                                    t.SetParentID(parentT.GetID());
-
-                                    _budget.AddTransaction(t);
-                                    parentT.GetTimePeriod().AddBlacklistDate(t.GetID(), t.GetTimePeriod().GetDate(), true);
-
-                                    dm.insert(parentT, true); // Update parent
-                                }
-                            } else { // Set paid back date
-                                t.SetPaidBack(date);
-                            }
-                            dm.insert(t, true);
-                        }
-                        RefreshActivity();
+                       SetTransactionsPaidBack(date);
                     }
                 }, _budget), true);
                 return true;
+
+            // Sorting
+            case R.id.toolbar_sort_date:
+            case R.id.toolbar_sort_cost:
+            case R.id.toolbar_sort_category:
+            case R.id.toolbar_sort_source:
+            case R.id.toolbar_sort_paidby:
+                sortMethod = Helper.SortSelect(sortMethod.ordinal(), item.getOrder());
+                UpdateTransactionsAdapter();
+                break;
+
+            // Filter
+            case R.id.toolbar_filter_category:
+                break;
+            case R.id.toolbar_filter_source:
+                break;
+            case R.id.toolbar_filter_paidby:
+                break;
+            case R.id.toolbar_filter_splitwith:
+                break;
+
             default:
-                //SortFilterOptions.Run(this, _profile, item, sortFilterCallBack);
                 break;
         }
-
 
         return true;
     }
 
-
-    //Send back a RESULT_OK to MainActivity when back is pressed
-    @Override
-    public void onBackPressed() { BackAction(); }
-
-    //Exit function
-    public void BackAction(){
-        //Send back a RESULT_OK to MainActivity
-        Intent intent = new Intent();
-        setResult(RESULT_OK, intent);
-        finish();
-    }
 
     //Get return results from activities
     protected void onActivityResult(int requestCode, int resultCode, Intent data) { //TODO: Necessary?
         RefreshActivity();
 
         //switch (requestCode){
-            //case 1: // New Transaction
+        //case 1: // New Transaction
         if (resultCode==1){
             if (data != null){
                 //final Transaction _transaction = (Transaction)data.getSerializableExtra("transaction");
@@ -299,8 +252,8 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             }
         } else { // Failure
         }
-                //break;
-            //default:
+        //break;
+        //default:
 
 
         //}
@@ -312,7 +265,20 @@ public class ActivityDetailsTransaction extends AppCompatActivity
     }
 
 
+    //Send back a RESULT_OK to MainActivity when back is pressed
+    @Override
+    public void onBackPressed() { BackAction(); }
 
+    //Exit function
+    public void BackAction(){
+        //Send back a RESULT_OK to MainActivity
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
+
+    // Activity state
     public void CheckShowNoDataNotice(){
         if (transactionsAdapter != null) {
             if (transactionsAdapter.getItemCount() == 0) {
@@ -324,11 +290,6 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         textView_nodata.setVisibility(View.GONE);
     }
 
-    public void CheckHideRecyclerviews(){
-        //if (_profile.GetTransactionTotals().size() <= 0) { totalsView.setVisibility(View.GONE); } else { totalsView.setVisibility(View.VISIBLE); }
-        //if (_profile.GetTransactionsSize() <= 0) { transactionsView.setVisibility(View.GONE); } else { transactionsView.setVisibility(View.VISIBLE); }
-    }
-
     public void SetToolbarTitle(){
         if (getSupportActionBar() != null) {
             if (activityType == 0) { getSupportActionBar().setTitle(R.string.title_expenses); }
@@ -338,43 +299,53 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         }
     }
 
-    public void RefreshActivity(){ //TODO: Rewrite
-        UpdateAdapters();
+    public void RefreshActivity(){
+        UpdateTransactionsAdapter();
+        UpdateTotalsAdapter();
 
         CheckShowNoDataNotice();
 
         SetToolbarTitle();
-
-        //CheckHideRecyclerviews();
-
-        //_budget.CalculateTimeFrame(activityType);
-        //_profile.CalculateTotalsInTimeFrame(activityType, keyType);
-        //if (totalsAdapter != null) { totalsAdapter.notifyDataSetChanged(); }
-        //if (transactionsAdapter != null) { transactionsAdapter.notifyDataSetChanged(); }
-
-        //SetToolbarTitle();
-        //CheckShowNoDataNotice();
-        //CheckHideRecyclerviews();
     }
 
-    public void UpdateAdapters(){
+    public void UpdateTransactionsAdapter(){
         // Transactions
-        transactionsAdapter.GetTransactions();
+        transactionsAdapter.GetTransactions(sortMethod, filterMethods);
         transactionsAdapter.notifyDataSetChanged();
-
+    }
+    public void UpdateTotalsAdapter(){
         // Totals
-        totalsAdapter.GetTotals();
+        totalsAdapter.GetTotals(sortMethod, filterMethods);
         totalsAdapter.PopulateContainer();
+    }
 
-        //totalsView.setAdapter(null);
 
-        //transactionsView.getRecycledViewPool().clear();
-        //transactionsAdapter.notifyDataSetChanged();
+    // Paid back
+    public void SetTransactionsPaidBack(LocalDate date){
+        DatabaseManager dm = DatabaseManager.getInstance();
 
-        //totalsAdapter = new AdapterDetailsTotals(this, _profileID, activityType, keyType);
-        //totalsView.setAdapter(totalsAdapter);
+        // Update transactions
+        for (Transaction t : transactionsAdapter._transactions){
+            // If transaction is an instance transaction
+            if (_budget.GetTransaction(t.GetID()) == null){
 
-        //CheckShowNoDataNotice();
+                // Duplicate transaction and set as paid back, blacklist on parent
+                Transaction parentT = _budget.GetTransaction(t.GetParentID());
+                if (parentT != null) {
+                    t.SetPaidBack(date);
+                    t.SetParentID(parentT.GetID());
+
+                    _budget.AddTransaction(t);
+                    parentT.GetTimePeriod().AddBlacklistDate(t.GetID(), t.GetTimePeriod().GetDate(), true);
+
+                    dm.insert(parentT, true); // Update parent
+                }
+            } else { // Set paid back date
+                t.SetPaidBack(date);
+            }
+            dm.insert(t, true);
+        }
+        RefreshActivity();
     }
 
 }

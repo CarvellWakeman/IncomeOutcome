@@ -10,18 +10,23 @@
         <menu>
             <item
                 android:id="@+id/toolbar_sort_date"
+                android:orderInCategory="0"
                 android:title="@string/sort_date" />
             <item
                 android:id="@+id/toolbar_sort_cost"
+                android:orderInCategory="2"
                 android:title="@string/sort_cost" />
             <item
                 android:id="@+id/toolbar_sort_category"
+                android:orderInCategory="4"
                 android:title="@string/sort_category" />
             <item
                 android:id="@+id/toolbar_sort_source"
+                android:orderInCategory="6"
                 android:title="@string/sort_source" />
             <item
                 android:id="@+id/toolbar_sort_paidby"
+                android:orderInCategory="8"
                 android:title="@string/sort_paidby" />
         </menu>
     </item>
