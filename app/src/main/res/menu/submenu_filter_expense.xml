@@ -10,16 +10,24 @@
         <menu>
             <item
                 android:id="@+id/toolbar_filter_category"
+                android:orderInCategory="0"
                 android:title="@string/filter_category" />
             <item
                 android:id="@+id/toolbar_filter_source"
+                android:orderInCategory="1"
                 android:title="@string/filter_source" />
             <item
                 android:id="@+id/toolbar_filter_paidby"
+                android:orderInCategory="2"
                 android:title="@string/filter_paidby" />
             <item
                 android:id="@+id/toolbar_filter_splitwith"
+                android:orderInCategory="3"
                 android:title="@string/filter_splitwith" />
+            <item
+                android:id="@+id/toolbar_filter_paidback"
+                android:orderInCategory="4"
+                android:title="@string/filter_paidback" />
         </menu>
 
         </item>

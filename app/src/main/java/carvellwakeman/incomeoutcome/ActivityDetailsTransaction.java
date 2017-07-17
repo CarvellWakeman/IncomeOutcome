@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
@@ -12,6 +13,9 @@ import android.widget.*;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class ActivityDetailsTransaction extends AppCompatActivity
@@ -36,16 +40,18 @@ public class ActivityDetailsTransaction extends AppCompatActivity
     FloatingActionButton button_new;
 
     TextView textView_nodata;
+    TextView textView_filters;
 
     Budget _budget;
 
     ImageView button_nextPeriod;
     ImageView button_prevPeriod;
-    //CheckBox checkbox_showall;
+
+    RelativeLayout relativeLayout_filter;
 
     // Sort and Filter
     Helper.SORT_METHODS sortMethod;
-    ArrayList<Helper.FILTER_METHODS> filterMethods;
+    HashMap<Helper.FILTER_METHODS, String> filterMethods;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +62,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
         // Sorting and filtering
         sortMethod = Helper.SORT_METHODS.DATE_UP;
-        filterMethods = new ArrayList<>();
+        filterMethods = new HashMap<>();
 
         //Get the intent that opened this activity
         Intent intent = getIntent();
@@ -94,7 +100,6 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             // Period management
             button_nextPeriod = (ImageView) findViewById(R.id.button_nextPeriod);
             button_prevPeriod = (ImageView) findViewById(R.id.button_prevPeriod);
-            //checkbox_showall = (CheckBox) findViewById(R.id.checkbox_showall);
 
             button_nextPeriod.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
@@ -117,6 +122,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             transactionsView = (RecyclerView) findViewById(R.id.recyclerView_transaction_elements);
 
             textView_nodata = (TextView) findViewById(R.id.textView_transaction_nodata);
+            textView_filters = (TextView) findViewById(R.id.textView_filters);
 
             button_new = (FloatingActionButton) findViewById(R.id.FAB_transaction_new);
             button_new.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +147,15 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                     super.onScrolled(recyclerView, dx, dy);
                     if (dy > 10 && button_new.isShown()) { button_new.hide(); }
                     else if (dy < 0 && !button_new.isShown()){button_new.show(); }
+                }
+            });
+
+            relativeLayout_filter = (RelativeLayout) findViewById(R.id.relativeLayout_filter);
+
+            relativeLayout_filter.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View view) {
+                    filterMethods.clear();
+                    RefreshActivity();
                 }
             });
 
@@ -213,14 +228,14 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                 UpdateTransactionsAdapter();
                 break;
 
-            // Filter
+            // Filters
             case R.id.toolbar_filter_category:
-                break;
             case R.id.toolbar_filter_source:
-                break;
             case R.id.toolbar_filter_paidby:
-                break;
             case R.id.toolbar_filter_splitwith:
+            case R.id.toolbar_filter_paidback:
+                Helper.FILTER_METHODS method = Helper.FILTER_METHODS.values()[item.getOrder()];
+                Helper.OpenDialogFragment(this, DialogFragmentFilter.newInstance(this, _budget, method, getString(Helper.filterTitles.get(method))), true);
                 break;
 
             default:
@@ -290,6 +305,11 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         textView_nodata.setVisibility(View.GONE);
     }
 
+    public void CheckShowFiltersNotice(){
+        relativeLayout_filter.setVisibility( (filterMethods.size() > 0 ? View.VISIBLE : View.GONE) );
+        textView_filters.setText(Helper.FilterString(this, filterMethods));
+    }
+
     public void SetToolbarTitle(){
         if (getSupportActionBar() != null) {
             if (activityType == 0) { getSupportActionBar().setTitle(R.string.title_expenses); }
@@ -304,6 +324,8 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         UpdateTotalsAdapter();
 
         CheckShowNoDataNotice();
+
+        CheckShowFiltersNotice();
 
         SetToolbarTitle();
     }

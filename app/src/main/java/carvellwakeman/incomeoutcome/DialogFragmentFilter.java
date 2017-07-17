@@ -4,6 +4,7 @@ package carvellwakeman.incomeoutcome;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -17,62 +18,61 @@ import java.util.ArrayList;
 
 public class DialogFragmentFilter extends DialogFragment
 {
-    ProfileManager.CallBack _callBack;
-    Profile _profile;
-    ProfileManager.FILTER_METHODS filterMethod;
+    ActivityDetailsTransaction _parent;
+    Budget _budget;
+    Helper.FILTER_METHODS _method;
 
     ArrayAdapter adapter;
 
-    int titleString;
+    String _title;
+
 
     TextView textView_title;
-
     Spinner spinner_filter;
-
     Button button_positive;
     Button button_negative;
 
 
-    static DialogFragmentFilter newInstance(Activity caller, Profile profile, ProfileManager.FILTER_METHODS method, int title, ProfileManager.CallBack callBack) {
+    static DialogFragmentFilter newInstance(ActivityDetailsTransaction parent, Budget budget, Helper.FILTER_METHODS method, String title) {
         DialogFragmentFilter fg = new DialogFragmentFilter();
-        fg._callBack = callBack;
-        Bundle args = new Bundle();
-        args.putSerializable("profile", profile);
-        args.putSerializable("method", method);
-        args.putInt("title", title);
-        fg.setArguments(args);
+        fg._parent = parent;
+        fg._budget = budget;
+        fg._method = method;
+        fg._title = title;
+
 
         switch (method) {
             case CATEGORY:
-                if (ProfileManager.getInstance().GetCategoriesCount() == 0) { ProfileManager.PrintUser(caller, ProfileManager.getString(R.string.tt_nocategories) ); return null; }
-                fg.adapter = new ArrayAdapter<>(caller, R.layout.spinner_dropdown_title, ProfileManager.getInstance().GetCategoriesString());
+                if (CategoryManager.getInstance().GetCategoriesCount() == 0) { Helper.PrintUser(parent, parent.getString(R.string.tt_nocategories) ); return null; }
+                fg.adapter = new ArrayAdapter<>(parent, R.layout.spinner_dropdown_title, CategoryManager.getInstance().GetCategoriesTitles());
                 break;
             case SOURCE:
-                if (profile != null) {
+                if (budget != null) {
                     ArrayList<String> sources = new ArrayList<>();
-                    for (int i = 0; i < profile.GetTransactionsSize(); i++) {
-                        if (!sources.contains(profile.GetTransactionAtIndex(i).GetSourceName())) {
-                            if (profile.GetTransactionAtIndex(i).GetSourceName() != null) {
-                                if (!profile.GetTransactionAtIndex(i).GetSourceName().equals("")) {
-                                    sources.add(profile.GetTransactionAtIndex(i).GetSourceName());
-                                }
+                    for (Transaction tran : budget.GetAllTransactions()){
+                        if (!sources.contains(tran.GetSource())) {
+                            if (tran.GetSource().equals("")){
+                                sources.add(parent.getString(R.string.info_nosource));
+                            } else {
+                                sources.add(tran.GetSource());
                             }
                         }
                     }
-                    if (sources.size() == 0) { ProfileManager.PrintUser(caller, ProfileManager.getString(R.string.tt_nosources) ); return null; }
-                    fg.adapter = new ArrayAdapter<>(caller, R.layout.spinner_dropdown_title, sources);
+
+                    fg.adapter = new ArrayAdapter<>(parent, R.layout.spinner_dropdown_title, sources);
                 }
                 break;
             case PAIDBY:
-                fg.adapter = new ArrayAdapter<>(caller, R.layout.spinner_dropdown_title, ProfileManager.getInstance().GetOtherPeopleIncludingMe());
-                break;
             case SPLITWITH:
-                if (ProfileManager.getInstance().GetOtherPeopleCount() == 0) { ProfileManager.PrintUser(caller, ProfileManager.getString(R.string.tt_nopeople) ); return null; }
-                fg.adapter = new ArrayAdapter<>(caller, R.layout.spinner_dropdown_title, ProfileManager.getInstance().GetOtherPeople());
+                if (PersonManager.getInstance().GetPeopleCount() == 0) { Helper.PrintUser(parent, parent.getString(R.string.tt_nopeople) ); return null; }
+
+                fg.adapter = new ArrayAdapter<>(parent, R.layout.spinner_dropdown_title, PersonManager.getInstance().GetPeopleNames());
+                break;
+            case PAIDBACK:
+                String[] yesno = {parent.getString(R.string.confirm_no), parent.getString(R.string.confirm_yes)};
+                fg.adapter = new ArrayAdapter<>(parent, R.layout.spinner_dropdown_title, yesno);
                 break;
         }
-
-
 
         return fg;
     }
@@ -84,10 +84,6 @@ public class DialogFragmentFilter extends DialogFragment
         View view = inflater.inflate(R.layout.dialog_filter, container, false);
         view.setBackgroundColor(Color.WHITE);
 
-        _profile = (Profile) getArguments().getSerializable("profile");
-        filterMethod = (ProfileManager.FILTER_METHODS) getArguments().getSerializable("method");
-        titleString = getArguments().getInt("title");
-
         textView_title = (TextView) view.findViewById(R.id.textView_dialogtt_title);
 
         spinner_filter = (Spinner) view.findViewById(R.id.spinner_filter);
@@ -96,7 +92,7 @@ public class DialogFragmentFilter extends DialogFragment
         button_negative = (Button) view.findViewById(R.id.button_dialogtt_negative);
 
         //Set title
-        textView_title.setText(titleString);
+        textView_title.setText(_title);
 
         //Populate spinner
         if (adapter != null) {
@@ -104,19 +100,14 @@ public class DialogFragmentFilter extends DialogFragment
             spinner_filter.setAdapter(adapter);
         }
 
+
         //Positive
         button_positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (_profile != null) {
-                    _profile.SetFilterMethod(filterMethod, spinner_filter.getSelectedItem());
-                    SortFilterOptions.DisplayFilter(getActivity(), filterMethod, spinner_filter.getSelectedItem(), _callBack);
-
-                    if (_callBack != null){
-                        _callBack.call();
-                    }
-                }
-                dismiss();
+            _parent.filterMethods.put(_method, spinner_filter.getSelectedItem().toString());
+            _parent.RefreshActivity();
+            dismiss();
             }
         });
 
@@ -129,7 +120,6 @@ public class DialogFragmentFilter extends DialogFragment
         });
 
 
-
         // Inflate the layout to use as dialog or embedded fragment
         return view;
     }
@@ -138,11 +128,6 @@ public class DialogFragmentFilter extends DialogFragment
     /** The system calls this only when creating the layout in a dialog. */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // The only reason you might override this method when using onCreateView() is
-        // to modify any dialog characteristics. For example, the dialog includes a
-        // title by default, but your custom layout might not need it. So here you can
-        // remove the dialog title, but you must call the superclass to get the Dialog.
-
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         //dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

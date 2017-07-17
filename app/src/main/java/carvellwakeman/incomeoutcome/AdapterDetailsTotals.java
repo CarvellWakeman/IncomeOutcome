@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 
 public class AdapterDetailsTotals
@@ -47,7 +48,7 @@ public class AdapterDetailsTotals
 
 
     //Custom transaction getters
-    public void GetTotals(Helper.SORT_METHODS sort, ArrayList<Helper.FILTER_METHODS> filters){
+    public void GetTotals(Helper.SORT_METHODS sort, HashMap<Helper.FILTER_METHODS, String>  filters){
         _totals.clear();
 
         if (activityType == 0) { //Expense

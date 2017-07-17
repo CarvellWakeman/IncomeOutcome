@@ -111,6 +111,7 @@
     <string name="misc_onday"> on day </string>
     <string name="misc_me">Me</string>
     <string name="misc_your">Your</string>
+    <string name="misc_blank"></string>
 
     <!-- Placeholders -->
     <string name="placeholder_title">Title</string>
@@ -167,7 +168,6 @@
     <string name="info_income_summary_value">Earned %1$s</string>
     <string name="info_expense_summary_value">Earned %1$s</string>
     <string name="info_paidby">Paid By %1$s</string>
-    <string name="info_paidback">Paid Back</string>
     <string name="info_paidback_format">Paid %1$s</string>
     <string name="info_nobackup">No Backup Found</string>
     <string name="info_restorebackup">Restore Backup</string>
@@ -181,7 +181,8 @@
     <string name="info_noname"><i>No Source Name</i></string>
     <string name="info_domwarning">* Some months are limited to 28/29/30 days. The last day of the month will be chosen in these cases.</string>
     <string name="info_selected">Selected</string>
-    <string name="info_total_newline">Total\n</string>
+    <string name="info_totals">Totals</string>
+    <string name="info_transactions">Transactions</string>
     <string name="info_select_category">Select a category</string>
     <string name="info_tran_instance_delete">Removing this date may delete a previously modified transaction!</string>
     <string name="info_tran_repl_original">Restore original instance of this transaction?</string>
@@ -294,6 +295,7 @@
     <string name="sort_source">Sort by source</string>
     <string name="sort_paidby">Sort by who paid</string>
     <string name="filter">Filter</string>
+    <string name="filter_by">Filter by </string>
     <string name="filter_none">No Filter</string>
     <string name="filter_category">Filter by category</string>
     <string name="filter_date">Filter by date</string>
@@ -301,6 +303,7 @@
     <string name="filter_source">Filter by source</string>
     <string name="filter_paidby">Filter by who paid</string>
     <string name="filter_splitwith">Filter by transaction split</string>
+    <string name="filter_paidback">Filter by unpaid</string>
 
     <string name="date">Date</string>
     <string name="cost">Cost</string>
@@ -308,6 +311,8 @@
     <string name="source">Source</string>
     <string name="paidby">Who Paid</string>
     <string name="splitwith">Split With</string>
+    <string name="paidback">Paid Back</string>
+    <string name="not_paidback">Not Paid Back</string>
 
 
     <!-- Repeat Info -->

@@ -22,6 +22,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Set;
 
 public class Helper
 {
@@ -45,23 +46,19 @@ public class Helper
     }
     enum FILTER_METHODS
     {
-        NONE,
-        DATE,
-        COST,
+        CATEGORY,
+        SOURCE,
         PAIDBY,
         SPLITWITH,
-        CATEGORY,
-        SOURCE
+        PAIDBACK
     }
 
     // Sort and Filter methods string titles
     private static HashMap<SORT_METHODS, String> sortSubtitles;
     static HashMap<FILTER_METHODS, Integer> filterTitles;
-    static HashMap<FILTER_METHODS, String> filterSubtitles;
     static {
         sortSubtitles = new HashMap<>();
         filterTitles = new HashMap<>();
-        filterSubtitles = new HashMap<>();
 
         sortSubtitles.put(SORT_METHODS.DATE_UP, Helper.getString(R.string.sort) + ":" + Helper.getString(R.string.date));
         sortSubtitles.put(SORT_METHODS.DATE_DOWN, Helper.getString(R.string.sort) + ":" + Helper.getString(R.string.date));
@@ -74,20 +71,11 @@ public class Helper
         sortSubtitles.put(SORT_METHODS.SOURCE_UP, Helper.getString(R.string.sort) + ":" + Helper.getString(R.string.source));
         sortSubtitles.put(SORT_METHODS.SOURCE_DOWN, Helper.getString(R.string.sort) + ":" + Helper.getString(R.string.source));
 
-        filterSubtitles.put(FILTER_METHODS.NONE, Helper.getString(R.string.filter) + ":");
-        filterSubtitles.put(FILTER_METHODS.DATE, Helper.getString(R.string.filter) + ":");
-        filterSubtitles.put(FILTER_METHODS.CATEGORY, Helper.getString(R.string.filter) + ":");
-        filterSubtitles.put(FILTER_METHODS.PAIDBY, Helper.getString(R.string.filter) + ":");
-        filterSubtitles.put(FILTER_METHODS.SPLITWITH, Helper.getString(R.string.filter) + ":");
-        filterSubtitles.put(FILTER_METHODS.SOURCE, Helper.getString(R.string.filter) + ":");
-
-        filterTitles.put(FILTER_METHODS.NONE, R.string.filter_none);
-        filterTitles.put(FILTER_METHODS.DATE, R.string.filter_date);
-        filterTitles.put(FILTER_METHODS.COST, R.string.filter_cost);
-        filterTitles.put(FILTER_METHODS.CATEGORY, R.string.filter_category);
-        filterTitles.put(FILTER_METHODS.PAIDBY, R.string.filter_paidby);
-        filterTitles.put(FILTER_METHODS.SPLITWITH, R.string.filter_splitwith);
-        filterTitles.put(FILTER_METHODS.SOURCE, R.string.filter_source);
+        filterTitles.put(FILTER_METHODS.CATEGORY, R.string.category);
+        filterTitles.put(FILTER_METHODS.SOURCE, R.string.source);
+        filterTitles.put(FILTER_METHODS.PAIDBY, R.string.paidby);
+        filterTitles.put(FILTER_METHODS.SPLITWITH, R.string.splitwith);
+        filterTitles.put(FILTER_METHODS.PAIDBACK, R.string.paidback);
     }
 
     // Sort and filter
@@ -100,6 +88,15 @@ public class Helper
         } else {
             return Helper.SORT_METHODS.values()[target];
         }
+    }
+
+    public static String FilterString(Context context, HashMap<FILTER_METHODS, String> filters){
+        String ret = context.getString(R.string.filter_by) + " ";
+        for (HashMap.Entry<FILTER_METHODS, String> entry : filters.entrySet()){
+            ret += context.getString(filterTitles.get(entry.getKey())) + ":" + entry.getValue() + ", ";
+        }
+        if (ret.length() > 0){ ret = ret.substring(0, ret.length()-2); }
+        return ret;
     }
 
     // Formatters

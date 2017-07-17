@@ -29,7 +29,6 @@ public class ActivityMain extends AppCompatActivity
     RelativeLayout relativeLayout_period;
     ImageView button_nextPeriod;
     ImageView button_prevPeriod;
-    CheckBox checkbox_showall;
 
     LinearLayout progress_loadingData;
 
@@ -122,7 +121,6 @@ public class ActivityMain extends AppCompatActivity
         relativeLayout_period.setVisibility(View.GONE);
         button_nextPeriod = (ImageView) findViewById(R.id.button_nextPeriod);
         button_prevPeriod = (ImageView) findViewById(R.id.button_prevPeriod);
-        checkbox_showall = (CheckBox) findViewById(R.id.checkbox_showall);
 
         //Loading
         progress_loadingData = (LinearLayout) findViewById(R.id.progress_database_loading);
@@ -131,7 +129,6 @@ public class ActivityMain extends AppCompatActivity
         button_nextPeriod.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (_selectedBudget != null){
-                    checkbox_showall.setChecked(false);
                     _selectedBudget.MoveTimePeriod(1);
                     RefreshOverview();
                 }
@@ -140,20 +137,11 @@ public class ActivityMain extends AppCompatActivity
         button_prevPeriod.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (_selectedBudget != null){
-                    checkbox_showall.setChecked(false);
                     _selectedBudget.MoveTimePeriod(-1);
                     RefreshOverview();
                 }
             }
         });
-        checkbox_showall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (_selectedBudget != null){
-                    RefreshOverview();
-                }
-            }
-        });
-
 
         //Configure toolbar
         //toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);

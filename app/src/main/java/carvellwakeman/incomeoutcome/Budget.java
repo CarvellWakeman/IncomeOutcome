@@ -133,24 +133,58 @@ public class Budget implements java.io.Serializable, BaseEntity
     public ArrayList<Transaction> GetAllTransactions() { return _transactions; }
     public ArrayList<Transaction> GetTransactions(Transaction.TRANSACTION_TYPE type) { return GetTransactions(null, null, type, Helper.SORT_METHODS.DATE_UP, null); }
     public ArrayList<Transaction> GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE type){ return GetTransactions(GetStartDate(), GetEndDate(), type, Helper.SORT_METHODS.DATE_UP, null); }
-    public ArrayList<Transaction> GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE type, Helper.SORT_METHODS sort, ArrayList<Helper.FILTER_METHODS> filters){
+    public ArrayList<Transaction> GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE type, Helper.SORT_METHODS sort, HashMap<Helper.FILTER_METHODS, String>  filters){
         return GetTransactions(GetStartDate(), GetEndDate(), type, sort, filters);
     }
-    public ArrayList<Transaction> GetTransactions(LocalDate startDate, LocalDate endDate, Transaction.TRANSACTION_TYPE type, final Helper.SORT_METHODS sort, ArrayList<Helper.FILTER_METHODS> filters){
+    public ArrayList<Transaction> GetTransactions(LocalDate startDate, LocalDate endDate, Transaction.TRANSACTION_TYPE type, final Helper.SORT_METHODS sort, HashMap<Helper.FILTER_METHODS, String>  filters){
+        Helper.Log(App.GetContext(), "Budget", "GetTransactions");
 
-        ArrayList<Transaction> tmp = new ArrayList<>();
-        for (int i = 0; i < _transactions.size(); i++) {
-            tmp.addAll(_transactions.get(i).GetOccurrences(startDate, endDate, type));
+        ArrayList<Transaction> ret = new ArrayList<>();
+        ArrayList<Transaction> occurrences;
+        for (Transaction tran : _transactions){
+            occurrences = tran.GetOccurrences(startDate, endDate, type);
+
+            // Filtering
+            if (filters.size() > 0){
+                CategoryManager cm = CategoryManager.getInstance();
+                PersonManager pm = PersonManager.getInstance();
+
+                for (Transaction occ : occurrences) {
+                    if (filters.containsKey(Helper.FILTER_METHODS.CATEGORY)) {
+                        if (cm.GetCategory(occ.GetCategory()).GetTitle().equals(filters.get(Helper.FILTER_METHODS.CATEGORY))){ ret.add(occ); }
+                    }
+                    if (filters.containsKey(Helper.FILTER_METHODS.SOURCE)) {
+                        if (occ.GetSource().equals(filters.get(Helper.FILTER_METHODS.SOURCE))){ ret.add(occ); }
+                    }
+                    if (filters.containsKey(Helper.FILTER_METHODS.PAIDBY)) {
+                        if (pm.GetPerson(occ.GetPaidBy()).GetName().equals(filters.get(Helper.FILTER_METHODS.PAIDBY))){ ret.add(occ); }
+                    }
+                    if (filters.containsKey(Helper.FILTER_METHODS.SPLITWITH)) {
+                        for (Integer id : occ.GetSplitArray().keySet()) {
+                            if (pm.GetPerson(id).GetName().equals(filters.get(Helper.FILTER_METHODS.SPLITWITH))) {
+                                ret.add(occ);
+                                break;
+                            }
+                        }
+                    }
+                    if (filters.containsKey(Helper.FILTER_METHODS.PAIDBACK)) {
+                        if (occ.GetPaidBack() != null && filters.get(Helper.FILTER_METHODS.PAIDBACK).equals(Helper.getString(R.string.confirm_yes)) ) { ret.add(occ); }
+                        else if (occ.GetPaidBack() == null && filters.get(Helper.FILTER_METHODS.PAIDBACK).equals(Helper.getString(R.string.confirm_no)) ) { ret.add(occ); }
+                    }
+                }
+            } else {
+                ret.addAll(occurrences);
+            }
         }
 
         // Sorting
         if (sort != null) {
-            Collections.sort(tmp, new Comparator<Transaction>() {
+            Collections.sort(ret, new Comparator<Transaction>() {
                 @Override public int compare(Transaction t1, Transaction t2) { return t1.sortCompare(t2, sort); }
             });
         }
 
-        return tmp;
+        return ret;
     }
 
 

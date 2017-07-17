@@ -2,8 +2,9 @@ STAGING:
 	Making Transaction totals working
 	Paidback working (not saving in database )
 	Sorting working
-		
-	NEXT:Get filtering remade
+	Filtering working
+	
+	NEXT:Test, then overview page
 	
 
 TODO

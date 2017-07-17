@@ -21,6 +21,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Filter;
 
 public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetailsTransaction.TransactionViewHolder>
@@ -53,7 +54,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
 
     //Custom transaction getters
-    public void GetTransactions(Helper.SORT_METHODS sort, ArrayList<Helper.FILTER_METHODS> filters){
+    public void GetTransactions(Helper.SORT_METHODS sort, HashMap<Helper.FILTER_METHODS, String> filters){
         _transactions.clear();
 
         if (activityType == 0) { //Expense
