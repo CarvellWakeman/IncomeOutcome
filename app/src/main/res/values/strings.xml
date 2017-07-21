@@ -130,8 +130,6 @@
     <string name="tt_theypaid">They Paid </string>
     <string name="tt_percentage_split">Split</string>
     <string name="tt_not_split">Not Split</string>
-    <string name="tt_showmore">Show More</string>
-    <string name="tt_showall">Show All</string>
     <string name="tt_showlegend">Legend</string>
     <string name="tt_personname">Person Name</string>
     <string name="tt_budgetname">Budget Title</string>
@@ -244,6 +242,8 @@
     <string name="action_setpaidback">Set Paid Back Date</string>
     <string name="action_addsplit">+ Add person</string>
     <string name="action_removesplit">- Remove person</string>
+    <string name="action_showmore">Show More</string>
+    <string name="action_showall">Show All</string>
 
 
     <!-- Confirmation -->
