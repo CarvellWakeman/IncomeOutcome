@@ -3,8 +3,10 @@ STAGING:
 	Paidback working (not saving in database )
 	Sorting working
 	Filtering working
+	Totals bugfix
+	Added show all
 	
-	NEXT:Test, then overview page
+	NEXT:Test, then income, then overview page
 	
 
 TODO

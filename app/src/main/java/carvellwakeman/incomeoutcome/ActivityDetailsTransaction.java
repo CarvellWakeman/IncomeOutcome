@@ -222,18 +222,18 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                 }, _budget), true);
                 return true;
             case R.id.toolbar_showall: // Show all transactions
-                if (prev_startDate == null && prev_endDate == null) {
+                if (_budget.GetStartDate() == null && _budget.GetEndDate() == null && prev_startDate != null && prev_endDate != null) {
+                    _budget.SetStartDate(prev_startDate);
+                    _budget.SetEndDate(prev_endDate);
+
+                    prev_startDate = null;
+                    prev_endDate = null;
+                } else {
                     prev_startDate = _budget.GetStartDate();
                     prev_endDate = _budget.GetEndDate();
 
                     _budget.SetStartDate(null);
                     _budget.SetEndDate(null);
-                } else {
-                    _budget.SetStartDate(prev_startDate);
-                    _budget.SetEndDate(prev_endDate);
-                    
-                    prev_startDate = null;
-                    prev_endDate = null;
                 }
 
                 RefreshActivity();

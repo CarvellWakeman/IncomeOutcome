@@ -52,15 +52,19 @@ public class AdapterDetailsTotals
         _totals.clear();
 
         if (activityType == 0) { //Expense
+            Double currVal = 0.0d;
             for (Transaction t : _budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Expense, sort, filters)){
                 for (HashMap.Entry<Integer, Double> entry : t.GetSplitArray().entrySet()){
-                    Double currVal = (_totals.get(entry.getKey()) != null ? _totals.get(entry.getKey()) : 0.0d);
 
                     // You paid or you were involved in the payment
-                    if ( t.GetPaidBy() == Person.Me.GetID() && entry.getKey() != Person.Me.GetID())  {
+                    if ( t.GetPaidBy() == Person.Me.GetID()       && entry.getKey() != Person.Me.GetID())  {
+                        currVal = (_totals.get(entry.getKey()) != null ? _totals.get(entry.getKey()) : 0.0d);
+
                         _totals.put(entry.getKey(), currVal + t.GetDebt(entry.getKey(), Person.Me.GetID()));
                     } else if (t.GetPaidBy() != Person.Me.GetID() && entry.getKey() == Person.Me.GetID()){
-                        _totals.put(t.GetPaidBy(), currVal - t.GetDebt(Person.Me.GetID(), t.GetPaidBy()));
+                        currVal = (_totals.get(t.GetPaidBy()) != null ? _totals.get(t.GetPaidBy()) : 0.0d);
+
+                        _totals.put(t.GetPaidBy(),  currVal - t.GetDebt(Person.Me.GetID(), t.GetPaidBy()));
                     }
 
                 }
