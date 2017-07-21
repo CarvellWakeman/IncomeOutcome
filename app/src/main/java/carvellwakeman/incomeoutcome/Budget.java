@@ -150,27 +150,43 @@ public class Budget implements java.io.Serializable, BaseEntity
                 PersonManager pm = PersonManager.getInstance();
 
                 for (Transaction occ : occurrences) {
-                    if (filters.containsKey(Helper.FILTER_METHODS.CATEGORY)) {
-                        if (cm.GetCategory(occ.GetCategory()).GetTitle().equals(filters.get(Helper.FILTER_METHODS.CATEGORY))){ ret.add(occ); }
-                    }
-                    if (filters.containsKey(Helper.FILTER_METHODS.SOURCE)) {
-                        if (occ.GetSource().equals(filters.get(Helper.FILTER_METHODS.SOURCE))){ ret.add(occ); }
-                    }
-                    if (filters.containsKey(Helper.FILTER_METHODS.PAIDBY)) {
-                        if (pm.GetPerson(occ.GetPaidBy()).GetName().equals(filters.get(Helper.FILTER_METHODS.PAIDBY))){ ret.add(occ); }
-                    }
-                    if (filters.containsKey(Helper.FILTER_METHODS.SPLITWITH)) {
-                        for (Integer id : occ.GetSplitArray().keySet()) {
-                            if (pm.GetPerson(id).GetName().equals(filters.get(Helper.FILTER_METHODS.SPLITWITH))) {
-                                ret.add(occ);
+                    int filtersMet = 0;
+                    for (HashMap.Entry<Helper.FILTER_METHODS, String> entry : filters.entrySet()){
+                        switch (entry.getKey()){
+                            case CATEGORY:
+                                if (cm.GetCategory(occ.GetCategory()).GetTitle().equals(filters.get(Helper.FILTER_METHODS.CATEGORY))){ filtersMet++; }
                                 break;
-                            }
+                            case SOURCE:
+                                if (occ.GetSource().equals(filters.get(Helper.FILTER_METHODS.SOURCE))){ filtersMet++; }
+                                break;
+                            case PAIDBY:
+                                if (pm.GetPerson(occ.GetPaidBy()).GetName().equals(filters.get(Helper.FILTER_METHODS.PAIDBY))){ filtersMet++; }
+                                break;
+                            case SPLITWITH:
+                                // Not split short circuit
+                                if (filters.get(Helper.FILTER_METHODS.SPLITWITH).equals(Helper.getString(R.string.tt_not_split)) && !occ.IsSplit()) {
+                                    filtersMet++;
+                                    break;
+                                } else {
+                                    for (Integer id : occ.GetSplitArray().keySet()) {
+                                        if (pm.GetPerson(id).GetName().equals(filters.get(Helper.FILTER_METHODS.SPLITWITH))) {
+                                            filtersMet++;
+                                            break;
+                                        }
+                                    }
+                                }
+                                break;
+                            case PAIDBACK:
+                                if (occ.GetPaidBack() != null && filters.get(Helper.FILTER_METHODS.PAIDBACK).equals(Helper.getString(R.string.confirm_yes)) ) { filtersMet++; }
+                                else if (occ.GetPaidBack() == null && filters.get(Helper.FILTER_METHODS.PAIDBACK).equals(Helper.getString(R.string.confirm_no)) ) { filtersMet++; }
+                                break;
                         }
                     }
-                    if (filters.containsKey(Helper.FILTER_METHODS.PAIDBACK)) {
-                        if (occ.GetPaidBack() != null && filters.get(Helper.FILTER_METHODS.PAIDBACK).equals(Helper.getString(R.string.confirm_yes)) ) { ret.add(occ); }
-                        else if (occ.GetPaidBack() == null && filters.get(Helper.FILTER_METHODS.PAIDBACK).equals(Helper.getString(R.string.confirm_no)) ) { ret.add(occ); }
+                    // All filters met, add
+                    if (filtersMet == filters.size()){
+                        ret.add(occ);
                     }
+
                 }
             } else {
                 ret.addAll(occurrences);

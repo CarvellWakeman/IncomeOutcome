@@ -112,12 +112,14 @@ public class DialogFragmentRepeat extends DialogFragment
                         break;
                 }
 
-                //Sent timeperiod back to parent
+                // Create intent
                 Intent intent = new Intent();
                 intent.putExtra("timeperiod", _timePeriod);
-                //Helper.Log(App.GetContext(),  "DFR", "Returning:" + _timePeriod.GetID());
-                //Helper.Log(App.GetContext(),  "DFR", "FO Returning:" + _timePeriod.GetFirstOccurrence().toString());
 
+                // Close soft keyboard
+                Helper.hideSoftKeyboard(_parent, button_positive);
+
+                // Send timeperiod back to parent
                 _parent.onActivityResult(4,1,intent);
                 dismiss();
             }
@@ -248,6 +250,10 @@ public class DialogFragmentRepeat extends DialogFragment
                             } catch (Exception ex) {}
 
                             _timePeriod.SetRepeatUntilDate(null);
+
+                            // Open keyboard
+                            Helper.showSoftKeyboard(_parent, editText_repeatNumberTimes);
+
                             break;
                     }
                 }

@@ -63,10 +63,15 @@ public class DialogFragmentFilter extends DialogFragment
                 }
                 break;
             case PAIDBY:
+                ArrayList<String> peopleIncludingMe = PersonManager.getInstance().GetPeopleNames();
+                peopleIncludingMe.add(parent.getString(R.string.format_me));
+                fg.adapter = new ArrayAdapter<>(parent, R.layout.spinner_dropdown_title, peopleIncludingMe);
+                break;
             case SPLITWITH:
                 if (PersonManager.getInstance().GetPeopleCount() == 0) { Helper.PrintUser(parent, parent.getString(R.string.tt_nopeople) ); return null; }
-
-                fg.adapter = new ArrayAdapter<>(parent, R.layout.spinner_dropdown_title, PersonManager.getInstance().GetPeopleNames());
+                ArrayList<String> peopleIncludingNotSplit = PersonManager.getInstance().GetPeopleNames();
+                peopleIncludingNotSplit.add(parent.getString(R.string.tt_not_split));
+                fg.adapter = new ArrayAdapter<>(parent, R.layout.spinner_dropdown_title, peopleIncludingNotSplit);
                 break;
             case PAIDBACK:
                 String[] yesno = {parent.getString(R.string.confirm_no), parent.getString(R.string.confirm_yes)};

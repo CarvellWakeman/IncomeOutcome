@@ -13,7 +13,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class DialogFragmentManagePPC extends DialogFragment
+public class DialogFragmentManageBPC extends DialogFragment
 {
     AppCompatActivity _parent;
 
@@ -33,8 +33,8 @@ public class DialogFragmentManagePPC extends DialogFragment
     Button button_delete;
 
 
-    static DialogFragmentManagePPC newInstance(AppCompatActivity parent, String title, String subtitle, String objInput, ParentCallBack editFunc, ParentCallBack selectFunc, ParentCallBack deleteFunc) {
-        DialogFragmentManagePPC fg = new DialogFragmentManagePPC();
+    static DialogFragmentManageBPC newInstance(AppCompatActivity parent, String title, String subtitle, String objInput, ParentCallBack editFunc, ParentCallBack selectFunc, ParentCallBack deleteFunc) {
+        DialogFragmentManageBPC fg = new DialogFragmentManageBPC();
 
         fg._parent = parent;
         fg._title = title;
@@ -57,7 +57,7 @@ public class DialogFragmentManagePPC extends DialogFragment
      of whether it's being displayed as a dialog or an embedded fragment. */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_manageppc, container, false);
+        View view = inflater.inflate(R.layout.dialog_managebpc, container, false);
         view.setBackgroundColor(Color.WHITE);
 
         textView_title = (TextView) view.findViewById(R.id.textView_dialogppc_title);
@@ -83,7 +83,7 @@ public class DialogFragmentManagePPC extends DialogFragment
         button_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (_editFunc != null) { _editFunc.call(_objInput, DialogFragmentManagePPC.this); }
+                if (_editFunc != null) { _editFunc.call(_objInput, DialogFragmentManageBPC.this); }
             }
         });
 
@@ -91,7 +91,7 @@ public class DialogFragmentManagePPC extends DialogFragment
         button_select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (_selectFunc != null) { _selectFunc.call(_objInput, DialogFragmentManagePPC.this); }
+                if (_selectFunc != null) { _selectFunc.call(_objInput, DialogFragmentManageBPC.this); }
             }
         });
 
@@ -99,7 +99,7 @@ public class DialogFragmentManagePPC extends DialogFragment
         button_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (_deleteFunc != null) { _deleteFunc.call(_objInput, DialogFragmentManagePPC.this); }
+                if (_deleteFunc != null) { _deleteFunc.call(_objInput, DialogFragmentManageBPC.this); }
             }
         });
 

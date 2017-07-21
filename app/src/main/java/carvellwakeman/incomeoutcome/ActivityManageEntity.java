@@ -1,9 +1,7 @@
 package carvellwakeman.incomeoutcome;
 
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -234,10 +232,10 @@ public abstract class ActivityManageEntity<T extends BaseEntity> extends AppComp
     public abstract T GetEntity();
 
     // Edit entity
-    public abstract void EditEntity(final Integer id, DialogFragmentManagePPC dialogFragment);
+    public abstract void EditEntity(final Integer id, DialogFragmentManageBPC dialogFragment);
 
     // Delete entity
-    public abstract void DeleteEntity(final Integer id, final DialogFragmentManagePPC dialogFragment);
+    public abstract void DeleteEntity(final Integer id, final DialogFragmentManageBPC dialogFragment);
 
     // Select entity
     public abstract void SelectEntity(T entity);

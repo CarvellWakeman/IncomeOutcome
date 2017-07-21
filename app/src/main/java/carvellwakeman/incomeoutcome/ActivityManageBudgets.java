@@ -85,7 +85,7 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
 
     //Edit budget
     @Override
-    public void EditEntity(final Integer id, DialogFragmentManagePPC dialogFragment){
+    public void EditEntity(final Integer id, DialogFragmentManageBPC dialogFragment){
         Budget br = BudgetManager.getInstance().GetBudget(id);
         if (br != null) {
             menuState = MENU_STATE.EDIT;
@@ -116,7 +116,7 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
 
     //Delete budget
     @Override
-    public void DeleteEntity(Integer id, final DialogFragmentManagePPC dialogFragment){
+    public void DeleteEntity(Integer id, final DialogFragmentManageBPC dialogFragment){
         final Budget br = BudgetManager.getInstance().GetBudget(id);
         if (br != null) {
             if (br.GetTransactionCount() > 0 && BudgetManager.getInstance().GetBudgetCount() > 1) {
@@ -156,7 +156,7 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
     }
 
     // Select budget (budget.Selected)
-    public void SelectBudget(Integer id, final DialogFragmentManagePPC dialogFragment){
+    public void SelectBudget(Integer id, final DialogFragmentManageBPC dialogFragment){
         Budget budget = BudgetManager.getInstance().GetBudget(id);
         if (budget != null) {
             // Set selected budget

@@ -5,22 +5,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.*;
-import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.*;
 import android.widget.*;
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
-
-import java.util.Random;
 
 public class ActivityManageCategories extends ActivityManageEntity<Category> {
 
@@ -145,7 +133,7 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
 
     //Edit category
     @Override
-    public void EditEntity(final Integer id, DialogFragmentManagePPC dialogFragment){
+    public void EditEntity(final Integer id, DialogFragmentManageBPC dialogFragment){
         Category cr = CategoryManager.getInstance().GetCategory(id);
         if (cr != null) {
             menuState = MENU_STATE.EDIT;
@@ -178,7 +166,7 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
 
     //Delete category
     @Override
-    public void DeleteEntity(final Integer id, final DialogFragmentManagePPC dialogFragment) {
+    public void DeleteEntity(final Integer id, final DialogFragmentManageBPC dialogFragment) {
         final Category cr = CategoryManager.getInstance().GetCategory(id);
         if (cr != null) {
             new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle).setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {

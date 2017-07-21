@@ -204,7 +204,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
 
 
     //Import Database
-    public void DBImport(final String path, final DialogFragmentManagePPC dialogFragment){
+    public void DBImport(final String path, final DialogFragmentManageBPC dialogFragment){
 
         final File file = DatabaseManager.getInstance().getDatabaseByPath(path);
         final int version = SQLiteDatabase.openDatabase(file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
@@ -245,7 +245,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
             Helper.PrintUser(this, Helper.getString(R.string.error_database_version_newer));
         }
     }
-    public void DBDelete(final String path, final DialogFragmentManagePPC dialogFragment){
+    public void DBDelete(final String path, final DialogFragmentManageBPC dialogFragment){
         new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle)
                 .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                     @Override

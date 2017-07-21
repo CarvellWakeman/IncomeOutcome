@@ -129,6 +129,7 @@
     <string name="tt_ipaid">I Paid</string>
     <string name="tt_theypaid">They Paid </string>
     <string name="tt_percentage_split">Split</string>
+    <string name="tt_not_split">Not Split</string>
     <string name="tt_showmore">Show More</string>
     <string name="tt_showall">Show All</string>
     <string name="tt_showlegend">Legend</string>

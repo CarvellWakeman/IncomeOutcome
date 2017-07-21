@@ -4,18 +4,7 @@ package carvellwakeman.incomeoutcome;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.*;
-import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.*;
-import android.widget.*;
 
 public class ActivityManagePeople extends ActivityManageEntity<Person> {
 
@@ -44,7 +33,7 @@ public class ActivityManagePeople extends ActivityManageEntity<Person> {
 
     // Edit person
     @Override
-    public void EditEntity(Integer id, final DialogFragmentManagePPC dialogFragment){
+    public void EditEntity(Integer id, final DialogFragmentManageBPC dialogFragment){
 
         editingEntity = PersonManager.getInstance().GetPerson(id);
         if (editingEntity != null){
@@ -63,7 +52,7 @@ public class ActivityManagePeople extends ActivityManageEntity<Person> {
 
     // Delete person
     @Override
-    public void DeleteEntity(final Integer id, final DialogFragmentManagePPC dialogFragment){
+    public void DeleteEntity(final Integer id, final DialogFragmentManageBPC dialogFragment){
         if (id != 0) {
             new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle)
                     .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {

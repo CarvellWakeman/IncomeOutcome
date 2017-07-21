@@ -17,7 +17,7 @@ import android.widget.*;
 public class DialogFragmentTransferTransaction extends DialogFragment
 {
     ActivityManageBudgets _parent;
-    DialogFragmentManagePPC _dialog;
+    DialogFragmentManageBPC _dialog;
 
     Budget _budget;
 
@@ -33,7 +33,7 @@ public class DialogFragmentTransferTransaction extends DialogFragment
     NpaLinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
 
-    static DialogFragmentTransferTransaction newInstance(ActivityManageBudgets parent, DialogFragmentManagePPC dialog, Budget budget) {
+    static DialogFragmentTransferTransaction newInstance(ActivityManageBudgets parent, DialogFragmentManageBPC dialog, Budget budget) {
         DialogFragmentTransferTransaction fg = new DialogFragmentTransferTransaction();
         fg._parent = parent;
         fg._dialog = dialog;
