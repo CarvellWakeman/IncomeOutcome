@@ -247,6 +247,7 @@
     <string name="action_removesplit">- Remove person</string>
     <string name="action_showmore">Show More</string>
     <string name="action_showall">Show All</string>
+    <string name="action_showrange">Show Range</string>
 
 
     <!-- Confirmation -->
@@ -298,6 +299,8 @@
     <string name="sort_category">Sort by category</string>
     <string name="sort_source">Sort by source</string>
     <string name="sort_paidby">Sort by who paid</string>
+    <string name="sort_asc">Asc.</string>
+    <string name="sort_dec">Dec.</string>
     <string name="filter">Filter</string>
     <string name="filter_by">Filter by </string>
     <string name="filter_none">No Filter</string>

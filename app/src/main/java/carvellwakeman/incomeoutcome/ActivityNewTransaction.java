@@ -311,7 +311,8 @@ public class ActivityNewTransaction extends AppCompatActivity
                     });
 
                 } else if (_activitytype == 1) { // TODO Income
-
+                    checkBox_split.setVisibility(View.GONE);
+                    button_selectCategory.setVisibility(View.GONE);
                 }
 
                 // Add user as a split

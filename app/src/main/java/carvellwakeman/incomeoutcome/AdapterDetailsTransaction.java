@@ -36,10 +36,10 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
     ArrayList<Transaction> _transactions;
 
     //Activity type (Expense or income) (0 or 1)
-    int activityType = -1;
+    Transaction.TRANSACTION_TYPE activityType = Transaction.TRANSACTION_TYPE.Expense;
 
     //Constructor
-    public AdapterDetailsTransaction(ActivityDetailsTransaction parent, int budgetID, int activityType)
+    public AdapterDetailsTransaction(ActivityDetailsTransaction parent, int budgetID, Transaction.TRANSACTION_TYPE activityType)
     {
         _budget = BudgetManager.getInstance().GetBudget(budgetID);
 
@@ -57,10 +57,10 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
     public void GetTransactions(Helper.SORT_METHODS sort, HashMap<Helper.FILTER_METHODS, String> filters){
         _transactions.clear();
 
-        if (activityType == 0) { //Expense
+        if (activityType == Transaction.TRANSACTION_TYPE.Expense) { //Expense
             _transactions.addAll(_budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Expense, sort, filters));
         }
-        else if (activityType == 1) { //Income
+        else if (activityType == Transaction.TRANSACTION_TYPE.Income) { //Income
             _transactions.addAll(_budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Income, sort, filters));
         }
     }
@@ -111,7 +111,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     Helper.Log(App.GetContext(), "AdaDetTran", "Edit(Instance) "+tran.GetID()+" of repeating tran " + tranp.GetID());
 
                     intent = new Intent(_activity, ActivityNewTransaction.class);
-                    intent.putExtra("activitytype", activityType);
+                    intent.putExtra("activitytype", activityType.ordinal());
                     intent.putExtra("budget", _budget.GetID());
                     // If this 'instance' was edited previously (and now exists in the DB)
                     if (_budget.GetTransaction(tran.GetID()) != null) {
@@ -129,7 +129,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     Helper.Log(App.GetContext(), "AdaDetTran", "Edit(All) of " + tranp.GetID());
 
                     intent = new Intent(_activity, ActivityNewTransaction.class);
-                    intent.putExtra("activitytype", activityType);
+                    intent.putExtra("activitytype", activityType.ordinal());
                     intent.putExtra("budget", _budget.GetID());
                     intent.putExtra("transaction", tranp.GetID());
                     intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Edit.ordinal());
@@ -284,7 +284,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                 cost.setText(Helper.currencyFormat.format(transaction.GetValue()));
 
                 //Activity specific differences
-                if (activityType == 0) { //Expenses
+                if (activityType == Transaction.TRANSACTION_TYPE.Expense) { //Expenses
                     //Category
                     if (transaction.GetCategory() == 0) {
                         category.setText(R.string.info_nocategory);
@@ -378,9 +378,12 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     }
 
                 }
-                else if (activityType == 1){ //Income
+                else if (activityType == Transaction.TRANSACTION_TYPE.Income){ //Income
                     //Category
                     category.setVisibility(View.GONE);
+
+                    //PaidBy
+                    paidBy.setVisibility(View.GONE);
 
                     //Color circle
                     colorbar.setColorFilter(Helper.ColorFromString(transaction.GetSource()));

@@ -21,7 +21,7 @@ import java.util.Set;
 public class ActivityDetailsTransaction extends AppCompatActivity
 {
     //Activity type (Expense or income) (0 or 1)
-    int activityType = -1;
+    Transaction.TRANSACTION_TYPE activityType = Transaction.TRANSACTION_TYPE.Expense;
 
     ArrayList<Integer> toolbar_menus;
 
@@ -72,22 +72,19 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         Intent intent = getIntent();
 
         //Determine if this is an expense or income activity
-        activityType = intent.getIntExtra("activitytype", -1);
+        activityType = Transaction.TRANSACTION_TYPE.values()[intent.getIntExtra("activitytype", 0)];
 
         //Toolbar menu options (dependent upon transaction type)
-        if (activityType == -1){ //None (error)
-            Helper.PrintUser(this, "Error opening details activity, no type (expense/income) specified.");
-            finish();
-        }
-        else if (activityType == 0) { //Expense
+        if (activityType == Transaction.TRANSACTION_TYPE.Expense) { //Expense
             toolbar_menus.add(R.menu.submenu_sort_expense);
             toolbar_menus.add(R.menu.submenu_filter_expense);
             toolbar_menus.add(R.menu.submenu_paidback);
         }
-        else if (activityType == 1) { //Income
+        else if (activityType == Transaction.TRANSACTION_TYPE.Income) { //Income
             toolbar_menus.add(R.menu.submenu_sort_income);
             toolbar_menus.add(R.menu.submenu_filter_income);
         }
+        toolbar_menus.add(R.menu.submenu_showall);
 
 
         //Get transaction data
@@ -223,12 +220,16 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
                     prev_startDate = null;
                     prev_endDate = null;
+
+                    item.setTitle(getString(R.string.action_showall));
                 } else {
                     prev_startDate = _budget.GetStartDate();
                     prev_endDate = _budget.GetEndDate();
 
                     _budget.SetStartDate(null);
                     _budget.SetEndDate(null);
+
+                    item.setTitle(getString(R.string.action_showrange));
                 }
 
                 RefreshActivity();
@@ -251,7 +252,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             case R.id.toolbar_filter_splitwith:
             case R.id.toolbar_filter_paidback:
                 Helper.FILTER_METHODS method = Helper.FILTER_METHODS.values()[item.getOrder()];
-                Helper.OpenDialogFragment(this, DialogFragmentFilter.newInstance(this, _budget, method, getString(Helper.filterTitles.get(method))), true);
+                Helper.OpenDialogFragment(this, DialogFragmentFilter.newInstance(this, _budget, method, getString(Helper.filterTitles.get(method)), activityType), true);
                 break;
 
             default:
@@ -328,8 +329,8 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
     public void SetToolbarTitle(){
         if (getSupportActionBar() != null) {
-            if (activityType == 0) { getSupportActionBar().setTitle(R.string.title_expenses); }
-            else if (activityType == 1) { getSupportActionBar().setTitle(R.string.title_income); }
+            if (activityType == Transaction.TRANSACTION_TYPE.Expense) { getSupportActionBar().setTitle(R.string.title_expenses); }
+            else if (activityType == Transaction.TRANSACTION_TYPE.Income) { getSupportActionBar().setTitle(R.string.title_income); }
 
             getSupportActionBar().setSubtitle(_budget.GetDateFormatted());
         }

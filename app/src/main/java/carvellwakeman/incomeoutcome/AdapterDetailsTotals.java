@@ -27,10 +27,10 @@ public class AdapterDetailsTotals
     SparseArray<Double> _totals; // Money owed to you, negative means you owe them
 
     //Activity type (Expense or income) (0 or 1)
-    int activityType = -1;
+    Transaction.TRANSACTION_TYPE activityType = Transaction.TRANSACTION_TYPE.Expense;
 
     //Constructor
-    public AdapterDetailsTotals(ActivityDetailsTransaction parent, ViewGroup container, int budgetID, int activityType)
+    public AdapterDetailsTotals(ActivityDetailsTransaction parent, ViewGroup container, int budgetID, Transaction.TRANSACTION_TYPE activityType)
     {
         _budget = BudgetManager.getInstance().GetBudget(budgetID);
 
@@ -51,7 +51,7 @@ public class AdapterDetailsTotals
     public void GetTotals(Helper.SORT_METHODS sort, HashMap<Helper.FILTER_METHODS, String>  filters){
         _totals.clear();
 
-        if (activityType == 0) { //Expense
+        if (activityType == Transaction.TRANSACTION_TYPE.Expense) { //Expense
             Double currVal = 0.0d;
             for (Transaction t : _budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Expense, sort, filters)){
                 for (HashMap.Entry<Integer, Double> entry : t.GetSplitArray().entrySet()){
@@ -70,8 +70,7 @@ public class AdapterDetailsTotals
                 }
             }
         }
-        else if (activityType == 1) { //Income
-            //_totals.addAll(_budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Income ));
+        else if (activityType == Transaction.TRANSACTION_TYPE.Income) { //Income ( do nothing )
         }
     }
 
@@ -130,7 +129,7 @@ public class AdapterDetailsTotals
         }
 
         public void bind(String a, String b, Double v){
-            if (activityType == 0) { //Expenses
+            if (activityType == Transaction.TRANSACTION_TYPE.Expense) { //Expenses
                 if (v == 0.0d){
                     personA.setVisibility(View.GONE);
                     personB.setText(a);
@@ -156,7 +155,7 @@ public class AdapterDetailsTotals
                     }
                 }
             }
-            else if (activityType == 1) { //Income
+            else if (activityType == Transaction.TRANSACTION_TYPE.Income) { //Income
                 personB.setVisibility(View.GONE);
                 whoOwesWho.setVisibility(View.GONE);
                 value.setVisibility(View.VISIBLE);

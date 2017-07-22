@@ -131,7 +131,13 @@ public class Budget implements java.io.Serializable, BaseEntity
         return null;
     }
     public ArrayList<Transaction> GetAllTransactions() { return _transactions; }
-    public ArrayList<Transaction> GetTransactions(Transaction.TRANSACTION_TYPE type) { return GetTransactions(null, null, type, Helper.SORT_METHODS.DATE_UP, null); }
+    public ArrayList<Transaction> GetTransactions(Transaction.TRANSACTION_TYPE type) {
+        ArrayList<Transaction> temp = new ArrayList<>();
+        for (Transaction t : _transactions){
+            if (t.GetType() == type){ temp.add(t); }
+        }
+        return temp;
+    }
     public ArrayList<Transaction> GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE type){ return GetTransactions(GetStartDate(), GetEndDate(), type, Helper.SORT_METHODS.DATE_UP, null); }
     public ArrayList<Transaction> GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE type, Helper.SORT_METHODS sort, HashMap<Helper.FILTER_METHODS, String>  filters){
         return GetTransactions(GetStartDate(), GetEndDate(), type, sort, filters);
@@ -145,7 +151,7 @@ public class Budget implements java.io.Serializable, BaseEntity
             occurrences = tran.GetOccurrences(startDate, endDate, type);
 
             // Filtering
-            if (filters.size() > 0){
+            if (filters != null && filters.size() > 0){
                 CategoryManager cm = CategoryManager.getInstance();
                 PersonManager pm = PersonManager.getInstance();
 

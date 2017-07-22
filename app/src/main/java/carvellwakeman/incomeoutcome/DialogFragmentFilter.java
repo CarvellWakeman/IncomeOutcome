@@ -1,13 +1,9 @@
 package carvellwakeman.incomeoutcome;
 
-
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.*;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,6 +14,8 @@ import java.util.ArrayList;
 
 public class DialogFragmentFilter extends DialogFragment
 {
+    Transaction.TRANSACTION_TYPE _activityType = Transaction.TRANSACTION_TYPE.Expense;
+
     ActivityDetailsTransaction _parent;
     Budget _budget;
     Helper.FILTER_METHODS _method;
@@ -33,13 +31,14 @@ public class DialogFragmentFilter extends DialogFragment
     Button button_negative;
 
 
-    static DialogFragmentFilter newInstance(ActivityDetailsTransaction parent, Budget budget, Helper.FILTER_METHODS method, String title) {
+    static DialogFragmentFilter newInstance(ActivityDetailsTransaction parent, Budget budget, Helper.FILTER_METHODS method, String title, Transaction.TRANSACTION_TYPE activityType) {
         DialogFragmentFilter fg = new DialogFragmentFilter();
         fg._parent = parent;
         fg._budget = budget;
         fg._method = method;
         fg._title = title;
-
+        fg._title = title;
+        fg._activityType = activityType;
 
         switch (method) {
             case CATEGORY:
@@ -49,7 +48,7 @@ public class DialogFragmentFilter extends DialogFragment
             case SOURCE:
                 if (budget != null) {
                     ArrayList<String> sources = new ArrayList<>();
-                    for (Transaction tran : budget.GetAllTransactions()){
+                    for (Transaction tran : budget.GetTransactions(activityType)){
                         if (!sources.contains(tran.GetSource())) {
                             if (tran.GetSource().equals("")){
                                 sources.add(parent.getString(R.string.info_nosource));

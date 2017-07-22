@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/toolbar_paidback"
+    <item android:id="@+id/toolbar_showall"
         android:icon="@drawable/ic_check_white_24dp"
-        android:title="@string/action_setpaidback"
+        android:title="@string/action_showall"
         app:showAsAction="never"
         android:orderInCategory="1" />
 </menu>

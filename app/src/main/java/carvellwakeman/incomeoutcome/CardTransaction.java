@@ -40,8 +40,8 @@ public class CardTransaction extends Card
     Budget _budget;
 
     int keyType;
-    int activityType;
-    int defaultActivityType;
+    Transaction.TRANSACTION_TYPE activityType;
+    Transaction.TRANSACTION_TYPE defaultActivityType;
     //int defaultKeyType;
 
     TextView textView_title;
@@ -60,7 +60,7 @@ public class CardTransaction extends Card
     boolean isExpanded = false;
 
 
-    public CardTransaction(ViewGroup insertPoint, int index, int budgetID, int defaultActivityType, String title, Context context, LayoutInflater inflater, int layout){
+    public CardTransaction(ViewGroup insertPoint, int index, int budgetID, Transaction.TRANSACTION_TYPE defaultActivityType, String title, Context context, LayoutInflater inflater, int layout){
         super(context, inflater, layout, insertPoint, index);
         this._context = context;
         this._budget = BudgetManager.getInstance().GetBudget(budgetID);
@@ -69,7 +69,7 @@ public class CardTransaction extends Card
         this.activityType = defaultActivityType;
         //this.defaultKeyType = defaultKeyType;
         //this.keyType = defaultKeyType;
-        int keyTypeArray = (activityType==0 ? R.array.keytype_array_ex : R.array.keytype_array_in);
+        int keyTypeArray = (activityType==Transaction.TRANSACTION_TYPE.Expense ? R.array.keytype_array_ex : R.array.keytype_array_in);
 
         //Title
         textView_title = (TextView) getBase().findViewById(R.id.textView_cardTransaction_title);
@@ -89,7 +89,7 @@ public class CardTransaction extends Card
 
         //Spinner keytype
         spinner_keyType = (Spinner) getBase().findViewById(R.id.spinner_cardTransaction);
-        if (activityType==0) {
+        if (activityType == Transaction.TRANSACTION_TYPE.Expense) {
             ArrayAdapter adapter = ArrayAdapter.createFromResource(context, keyTypeArray, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(R.layout.spinner_dropdown_list_primary);
             spinner_keyType.setAdapter(adapter);
@@ -119,7 +119,7 @@ public class CardTransaction extends Card
                 if (_budget != null) {
                     //Start the details activity
                     Intent intent = new Intent(_context, ActivityDetailsTransaction.class);
-                    intent.putExtra("activitytype", activityType);
+                    intent.putExtra("activitytype", activityType.ordinal());
                     intent.putExtra("budget", _budget.GetID());
                     _context.startActivity(intent);
 

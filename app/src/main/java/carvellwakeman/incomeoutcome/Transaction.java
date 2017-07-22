@@ -8,8 +8,6 @@ import java.util.*;
 
 public class Transaction implements java.io.Serializable
 {
-    public static String ME = Helper.getString(R.string.format_me);
-
     //Transaction type
     public enum TRANSACTION_TYPE
     {
