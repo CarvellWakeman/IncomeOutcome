@@ -58,7 +58,7 @@
 
 
             <Button
-                android:id="@+id/button_suggest_addprofile"
+                android:id="@+id/button_suggest_add_budget"
                 style="@style/RaisedButtonTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -69,5 +69,173 @@
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
+
+    <!-- FAB holder
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:orientation="horizontal"
+        app:layout_anchorGravity="bottom|right|end">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:orientation="vertical">
+
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/FAB_transaction_type_new_expense"
+                android:layout_width="@dimen/fab_size_mini"
+                android:layout_height="@dimen/fab_size_mini"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/fab_margin"
+                android:scaleType="center"
+                android:src="@drawable/ic_database_minus_white_24dp"
+                android:tint="@color/gray"
+                app:backgroundTint="@color/white"
+                app:borderWidth="0dp" />
+
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/FAB_transaction_type_new_income"
+                android:layout_width="@dimen/fab_size_mini"
+                android:layout_height="@dimen/fab_size_mini"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/fab_margin"
+                android:scaleType="center"
+                android:src="@drawable/ic_database_plus_white_24dp"
+                android:tint="@color/gray"
+                app:backgroundTint="@color/white"
+                app:borderWidth="0dp" />
+
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/FAB_transaction_type_new"
+                android:layout_width="@dimen/fab_size_default"
+                android:layout_height="@dimen/fab_size_default"
+                android:scaleType="center"
+                android:src="@drawable/ic_plus_white_24dp"
+                app:borderWidth="0dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Your FAB implementation -->
+        <carvellwakeman.incomeoutcome.FAB
+            android:id="@+id/FAB_transaction_type_new"
+            android:layout_width="@dimen/fab_size_default"
+            android:layout_height="@dimen/fab_size_default"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:layout_marginEnd="@dimen/fab_margin"
+            android:scaleType="center"
+            android:src="@drawable/ic_plus_white_24dp" />
+
+        <!-- Overlay that dims the screen -->
+        <com.gordonwong.materialsheetfab.DimOverlayFrameLayout
+            android:id="@+id/dim_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- Circular reveal container for the sheet -->
+        <io.codetail.widget.RevealLinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="end|bottom"
+            android:orientation="vertical">
+
+            <!-- Sheet that contains your items -->
+            <android.support.v7.widget.CardView
+                android:id="@+id/fab_sheet"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout_new_expense"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ripple_api19"
+                        android:clickable="true"
+                        android:orientation="horizontal"
+                        android:paddingBottom="20dp"
+                        android:paddingEnd="10dp"
+                        android:paddingStart="15dp"
+                        android:paddingTop="20dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="20dp"
+                            android:src="@drawable/ic_database_minus_white_24dp"
+                            android:tint="@color/turquoise" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/misc_expense"
+                            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+                            android:textColor="@color/black" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout_new_income"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ripple_api19"
+                        android:clickable="true"
+                        android:orientation="horizontal"
+                        android:paddingBottom="20dp"
+                        android:paddingEnd="10dp"
+                        android:paddingStart="15dp"
+                        android:paddingTop="20dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="20dp"
+                            android:src="@drawable/ic_database_plus_white_24dp"
+                            android:tint="@color/turquoise" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/misc_income"
+                            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+                            android:textColor="@color/black" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+        </io.codetail.widget.RevealLinearLayout>
+    </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

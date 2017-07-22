@@ -4,7 +4,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_doublemargin">32dp</dimen>
     <dimen name="fab_size_mini">40dp</dimen>
+    <dimen name="fab_size_default">56dp</dimen>
 
     <!-- Toolbar -->
     <dimen name="toolbar_size">56dp</dimen>

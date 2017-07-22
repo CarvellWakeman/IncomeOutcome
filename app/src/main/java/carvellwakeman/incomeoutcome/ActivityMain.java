@@ -3,18 +3,19 @@ package carvellwakeman.incomeoutcome;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
 import android.widget.*;
+import com.gordonwong.materialsheetfab.MaterialSheetFab;
 
 import java.util.ArrayList;
 
 
 public class ActivityMain extends AppCompatActivity
 {
-    //TODO: Convert ActivityMain to use Budgets and new_Transactions, follow the trail of errors and redesign each interface
-    //ProfileManager profileManager;
+    Budget _selectedBudget;
 
     ArrayList<Integer> toolbar_menus;
 
@@ -26,15 +27,17 @@ public class ActivityMain extends AppCompatActivity
 
     Button button_suggestaddbudget;
 
+    FAB FAB_addNew;
+    MaterialSheetFabMod materialSheetFab;
+
     RelativeLayout relativeLayout_period;
     ImageView button_nextPeriod;
     ImageView button_prevPeriod;
 
     LinearLayout progress_loadingData;
+    LinearLayout FAB_newExpense;
+    LinearLayout FAB_newIncome;
 
-
-
-    Budget _selectedBudget;
 
     //Managers
     DatabaseManager databaseManager;
@@ -61,8 +64,6 @@ public class ActivityMain extends AppCompatActivity
 
         //Initialize the Database
         databaseManager = DatabaseManager.getInstance();
-        //Helper.Log(App.GetContext(), "ActMain", "Initialize");
-        //databaseManager.initialize();
 
         //Load data from database
         databaseManager.loadSettings( //Load settings
@@ -84,29 +85,18 @@ public class ActivityMain extends AppCompatActivity
         );
 
 
-
-        //Sort filter callback
-        //sortFilterCallBack = new CallBack() { @Override public void call() {
-        //    RefreshOverview();
-        //}};
-
         //Toolbar menus
         toolbar_menus = new ArrayList<>();
         toolbar_menus.add(R.menu.submenu_settings);
         toolbar_menus.add(R.menu.submenu_filter_expense);
         toolbar_menus.add(R.menu.submenu_paidback);
 
-        //Set our activity's data
-        //_profile = profileManager.GetCurrentProfile();
-        //if (_profile != null) {
-            //_profileID = _profile.GetID();
-        //}
 
         //Find Views
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
 
-        button_suggestaddbudget = (Button) findViewById(R.id.button_suggest_addprofile);
+        button_suggestaddbudget = (Button) findViewById(R.id.button_suggest_add_budget);
 
         button_suggestaddbudget.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
@@ -144,11 +134,8 @@ public class ActivityMain extends AppCompatActivity
         });
 
         //Configure toolbar
-        //toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        //toolbar.setNavigationOnClickListener(new View.OnClickListener() { @Override public void onClick(View v) { onBackPressed(); } });
         for(int m : toolbar_menus){ toolbar.inflateMenu(m); }
         setSupportActionBar(toolbar);
-        //ToolbarTitleUpdate();
 
 
         //Card inflater
@@ -170,8 +157,36 @@ public class ActivityMain extends AppCompatActivity
         //expensesCard.insert(insertPoint, 1);
         //incomeCard.insert(insertPoint, 2);
 
-        //Ask for permissions
-        //ProfileManager.OpenDialogFragment(this, DialogFragmentPermissionReasoning.newInstance(this, new int[]{ R.string.tt_permission_writestorage1 }, new int[]{ R.string.tt_permission_writestorage2 }, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }), true);
+
+        //Floating action button
+        FAB_addNew = (FAB) findViewById(R.id.FAB_transaction_type_new);
+        View sheetView = findViewById(R.id.fab_sheet);
+        View overlay = findViewById(R.id.dim_overlay);
+        materialSheetFab = new MaterialSheetFabMod<>(FAB_addNew, sheetView, overlay,
+                getResources().getColor(R.color.white), getResources().getColor(R.color.colorAccent));
+
+        FAB_newExpense = (LinearLayout) findViewById(R.id.linearLayout_new_expense);
+        FAB_newIncome = (LinearLayout) findViewById(R.id.linearLayout_new_income);
+
+        FAB_newExpense.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                materialSheetFab.hideSheet();
+                Intent intent = new Intent(ActivityMain.this, ActivityNewTransaction.class);
+                intent.putExtra("activitytype", Transaction.TRANSACTION_TYPE.Expense.ordinal());
+                intent.putExtra("budget", _selectedBudget.GetID());
+                startActivityForResult(intent, 1);
+            }
+        });
+        FAB_newIncome.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                materialSheetFab.hideSheet();
+                Intent intent = new Intent(ActivityMain.this, ActivityNewTransaction.class);
+                intent.putExtra("activitytype", Transaction.TRANSACTION_TYPE.Income.ordinal());
+                intent.putExtra("budget", _selectedBudget.GetID());
+                startActivityForResult(intent, 1);
+            }
+        });
+
 
         //Check app version for update, display changelog
         if (!App.GetVersion(this).equals(App.GetPrevVersion())){
@@ -242,13 +257,12 @@ public class ActivityMain extends AppCompatActivity
 
     //Send back a RESULT_OK to MainActivity when back is pressed
     @Override
-    public void onBackPressed()
-    {
-        //Send back a RESULT_OK to MainActivity
-        Intent intent = new Intent();
-        setResult(RESULT_OK, intent);
-
-        super.onBackPressed();
+    public void onBackPressed() {
+        if (materialSheetFab.isSheetVisible()) {
+            materialSheetFab.hideSheet();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     //Get return results from activities

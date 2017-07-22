@@ -66,7 +66,6 @@ public class ActivityNewTransaction extends AppCompatActivity
     EditText editText_description;
     EditText editText_cost;
 
-    TextView textView_source;
     TextView textView_date;
     TextView textView_repeat;
 
@@ -148,7 +147,6 @@ public class ActivityNewTransaction extends AppCompatActivity
                 TIL_cost = (TextInputLayout) findViewById(R.id.TIL_newTransaction_cost);
                 editText_cost = TIL_cost.getEditText();
 
-                textView_source = (TextView) findViewById(R.id.textView_newTransaction_source);
                 textView_date = (TextView) findViewById(R.id.textView_newTransaction_date);
                 textView_repeat = (TextView) findViewById(R.id.textView_newTransaction_repeat);
 
@@ -240,9 +238,6 @@ public class ActivityNewTransaction extends AppCompatActivity
 
                 //Conditional view actions based on editstate and activitytype
                 if (_activitytype == 0) { //Expense
-                    //Expense related views
-                    textView_source.setVisibility(View.VISIBLE);
-                    //spinner_categories.setVisibility(View.VISIBLE);
 
                     //Cost formatting
                     editText_cost.setKeyListener(DigitsKeyListener.getInstance(false, true));
