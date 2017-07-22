@@ -287,6 +287,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                             //Open people manager to remove people
                             Intent intent = new Intent(ActivityNewTransaction.this, ActivityManagePeople.class);
                             intent.putExtra("select", true);
+                            if (_transaction.HasSplit(Person.Deleted.GetID())){ intent.putExtra("includeDeletedPerson", true); }
                             startActivityForResult(intent, 2);
                         }
                     });
@@ -664,32 +665,32 @@ public class ActivityNewTransaction extends AppCompatActivity
                     new View.OnClickListener() {
                         @Override
                         public void onClick(final View view) {
-                            if (_blacklistDatesRemovalQueue.contains(bd.date)){
-                                _blacklistDatesRemovalQueue.remove(bd.date);
-                                view.setAlpha(1.0f);
-                            } else {
-                                // Remove associated transaction if it exists
-                                if (bd.transactionID > 0){
-                                    // Confirm removal of blacklist date
-                                    AlertDialog.Builder alert = new AlertDialog.Builder(ActivityNewTransaction.this);
-                                    alert.setMessage(R.string.info_tran_instance_delete);
-                                    alert.setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
-                                        @Override public void onClick(DialogInterface dialog, int which) {
-                                            _blacklistDatesRemovalQueue.add(bd.date);
-                                            view.setAlpha(130.0f/255.0f);
-                                        }
-                                    });
-                                    alert.setNegativeButton(R.string.action_cancel, null);
-                                    alert.show();
-                                } else {
+                        if (_blacklistDatesRemovalQueue.contains(bd.date)){
+                            _blacklistDatesRemovalQueue.remove(bd.date);
+                            view.setAlpha(1.0f);
+                        } else {
+                            // Remove associated transaction if it exists
+                            if (bd.transactionID > 0){
+                                // Confirm removal of blacklist date
+                                AlertDialog.Builder alert = new AlertDialog.Builder(ActivityNewTransaction.this);
+                                alert.setMessage(R.string.info_tran_instance_delete);
+                                alert.setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
+                                    @Override public void onClick(DialogInterface dialog, int which) {
                                     _blacklistDatesRemovalQueue.add(bd.date);
                                     view.setAlpha(130.0f/255.0f);
-                                }
+                                    }
+                                });
+                                alert.setNegativeButton(R.string.action_cancel, null);
+                                alert.show();
+                            } else {
+                                _blacklistDatesRemovalQueue.add(bd.date);
+                                view.setAlpha(130.0f/255.0f);
                             }
+                        }
 
-                            //if (blacklistDates.ChildCount() == 0){
-                            //    blacklistDates.getBase().setVisibility(View.GONE);
-                            //}
+                        //if (blacklistDates.ChildCount() == 0){
+                        //    blacklistDates.getBase().setVisibility(View.GONE);
+                        //}
                         }
                     }
                 );

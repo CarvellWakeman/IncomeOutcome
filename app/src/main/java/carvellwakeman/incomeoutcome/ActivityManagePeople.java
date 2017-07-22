@@ -5,6 +5,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import java.util.HashMap;
+import java.util.zip.Inflater;
 
 public class ActivityManagePeople extends ActivityManageEntity<Person> {
 
@@ -22,6 +30,25 @@ public class ActivityManagePeople extends ActivityManageEntity<Person> {
         adapter = new AdapterManagePeople(this);
         recyclerView.setAdapter(adapter);
 
+        // Deleted person addition
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra("includeDeletedPerson", false)){
+            View itemView = getLayoutInflater().inflate(R.layout.row_layout_text_underline, null);
+            ViewHolderPerson vhe = new ViewHolderPerson(this, itemView);
+            vhe.base.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.putExtra("entity", Person.Deleted.GetID());
+                    setResult(1, intent);
+                    finish();
+                }
+            });
+            vhe.title.setText(Person.Deleted.GetName());
+            vhe.icon.setImageDrawable(Helper.getDrawable(R.drawable.ic_face_white_24dp));
+
+            //Inflate parent
+            edit_layout.addView(itemView, 0);
+        }
     }
 
 
@@ -55,18 +82,37 @@ public class ActivityManagePeople extends ActivityManageEntity<Person> {
     public void DeleteEntity(final Integer id, final DialogFragmentManageBPC dialogFragment){
         if (id != 0) {
             new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle)
-                    .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Person person = PersonManager.getInstance().GetPerson(id);
-                            PersonManager.getInstance().RemovePerson(person);
-                            DatabaseManager.getInstance().removePersonSetting(person);
+                .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    // Update transactions using this category
+                    BudgetManager bm = BudgetManager.getInstance();
+                    DatabaseManager dm = DatabaseManager.getInstance();
 
-                            adapter.notifyDataSetChanged();
-                            dialogFragment.dismiss();
-                            dialog.dismiss();
-                        }})
-                    .setNegativeButton(R.string.action_cancel, null).create().show();
+                    for (Budget b : bm.GetBudgets()){
+                        for (Transaction t : b.GetAllTransactions()){
+                            if (t.GetPaidBy() == id){
+                                t.SetPaidBy(Person.Deleted.GetID());
+                            }
+                            Double splitVal = t.GetSplitArray().get(id);
+                            if (splitVal != null){
+                                t.SetSplit(Person.Deleted.GetID(), splitVal);
+                                t.RemoveSplit(id);
+                            }
+                            dm.insert(t, true);
+                        }
+                    }
+
+                    Person person = PersonManager.getInstance().GetPerson(id);
+                    PersonManager.getInstance().RemovePerson(person);
+                    DatabaseManager.getInstance().removePersonSetting(person);
+
+                    adapter.notifyDataSetChanged();
+                    dialogFragment.dismiss();
+                    dialog.dismiss();
+                }})
+                .setNegativeButton(R.string.action_cancel, null)
+                .create().show();
 
         }
     }

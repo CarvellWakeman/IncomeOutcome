@@ -264,8 +264,12 @@ public class Transaction implements java.io.Serializable
 
 
     // Splits
+    public boolean HasSplit(int id){ return _split.containsKey(id); }
     public void ClearSplit(){
         _split.clear();
+    }
+    public void RemoveSplit(int id){
+        _split.remove(id);
     }
 
 

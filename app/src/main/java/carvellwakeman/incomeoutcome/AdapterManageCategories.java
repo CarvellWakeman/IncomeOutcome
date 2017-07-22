@@ -27,7 +27,6 @@ public class AdapterManageCategories extends AdapterManageEntity
             holder.title.setText(cat.GetTitle());
             holder.icon.setImageDrawable(Helper.getDrawable(R.drawable.ic_view_list_white_24dp));
             holder.icon.setColorFilter(cat.GetColor());
-            holder.secondaryIcon.setVisibility(View.GONE);
         }
     }
 

@@ -120,6 +120,7 @@
     <string name="placeholder_text">Text</string>
     <string name="placeholder_filename">File Name</string>
     <string name="placeholder_person">Person</string>
+    <string name="placeholder_deleted">[DELETED]</string>
 
 
     <!-- Tool Tip -->
@@ -179,6 +180,8 @@
     <string name="info_nocategory"><i>No Category</i></string>
     <string name="info_noname"><i>No Source Name</i></string>
     <string name="info_domwarning">* Some months are limited to 28/29/30 days. The last day of the month will be chosen in these cases.</string>
+    <string name="info_delete_person_inuse_warning">* Any transactions split with this person will be replaced with [DELETED]</string>
+    <string name="info_delete_category_inuse_warning">* Any transactions using this category will have it replaced with [DELETED]</string>
     <string name="info_selected">Selected</string>
     <string name="info_totals">Totals</string>
     <string name="info_transactions">Transactions</string>

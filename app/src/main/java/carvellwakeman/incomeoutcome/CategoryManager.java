@@ -1,5 +1,6 @@
 package carvellwakeman.incomeoutcome;
 
+import android.content.Context;
 import android.graphics.Color;
 import java.util.ArrayList;
 
@@ -101,16 +102,11 @@ public class CategoryManager
     }
     public void RemoveAllCategories() { _categories.clear(); }
 
-    //Get category by index
-    //public boolean HasCategory(String category){
-    //    for (int i = 0; i < _categories.size(); i++) {
-    //        if (_categories.get(i).GetTitle().equals(category)) {
-    //            return true;
-    //        }
-    //    }
-    //    return false;
-    //}
+
     public Category GetCategory(int ID){
+        // Short circuit for deleted category
+        if (ID == Category.Deleted.GetID()){ return Category.Deleted; }
+
         for (Category cat : _categories) {
             if (cat.GetID() == ID) { return cat; }
         }

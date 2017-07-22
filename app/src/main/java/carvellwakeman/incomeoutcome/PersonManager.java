@@ -1,5 +1,7 @@
 package carvellwakeman.incomeoutcome;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 
 public class PersonManager
@@ -47,6 +49,8 @@ public class PersonManager
     public Person GetPerson(int ID){
         //Override for "ME"
         if (ID == Person.Me.GetID()){ return Person.Me; }
+        // Short circuit for deleted person
+        if (ID == Person.Deleted.GetID()){ return Person.Deleted; }
 
         for (Person p : _people) {
             if (p.GetID() == ID) { return p; }

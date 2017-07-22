@@ -67,13 +67,15 @@
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
         android:src="@drawable/ic_check_white_24dp"
-        android:tint="@color/turquoise" />
+        android:tint="@color/turquoise"
+        android:visibility="gone"/>
 
     <View
         android:id="@+id/transaction_row_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentBottom="false"
+        android:layout_below="@+id/linearLayout_layout_text_titles"
         android:background="@android:color/darker_gray" />
 
 </RelativeLayout>

@@ -33,8 +33,6 @@ public class AdapterManageBudgets extends AdapterManageEntity
 
             if (br.GetSelected()){
                 holder.secondaryIcon.setVisibility(View.VISIBLE);
-            } else {
-                holder.secondaryIcon.setVisibility(View.GONE);
             }
         }
     }

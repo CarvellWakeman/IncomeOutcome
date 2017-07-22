@@ -422,7 +422,9 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                 }
 
                 // Behavior
-                if (!description.getText().equals("") || !repeat.getText().equals("")){
+                if (description.getText().equals("") && repeat.getText().equals("")){
+                    expandCard.setVisibility(View.GONE);
+                } else {
                     expandCard.setVisibility(View.VISIBLE);
                 }
 
@@ -480,19 +482,23 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
             if (!moreInfo) { moreInfoOn(); } else { moreInfoOff(); }
         }
         public void moreInfoOn() {
-            moreInfo = true;
+            if (!description.getText().toString().equals("") || !repeat.getText().toString().equals("")) {
+                moreInfo = true;
 
-            RotateAnimation rot = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            rot.setDuration(200);
-            rot.setFillAfter(true);
-            expandCard.startAnimation(rot);
+                RotateAnimation rot = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                rot.setDuration(200);
+                rot.setFillAfter(true);
+                expandCard.startAnimation(rot);
 
-            if (!repeat.getText().toString().equals("")) {
-                repeat.setVisibility(View.VISIBLE);
-                repeatIcon.setVisibility(View.VISIBLE);
-            }
-            if (!description.getText().toString().equals("")) {
-                description.setVisibility(View.VISIBLE);
+                if (!repeat.getText().toString().equals("")) {
+                    repeat.setVisibility(View.VISIBLE);
+                    repeatIcon.setVisibility(View.VISIBLE);
+                }
+                if (!description.getText().toString().equals("")) {
+                    description.setVisibility(View.VISIBLE);
+                }
+            } else {
+                expandCard.setVisibility(View.GONE);
             }
         }
         public void moreInfoOff() {
@@ -506,6 +512,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
             repeat.setVisibility(View.GONE);
             repeatIcon.setVisibility(View.GONE);
             description.setVisibility(View.GONE);
+            expandCard.setVisibility(View.GONE);
         }
 
     }

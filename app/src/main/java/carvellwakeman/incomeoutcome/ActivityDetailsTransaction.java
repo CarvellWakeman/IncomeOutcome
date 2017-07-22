@@ -181,12 +181,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             linearLayoutManagerTransactions = new NpaLinearLayoutManager(this);
             transactionsView.setLayoutManager(linearLayoutManagerTransactions);
 
-            // No data, display message
             CheckShowNoDataNotice();
-
-            // Sort and filter bubbles
-            //SortFilterOptions.DisplayFilter(this, _profile.GetFilterMethod(), _profile.GetFilterData(), sortFilterCallBack);
-            //SortFilterOptions.DisplaySort(this, _profile.GetSortMethod(), sortFilterCallBack);
         }
     }
 

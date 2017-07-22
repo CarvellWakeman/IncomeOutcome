@@ -1377,11 +1377,6 @@ public class DatabaseManager extends SQLiteOpenHelper
                     if (!splitString.equals("")) { tr.SetSplitFromArrayString(splitString); }
                     //COLUMN_paidBack + TEXT_TYPE + "," +
                     tr.SetPaidBack(Helper.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_paidBack))));
-                    if (tr.GetPaidBack()!=null){
-                        Helper.Log(App.GetContext(), "DB", tr.GetSource() + " PaidBackLoaded:" + tr.GetPaidBack().toString());
-                    } else {
-                        Helper.Log(App.GetContext(), "DB", "PaidBackNull:" + tr.GetSource());
-                    }
                     //COLUMN_when + INT_TYPE //+ "," +
                     TimePeriod tp = _queryTimeperiod(database, c.getInt(c.getColumnIndex(COLUMN_when)));
                     //if (tp == null) { Helper.Log(App.GetContext(), "DB", "NULL TP for tran " + tr.GetID()); } else { Helper.Log(App.GetContext(), "DB", tp.GetDateFormatted()); }

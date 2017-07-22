@@ -172,18 +172,28 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
             new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle).setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    CategoryManager.getInstance().RemoveCategory(cr);
+                // Update transactions using this category
+                BudgetManager bm = BudgetManager.getInstance();
+                DatabaseManager dm = DatabaseManager.getInstance();
 
-                    DatabaseManager.getInstance().removeCategorySetting(cr);
-
-                    adapter.notifyDataSetChanged();
-                    dialogFragment.dismiss();
-                    dialog.dismiss();
+                for (Budget b : bm.GetBudgets()){
+                    for (Transaction t : b.GetAllTransactions()){
+                        if (t.GetCategory() == cr.GetID()){
+                            t.SetCategory(Category.Deleted.GetID());
+                            dm.insert(t, true);
+                        }
+                    }
                 }
-            }).setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {}
-            }).create().show();
+
+                CategoryManager.getInstance().RemoveCategory(cr);
+                DatabaseManager.getInstance().removeCategorySetting(cr);
+
+                adapter.notifyDataSetChanged();
+                dialogFragment.dismiss();
+                dialog.dismiss();
+                }
+            }).setNegativeButton(R.string.action_cancel, null)
+            .create().show();
         }
     }
 

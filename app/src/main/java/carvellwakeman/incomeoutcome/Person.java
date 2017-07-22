@@ -6,9 +6,13 @@ public class Person implements BaseEntity
     private String _name;
 
     static Person Me;
+    static Person Deleted;
     static {
         Me = new Person(Helper.getString(R.string.format_me));
-        Me._uniqueID = -1; // -1 for you
+        Me.SetID(-1); // -1 for you
+
+        Deleted = new Person(Helper.getString(R.string.placeholder_deleted));
+        Deleted.SetID(-2); // -2 for deleted person
     }
 
     public Person(String name){

@@ -5,6 +5,7 @@ STAGING:
 	Filtering working
 	Totals bugfix
 	Added show all
+	Edge case for deleted people and categories
 	
 	NEXT:Test, then income, then overview page
 	
@@ -73,9 +74,8 @@ UNRELEASED
 *[BUGFIX] Database manager correctly loads transactions that are not split
 #[BUGFIX] PaidBy radio button in new transaction not being checked initially (and not being saved when 'you' paid)
 #[BUGFIX] Database not saving timeperiod UID
-*[CHANGE] Major rewrite of data structures and database, UI updated to comply with new standards
+*[CHANGE] Major rewrite of data structures and database, UI updates
 *[CHANGE] Refactored budget, category, and people management
-#[CHANGE] Transactions can be split among multiple people with individual costs
 
 
 FORMAT

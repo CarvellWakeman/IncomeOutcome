@@ -26,7 +26,6 @@ public class AdapterManagePeople extends AdapterManageEntity
             // Fields
             holder.title.setText(pr.GetName());
             holder.icon.setImageDrawable(Helper.getDrawable(R.drawable.ic_face_white_24dp));
-            holder.secondaryIcon.setVisibility(View.GONE);
         }
     }
 

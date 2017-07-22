@@ -61,8 +61,6 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
                 holder.subTitle2.setVisibility(View.VISIBLE);
 
                 holder.icon.setImageDrawable(Helper.getDrawable(R.drawable.ic_file_white_24dp));
-                holder.secondaryIcon.setVisibility(View.GONE);
-
 
 
                 if (version == currentVersion){ holder.subTitle2.setTextColor(Helper.getColor(R.color.darkgreen)); }

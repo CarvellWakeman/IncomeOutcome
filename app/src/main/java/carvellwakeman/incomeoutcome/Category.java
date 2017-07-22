@@ -1,11 +1,19 @@
 package carvellwakeman.incomeoutcome;
 
+import android.graphics.Color;
+
 public class Category implements BaseEntity
 {
     private int _uniqueID;
     private String _title;
     private int _color;
 
+    // Category that deleted categories default to
+    static Category Deleted;
+    static {
+        Deleted = new Category(Helper.getString(R.string.placeholder_deleted), Color.argb(255, 0, 0, 0));
+        Deleted.SetID(-1); // -1 for deleted category
+    }
 
     public Category(String title, int color){
         _uniqueID = java.lang.System.identityHashCode(this);
