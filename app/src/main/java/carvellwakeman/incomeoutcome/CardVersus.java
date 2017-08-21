@@ -25,7 +25,7 @@ import java.util.List;
 public class CardVersus extends Card
 {
     Context _context;
-    Budget _budget;
+    int _budgetID;
 
     int monthsBackMax = 20;
     int monthsBackMin = 2;
@@ -45,7 +45,7 @@ public class CardVersus extends Card
     public CardVersus(ViewGroup insertPoint, int index, int budgetID, Context context, LayoutInflater inflater, int layout){
         super(context, inflater, layout, insertPoint, index);
         _context = context;
-        _budget = BudgetManager.getInstance().GetBudget(budgetID);
+        _budgetID = budgetID;
 
         //Title
         textView_title = (TextView) getBase().findViewById(R.id.textView_cardVersus_title);
@@ -121,9 +121,10 @@ public class CardVersus extends Card
         SetData();
     }
 
-    public void SetBudget(int id){ _budget = BudgetManager.getInstance().GetBudget(id); }
+    public void SetBudget(int id){ _budgetID = id; }
 
     public void SetData(){
+        Budget _budget = BudgetManager.getInstance().GetBudget(_budgetID);
         if (_budget != null){
 
             //Clear chart info
@@ -137,17 +138,11 @@ public class CardVersus extends Card
 
             int nonNullPeriods = 0;
             final ArrayList<Transaction> pastTransactionPeriods = new ArrayList<>();
-            Transaction tran;
             for (int i = 0; i < monthsBack; i++){
-
-                //_profile.CalculateTimeFrame(null);
-                //_profile.SetShowAll(b);
-
                 pastTransactionPeriods.addAll(_budget.GetTransactions( Transaction.TRANSACTION_TYPE.Expense ));
                 if (pastTransactionPeriods.size() > 0) { nonNullPeriods++; }
                 _budget.MoveTimePeriod(1);
             }
-
 
 
             //Reset time periods back to original dates
@@ -232,6 +227,6 @@ public class CardVersus extends Card
             }
         }
 
-        chart.animateY(2500);
+        chart.animateY(1400);
     }
 }

@@ -1,6 +1,7 @@
 package carvellwakeman.incomeoutcome;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
@@ -29,13 +31,11 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.DefaultValueFormatter;
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
+import org.joda.time.LocalDate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class CardTransaction extends Card
+public class CardTransaction extends Card implements OnChartValueSelectedListener, SortFilterActivity
 {
     Context _context;
     int _budgetID;
@@ -47,13 +47,23 @@ public class CardTransaction extends Card
 
     Spinner spinner_keyType;
 
-    Button button_viewDetails;
+    TextView textView_viewdetails;
+    LinearLayout button_viewDetails;
 
+    ImageView button_filter;
+
+    RelativeLayout relativeLayout_filter;
+    TextView textView_filters;
+
+    // Chart and data
     PieChart chart;
     PieDataSet dataSet;
 
+    // Filtering
+    HashMap<Helper.FILTER_METHODS, String> filterMethods;
 
-    public CardTransaction(ViewGroup insertPoint, int index, int budgetID, Transaction.TRANSACTION_TYPE activityType, Context context, LayoutInflater inflater, int layout){
+
+    public CardTransaction(final Activity context, ViewGroup insertPoint, int index, int budgetID, final Transaction.TRANSACTION_TYPE activityType, LayoutInflater inflater, int layout){
         super(context, inflater, layout, insertPoint, index);
         this._context = context;
         this._budgetID = budgetID;
@@ -62,6 +72,18 @@ public class CardTransaction extends Card
 
         int keyTypeArray = (activityType==Transaction.TRANSACTION_TYPE.Expense ? R.array.keytype_array_ex : R.array.keytype_array_in);
 
+        // filtering
+        filterMethods = new HashMap<>();
+
+        textView_filters = (TextView) getBase().findViewById(R.id.textView_filters);
+        relativeLayout_filter = (RelativeLayout) getBase().findViewById(R.id.relativeLayout_filter);
+
+        relativeLayout_filter.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                filterMethods.clear();
+                Refresh();
+            }
+        });
 
         //Spinner keytype
         spinner_keyType = (Spinner) getBase().findViewById(R.id.spinner_cardTransaction);
@@ -75,7 +97,11 @@ public class CardTransaction extends Card
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (keyType != position) { //Key Type changed
                     keyType = position;
-                    SetData();
+
+                    filterMethods.clear();
+                    CheckShowFiltersNotice();
+
+                    Refresh();
                 }
             }
 
@@ -83,7 +109,8 @@ public class CardTransaction extends Card
         });
 
         //View details button
-        button_viewDetails = (Button) getBase().findViewById(R.id.button_cardTransaction_viewdetails);
+        textView_viewdetails = (TextView) getBase().findViewById(R.id.textView_cardTransaction_viewdetails);
+        button_viewDetails = (LinearLayout) getBase().findViewById(R.id.button_cardTransaction_viewdetails);
         button_viewDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,6 +122,45 @@ public class CardTransaction extends Card
             }
         });
 
+        // Filter button
+        button_filter = (ImageView) getBase().findViewById(R.id.imageView_cardTransaction_filter);
+        button_filter.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                //Creating the instance of PopupMenu
+                PopupMenu popup = new PopupMenu(context, button_filter);
+                //Inflating the Popup using xml file
+                if (activityType == Transaction.TRANSACTION_TYPE.Expense) {
+                    popup.getMenuInflater().inflate(R.menu.submenu_filter_expense, popup.getMenu());
+                } else if (activityType == Transaction.TRANSACTION_TYPE.Income){
+                    popup.getMenuInflater().inflate(R.menu.submenu_filter_income, popup.getMenu());
+                }
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            // Filters
+                            case R.id.toolbar_filter_category:
+                            case R.id.toolbar_filter_source:
+                            case R.id.toolbar_filter_paidby:
+                            case R.id.toolbar_filter_splitwith:
+                            case R.id.toolbar_filter_paidback:
+                                Helper.FILTER_METHODS method = Helper.FILTER_METHODS.values()[item.getOrder()];
+                                Helper.OpenDialogFragment(context, DialogFragmentFilter.newInstance(CardTransaction.this, context, _budgetID, method, context.getString(Helper.filterTitles.get(method)), activityType), true);
+                                break;
+
+                            default:
+                                break;
+                        }
+                        return true;
+                    }
+                });
+
+                popup.show();//showing popup menu
+            }
+        });
+
+
         //Parent layout
         cardView = (CardView) getBase().findViewById(R.id.cardTransaction);
 
@@ -104,6 +170,7 @@ public class CardTransaction extends Card
         chart.setDescription("");
 
         chart.setHighlightPerTapEnabled(true);
+        chart.setOnChartValueSelectedListener(this);
 
         chart.setTouchEnabled(true);
 
@@ -116,7 +183,7 @@ public class CardTransaction extends Card
         chart.setHoleColor(Color.WHITE);
         chart.setTransparentCircleColor(Color.WHITE);
 
-        chart.setDragDecelerationFrictionCoef(0.95f);
+        chart.setDragDecelerationFrictionCoef(0.96f);
         chart.setTransparentCircleAlpha(110);
         chart.setHoleRadius(55f);
         chart.setTransparentCircleRadius(58f);
@@ -137,12 +204,14 @@ public class CardTransaction extends Card
     }
 
 
-    public void SetData(){
+    public void Refresh(){
+        CheckShowFiltersNotice();
+
         Budget _budget = BudgetManager.getInstance().GetBudget(_budgetID);
         if (_budget != null){
 
             //Get expense data
-            ArrayList<Transaction> transactions = _budget.GetTransactionsInTimeframe( _activityType );
+            ArrayList<Transaction> transactions = _budget.GetTransactionsInTimeframe( _activityType, Helper.SORT_METHODS.DATE_UP, filterMethods );
 
             if (transactions.size() > 0) {
                 //Total
@@ -165,7 +234,10 @@ public class CardTransaction extends Card
                                 val = t.GetValue();
                             }
 
-                            entries.add(new PieEntry(val.floatValue(), t.GetSource()));
+                            PieEntry entry = new PieEntry(val.floatValue(), t.GetSource());
+                            //entry.setData(t.GetID());
+                            entry.setData(t.GetSource());
+                            entries.add(entry);
 
                             colors.add(Helper.ColorFromString(t.GetSource()));
 
@@ -185,7 +257,6 @@ public class CardTransaction extends Card
                             for (HashMap.Entry<Integer, Double> entry : t.GetSplitArray().entrySet()) {
                                 if (entry.getKey() != Person.Me.GetID()) {
                                     val = t.GetDebt(Person.Me.GetID(), entry.getKey()) - t.GetDebt(entry.getKey(), Person.Me.GetID());
-                                    Helper.Log(_context, "CardTran", "Debt:" + String.valueOf(val) + " " + t.GetSource() + " " + PersonManager.getInstance().GetPerson(entry.getKey()).GetName());
 
                                     // Add to existing value
                                     if (debt.get(entry.getKey()) != null) { val += debt.get(entry.getKey()); }
@@ -206,11 +277,16 @@ public class CardTransaction extends Card
                     int size = category.size();
                     for (int i = 0; i < size; i++){
                         cat = cm.GetCategory(category.keyAt(i));
-                        entries.add(new PieEntry(category.get(category.keyAt(i)).floatValue(), cat.GetTitle()));
+                        val = category.get(category.keyAt(i));
+
+                        PieEntry entry = new PieEntry(val.floatValue(), cat.GetTitle());
+                        entry.setData(cat.GetID());
+
+                        entries.add(entry);
                         colors.add(cat.GetColor());
 
                         // Sum up the values
-                        total += category.get(category.keyAt(i));
+                        total += val;
                     }
                 }
 
@@ -222,8 +298,12 @@ public class CardTransaction extends Card
                     for (int i = 0; i < size; i++){
                         p = pm.GetPerson(debt.keyAt(i));
                         val = Math.max(0.0d, debt.get(debt.keyAt(i)).floatValue());
+
                         if (val > 0d) {
-                            entries.add(new PieEntry(val.floatValue(), p.GetName()));
+                            PieEntry entry = new PieEntry(val.floatValue(), p.GetName());
+                            entry.setData(p.GetID());
+
+                            entries.add(entry);
                             colors.add(Helper.ColorFromString(p.GetName()));
 
                             // Sum up the values
@@ -243,13 +323,6 @@ public class CardTransaction extends Card
                 dataSet.setValueTextSize(8);
                 dataSet.setValueFormatter(new CurrencyValueFormatter(2));
 
-                // Value lines
-                //dataSet.setValueLinePart1OffsetPercentage(80.0f);
-                //dataSet.setValueLinePart1Length(0.6f);
-                //dataSet.setValueLinePart2Length(0.8f);
-                //dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-                //dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-                //dataSet.setValueTextColor(Helper.getColor(R.color.white));
                 dataSet.setDrawValues(true);
 
                 chart.setData(new PieData(dataSet));
@@ -267,21 +340,99 @@ public class CardTransaction extends Card
 
                 chart.setVisibility(View.VISIBLE);
 
-                button_viewDetails.setText(R.string.action_viewdetails);
+                textView_viewdetails.setText(R.string.action_viewdetails);
             }
             else { //No data
-                chart.setVisibility(View.GONE);
+                //chart.setVisibility(View.GONE);
+                chart.setData(null);
 
-                String transactionType = Helper.getString(_activityType == Transaction.TRANSACTION_TYPE.Expense ? R.string.format_nodata_viewdetails_expense : R.string.misc_income);
-                button_viewDetails.setText(String.format(_context.getString(R.string.format_nodata_viewdetails), transactionType));
+                if (filterMethods.size() == 0) {
+                    String transactionType = Helper.getString(_activityType == Transaction.TRANSACTION_TYPE.Expense ? R.string.format_nodata_viewdetails_expense : R.string.misc_income);
+                    textView_viewdetails.setText(String.format(_context.getString(R.string.format_nodata_viewdetails), transactionType));
+                }
             }
 
         }
 
-        chart.animateY(1400, Easing.EasingOption.EaseInSine);
-        chart.spin(2000, 0, 360, Easing.EasingOption.EaseOutSine);
+        // Animation
+        chart.animateY(800, Easing.EasingOption.EaseInSine);
+        chart.spin(1400, 0, 360, Easing.EasingOption.EaseOutSine);
     }
 
     public void SetBudget(int id){ _budgetID = id; }
 
+
+    // Filtering
+    public void AddFilterMethod(Helper.FILTER_METHODS method, String data){
+        filterMethods.put(method, data);
+    }
+    public void CheckShowFiltersNotice(){
+        relativeLayout_filter.setVisibility( (filterMethods.size() > 0 ? View.VISIBLE : View.GONE) );
+        button_filter.setVisibility( (filterMethods.size() == 0 ? View.VISIBLE : View.GONE) );
+
+        textView_filters.setText(Helper.FilterString(_context, filterMethods));
+    }
+
+
+    // Clicking on pie chart slices
+    @Override
+    public void onValueSelected(Entry e, Highlight h){
+        if (keyType == 0){ // Source
+            String[] oldLabels = chart.getLegend().getLabels();
+            List<String> newLabels = new ArrayList<>();
+            for (String s : oldLabels){
+                String cleanS = s.replace("[", "").replace("]", "");
+                if (s.equals(e.getData())){
+                    newLabels.add(String.format("[%s]", cleanS));
+                } else {
+                    newLabels.add(cleanS);
+                }
+            }
+            chart.getLegend().setComputedLabels(newLabels);
+
+        } else if (keyType == 1){ // Category
+            CategoryManager cm = CategoryManager.getInstance();
+            Category cat = cm.GetCategory((int)e.getData());
+
+            if (cat != null){
+                String[] oldLabels = chart.getLegend().getLabels();
+                List<String> newLabels = new ArrayList<>();
+                for (String s : oldLabels){
+                    String cleanS = s.replace("[", "").replace("]", "");
+                    if (s.equals(cat.GetTitle())){
+                        newLabels.add(String.format("[%s]", cleanS));
+                    } else {
+                        newLabels.add(cleanS);
+                    }
+                }
+                chart.getLegend().setComputedLabels(newLabels);
+            }
+        } else if (keyType == 2){ // Debt
+            PersonManager pm = PersonManager.getInstance();
+            Person p = pm.GetPerson((int)e.getData());
+
+            if (p != null){
+                String[] oldLabels = chart.getLegend().getLabels();
+                List<String> newLabels = new ArrayList<>();
+                for (String s : oldLabels){
+                    String cleanS = s.replace("[", "").replace("]", "");
+                    if (s.equals(p.GetName())){
+                        newLabels.add(String.format("[%s]", cleanS));
+                    } else {
+                        newLabels.add(cleanS);
+                    }
+                }
+                chart.getLegend().setComputedLabels(newLabels);
+            }
+        }
+    }
+
+    @Override public void onNothingSelected(){
+        String[] oldLabels = chart.getLegend().getLabels();
+        List<String> newLabels = new ArrayList<>();
+        for (String s : oldLabels){
+            newLabels.add(s.replace("[", "").replace("]", ""));
+        }
+        chart.getLegend().setComputedLabels(newLabels);
+    }
 }

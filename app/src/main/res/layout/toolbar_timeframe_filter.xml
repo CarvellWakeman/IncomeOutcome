@@ -25,6 +25,9 @@
             app:layout_collapseMode="pin"
             app:layout_collapseParallaxMultiplier="0.7">
 
+            <!-- Filter -->
+            <include layout="@layout/filters_status"/>
+
             <!-- Period previous -->
             <ImageView
                 android:id="@+id/button_prevPeriod"

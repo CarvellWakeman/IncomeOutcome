@@ -153,7 +153,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                                 tranp.GetTimePeriod().RemoveBlacklistDate(tran.GetID());
                                 DatabaseManager.getInstance().insert(tranp, true);
 
-                                _activity.RefreshActivity();
+                                _activity.Refresh();
                             }
                         });
                         alert.setNegativeButton(R.string.confirm_no, null);
@@ -164,7 +164,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                         DatabaseManager.getInstance().insert(tranp, true);
                     }
 
-                    _activity.RefreshActivity();
+                    _activity.Refresh();
 
                     break;
 
@@ -174,7 +174,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     _budget.RemoveTransaction(tranp);
                     DatabaseManager.getInstance().remove(tranp);
 
-                    _activity.RefreshActivity();
+                    _activity.Refresh();
 
                     break;
 

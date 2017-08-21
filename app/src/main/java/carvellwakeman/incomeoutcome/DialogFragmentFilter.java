@@ -2,6 +2,7 @@ package carvellwakeman.incomeoutcome;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.*;
@@ -14,9 +15,7 @@ import java.util.ArrayList;
 
 public class DialogFragmentFilter extends DialogFragment
 {
-    Transaction.TRANSACTION_TYPE _activityType = Transaction.TRANSACTION_TYPE.Expense;
-
-    ActivityDetailsTransaction _parent;
+    SortFilterActivity _parent;
     Budget _budget;
     Helper.FILTER_METHODS _method;
 
@@ -31,50 +30,49 @@ public class DialogFragmentFilter extends DialogFragment
     Button button_negative;
 
 
-    static DialogFragmentFilter newInstance(ActivityDetailsTransaction parent, Budget budget, Helper.FILTER_METHODS method, String title, Transaction.TRANSACTION_TYPE activityType) {
+    static DialogFragmentFilter newInstance(SortFilterActivity parent, Context context, int budgetID, Helper.FILTER_METHODS method, String title, Transaction.TRANSACTION_TYPE activityType) {
         DialogFragmentFilter fg = new DialogFragmentFilter();
         fg._parent = parent;
-        fg._budget = budget;
+        fg._budget = BudgetManager.getInstance().GetBudget(budgetID);
         fg._method = method;
         fg._title = title;
         fg._title = title;
-        fg._activityType = activityType;
 
         switch (method) {
             case CATEGORY:
-                if (CategoryManager.getInstance().GetCategoriesCount() == 0) { Helper.PrintUser(parent, parent.getString(R.string.tt_nocategories) ); return null; }
-                fg.adapter = new ArrayAdapter<>(parent, R.layout.spinner_dropdown_title, CategoryManager.getInstance().GetCategoriesTitles());
+                if (CategoryManager.getInstance().GetCategoriesCount() == 0) { Helper.PrintUser(context, context.getString(R.string.tt_nocategories) ); return null; }
+                fg.adapter = new ArrayAdapter<>(context, R.layout.spinner_dropdown_title, CategoryManager.getInstance().GetCategoriesTitles());
                 break;
             case SOURCE:
-                if (budget != null) {
+                if (fg._budget != null) {
                     ArrayList<String> sources = new ArrayList<>();
-                    for (Transaction tran : budget.GetTransactions(activityType)){
+                    for (Transaction tran : fg._budget.GetTransactions(activityType)){
                         if (!sources.contains(tran.GetSource())) {
                             if (tran.GetSource().equals("")){
-                                sources.add(parent.getString(R.string.info_nosource));
+                                sources.add(context.getString(R.string.info_nosource));
                             } else {
                                 sources.add(tran.GetSource());
                             }
                         }
                     }
 
-                    fg.adapter = new ArrayAdapter<>(parent, R.layout.spinner_dropdown_title, sources);
+                    fg.adapter = new ArrayAdapter<>(context, R.layout.spinner_dropdown_title, sources);
                 }
                 break;
             case PAIDBY:
                 ArrayList<String> peopleIncludingMe = PersonManager.getInstance().GetPeopleNames();
-                peopleIncludingMe.add(parent.getString(R.string.format_me));
-                fg.adapter = new ArrayAdapter<>(parent, R.layout.spinner_dropdown_title, peopleIncludingMe);
+                peopleIncludingMe.add(context.getString(R.string.format_me));
+                fg.adapter = new ArrayAdapter<>(context, R.layout.spinner_dropdown_title, peopleIncludingMe);
                 break;
             case SPLITWITH:
-                if (PersonManager.getInstance().GetPeopleCount() == 0) { Helper.PrintUser(parent, parent.getString(R.string.tt_nopeople) ); return null; }
+                if (PersonManager.getInstance().GetPeopleCount() == 0) { Helper.PrintUser(context, context.getString(R.string.tt_nopeople) ); return null; }
                 ArrayList<String> peopleIncludingNotSplit = PersonManager.getInstance().GetPeopleNames();
-                peopleIncludingNotSplit.add(parent.getString(R.string.tt_not_split));
-                fg.adapter = new ArrayAdapter<>(parent, R.layout.spinner_dropdown_title, peopleIncludingNotSplit);
+                peopleIncludingNotSplit.add(context.getString(R.string.tt_not_split));
+                fg.adapter = new ArrayAdapter<>(context, R.layout.spinner_dropdown_title, peopleIncludingNotSplit);
                 break;
             case PAIDBACK:
-                String[] yesno = {parent.getString(R.string.confirm_no), parent.getString(R.string.confirm_yes)};
-                fg.adapter = new ArrayAdapter<>(parent, R.layout.spinner_dropdown_title, yesno);
+                String[] yesno = {context.getString(R.string.confirm_no), context.getString(R.string.confirm_yes)};
+                fg.adapter = new ArrayAdapter<>(context, R.layout.spinner_dropdown_title, yesno);
                 break;
         }
 
@@ -109,8 +107,8 @@ public class DialogFragmentFilter extends DialogFragment
         button_positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            _parent.filterMethods.put(_method, spinner_filter.getSelectedItem().toString());
-            _parent.RefreshActivity();
+            _parent.AddFilterMethod(_method, spinner_filter.getSelectedItem().toString());
+            _parent.Refresh();
             dismiss();
             }
         });

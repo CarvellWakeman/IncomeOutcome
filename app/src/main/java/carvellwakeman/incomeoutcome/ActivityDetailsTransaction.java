@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class ActivityDetailsTransaction extends AppCompatActivity
+public class ActivityDetailsTransaction extends AppCompatActivity implements SortFilterActivity
 {
     //Activity type (Expense or income) (0 or 1)
     Transaction.TRANSACTION_TYPE activityType = Transaction.TRANSACTION_TYPE.Expense;
@@ -104,18 +104,18 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
             button_nextPeriod.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
-                if (_budget != null){
-                    _budget.MoveTimePeriod(1);
-                    RefreshActivity();
-                }
+                    if (_budget != null){
+                        _budget.MoveTimePeriod(1);
+                        Refresh();
+                    }
                 }
             });
             button_prevPeriod.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
-                if (_budget != null){
-                    _budget.MoveTimePeriod(-1);
-                    RefreshActivity();
-                }
+                    if (_budget != null){
+                        _budget.MoveTimePeriod(-1);
+                        Refresh();
+                    }
                 }
             });
 
@@ -156,7 +156,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             relativeLayout_filter.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
                     filterMethods.clear();
-                    RefreshActivity();
+                    Refresh();
                 }
             });
 
@@ -186,7 +186,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
     @Override
     public void onResume(){ // TODO: Necessary?
         super.onResume();
-        RefreshActivity();
+        Refresh();
     }
 
 
@@ -232,7 +232,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                     item.setTitle(getString(R.string.action_showrange));
                 }
 
-                RefreshActivity();
+                Refresh();
                 return true;
 
             // Sorting
@@ -252,7 +252,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             case R.id.toolbar_filter_splitwith:
             case R.id.toolbar_filter_paidback:
                 Helper.FILTER_METHODS method = Helper.FILTER_METHODS.values()[item.getOrder()];
-                Helper.OpenDialogFragment(this, DialogFragmentFilter.newInstance(this, _budget, method, getString(Helper.filterTitles.get(method)), activityType), true);
+                Helper.OpenDialogFragment(this, DialogFragmentFilter.newInstance(this, this, _budget.GetID(), method, getString(Helper.filterTitles.get(method)), Transaction.TRANSACTION_TYPE.All), true);
                 break;
 
             default:
@@ -265,7 +265,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
     //Get return results from activities
     protected void onActivityResult(int requestCode, int resultCode, Intent data) { //TODO: Necessary?
-        RefreshActivity();
+        Refresh();
 
         //switch (requestCode){
         //case 1: // New Transaction
@@ -292,7 +292,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         //if (data != null) {}
 
         //Update timeframe for budget
-        //RefreshActivity();
+        //Refresh();
         //UpdateAdapters();
     }
 
@@ -336,7 +336,11 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         }
     }
 
-    public void RefreshActivity(){
+    public void AddFilterMethod(Helper.FILTER_METHODS method, String data){
+        filterMethods.put(method, data);
+    }
+
+    public void Refresh(){
         UpdateTransactionsAdapter();
         UpdateTotalsAdapter();
 
@@ -380,11 +384,13 @@ public class ActivityDetailsTransaction extends AppCompatActivity
                     dm.insert(parentT, true); // Update parent
                 }
             } else { // Set paid back date
-                t.SetPaidBack(date);
+                if (t.GetPaidBack() == null){
+                    t.SetPaidBack(date);
+                }
             }
             dm.insert(t, true);
         }
-        RefreshActivity();
+        Refresh();
     }
 
 }

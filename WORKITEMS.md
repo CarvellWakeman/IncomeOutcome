@@ -9,7 +9,7 @@ STAGING:
 	Overview page
 	Transactions split values not updated when total value is updated for non split transaction
 	
-	NEXT:Test, then income, then overview page
+	NEXT:Test, lint pass
 	
 
 TODO
@@ -27,8 +27,6 @@ TODO
 *[BUGFIX] Permissions revoked on runtime leaves import activity empty
 *[BUGFIX] Some MyTab import expenses are not split
 
-*[CHANGE] CardTransaction clicking a slice of the pie chart highlights in the legend
-*[CHANGE] CardTransaction long clicking a slice of the pie opens the edit page for the transaction
 *[CHANGE] SplitAdapter has a data structure (class) that represents the holder's values. That data structure is updated (Don't hold references to viewHolders)
 *[CHANGE] Move details page date inbetween next/prev period buttons
 *[CHANGE] Show All / Show Unpaid moved to overflow menu
@@ -78,8 +76,9 @@ UNRELEASED
 *[BUGFIX] Database manager correctly loads transactions that are not split
 #[BUGFIX] PaidBy radio button in new transaction not being checked initially (and not being saved when 'you' paid)
 #[BUGFIX] Database not saving timeperiod UID
-*[CHANGE] Major rewrite of data structures and database, UI updates
+*[CHANGE] Major rewrite of data structures and database, UI updates on every page
 *[CHANGE] Refactored budget, category, and people management
+*[CHANGE] CardTransaction clicking a slice of the pie chart highlights in the legend
 
 
 FORMAT

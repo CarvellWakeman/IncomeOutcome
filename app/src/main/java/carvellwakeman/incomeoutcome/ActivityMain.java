@@ -9,8 +9,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.*;
 import android.widget.*;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
+import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class ActivityMain extends AppCompatActivity
@@ -79,7 +81,7 @@ public class ActivityMain extends AppCompatActivity
                     //Selected budget
                     _selectedBudget = budgetManager.GetSelectedBudget();
 
-                    RefreshOverview();
+                    RefreshActivity();
                 }
             }
         );
@@ -88,7 +90,6 @@ public class ActivityMain extends AppCompatActivity
         //Toolbar menus
         toolbar_menus = new ArrayList<>();
         toolbar_menus.add(R.menu.submenu_settings);
-        toolbar_menus.add(R.menu.submenu_filter_expense);
         toolbar_menus.add(R.menu.submenu_paidback);
 
 
@@ -120,7 +121,7 @@ public class ActivityMain extends AppCompatActivity
             @Override public void onClick(View view) {
                 if (_selectedBudget != null){
                     _selectedBudget.MoveTimePeriod(1);
-                    RefreshOverview();
+                    RefreshActivity();
                 }
             }
         });
@@ -128,7 +129,7 @@ public class ActivityMain extends AppCompatActivity
             @Override public void onClick(View view) {
                 if (_selectedBudget != null){
                     _selectedBudget.MoveTimePeriod(-1);
-                    RefreshOverview();
+                    RefreshActivity();
                 }
             }
         });
@@ -145,11 +146,11 @@ public class ActivityMain extends AppCompatActivity
 
         //Cards
         Integer budgetID = (_selectedBudget != null ? _selectedBudget.GetID() : 0);
-        versusCard = new CardVersus(insertPoint, 0, budgetID, this, inflater, R.layout.card_versus);
-        expensesCard = new CardTransaction(insertPoint, 1, budgetID, Transaction.TRANSACTION_TYPE.Expense, this, inflater, R.layout.card_transaction);
-        incomeCard = new CardTransaction(insertPoint, 2, budgetID, Transaction.TRANSACTION_TYPE.Income, this, inflater, R.layout.card_transaction);
+        // = new CardVersus(insertPoint, 0, budgetID, this, inflater, R.layout.card_versus);
+        expensesCard = new CardTransaction(this, insertPoint, 1, budgetID, Transaction.TRANSACTION_TYPE.Expense, inflater, R.layout.card_transaction);
+        incomeCard = new CardTransaction(this, insertPoint, 2, budgetID, Transaction.TRANSACTION_TYPE.Income, inflater, R.layout.card_transaction);
 
-        versusCard.getBase().setVisibility(View.GONE);
+        //versusCard.getBase().setVisibility(View.GONE);
         expensesCard.getBase().setVisibility(View.GONE);
         incomeCard.getBase().setVisibility(View.GONE);
 
@@ -202,19 +203,7 @@ public class ActivityMain extends AppCompatActivity
         super.onResume();
 
         _selectedBudget = BudgetManager.getInstance().GetSelectedBudget();
-
-        RefreshOverview();
-
-        //if (_selectedBudgetID != 0) {
-        //    checkbox_showall.setChecked(_profile.GetShowAll());
-        //    RefreshOverview();
-        //}
-
-        //Sort and filter bubbles
-        if (_selectedBudget != null) { //TODO Implement new sort and filter
-            //SortFilterOptions.DisplayFilter(this, _profile.GetFilterMethod(), _profile.GetFilterData(), sortFilterCallBack);
-            //SortFilterOptions.DisplaySort(this, ProfileManager.SORT_METHODS.DATE_DOWN, sortFilterCallBack); //Sorting is irrelevant on main activity
-        }
+        RefreshActivity();
     }
 
     @Override
@@ -232,7 +221,6 @@ public class ActivityMain extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
-
             case android.R.id.home:
                 intent = new Intent();
                 setResult(RESULT_OK, intent);
@@ -242,14 +230,17 @@ public class ActivityMain extends AppCompatActivity
                 intent = new Intent(ActivityMain.this, ActivitySettings.class);
                 startActivityForResult(intent, 0);
                 return true;
-            case R.id.toolbar_paidback: //Expense only
-                //ProfileManager.OpenDialogFragment(ActivityMain.this, DialogFragmentPaidBack.newInstance(ActivityMain.this, new ProfileManager.CallBack() { @Override public void call() {
-                //    RefreshOverview();
-                //}}, _profile), true);
+            case R.id.toolbar_paidback: // Paid Back (expenses only)
+                Helper.OpenDialogFragment(ActivityMain.this, DialogFragmentPaidBack.newInstance(ActivityMain.this,
+                        new CallBackDate() { @Override public void call(LocalDate date) {
+                            SetTransactionsPaidBack(date);
+                        }
+                        }, _selectedBudget), true);
                 return true;
-        }
 
-        //SortFilterOptions.Run(this, _profile, item, sortFilterCallBack);
+            default:
+                break;
+        }
 
         return true;
     }
@@ -270,16 +261,15 @@ public class ActivityMain extends AppCompatActivity
         if (data != null) {}
 
         //Refresh graphs if we return to this page. Not the most efficient, but simple
-        RefreshOverview();
+        RefreshActivity();
     }
 
 
     //Refresh overview
-    public void RefreshOverview(){
-
+    public void RefreshActivity(){
         //Suggest the user add a budget if none exist
         if (_selectedBudget == null){
-            versusCard.getBase().setVisibility(View.GONE);
+            //versusCard.getBase().setVisibility(View.GONE);
             expensesCard.getBase().setVisibility(View.GONE);
             incomeCard.getBase().setVisibility(View.GONE);
             button_suggestaddbudget.setVisibility(View.VISIBLE);
@@ -298,8 +288,8 @@ public class ActivityMain extends AppCompatActivity
             //versusCard.SetBudget(_selectedBudget.GetID());
 
             //versusCard.SetData();
-            expensesCard.SetData();
-            incomeCard.SetData();
+            expensesCard.Refresh();
+            incomeCard.Refresh();
         }
 
         ToolbarTitleUpdate();
@@ -320,4 +310,35 @@ public class ActivityMain extends AppCompatActivity
         }
     }
 
+
+    // Paid back
+    public void SetTransactionsPaidBack(LocalDate date){
+        DatabaseManager dm = DatabaseManager.getInstance();
+
+        // Update transactions
+        for (Transaction t : _selectedBudget.GetTransactions(Transaction.TRANSACTION_TYPE.Expense)){
+            // If transaction is an instance transaction
+            if (_selectedBudget.GetTransaction(t.GetID()) == null){
+
+                // Duplicate transaction and set as paid back, blacklist on parent
+                Transaction parentT = _selectedBudget.GetTransaction(t.GetParentID());
+                if (parentT != null) {
+                    t.SetPaidBack(date);
+                    t.SetParentID(parentT.GetID());
+
+                    _selectedBudget.AddTransaction(t);
+                    parentT.GetTimePeriod().AddBlacklistDate(t.GetID(), t.GetTimePeriod().GetDate(), true);
+
+                    dm.insert(parentT, true); // Update parent
+                }
+            } else { // Set paid back date
+                if (t.GetPaidBack() == null){
+                    t.SetPaidBack(date);
+                }
+            }
+            dm.insert(t, true);
+        }
+
+        RefreshActivity();
+    }
 }

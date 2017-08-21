@@ -12,7 +12,8 @@ public class Transaction implements java.io.Serializable
     public enum TRANSACTION_TYPE
     {
         Expense,
-        Income
+        Income,
+        All
     }
     private TRANSACTION_TYPE _type;
 

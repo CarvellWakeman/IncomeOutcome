@@ -134,7 +134,7 @@ public class Budget implements java.io.Serializable, BaseEntity
     public ArrayList<Transaction> GetTransactions(Transaction.TRANSACTION_TYPE type) {
         ArrayList<Transaction> temp = new ArrayList<>();
         for (Transaction t : _transactions){
-            if (t.GetType() == type){ temp.add(t); }
+            if (t.GetType() == type || type== Transaction.TRANSACTION_TYPE.All){ temp.add(t); }
         }
         return temp;
     }
