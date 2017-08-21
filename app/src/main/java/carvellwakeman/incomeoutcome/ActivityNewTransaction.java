@@ -26,7 +26,7 @@ import java.util.Map;
 public class ActivityNewTransaction extends AppCompatActivity
 {
     //Activity state
-    int _activitytype;
+    Transaction.TRANSACTION_TYPE _activitytype;
     EDIT_STATE _editState;
     public enum EDIT_STATE
     {
@@ -103,7 +103,7 @@ public class ActivityNewTransaction extends AppCompatActivity
 
         //Get the intent that opened this activity
         Intent intent = getIntent();
-        _activitytype = intent.getIntExtra("activitytype", -1);
+        _activitytype = Transaction.TRANSACTION_TYPE.values()[intent.getIntExtra("activitytype", -1)];
         _editState = EDIT_STATE.values()[intent.getIntExtra("editstate",0)];
         _budget = BudgetManager.getInstance().GetBudget(intent.getIntExtra("budget",-1));
 
@@ -111,7 +111,7 @@ public class ActivityNewTransaction extends AppCompatActivity
         //Check that intent data is good
         if (_budget != null) {
 
-            if (_activitytype >= 0) {
+            if (_activitytype.ordinal() != -1) {
 
                 //Initial data
                 LocalDate _start_date = LocalDate.now();
@@ -237,7 +237,7 @@ public class ActivityNewTransaction extends AppCompatActivity
 
 
                 //Conditional view actions based on editstate and activitytype
-                if (_activitytype == 0) { //Expense
+                if (_activitytype == Transaction.TRANSACTION_TYPE.Expense) { //Expense
 
                     //Cost formatting
                     editText_cost.setKeyListener(DigitsKeyListener.getInstance(false, true));
@@ -305,7 +305,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                         }
                     });
 
-                } else if (_activitytype == 1) { // TODO Income
+                } else if (_activitytype == Transaction.TRANSACTION_TYPE.Income) { // TODO Income
                     checkBox_split.setVisibility(View.GONE);
                     button_selectCategory.setVisibility(View.GONE);
                 }
@@ -316,10 +316,10 @@ public class ActivityNewTransaction extends AppCompatActivity
                 // Edit state options
                 if (_editState == EDIT_STATE.NewTransaction) {
                     //Toolbar title
-                    if (_activitytype == 0) { //Expense
+                    if (_activitytype == Transaction.TRANSACTION_TYPE.Expense) { //Expense
                         toolbar.setTitle(R.string.title_newexpense);
                     }
-                    else if (_activitytype == 1) { //Income
+                    else if (_activitytype == Transaction.TRANSACTION_TYPE.Income) { //Income
                         toolbar.setTitle(R.string.title_newincome);
                     }
 
@@ -372,7 +372,8 @@ public class ActivityNewTransaction extends AppCompatActivity
 
                 UpdateDateFormat();
             } else {
-                Helper.Print(this, "Bad activitytype specified"); //TODO: add to strings
+                Helper.PrintUser(this, "Bad activitytype specified:" + String.valueOf(_activitytype)); //TODO: add to strings
+                finish();
             }
         }
     }
@@ -770,7 +771,7 @@ public class ActivityNewTransaction extends AppCompatActivity
         Helper.Log(this, "ActNewTran", "FinishTran TimePeriod Date:" + (_timePeriod==null ? "null" : _timePeriod.GetDate().toString()));
 
         // If the user selected a category
-        if ( _category != null || _activitytype == 1) {
+        if ( _category != null || _activitytype == Transaction.TRANSACTION_TYPE.Income) {
 
             // Determine if we are editing an existing transaction or creating a new one
             if (_editState == EDIT_STATE.NewTransaction){
@@ -793,7 +794,7 @@ public class ActivityNewTransaction extends AppCompatActivity
             _transaction.SetDescription( editText_description.getText().toString() );
 
             // Expense only
-            if (_activitytype == 0){
+            if (_activitytype == Transaction.TRANSACTION_TYPE.Expense){
                 // Set Category
                 if (_category != null){ _transaction.SetCategory(_category.GetID()); }
 
@@ -805,6 +806,10 @@ public class ActivityNewTransaction extends AppCompatActivity
                         _transaction.SetSplit(entry.getKey().GetID(), entry.getValue().GetCost());
                         if (entry.getValue().GetPaid()) { _transaction.SetPaidBy(entry.getKey().GetID()); }
                     }
+                } else {
+                    _transaction.ClearSplit();
+                    _transaction.SetSplit(Person.Me.GetID(), _transaction.GetValue());
+                    _transaction.SetPaidBy(Person.Me.GetID());
                 }
 
                 // Set paidback

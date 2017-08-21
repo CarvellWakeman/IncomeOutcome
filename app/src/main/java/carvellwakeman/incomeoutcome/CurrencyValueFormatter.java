@@ -12,6 +12,6 @@ public class CurrencyValueFormatter extends DefaultValueFormatter implements Val
     }
     @Override
     public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-        return ProfileManager.currencyFormat.format(value);
+        return Helper.currencyFormat.format(value);
     }
 }

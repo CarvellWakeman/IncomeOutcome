@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,109 +38,60 @@ import java.util.Map;
 public class CardTransaction extends Card
 {
     Context _context;
-    Budget _budget;
+    int _budgetID;
 
     int keyType;
-    Transaction.TRANSACTION_TYPE activityType;
-    Transaction.TRANSACTION_TYPE defaultActivityType;
-    //int defaultKeyType;
-
-    TextView textView_title;
-    TextView textView_nodata;
+    Transaction.TRANSACTION_TYPE _activityType;
 
     CardView cardView;
 
     Spinner spinner_keyType;
-    android.support.v7.widget.SwitchCompat switch_showLegend;
 
     Button button_viewDetails;
 
     PieChart chart;
     PieDataSet dataSet;
 
-    boolean isExpanded = false;
 
-
-    public CardTransaction(ViewGroup insertPoint, int index, int budgetID, Transaction.TRANSACTION_TYPE defaultActivityType, String title, Context context, LayoutInflater inflater, int layout){
+    public CardTransaction(ViewGroup insertPoint, int index, int budgetID, Transaction.TRANSACTION_TYPE activityType, Context context, LayoutInflater inflater, int layout){
         super(context, inflater, layout, insertPoint, index);
         this._context = context;
-        this._budget = BudgetManager.getInstance().GetBudget(budgetID);
+        this._budgetID = budgetID;
 
-        this.defaultActivityType = defaultActivityType;
-        this.activityType = defaultActivityType;
-        //this.defaultKeyType = defaultKeyType;
-        //this.keyType = defaultKeyType;
+        this._activityType = activityType;
+
         int keyTypeArray = (activityType==Transaction.TRANSACTION_TYPE.Expense ? R.array.keytype_array_ex : R.array.keytype_array_in);
 
-        //Title
-        textView_title = (TextView) getBase().findViewById(R.id.textView_cardTransaction_title);
-        textView_title.setText(title);
-
-        //No Data notice
-        textView_nodata = (TextView) getBase().findViewById(R.id.textView_cardTransaction_nodata);
-
-        //Show More switch
-        switch_showLegend = (android.support.v7.widget.SwitchCompat) getBase().findViewById(R.id.switch_cardTransaction);
-        switch_showLegend.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                SetExpanded(switch_showLegend.isChecked());
-            }
-        });
 
         //Spinner keytype
         spinner_keyType = (Spinner) getBase().findViewById(R.id.spinner_cardTransaction);
-        if (activityType == Transaction.TRANSACTION_TYPE.Expense) {
-            ArrayAdapter adapter = ArrayAdapter.createFromResource(context, keyTypeArray, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(R.layout.spinner_dropdown_list_primary);
-            spinner_keyType.setAdapter(adapter);
-            spinner_keyType.setSelection(keyType);
-            //OnClick Listener
-            spinner_keyType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (keyType != position) { //Key Type changed
-                        keyType = position;
-                        SetData();
-                    }
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(context, keyTypeArray, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_list_primary);
+        spinner_keyType.setAdapter(adapter);
+        spinner_keyType.setSelection(keyType);
+        //OnClick Listener
+        spinner_keyType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (keyType != position) { //Key Type changed
+                    keyType = position;
+                    SetData();
                 }
+            }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {}
-            });
-        }
-        else { spinner_keyType.setVisibility(View.GONE); }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
         //View details button
         button_viewDetails = (Button) getBase().findViewById(R.id.button_cardTransaction_viewdetails);
-
         button_viewDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (_budget != null) {
-                    //Start the details activity
-                    Intent intent = new Intent(_context, ActivityDetailsTransaction.class);
-                    intent.putExtra("activitytype", activityType.ordinal());
-                    intent.putExtra("budget", _budget.GetID());
-                    _context.startActivity(intent);
-
-
-                    //_profile.SetFilterMethod(ProfileManager.FILTER_METHODS.NONE, null);
-                    //_profile.SetSortMethod(ProfileManager.SORT_METHODS.DATE_DOWN);
-
-                    //_profile.CalculateTimeFrame(activityType);
-                    //_profile.CalculateTotalsInTimeFrame(activityType, activityType);
-
-                    //Start income (details) activity and send it the profile we clicked on
-                    //Intent intent = new Intent(_context, ActivityDetailsTransaction.class);
-                    //intent.putExtra("activitytype", activityType);
-                    //intent.putExtra("keytype", activityType);
-                    //intent.putExtra("profile",_budgetID);
-                    //((ActivityMain)_context).startActivityForResult(intent, 0);
-                }
-                else {
-                    Helper.PrintUser(_context, "ERROR: Budget not found, could not start transaction details activity");
-                }
+                //Start the details activity
+                Intent intent = new Intent(_context, ActivityDetailsTransaction.class);
+                intent.putExtra("activitytype", _activityType.ordinal());
+                intent.putExtra("budget", _budgetID);
+                _context.startActivity(intent);
             }
         });
 
@@ -155,8 +107,9 @@ public class CardTransaction extends Card
 
         chart.setTouchEnabled(true);
 
-        chart.setDrawHoleEnabled(true);
         chart.setDrawCenterText(true);
+
+        chart.setDrawHoleEnabled(true);
         chart.setRotationEnabled(true);
         chart.setDrawSlicesUnderHole(true);
 
@@ -169,140 +122,166 @@ public class CardTransaction extends Card
         chart.setTransparentCircleRadius(58f);
         chart.setCenterTextSize(22);
 
-
-        //Clicking on slices
-        //MarkerViewTransaction mv = new MarkerViewTransaction(context, R.layout.marker_layout, chart);
-        //chart.setMarkerView(mv);
-
-
-
+        chart.setExtraOffsets(20, 10, 10, 10);
+        chart.setDrawEntryLabels(false);
 
         //Legend
         Legend l = chart.getLegend();
         l.setPosition(Legend.LegendPosition.LEFT_OF_CHART_CENTER);
         l.setDrawInside(false);
+        l.setEnabled(true);
 
         //Slice labels
         chart.setEntryLabelTextSize(10);
         chart.setEntryLabelColor(Color.BLACK);
-
-        //Gather Data
-        //SetData();
-
-        //Contract the card view
-
-        //SetExpanded(true);
-
-        SetExpanded(false);
     }
 
-    public void SetBudget(int id){ _budget = BudgetManager.getInstance().GetBudget(id); }
 
     public void SetData(){
+        Budget _budget = BudgetManager.getInstance().GetBudget(_budgetID);
         if (_budget != null){
-            //_profile.CalculateTimeFrame(activityType);
-            /*
-            //Get expense data
-            HashMap<String,Transaction> transactions = _budget.GetTransactionsInTimeframe( (activityType==0 ? Transaction.TRANSACTION_TYPE.Expense : Transaction.TRANSACTION_TYPE.Income) );
 
-            if (transactions.keySet().size() > 0) {
+            //Get expense data
+            ArrayList<Transaction> transactions = _budget.GetTransactionsInTimeframe( _activityType );
+
+            if (transactions.size() > 0) {
                 //Total
                 Double total = 0d;
+                Double val = 0d;
 
                 //Convert transaction data to a list of PieEntry
                 List<PieEntry> entries = new ArrayList<>();
+                SparseArray<Double> debt = new SparseArray<>();
+                SparseArray<Double> category = new SparseArray<>();
                 List<Integer> colors = new ArrayList<>();
-                for (Map.Entry<String, Transaction> entry : transactions.entrySet()) {
-                    if (entry.getValue().GetValue() > 0) {
-                        total += (entry.getValue().GetValue() - entry.getValue().GetSplitValue());
 
-                        entries.add(new PieEntry(entry.getValue().GetValue().floatValue(), entry.getKey()));
+                for (Transaction t : transactions) {
+                    if (t.GetValue() > 0) {
 
-                        //Special case if keytype is category
-                        Category cat = CategoryManager.getInstance().GetCategory(entry.getValue().GetCategory());
-                        if (cat != null && keyType == 2) { colors.add(cat.GetColor()); }
-                        else { colors.add(Helper.ColorFromString(entry.getKey())); }
+                        if (keyType == 0) { // Source
+                            if (t.IsSplit()) {
+                                val = t.GetSplit(Person.Me.GetID());
+                            } else {
+                                val = t.GetValue();
+                            }
+
+                            entries.add(new PieEntry(val.floatValue(), t.GetSource()));
+
+                            colors.add(Helper.ColorFromString(t.GetSource()));
+
+                            // Sum up the values
+                            total += val;
+                        }
+                        else if (keyType == 1) { // Category
+                            Category cat = CategoryManager.getInstance().GetCategory(t.GetCategory());
+                            if (cat == null) { cat = Category.Deleted; }
+                            val = t.GetSplit(Person.Me.GetID());
+
+                            // Add to existing value
+                            if (category.get(cat.GetID()) != null) { val += category.get(cat.GetID()); }
+                            category.put(cat.GetID(), val);
+                        }
+                        else if (keyType == 2){ // Debt
+                            for (HashMap.Entry<Integer, Double> entry : t.GetSplitArray().entrySet()) {
+                                if (entry.getKey() != Person.Me.GetID()) {
+                                    val = t.GetDebt(Person.Me.GetID(), entry.getKey()) - t.GetDebt(entry.getKey(), Person.Me.GetID());
+                                    Helper.Log(_context, "CardTran", "Debt:" + String.valueOf(val) + " " + t.GetSource() + " " + PersonManager.getInstance().GetPerson(entry.getKey()).GetName());
+
+                                    // Add to existing value
+                                    if (debt.get(entry.getKey()) != null) { val += debt.get(entry.getKey()); }
+                                    debt.put(entry.getKey(), val);
+
+                                }
+                            }
+                        }
+
                     }
                 }
 
-                //Sepcial case if keytype is debt
-                if (keyType==0){ chart.setDrawCenterText(false); }
+                // Category case
+                if (keyType == 1){
+                    CategoryManager cm = CategoryManager.getInstance();
+                    Category cat;
+
+                    int size = category.size();
+                    for (int i = 0; i < size; i++){
+                        cat = cm.GetCategory(category.keyAt(i));
+                        entries.add(new PieEntry(category.get(category.keyAt(i)).floatValue(), cat.GetTitle()));
+                        colors.add(cat.GetColor());
+
+                        // Sum up the values
+                        total += category.get(category.keyAt(i));
+                    }
+                }
+
+                // Debt case
+                else if (keyType == 2){
+                    PersonManager pm = PersonManager.getInstance();
+                    Person p;
+                    int size = debt.size();
+                    for (int i = 0; i < size; i++){
+                        p = pm.GetPerson(debt.keyAt(i));
+                        val = Math.max(0.0d, debt.get(debt.keyAt(i)).floatValue());
+                        if (val > 0d) {
+                            entries.add(new PieEntry(val.floatValue(), p.GetName()));
+                            colors.add(Helper.ColorFromString(p.GetName()));
+
+                            // Sum up the values
+                            total += Math.max(0, debt.get(debt.keyAt(i)));
+                        }
+                    }
+                }
+
 
                 //Add data to pie chart
                 dataSet = new PieDataSet(entries, "");
                 dataSet.setColors(colors);
                 dataSet.setSliceSpace(1f);
                 dataSet.setSelectionShift(5f);
+                dataSet.setValueTextColor(_context.getResources().getColor(R.color.white));
 
                 dataSet.setValueTextSize(8);
                 dataSet.setValueFormatter(new CurrencyValueFormatter(2));
 
-                dataSet.setValueLinePart1OffsetPercentage(80.0f);
-                dataSet.setValueLinePart1Length(0.6f);
-                dataSet.setValueLinePart2Length(0.8f);
-                dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-                dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+                // Value lines
+                //dataSet.setValueLinePart1OffsetPercentage(80.0f);
+                //dataSet.setValueLinePart1Length(0.6f);
+                //dataSet.setValueLinePart2Length(0.8f);
+                //dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+                //dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+                //dataSet.setValueTextColor(Helper.getColor(R.color.white));
+                dataSet.setDrawValues(true);
 
-                PieData data = new PieData(dataSet);
-                chart.setData(data);
-                chart.setCenterText(ProfileManager.getString(R.string.info_total_newline) + Helper.currencyFormat.format(total));
+                chart.setData(new PieData(dataSet));
+                if (total != 0d) {
+                    chart.setCenterText(Helper.currencyFormat.format(total));
+                    chart.setDrawCenterText(true);
+                }
+                else if (keyType == 2){ // debt
+                    chart.setCenterText(_context.getString(R.string.info_no_debt));
+                }
+                else {
+                    chart.setDrawCenterText(false);
+                }
                 chart.invalidate(); //Refresh
 
                 chart.setVisibility(View.VISIBLE);
-                if (activityType==0){ spinner_keyType.setVisibility(View.VISIBLE); }
-                switch_showLegend.setVisibility(View.VISIBLE);
-                //relativeLayout_controls.setVisibility(View.VISIBLE);
-                //textView_nodata.setVisibility(View.GONE);
+
                 button_viewDetails.setText(R.string.action_viewdetails);
             }
             else { //No data
                 chart.setVisibility(View.GONE);
-                spinner_keyType.setVisibility(View.GONE);
-                switch_showLegend.setVisibility(View.GONE);
-                //relativeLayout_controls.setVisibility(View.GONE);
-                //textView_nodata.setVisibility(View.VISIBLE);
-                String transactionType = Helper.getString(activityType==0 ? R.string.format_nodata_viewdetails_expense : R.string.misc_income);
+
+                String transactionType = Helper.getString(_activityType == Transaction.TRANSACTION_TYPE.Expense ? R.string.format_nodata_viewdetails_expense : R.string.misc_income);
                 button_viewDetails.setText(String.format(_context.getString(R.string.format_nodata_viewdetails), transactionType));
             }
 
-            */
         }
-
-
-        //SetExpanded(true);
-
-        SetExpanded(isExpanded);
 
         chart.animateY(1400, Easing.EasingOption.EaseInSine);
         chart.spin(2000, 0, 360, Easing.EasingOption.EaseOutSine);
     }
 
-    public void SetExpanded(boolean expanded){
-        if (chart != null && dataSet != null) {
-            isExpanded = expanded;
-
-            if (expanded) {
-                chart.setExtraOffsets(20, 10, 10, 10);
-                chart.getLegend().setEnabled(true);
-                chart.setDrawEntryLabels(false);
-
-                dataSet.setValueTextColor(Helper.getColor(R.color.white));
-                dataSet.setYValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);
-                dataSet.setDrawValues(true);
-            }
-            else {
-                chart.setExtraOffsets(20, 20, 20, 20);
-                chart.getLegend().setEnabled(false);
-                chart.setDrawEntryLabels(true);
-
-                dataSet.setValueTextColor(Helper.getColor(R.color.black));
-                dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-                dataSet.setDrawValues(true);
-            }
-
-            chart.calculateOffsets();
-            chart.invalidate();
-        }
-    }
+    public void SetBudget(int id){ _budgetID = id; }
 
 }

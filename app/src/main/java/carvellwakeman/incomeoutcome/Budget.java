@@ -138,7 +138,7 @@ public class Budget implements java.io.Serializable, BaseEntity
         }
         return temp;
     }
-    public ArrayList<Transaction> GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE type){ return GetTransactions(GetStartDate(), GetEndDate(), type, Helper.SORT_METHODS.DATE_UP, null); }
+    public ArrayList<Transaction> GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE type){ return GetTransactions(GetStartDate(), GetEndDate(), type, Helper.SORT_METHODS.DATE_DOWN, null); }
     public ArrayList<Transaction> GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE type, Helper.SORT_METHODS sort, HashMap<Helper.FILTER_METHODS, String>  filters){
         return GetTransactions(GetStartDate(), GetEndDate(), type, sort, filters);
     }

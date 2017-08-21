@@ -24,33 +24,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/textView_cardTransaction_title"
+            <Spinner
+                android:id="@+id/spinner_cardTransaction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
+                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:textAppearance="@android:style/TextAppearance.Small" />
 
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/switch_cardTransaction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/textView_cardTransaction_title"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/tt_showlegend"
-                android:textSize="12sp" />
-
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/pieChart_cardTransaction"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:layout_below="@id/switch_cardTransaction"
+                android:layout_below="@id/spinner_cardTransaction"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
@@ -69,21 +58,11 @@
                 android:textStyle="normal|italic"
                 android:visibility="gone" />
 
-            <Spinner
-                android:id="@+id/spinner_cardTransaction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/textView_cardTransaction_nodata"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp" />
-
             <View
                 android:id="@+id/cardTransaction_divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@id/spinner_cardTransaction"
+                android:layout_below="@id/textView_cardTransaction_nodata"
                 android:layout_marginTop="8dp"
                 android:background="@android:color/darker_gray" />
 

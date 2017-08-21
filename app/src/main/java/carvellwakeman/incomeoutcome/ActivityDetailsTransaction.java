@@ -65,7 +65,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity
         toolbar_menus = new ArrayList<>();
 
         // Sorting and filtering
-        sortMethod = Helper.SORT_METHODS.DATE_UP;
+        sortMethod = Helper.SORT_METHODS.DATE_DOWN;
         filterMethods = new HashMap<>();
 
         //Get the intent that opened this activity
@@ -104,18 +104,18 @@ public class ActivityDetailsTransaction extends AppCompatActivity
 
             button_nextPeriod.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
-                    if (_budget != null){
-                        _budget.MoveTimePeriod(1);
-                        RefreshActivity();
-                    }
+                if (_budget != null){
+                    _budget.MoveTimePeriod(1);
+                    RefreshActivity();
+                }
                 }
             });
             button_prevPeriod.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
-                    if (_budget != null){
-                        _budget.MoveTimePeriod(-1);
-                        RefreshActivity();
-                    }
+                if (_budget != null){
+                    _budget.MoveTimePeriod(-1);
+                    RefreshActivity();
+                }
                 }
             });
 
@@ -129,15 +129,15 @@ public class ActivityDetailsTransaction extends AppCompatActivity
             button_new.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (_budget != null) {
-                        Intent intent = new Intent(ActivityDetailsTransaction.this, ActivityNewTransaction.class);
-                        intent.putExtra("activitytype", activityType);
-                        intent.putExtra("budget", _budget.GetID());
-                        startActivityForResult(intent, 1);
-                    }
-                    else {
-                        Helper.PrintUser(ActivityDetailsTransaction.this, "ERROR: Budget not found, could not start New Transaction Activity");
-                    }
+                if (_budget != null) {
+                    Intent intent = new Intent(ActivityDetailsTransaction.this, ActivityNewTransaction.class);
+                    intent.putExtra("activitytype", activityType.ordinal());
+                    intent.putExtra("budget", _budget.GetID());
+                    startActivityForResult(intent, 1);
+                }
+                else {
+                    Helper.PrintUser(ActivityDetailsTransaction.this, "ERROR: Budget not found, could not start New Transaction Activity");
+                }
                 }
             });
 

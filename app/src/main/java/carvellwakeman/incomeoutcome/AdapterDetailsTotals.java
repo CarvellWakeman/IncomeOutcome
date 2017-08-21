@@ -70,7 +70,9 @@ public class AdapterDetailsTotals
                 }
             }
         }
-        else if (activityType == Transaction.TRANSACTION_TYPE.Income) { //Income ( do nothing )
+        else if (activityType == Transaction.TRANSACTION_TYPE.Income) { //Income (Should anything be done here?)
+            //for (Transaction t : _budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Income, sort, filters)){
+            //}
         }
     }
 

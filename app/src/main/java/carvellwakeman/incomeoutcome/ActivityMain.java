@@ -146,8 +146,8 @@ public class ActivityMain extends AppCompatActivity
         //Cards
         Integer budgetID = (_selectedBudget != null ? _selectedBudget.GetID() : 0);
         versusCard = new CardVersus(insertPoint, 0, budgetID, this, inflater, R.layout.card_versus);
-        expensesCard = new CardTransaction(insertPoint, 1, budgetID, Transaction.TRANSACTION_TYPE.Expense, getString(R.string.header_expenses_summary), this, inflater, R.layout.card_transaction);
-        incomeCard = new CardTransaction(insertPoint, 2, budgetID, Transaction.TRANSACTION_TYPE.Income, getString(R.string.header_income_summary), this, inflater, R.layout.card_transaction);
+        expensesCard = new CardTransaction(insertPoint, 1, budgetID, Transaction.TRANSACTION_TYPE.Expense, this, inflater, R.layout.card_transaction);
+        incomeCard = new CardTransaction(insertPoint, 2, budgetID, Transaction.TRANSACTION_TYPE.Income, this, inflater, R.layout.card_transaction);
 
         versusCard.getBase().setVisibility(View.GONE);
         expensesCard.getBase().setVisibility(View.GONE);
@@ -293,9 +293,9 @@ public class ActivityMain extends AppCompatActivity
             button_suggestaddbudget.setVisibility(View.GONE);
             relativeLayout_period.setVisibility(View.VISIBLE);
 
-            //versusCard.SetBudget(_selectedBudget.GetID());
             expensesCard.SetBudget(_selectedBudget.GetID());
             incomeCard.SetBudget(_selectedBudget.GetID());
+            //versusCard.SetBudget(_selectedBudget.GetID());
 
             //versusCard.SetData();
             expensesCard.SetData();
