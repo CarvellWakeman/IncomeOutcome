@@ -65,7 +65,7 @@ public class ActivitySettings extends AppCompatActivity
         int indexCount = 0;
 
         //Setting Categories
-        CardSettings budgetsPeopleCategories = new CardSettings(this, inflater, insertPoint, indexCount++, R.layout.row_layout_setting_card, Helper.getString(R.string.title_settings_budgetspeoplecategories));
+        CardSettings budgetsPeopleCategories = new CardSettings(this, inflater, insertPoint, indexCount++, R.layout.row_layout_setting_card, getString(R.string.title_settings_budgetspeoplecategories));
         //Manage budgets
         budgetsPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_account_white_24dp, getString(R.string.title_managebudgets), null,
                 new View.OnClickListener() { @Override public void onClick(View v) {
@@ -149,7 +149,7 @@ public class ActivitySettings extends AppCompatActivity
                 if (br == null) {
                     br = new Budget("DummyData");
                     BudgetManager.getInstance().AddBudget(br);
-                    DatabaseManager.getInstance().insertSetting(br, false);
+                    DatabaseManager.getInstance(ActivitySettings.this).insertSetting(br, false);
                 }
 
                 for (int i = 0; i < 100; i++){
@@ -169,7 +169,7 @@ public class ActivitySettings extends AppCompatActivity
                     tr.SetTimePeriod(new TimePeriod(beginning.plusDays(Math.abs(rand.nextInt(12000)))));
 
                     br.AddTransaction(tr);
-                    DatabaseManager.getInstance().insert(tr, false);
+                    DatabaseManager.getInstance(ActivitySettings.this).insert(tr, false);
                 }
 
                 //ProfileManager.getInstance().SelectProfile(ActivitySettings.this, pr);
@@ -182,7 +182,7 @@ public class ActivitySettings extends AppCompatActivity
                 public void onClick(View view) {
                     //Initialize managers
                     BudgetManager bm = BudgetManager.getInstance();
-                    DatabaseManager dm = DatabaseManager.getInstance();
+                    DatabaseManager dm = DatabaseManager.getInstance(ActivitySettings.this);
                     PersonManager pm = PersonManager.getInstance();
                     CategoryManager cm = CategoryManager.getInstance();
 
@@ -357,7 +357,7 @@ public class ActivitySettings extends AppCompatActivity
     }
 
     public void ImportClick(){
-        if (Helper.isStoragePermissionGranted() || Build.VERSION.SDK_INT < 23) {
+        if (Helper.isStoragePermissionGranted(ActivitySettings.this) || Build.VERSION.SDK_INT < 23) {
             Intent intent = new Intent(ActivitySettings.this, ActivityDatabaseImport.class);
             startActivity(intent);
         }
@@ -377,7 +377,7 @@ public class ActivitySettings extends AppCompatActivity
     }
 
     public void MyTabImportClick(){
-        if (Helper.isStoragePermissionGranted() || Build.VERSION.SDK_INT < 23) {
+        if (Helper.isStoragePermissionGranted(ActivitySettings.this) || Build.VERSION.SDK_INT < 23) {
             new AlertDialog.Builder(ActivitySettings.this).setTitle(R.string.confirm_areyousure_deleteall)
                     .setPositiveButton(R.string.action_continue, new DialogInterface.OnClickListener() {
                         @Override public void onClick(DialogInterface dialog, int which) {

@@ -36,7 +36,7 @@ public class AdapterTransferTransactions extends RecyclerView.Adapter<AdapterTra
         if (br != null) {
             //Textview
             holder.title.setText(br.GetName());
-            holder.subTitle.setText(br.GetDateFormatted());
+            holder.subTitle.setText(br.GetDateFormatted(_parent.getActivity()));
 
             if (holder.subTitle.getText() != null) { holder.subTitle.setVisibility(View.VISIBLE); }
 

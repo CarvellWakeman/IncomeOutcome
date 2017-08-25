@@ -53,7 +53,7 @@ public class AdapterDetailsTotals
 
         if (activityType == Transaction.TRANSACTION_TYPE.Expense) { //Expense
             Double currVal = 0.0d;
-            for (Transaction t : _budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Expense, sort, filters)){
+            for (Transaction t : _budget.GetTransactionsInTimeframe(_activity, Transaction.TRANSACTION_TYPE.Expense, sort, filters)){
                 for (HashMap.Entry<Integer, Double> entry : t.GetSplitArray().entrySet()){
 
                     // You paid or you were involved in the payment

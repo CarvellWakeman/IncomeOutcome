@@ -178,7 +178,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                             new DatePickerDialog(ActivityNewTransaction.this, datePickerDate2, _paidBack.getYear(), _paidBack.getMonthOfYear() - 1, _paidBack.getDayOfMonth()).show();
                         } else {
                             checkBox_paidBack.setChecked(false);
-                            checkBox_paidBack.setText( Helper.getString(R.string.confirm_paidback) );
+                            checkBox_paidBack.setText( getString(R.string.confirm_paidback) );
                         }
                     }
                 });
@@ -420,7 +420,7 @@ public class ActivityNewTransaction extends AppCompatActivity
             _paidBack = new LocalDate(year, monthOfYear+1, dayOfMonth);
 
             //Format checkbox text
-            checkBox_paidBack.setText( String.format(Helper.getString(R.string.info_paidback_format), _paidBack.toString(Helper.getString(R.string.date_format))) );
+            checkBox_paidBack.setText( String.format(getString(R.string.info_paidback_format), _paidBack.toString(getString(R.string.date_format))) );
         }
     };
 
@@ -494,7 +494,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                         if (bd != null){
                             Transaction tran = _budget.GetTransaction(bd.transactionID);
                             if (tran != null) {
-                                DatabaseManager.getInstance().remove(tran);
+                                DatabaseManager.getInstance(this).remove(tran);
                                 _budget.RemoveTransaction(bd.transactionID);
                             }
                         }
@@ -527,10 +527,10 @@ public class ActivityNewTransaction extends AppCompatActivity
     // Updaters
     public void UpdateDateFormat(){
         //Format date text
-        textView_date.setText( _timePeriod.GetDate().toString(Helper.getString(R.string.date_format)) );
+        textView_date.setText( _timePeriod.GetDate().toString(getString(R.string.date_format)) );
 
         //Format repeat text
-        textView_repeat.setText( _timePeriod.GetRepeatStringShort() );
+        textView_repeat.setText( _timePeriod.GetRepeatStringShort(ActivityNewTransaction.this) );
     }
 
     public void UpdateBlacklistDates(LocalDate originalDate){
@@ -658,7 +658,7 @@ public class ActivityNewTransaction extends AppCompatActivity
             blacklistDates.setTitle(R.string.subtitle_blacklist);
 
             for (final BlacklistDate bd : _timePeriod.GetBlacklistDates()){
-                Setting setting = new Setting(getLayoutInflater(), R.drawable.ic_delete_white_24dp, bd.date.toString(Helper.getString(R.string.date_format)), getString(bd.edited ? R.string.tt_edited : R.string.tt_deleted),
+                Setting setting = new Setting(getLayoutInflater(), R.drawable.ic_delete_white_24dp, bd.date.toString(getString(R.string.date_format)), getString(bd.edited ? R.string.tt_edited : R.string.tt_deleted),
                     new View.OnClickListener() {
                         @Override
                         public void onClick(final View view) {
@@ -708,7 +708,7 @@ public class ActivityNewTransaction extends AppCompatActivity
         if (_transaction.GetPaidBack() != null){
             _paidBack = _transaction.GetPaidBack();
             checkBox_paidBack.setChecked(true);
-            checkBox_paidBack.setText( String.format(Helper.getString(R.string.info_paidback_format), _paidBack.toString(Helper.getString(R.string.date_format))) );
+            checkBox_paidBack.setText( String.format(getString(R.string.info_paidback_format), _paidBack.toString(getString(R.string.date_format))) );
         }
 
         // Cost
@@ -822,7 +822,7 @@ public class ActivityNewTransaction extends AppCompatActivity
             }
 
 
-            DatabaseManager dm = DatabaseManager.getInstance();
+            DatabaseManager dm = DatabaseManager.getInstance(this);
 
             // Blacklist date for instance transaction
             if (_editState == EDIT_STATE.EditInstance) {
@@ -859,7 +859,7 @@ public class ActivityNewTransaction extends AppCompatActivity
 
         } else { // Failure (no category)
             Helper.Log(this, "ActNewTran", "Error: Pick a category");
-            Helper.PrintUser(this, Helper.getString(R.string.info_select_category));
+            Helper.PrintUser(this, getString(R.string.info_select_category));
         }
     }
 

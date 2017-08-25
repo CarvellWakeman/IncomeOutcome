@@ -186,7 +186,7 @@ public class ActivityMain extends AppCompatActivity
         //Sort and filter bubbles
         if (_profile != null) {
             SortFilterOptions.DisplayFilter(this, _profile.GetFilterMethod(), _profile.GetFilterData(), sortFilterCallBack);
-            SortFilterOptions.DisplaySort(this, ProfileManager.SORT_METHODS.DATE_DOWN, sortFilterCallBack); //Sorting is irrelevant on main activity
+            SortFilterOptions.DisplaySort(this, ProfileManager.SORT_METHODS.DATE_ASC, sortFilterCallBack); //Sorting is irrelevant on main activity
         }
     }
 

@@ -26,7 +26,7 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
     }
 
     public void getFiles(){
-        database_import_files = DatabaseManager.getInstance().getImportableDatabases();
+        database_import_files = DatabaseManager.getInstance(parent).getImportableDatabases();
 
         Collections.sort(database_import_files, new Comparator<File>() {
             @Override
@@ -52,10 +52,10 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
             File file = database_import_files.get(position);
             if (file != null && file.exists()) {
                 int version = SQLiteDatabase.openDatabase(file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
-                int currentVersion = DatabaseManager.getInstance().getVersion();
+                int currentVersion = DatabaseManager.getInstance(parent).getVersion();
 
                 holder.title.setText(file.getName());
-                holder.subTitle.setText( new LocalDate(file.lastModified()).toString(Helper.getString(R.string.date_format)) );
+                holder.subTitle.setText( new LocalDate(file.lastModified()).toString(parent.getString(R.string.date_format)) );
                 holder.subTitle.setVisibility(View.VISIBLE);
                 holder.subTitle2.setText(parent.getString(R.string.format_dbversion, String.valueOf(version)));
                 holder.subTitle2.setVisibility(View.VISIBLE);

@@ -19,8 +19,8 @@ public class MyTabConversion {
     private static String appDir = Environment.getExternalStorageDirectory().toString() + "/MyTabs/";;
     private static String tabsFilename = "Tabs.xml";
 
-    public static String load(Context ac){
-        if (Helper.isStoragePermissionGranted()){
+    public static String load(Context context){
+        if (Helper.isStoragePermissionGranted(context)){
             ArrayList<Tab> _tabs = new ArrayList<>();
 
             //Find MyTab file
@@ -35,7 +35,7 @@ public class MyTabConversion {
                 while ((line = reader.readLine()) != null) {
                     //Create new JSONObject
                     JSONObject obj = new JSONObject(line);
-                    Tab tab = new Tab(ac);
+                    Tab tab = new Tab(context);
                     tab.SetJSON(obj);
                     //Add tab to _tabs
                     _tabs.add(tab);
@@ -66,7 +66,7 @@ public class MyTabConversion {
 
                 //Add new budget
                 BudgetManager.getInstance().AddBudget(br);
-                DatabaseManager.getInstance().insertSetting(br, false);
+                DatabaseManager.getInstance(context).insertSetting(br, false);
                 //ProfileManager.getInstance().SelectProfile(br);
 
                 //Convert between Tab<->MyTabTransaction objects into Profile<->Transaction objects
@@ -93,7 +93,7 @@ public class MyTabConversion {
                                 //Other person does not exist yet
                                 if (PersonManager.getInstance().GetPerson(tab.GetPersonB()) == null) {
                                     Person person = PersonManager.getInstance().AddPerson(tab.GetPersonB());
-                                    DatabaseManager.getInstance().insertSetting(person, false);
+                                    DatabaseManager.getInstance(context).insertSetting(person, false);
 
                                     if (tran.GetCostB() != 0.0f && !tran.GetPersonAPaid()){
                                         NewTransaction.SetSplit(person.GetID(), Double.parseDouble(Float.toString(tran.GetCostB())));
@@ -106,7 +106,7 @@ public class MyTabConversion {
                                 NewTransaction.SetPaidBack((tab.GetDatePaid() == null ? null : new LocalDate(tab.GetDatePaid())));
 
                                 br.AddTransaction(NewTransaction);
-                                DatabaseManager.getInstance().insert(NewTransaction, false);
+                                DatabaseManager.getInstance(context).insert(NewTransaction, false);
                             }
                         }
                     }

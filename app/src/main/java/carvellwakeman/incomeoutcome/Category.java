@@ -11,7 +11,7 @@ public class Category implements BaseEntity
     // Category that deleted categories default to
     static Category Deleted;
     static {
-        Deleted = new Category(Helper.getString(R.string.placeholder_deleted), Color.argb(255, 0, 0, 0));
+        Deleted = new Category(App.GetContext().getString(R.string.placeholder_deleted), Color.argb(255, 0, 0, 0));
         Deleted.SetID(-1); // -1 for deleted category
     }
 

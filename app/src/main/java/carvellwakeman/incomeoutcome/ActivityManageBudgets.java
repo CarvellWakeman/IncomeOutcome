@@ -127,8 +127,8 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
                         .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                for (Transaction t : br.GetAllTransactions()){ DatabaseManager.getInstance().remove(t); }
-                                DatabaseManager.getInstance().removeBudgetSetting(br);
+                                for (Transaction t : br.GetAllTransactions()){ DatabaseManager.getInstance(ActivityManageBudgets.this).remove(t); }
+                                DatabaseManager.getInstance(ActivityManageBudgets.this).removeBudgetSetting(br);
                                 BudgetManager.getInstance().RemoveBudget(br);
                                 //Select a new budget if the one being deleted was the selected one
                                 if (br.GetSelected() && BudgetManager.getInstance().GetBudgetCount() > 0) { BudgetManager.getInstance().SetSelectedBudget(BudgetManager.getInstance().GetBudgets().get(0)); }
@@ -164,7 +164,7 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
 
             // Updated other budges (they are not selected anymore)
             for (Budget b : BudgetManager.getInstance().GetBudgets()){
-                DatabaseManager.getInstance().insertSetting(b, true);
+                DatabaseManager.getInstance(ActivityManageBudgets.this).insertSetting(b, true);
             }
 
             adapter.notifyDataSetChanged();
@@ -201,7 +201,7 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
 
             //Add or update old budget
             BudgetManager.getInstance().AddBudget(editingEntity);
-            DatabaseManager.getInstance().insertSetting(editingEntity, true);
+            DatabaseManager.getInstance(ActivityManageBudgets.this).insertSetting(editingEntity, true);
         }
 
     }

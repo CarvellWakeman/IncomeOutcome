@@ -10,9 +10,9 @@ public class ViewHolderBudget extends ViewHolderEntity<Budget> {
     public void itemClick(final ActivityManageEntity parent, Budget budget) {
         if (budget != null) {
             String descriptionString =
-                    budget.GetPeriodFormatted() + "\n" +
-                            budget.GetDateFormatted() + "\n" +
-                            budget.GetTransactionCount() + " " + Helper.getString(R.string.misc_transactoins);
+                    budget.GetPeriodFormatted(parent) + "\n" +
+                            budget.GetDateFormatted(parent) + "\n" +
+                            budget.GetTransactionCount() + " " + parent.getString(R.string.misc_transactoins);
 
             Helper.OpenDialogFragment(parent, DialogFragmentManageBPC.newInstance(parent, budget.GetName(), descriptionString, String.valueOf(budget.GetID()),
                     new ParentCallBack() { @Override public void call(String data, DialogFragmentManageBPC dialogFragment) { parent.EditEntity(Integer.valueOf(data), dialogFragment); } },

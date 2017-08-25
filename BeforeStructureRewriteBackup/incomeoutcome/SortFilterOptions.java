@@ -53,7 +53,7 @@ public class SortFilterOptions {
                 break;
             case R.id.toolbar_sort_date:
                 if (_profile.GetSortMethod() == ProfileManager.SORT_METHODS.DATE_UP) {
-                    Sort(caller, ProfileManager.SORT_METHODS.DATE_DOWN, callBack);
+                    Sort(caller, ProfileManager.SORT_METHODS.DATE_ASC, callBack);
                 } else {
                     Sort(caller, ProfileManager.SORT_METHODS.DATE_UP, callBack);
                 }
@@ -118,12 +118,12 @@ public class SortFilterOptions {
                         public void onClick(View v) {
                             TV_SORT.setText("");
                             FL_SORT.setVisibility(View.GONE);
-                            _profile.SetSortMethod(ProfileManager.SORT_METHODS.DATE_DOWN);
+                            _profile.SetSortMethod(ProfileManager.SORT_METHODS.DATE_ASC);
                             callBack.call();
                         }
                     });
 
-                    if (sort != null && sort != ProfileManager.SORT_METHODS.DATE_DOWN) {
+                    if (sort != null && sort != ProfileManager.SORT_METHODS.DATE_ASC) {
                         FL_SORT.setVisibility(View.VISIBLE);
                         TV_SORT.setText(ProfileManager.sortSubtitles.get(sort));
 

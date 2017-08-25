@@ -16,7 +16,7 @@ import android.widget.*;
 
 public class DialogFragmentTransferTransaction extends DialogFragment
 {
-    ActivityManageBudgets _parent;
+    ActivityManageBudgets mActivity;
     DialogFragmentManageBPC _dialog;
 
     Budget _budget;
@@ -35,7 +35,7 @@ public class DialogFragmentTransferTransaction extends DialogFragment
 
     static DialogFragmentTransferTransaction newInstance(ActivityManageBudgets parent, DialogFragmentManageBPC dialog, Budget budget) {
         DialogFragmentTransferTransaction fg = new DialogFragmentTransferTransaction();
-        fg._parent = parent;
+        fg.mActivity = parent;
         fg._dialog = dialog;
         fg._budget = budget;
         //Bundle args = new Bundle();
@@ -79,11 +79,11 @@ public class DialogFragmentTransferTransaction extends DialogFragment
                         .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                for (Transaction t : _budget.GetAllTransactions()){ DatabaseManager.getInstance().remove(t); }
-                                DatabaseManager.getInstance().removeBudgetSetting(_budget);
+                                for (Transaction t : _budget.GetAllTransactions()){ DatabaseManager.getInstance(mActivity).remove(t); }
+                                DatabaseManager.getInstance(mActivity).removeBudgetSetting(_budget);
                                 BudgetManager.getInstance().RemoveBudget(_budget);
 
-                                 _parent.adapter.notifyDataSetChanged();
+                                 mActivity.adapter.notifyDataSetChanged();
 
                                 _dialog.dismiss();
                                 dismiss();
@@ -116,26 +116,26 @@ public class DialogFragmentTransferTransaction extends DialogFragment
         //Transfer transactions from _budget -> to
         for (Transaction tr : _budget.GetAllTransactions()){
             to.AddTransaction(tr);
-            DatabaseManager.getInstance().insert(tr, true);
+            DatabaseManager.getInstance(mActivity).insert(tr, true);
         }
 
         //Delete _budget
-        DatabaseManager.getInstance().removeBudgetSetting(_budget);
+        DatabaseManager.getInstance(mActivity).removeBudgetSetting(_budget);
         BudgetManager.getInstance().RemoveBudget(_budget);
 
         //Update budget 'to'
-        DatabaseManager.getInstance().insertSetting(to, true);
+        DatabaseManager.getInstance(mActivity).insertSetting(to, true);
 
 
         //adapter.notifyDataSetChanged();
-        _parent.adapter.notifyDataSetChanged();
+        mActivity.adapter.notifyDataSetChanged();
 
         _dialog.dismiss();
         dismiss();
 
         //Update adapter from ActivityManageBudgets
-        //if (_parent != null) {
-        //    _parent.finish();
+        //if (mActivity != null) {
+        //    mActivity.finish();
         //}
 
     }

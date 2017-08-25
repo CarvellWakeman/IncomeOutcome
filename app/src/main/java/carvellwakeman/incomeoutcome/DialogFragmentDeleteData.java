@@ -16,7 +16,7 @@ import android.widget.RadioButton;
 
 public class DialogFragmentDeleteData extends DialogFragment {
 
-    Activity _parent;
+    Activity mActivity;
     CallBack _callBack;
 
     RadioButton radioButton_deleteall;
@@ -31,7 +31,7 @@ public class DialogFragmentDeleteData extends DialogFragment {
     static DialogFragmentDeleteData newInstance(Activity caller, CallBack callBack) {
         DialogFragmentDeleteData fg = new DialogFragmentDeleteData();
         fg._callBack = callBack;
-        fg._parent = caller;
+        fg.mActivity = caller;
         return fg;
     }
 
@@ -55,14 +55,14 @@ public class DialogFragmentDeleteData extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (radioButton_deleteall.isChecked()){ //Delete ALL data
-                    new AlertDialog.Builder(_parent).setTitle(R.string.confirm_areyousure_deleteall)
+                    new AlertDialog.Builder(mActivity).setTitle(R.string.confirm_areyousure_deleteall)
                             .setPositiveButton(R.string.action_deleteall, new DialogInterface.OnClickListener() {
                                 @Override public void onClick(DialogInterface dialog, int which) {
                                     BudgetManager.getInstance().RemoveAllBudgets();
                                     CategoryManager.getInstance().RemoveAllCategories();
                                     PersonManager.getInstance().RemoveAllPeople();
 
-                                    DatabaseManager.getInstance().deleteAllTableContent();
+                                    DatabaseManager.getInstance(mActivity).deleteAllTableContent();
 
                                     if (_callBack != null) { _callBack.call(); }
                                     DialogFragmentDeleteData.this.dismiss();
@@ -72,13 +72,13 @@ public class DialogFragmentDeleteData extends DialogFragment {
                             .create().show();
                 }
                 else if (radioButton_deletetransactions.isChecked()){ //Delete budgets and transactions
-                    new AlertDialog.Builder(_parent).setTitle(R.string.confirm_areyousure_deletesingle)
+                    new AlertDialog.Builder(mActivity).setTitle(R.string.confirm_areyousure_deletesingle)
                             .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                                 @Override public void onClick(DialogInterface dialog, int which) {
                                     BudgetManager.getInstance().RemoveAllBudgets();
-                                    DatabaseManager.getInstance().deleteTableContent(DatabaseManager.TABLE_SETTINGS_BUDGETS);
-                                    DatabaseManager.getInstance().deleteTableContent(DatabaseManager.TABLE_TRANSACTIONS);
-                                    DatabaseManager.getInstance().deleteTableContent(DatabaseManager.TABLE_TIMEPERIODS);
+                                    DatabaseManager.getInstance(mActivity).deleteTableContent(DatabaseManager.TABLE_SETTINGS_BUDGETS);
+                                    DatabaseManager.getInstance(mActivity).deleteTableContent(DatabaseManager.TABLE_TRANSACTIONS);
+                                    DatabaseManager.getInstance(mActivity).deleteTableContent(DatabaseManager.TABLE_TIMEPERIODS);
 
                                     if (_callBack != null) { _callBack.call(); }
                                     DialogFragmentDeleteData.this.dismiss();
@@ -88,11 +88,11 @@ public class DialogFragmentDeleteData extends DialogFragment {
                             .create().show();
                 }
                 else if (radioButton_deletepeople.isChecked()){ //Delete people
-                    new AlertDialog.Builder(_parent).setTitle(R.string.confirm_areyousure_deletesingle)
+                    new AlertDialog.Builder(mActivity).setTitle(R.string.confirm_areyousure_deletesingle)
                             .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                                 @Override public void onClick(DialogInterface dialog, int which) {
                                     PersonManager.getInstance().RemoveAllPeople();
-                                    DatabaseManager.getInstance().deleteTableContent(DatabaseManager.TABLE_SETTINGS_OTHERPEOPLE);
+                                    DatabaseManager.getInstance(mActivity).deleteTableContent(DatabaseManager.TABLE_SETTINGS_OTHERPEOPLE);
 
                                     if (_callBack != null) { _callBack.call(); }
                                     DialogFragmentDeleteData.this.dismiss();
@@ -102,11 +102,11 @@ public class DialogFragmentDeleteData extends DialogFragment {
                             .create().show();
                 }
                 else if (radioButton_deletecategories.isChecked()){ //Delete categories
-                    new AlertDialog.Builder(_parent).setTitle(R.string.confirm_areyousure_deletesingle)
+                    new AlertDialog.Builder(mActivity).setTitle(R.string.confirm_areyousure_deletesingle)
                             .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                                 @Override public void onClick(DialogInterface dialog, int which) {
                                     CategoryManager.getInstance().RemoveAllCategories();
-                                    DatabaseManager.getInstance().deleteTableContent(DatabaseManager.TABLE_SETTINGS_CATEGORIES);
+                                    DatabaseManager.getInstance(mActivity).deleteTableContent(DatabaseManager.TABLE_SETTINGS_CATEGORIES);
 
                                     if (_callBack != null) { _callBack.call(); }
                                     DialogFragmentDeleteData.this.dismiss();

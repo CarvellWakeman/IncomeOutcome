@@ -60,7 +60,7 @@ public class Profile implements java.io.Serializable
         SetStartTimeDontSave(LocalDate.now().withDayOfMonth(1));
 
         //Default sorting
-        //sortMethod = ProfileManager.SORT_METHODS.DATE_DOWN;
+        //sortMethod = ProfileManager.SORT_METHODS.DATE_ASC;
         SetSortMethod(null);
 
         //TODO: Necessary?
@@ -567,7 +567,7 @@ public class Profile implements java.io.Serializable
                         public int compare(Transaction t1, Transaction t2) { return dateSort(t1, t2); }
                     };
                     break;
-                case DATE_DOWN:
+                case DATE_ASC:
                     sortComparator = new Comparator<Transaction>() {
                         @Override
                         public int compare(Transaction t1, Transaction t2) { return dateSort(t2, t1); }
@@ -630,7 +630,7 @@ public class Profile implements java.io.Serializable
             }
         }
         else {
-            SetSortMethod(ProfileManager.SORT_METHODS.DATE_DOWN);
+            SetSortMethod(ProfileManager.SORT_METHODS.DATE_ASC);
         }
     }
 

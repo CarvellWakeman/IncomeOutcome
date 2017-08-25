@@ -43,7 +43,7 @@ public class ViewHolderSplit //implements View.OnClickListener
         paid = (RadioButton) base.findViewById(R.id.seekBar_newTransaction_personPaid);
 
         //Inflate views with data
-        TIL.setHint(String.format(Helper.getString(R.string.tt_theircost), person.GetName()));
+        TIL.setHint(String.format(parent.getString(R.string.tt_theircost), person.GetName()));
 
         percentage.setProgress(0);
 

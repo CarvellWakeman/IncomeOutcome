@@ -37,7 +37,7 @@ public class AdapterChangelog extends RecyclerView.Adapter<AdapterChangelog.Chan
 
             //Title info
             holder.version.setText(change.version + " " + change.versionChannel);
-            holder.date.setText(LocalDate.parse(change.date).toString(Helper.getString(R.string.date_format)));
+            holder.date.setText(LocalDate.parse(change.date).toString(_parent.getString(R.string.date_format)));
 
 
             //Notes

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class BudgetManager
 {
-    static BudgetManager instance = new BudgetManager();
+    private static BudgetManager instance = new BudgetManager();
 
     //Budgets
     private ArrayList<Budget> _budgets;

@@ -65,7 +65,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
         toolbar_menus = new ArrayList<>();
 
         // Sorting and filtering
-        sortMethod = Helper.SORT_METHODS.DATE_DOWN;
+        sortMethod = Helper.SORT_METHODS.DATE_ASC;
         filterMethods = new HashMap<>();
 
         //Get the intent that opened this activity
@@ -105,6 +105,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
             button_nextPeriod.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
                     if (_budget != null){
+                        prev_startDate = prev_endDate = null;
                         _budget.MoveTimePeriod(1);
                         Refresh();
                     }
@@ -113,6 +114,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
             button_prevPeriod.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
                     if (_budget != null){
+                        prev_startDate = prev_endDate = null;
                         _budget.MoveTimePeriod(-1);
                         Refresh();
                     }
@@ -124,6 +126,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
 
             textView_nodata = (TextView) findViewById(R.id.textView_transaction_nodata);
             textView_filters = (TextView) findViewById(R.id.textView_filters);
+            textView_filters.setTextColor(Helper.getColor(R.color.ltgray));
 
             button_new = (FloatingActionButton) findViewById(R.id.FAB_transaction_new);
             button_new.setOnClickListener(new View.OnClickListener() {
@@ -214,9 +217,11 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
                 }, _budget), true);
                 return true;
             case R.id.toolbar_showall: // Show all transactions
-                if (_budget.GetStartDate() == null && _budget.GetEndDate() == null && prev_startDate != null && prev_endDate != null) {
-                    _budget.SetStartDate(prev_startDate);
-                    _budget.SetEndDate(prev_endDate);
+                if (prev_startDate != null && prev_endDate != null) {
+                    if (_budget.GetStartDate() == null && _budget.GetEndDate() == null) {
+                        _budget.SetStartDate(prev_startDate);
+                        _budget.SetEndDate(prev_endDate);
+                    }
 
                     prev_startDate = null;
                     prev_endDate = null;
@@ -252,7 +257,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
             case R.id.toolbar_filter_splitwith:
             case R.id.toolbar_filter_paidback:
                 Helper.FILTER_METHODS method = Helper.FILTER_METHODS.values()[item.getOrder()];
-                Helper.OpenDialogFragment(this, DialogFragmentFilter.newInstance(this, this, _budget.GetID(), method, getString(Helper.filterTitles.get(method)), Transaction.TRANSACTION_TYPE.All), true);
+                Helper.OpenDialogFragment(this, DialogFragmentFilter.newInstance(this, this, _budget.GetID(), method, getString(Helper.filterTitles.get(method)), activityType), true);
                 break;
 
             default:
@@ -332,7 +337,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
             if (activityType == Transaction.TRANSACTION_TYPE.Expense) { getSupportActionBar().setTitle(R.string.title_expenses); }
             else if (activityType == Transaction.TRANSACTION_TYPE.Income) { getSupportActionBar().setTitle(R.string.title_income); }
 
-            getSupportActionBar().setSubtitle(_budget.GetDateFormatted());
+            getSupportActionBar().setSubtitle(_budget.GetDateFormatted(ActivityDetailsTransaction.this));
         }
     }
 
@@ -353,7 +358,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
 
     public void UpdateTransactionsAdapter(){
         // Transactions
-        transactionsAdapter.GetTransactions(sortMethod, filterMethods);
+        transactionsAdapter.GetTransactions(ActivityDetailsTransaction.this, sortMethod, filterMethods);
         transactionsAdapter.notifyDataSetChanged();
     }
     public void UpdateTotalsAdapter(){
@@ -365,7 +370,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
 
     // Paid back
     public void SetTransactionsPaidBack(LocalDate date){
-        DatabaseManager dm = DatabaseManager.getInstance();
+        DatabaseManager dm = DatabaseManager.getInstance(this);
 
         // Update transactions
         for (Transaction t : transactionsAdapter._transactions){
@@ -384,7 +389,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
                     dm.insert(parentT, true); // Update parent
                 }
             } else { // Set paid back date
-                if (t.GetPaidBack() == null){
+                if (t.GetPaidBack() == null || date == null){
                     t.SetPaidBack(date);
                 }
             }

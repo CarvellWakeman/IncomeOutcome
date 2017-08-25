@@ -102,9 +102,9 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
 
                     //Replace categories with defaults
                     CategoryManager.getInstance().RemoveAllCategories();
-                    DatabaseManager.getInstance().deleteTableContent(DatabaseManager.TABLE_SETTINGS_CATEGORIES);
+                    DatabaseManager.getInstance(ActivityManageCategories.this).deleteTableContent(DatabaseManager.TABLE_SETTINGS_CATEGORIES);
                     CategoryManager.getInstance().LoadDefaultCategories();
-                    for (Category cat : CategoryManager.getInstance().GetCategories()) { DatabaseManager.getInstance().insertSetting(cat, true); }
+                    for (Category cat : CategoryManager.getInstance().GetCategories()) { DatabaseManager.getInstance(ActivityManageCategories.this).insertSetting(cat, true); }
                     adapter.notifyDataSetChanged();
                 }}
         );
@@ -174,7 +174,7 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
                 public void onClick(DialogInterface dialog, int which) {
                 // Update transactions using this category
                 BudgetManager bm = BudgetManager.getInstance();
-                DatabaseManager dm = DatabaseManager.getInstance();
+                DatabaseManager dm = DatabaseManager.getInstance(ActivityManageCategories.this);
 
                 for (Budget b : bm.GetBudgets()){
                     for (Transaction t : b.GetAllTransactions()){
@@ -186,7 +186,7 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
                 }
 
                 CategoryManager.getInstance().RemoveCategory(cr);
-                DatabaseManager.getInstance().removeCategorySetting(cr);
+                DatabaseManager.getInstance(ActivityManageCategories.this).removeCategorySetting(cr);
 
                 adapter.notifyDataSetChanged();
                 dialogFragment.dismiss();
@@ -222,7 +222,7 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
 
             //Add or update old category
             CategoryManager.getInstance().AddCategory(editingEntity);
-            DatabaseManager.getInstance().insertSetting(editingEntity, new CallBack() {
+            DatabaseManager.getInstance(ActivityManageCategories.this).insertSetting(editingEntity, new CallBack() {
                 @Override public void call() { adapter.notifyDataSetChanged(); }
             }, true);
         }

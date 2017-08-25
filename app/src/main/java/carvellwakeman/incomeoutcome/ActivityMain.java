@@ -65,7 +65,7 @@ public class ActivityMain extends AppCompatActivity
         personManager.initialize();
 
         //Initialize the Database
-        databaseManager = DatabaseManager.getInstance();
+        databaseManager = DatabaseManager.getInstance(ActivityMain.this);
 
         //Load data from database
         databaseManager.loadSettings( //Load settings
@@ -301,7 +301,7 @@ public class ActivityMain extends AppCompatActivity
 
             if (_selectedBudget != null) {
                 getSupportActionBar().setTitle(_selectedBudget.GetName() + " " + getString(R.string.title_overview));
-                getSupportActionBar().setSubtitle(_selectedBudget.GetDateFormatted());
+                getSupportActionBar().setSubtitle(_selectedBudget.GetDateFormatted(this));
             }
             else {
                 getSupportActionBar().setTitle(R.string.title_overview);
@@ -313,7 +313,7 @@ public class ActivityMain extends AppCompatActivity
 
     // Paid back
     public void SetTransactionsPaidBack(LocalDate date){
-        DatabaseManager dm = DatabaseManager.getInstance();
+        DatabaseManager dm = DatabaseManager.getInstance(ActivityMain.this);
 
         // Update transactions
         for (Transaction t : _selectedBudget.GetTransactions(Transaction.TRANSACTION_TYPE.Expense)){

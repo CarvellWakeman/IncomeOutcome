@@ -13,7 +13,6 @@ public class Transaction implements java.io.Serializable
     {
         Expense,
         Income,
-        All
     }
     private TRANSACTION_TYPE _type;
 
@@ -62,7 +61,7 @@ public class Transaction implements java.io.Serializable
         //_children = new ArrayList<>();
 
         //Expense only
-        _paidBy = -1; // Paid by you (-1)
+        _paidBy = Person.Me.GetID(); // Paid by you (-1)
         _split = new HashMap<>();
 
         _paidBack = null;
@@ -155,7 +154,7 @@ public class Transaction implements java.io.Serializable
         return "";
     }
     public double GetDebt(int personA, int personB) {
-        if (GetPaidBy() == personB && GetPaidBack() == null) {
+        if (GetPaidBy() == personB && GetPaidBack() == null && personA != personB) {
             return GetSplit(personA);
         } else {
             return 0.00d;
@@ -222,7 +221,6 @@ public class Transaction implements java.io.Serializable
 
     //Mutators
     public void SetType(TRANSACTION_TYPE type) { _type = type; }
-    public void SetType(int type) { SetType( type == 1 ? TRANSACTION_TYPE.Income : TRANSACTION_TYPE.Expense ); }
     public void SetID(int ID) { _uniqueID = ID; }
     public void SetParentID(int ID) { _parentID = ID; }
     public void SetBudgetID(int ID) { _budgetID = ID; }
@@ -273,34 +271,34 @@ public class Transaction implements java.io.Serializable
 
 
     // Sorting
-    public int sortCompare(Transaction t, Helper.SORT_METHODS method) {
+    public int SortCompare(Transaction t, Helper.SORT_METHODS method) {
         CategoryManager cm = CategoryManager.getInstance();
         PersonManager pm = PersonManager.getInstance();
 
         switch (method) {
-            case DATE_UP:
+            case DATE_DSC:
                 return GetTimePeriod().GetDate().compareTo(t.GetTimePeriod().GetDate());
-            case DATE_DOWN:
+            case DATE_ASC:
                 return t.GetTimePeriod().GetDate().compareTo(GetTimePeriod().GetDate());
 
-            case COST_UP:
+            case COST_DSC:
                 return (int)Math.signum( (GetValue()) - (t.GetValue()) );
-            case COST_DOWN:
+            case COST_ASC:
                 return (int)Math.signum( (t.GetValue()) - (GetValue()) );
 
-            case CATEGORY_UP:
+            case CATEGORY_DSC:
                 return cm.GetCategory(GetCategory()).GetTitle().compareTo(cm.GetCategory(t.GetCategory()).GetTitle());
-            case CATEGORY_DOWN:
+            case CATEGORY_ASC:
                 return cm.GetCategory(t.GetCategory()).GetTitle().compareTo(cm.GetCategory(GetCategory()).GetTitle());
 
-            case SOURCE_UP:
+            case SOURCE_DSC:
                 return GetSource().compareTo(t.GetSource());
-            case SOURCE_DOWN:
+            case SOURCE_ASC:
                 return t.GetSource().compareTo(GetSource());
 
-            case PAIDBY_UP:
+            case PAIDBY_DSC:
                 return pm.GetPerson(GetPaidBy()).GetName().compareTo(pm.GetPerson(t.GetPaidBy()).GetName());
-            case PAIDBY_DOWN:
+            case PAIDBY_ASC:
                 return pm.GetPerson(t.GetPaidBy()).GetName().compareTo(pm.GetPerson(GetPaidBy()).GetName());
 
             default:

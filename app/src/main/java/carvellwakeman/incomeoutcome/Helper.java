@@ -27,22 +27,22 @@ import java.util.Set;
 public class Helper
 {
     //Sort and filter methods
-    enum SORT_METHODS // Even are UP, Odd are DOWN (zero is considered even)
+    enum SORT_METHODS // Ascending means smaller on top, Descending means smaller on bottom
     {
-        DATE_UP,
-        DATE_DOWN,
+        DATE_DSC,
+        DATE_ASC,
 
-        COST_UP,
-        COST_DOWN,
+        COST_DSC,
+        COST_ASC,
 
-        CATEGORY_UP,
-        CATEGORY_DOWN,
+        CATEGORY_DSC,
+        CATEGORY_ASC,
 
-        SOURCE_UP,
-        SOURCE_DOWN,
+        SOURCE_DSC,
+        SOURCE_ASC,
 
-        PAIDBY_UP,
-        PAIDBY_DOWN
+        PAIDBY_DSC,
+        PAIDBY_ASC
     }
     enum FILTER_METHODS
     {
@@ -54,22 +54,9 @@ public class Helper
     }
 
     // Sort and Filter methods string titles
-    private static HashMap<SORT_METHODS, String> sortSubtitles;
     static HashMap<FILTER_METHODS, Integer> filterTitles;
     static {
-        sortSubtitles = new HashMap<>();
         filterTitles = new HashMap<>();
-
-        sortSubtitles.put(SORT_METHODS.DATE_UP, Helper.getString(R.string.sort) + ":" + Helper.getString(R.string.date));
-        sortSubtitles.put(SORT_METHODS.DATE_DOWN, Helper.getString(R.string.sort) + ":" + Helper.getString(R.string.date));
-        sortSubtitles.put(SORT_METHODS.COST_UP, Helper.getString(R.string.sort) + ":" + Helper.getString(R.string.cost));
-        sortSubtitles.put(SORT_METHODS.COST_DOWN, Helper.getString(R.string.sort) + ":" + Helper.getString(R.string.cost));
-        sortSubtitles.put(SORT_METHODS.PAIDBY_UP, Helper.getString(R.string.sort) + ":" + Helper.getString(R.string.paidby));
-        sortSubtitles.put(SORT_METHODS.PAIDBY_DOWN, Helper.getString(R.string.sort) + ":" + Helper.getString(R.string.paidby));
-        sortSubtitles.put(SORT_METHODS.CATEGORY_UP, Helper.getString(R.string.sort) + ":" + Helper.getString(R.string.category));
-        sortSubtitles.put(SORT_METHODS.CATEGORY_DOWN, Helper.getString(R.string.sort) + ":" + Helper.getString(R.string.category));
-        sortSubtitles.put(SORT_METHODS.SOURCE_UP, Helper.getString(R.string.sort) + ":" + Helper.getString(R.string.source));
-        sortSubtitles.put(SORT_METHODS.SOURCE_DOWN, Helper.getString(R.string.sort) + ":" + Helper.getString(R.string.source));
 
         filterTitles.put(FILTER_METHODS.CATEGORY, R.string.category);
         filterTitles.put(FILTER_METHODS.SOURCE, R.string.source);
@@ -139,7 +126,7 @@ public class Helper
 
 
     //Getting string resources from static contexts
-    public static String getString(int resourceID){ return App.GetResources().getString(resourceID); }
+    //public static String getString(int resourceID){ return App.GetResources().getString(resourceID); }
     public static int getColor(int resourceID){ return App.GetResources().getColor(resourceID); }
     public static Drawable getDrawable(int resourceID) { return App.GetResources().getDrawable(resourceID); }
 
@@ -180,10 +167,10 @@ public class Helper
 
 
     // Date parsing
-    public static LocalDate ConvertDateFromString(String str){
+    public static LocalDate ConvertDateFromString(Context context, String str){
         if (str != null && str.length() != 0) {
             try {
-                DateTimeFormatter dtf = DateTimeFormat.forPattern(Helper.getString(R.string.date_format_saving));
+                DateTimeFormatter dtf = DateTimeFormat.forPattern(context.getString(R.string.date_format_saving));
                 return dtf.parseLocalDate(str);
             }
             catch (IllegalArgumentException ex) {
@@ -195,9 +182,9 @@ public class Helper
 
 
     //Permissions
-    public static boolean isStoragePermissionGranted() {
+    public static boolean isStoragePermissionGranted(Context context) {
         if (Build.VERSION.SDK_INT >= 23) {
-            if (PermissionChecker.checkSelfPermission(App.GetContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (PermissionChecker.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 //Log.v("PERMISSIONS","External Write Storage permission is granted");
                 return true;
             } else {

@@ -150,7 +150,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:gravity="center_vertical"
+                                android:gravity="center_vertical|end"
                                 android:paddingBottom="16dp"
                                 android:paddingTop="16dp"
                                 android:text="@string/action_removesplit"

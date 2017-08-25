@@ -189,14 +189,16 @@ public class CardTransaction extends Card implements OnChartValueSelectedListene
         chart.setTransparentCircleRadius(58f);
         chart.setCenterTextSize(22);
 
-        chart.setExtraOffsets(20, 10, 10, 10);
+        chart.setExtraOffsets(0, 10, 0, 10);
         chart.setDrawEntryLabels(false);
 
         //Legend
         Legend l = chart.getLegend();
-        l.setPosition(Legend.LegendPosition.LEFT_OF_CHART_CENTER);
+        l.setPosition(Legend.LegendPosition.ABOVE_CHART_CENTER);
+        l.setDirection(Legend.LegendDirection.LEFT_TO_RIGHT);
         l.setDrawInside(false);
         l.setEnabled(true);
+        l.setWordWrapEnabled(true);
 
         //Slice labels
         chart.setEntryLabelTextSize(10);
@@ -207,11 +209,12 @@ public class CardTransaction extends Card implements OnChartValueSelectedListene
     public void Refresh(){
         CheckShowFiltersNotice();
 
+
         Budget _budget = BudgetManager.getInstance().GetBudget(_budgetID);
         if (_budget != null){
 
             //Get expense data
-            ArrayList<Transaction> transactions = _budget.GetTransactionsInTimeframe( _activityType, Helper.SORT_METHODS.DATE_UP, filterMethods );
+            ArrayList<Transaction> transactions = _budget.GetTransactionsInTimeframe(_context,  _activityType, Helper.SORT_METHODS.DATE_DSC, filterMethods );
 
             if (transactions.size() > 0) {
                 //Total
@@ -220,6 +223,7 @@ public class CardTransaction extends Card implements OnChartValueSelectedListene
 
                 //Convert transaction data to a list of PieEntry
                 List<PieEntry> entries = new ArrayList<>();
+                HashMap<String, Double> source = new HashMap<>();
                 SparseArray<Double> debt = new SparseArray<>();
                 SparseArray<Double> category = new SparseArray<>();
                 List<Integer> colors = new ArrayList<>();
@@ -228,21 +232,11 @@ public class CardTransaction extends Card implements OnChartValueSelectedListene
                     if (t.GetValue() > 0) {
 
                         if (keyType == 0) { // Source
-                            if (t.IsSplit()) {
-                                val = t.GetSplit(Person.Me.GetID());
-                            } else {
-                                val = t.GetValue();
-                            }
+                            val = t.GetSplit(Person.Me.GetID());
 
-                            PieEntry entry = new PieEntry(val.floatValue(), t.GetSource());
-                            //entry.setData(t.GetID());
-                            entry.setData(t.GetSource());
-                            entries.add(entry);
-
-                            colors.add(Helper.ColorFromString(t.GetSource()));
-
-                            // Sum up the values
-                            total += val;
+                            // Add to existing value
+                            if (source.get(t.GetSource()) != null) { val += source.get(t.GetSource()); }
+                            source.put(t.GetSource(), val);
                         }
                         else if (keyType == 1) { // Category
                             Category cat = CategoryManager.getInstance().GetCategory(t.GetCategory());
@@ -269,8 +263,23 @@ public class CardTransaction extends Card implements OnChartValueSelectedListene
                     }
                 }
 
+                // Source case
+                if (keyType == 0){
+                    for (HashMap.Entry<String, Double> sourceVal : source.entrySet()){
+                        val = sourceVal.getValue();
+                        PieEntry entry = new PieEntry(val.floatValue(), sourceVal.getKey());
+                        entry.setData(sourceVal.getKey());
+
+                        entries.add(entry);
+                        colors.add(Helper.ColorFromString(sourceVal.getKey()));
+
+                        // Sum up the values
+                        total += val;
+                    }
+                }
+
                 // Category case
-                if (keyType == 1){
+                else if (keyType == 1){
                     CategoryManager cm = CategoryManager.getInstance();
                     Category cat;
 
@@ -347,7 +356,7 @@ public class CardTransaction extends Card implements OnChartValueSelectedListene
                 chart.setData(null);
 
                 if (filterMethods.size() == 0) {
-                    String transactionType = Helper.getString(_activityType == Transaction.TRANSACTION_TYPE.Expense ? R.string.format_nodata_viewdetails_expense : R.string.misc_income);
+                    String transactionType = _context.getString(_activityType == Transaction.TRANSACTION_TYPE.Expense ? R.string.format_nodata_viewdetails_expense : R.string.misc_income);
                     textView_viewdetails.setText(String.format(_context.getString(R.string.format_nodata_viewdetails), transactionType));
                 }
             }

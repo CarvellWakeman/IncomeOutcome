@@ -1,6 +1,7 @@
 package carvellwakeman.incomeoutcome;
 
 import android.animation.LayoutTransition;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -27,7 +28,7 @@ import java.util.logging.Filter;
 public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetailsTransaction.TransactionViewHolder>
 {
     //Calling activity context
-    ActivityDetailsTransaction _activity;
+    ActivityDetailsTransaction mActivity;
 
     //Budget
     Budget _budget;
@@ -43,25 +44,25 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
     {
         _budget = BudgetManager.getInstance().GetBudget(budgetID);
 
-        this._activity = parent;
+        this.mActivity = parent;
         this.activityType = activityType;
 
         this._transactions = new ArrayList<>();
 
         //Load up transactions from budget
-        GetTransactions(_activity.sortMethod, _activity.filterMethods);
+        GetTransactions(parent, mActivity.sortMethod, mActivity.filterMethods);
     }
 
 
     //Custom transaction getters
-    public void GetTransactions(Helper.SORT_METHODS sort, HashMap<Helper.FILTER_METHODS, String> filters){
+    public void GetTransactions(Context context, Helper.SORT_METHODS sort, HashMap<Helper.FILTER_METHODS, String> filters){
         _transactions.clear();
 
         if (activityType == Transaction.TRANSACTION_TYPE.Expense) { //Expense
-            _transactions.addAll(_budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Expense, sort, filters));
+            _transactions.addAll(_budget.GetTransactionsInTimeframe(context, Transaction.TRANSACTION_TYPE.Expense, sort, filters));
         }
         else if (activityType == Transaction.TRANSACTION_TYPE.Income) { //Income
-            _transactions.addAll(_budget.GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE.Income, sort, filters));
+            _transactions.addAll(_budget.GetTransactionsInTimeframe(context, Transaction.TRANSACTION_TYPE.Income, sort, filters));
         }
     }
 
@@ -108,9 +109,9 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
             switch (action.getItemId()) {
 
                 case R.id.transaction_edit_instance: // Edit(instance)
-                    Helper.Log(App.GetContext(), "AdaDetTran", "Edit(Instance) "+tran.GetID()+" of repeating tran " + tranp.GetID());
+                    //Helper.Log(App.GetContext(), "AdaDetTran", "Edit(Instance) "+tran.GetID()+" of repeating tran " + tranp.GetID());
 
-                    intent = new Intent(_activity, ActivityNewTransaction.class);
+                    intent = new Intent(mActivity, ActivityNewTransaction.class);
                     intent.putExtra("activitytype", activityType.ordinal());
                     intent.putExtra("budget", _budget.GetID());
                     // If this 'instance' was edited previously (and now exists in the DB)
@@ -121,39 +122,39 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                         intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.EditInstance.ordinal());
                         intent.putExtra("transaction", tran);
                     }
-                    _activity.startActivityForResult(intent, 1);
+                    mActivity.startActivityForResult(intent, 1);
 
                     break;
 
                 case R.id.transaction_edit_all: // Edit(all / parent)
-                    Helper.Log(App.GetContext(), "AdaDetTran", "Edit(All) of " + tranp.GetID());
+                    //Helper.Log(App.GetContext(), "AdaDetTran", "Edit(All) of " + tranp.GetID());
 
-                    intent = new Intent(_activity, ActivityNewTransaction.class);
+                    intent = new Intent(mActivity, ActivityNewTransaction.class);
                     intent.putExtra("activitytype", activityType.ordinal());
                     intent.putExtra("budget", _budget.GetID());
                     intent.putExtra("transaction", tranp.GetID());
                     intent.putExtra("editstate", ActivityNewTransaction.EDIT_STATE.Edit.ordinal());
-                    _activity.startActivityForResult(intent, 2);
+                    mActivity.startActivityForResult(intent, 2);
 
                     break;
 
                 case R.id.transaction_delete_instance: // Delete(instance)
-                    Helper.Log(App.GetContext(), "AdaDetTran", "Delete(instance) "+tran.GetID()+" of Repeat tran " + tranp.GetID());
+                    //Helper.Log(App.GetContext(), "AdaDetTran", "Delete(instance) "+tran.GetID()+" of Repeat tran " + tranp.GetID());
 
                     // Delete 'instance' transactions that were modified and became real in the DB
                     if (_budget.GetTransaction(tran.GetID()) != null) {
                         _budget.RemoveTransaction(tran.GetID());
-                        DatabaseManager.getInstance().remove(tran);
+                        DatabaseManager.getInstance(mActivity).remove(tran);
 
                         // Ask to replace deleted transaction with its original instance
-                        AlertDialog.Builder alert = new AlertDialog.Builder(_activity);
+                        AlertDialog.Builder alert = new AlertDialog.Builder(mActivity);
                         alert.setMessage(R.string.info_tran_repl_original);
                         alert.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                             @Override public void onClick(DialogInterface dialog, int which) {
                                 tranp.GetTimePeriod().RemoveBlacklistDate(tran.GetID());
-                                DatabaseManager.getInstance().insert(tranp, true);
+                                DatabaseManager.getInstance(mActivity).insert(tranp, true);
 
-                                _activity.Refresh();
+                                mActivity.Refresh();
                             }
                         });
                         alert.setNegativeButton(R.string.confirm_no, null);
@@ -161,20 +162,20 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                     } else {
                         // Blacklist instance to parent
                         tranp.GetTimePeriod().AddBlacklistDate(-1, tran.GetTimePeriod().GetDate(), false);
-                        DatabaseManager.getInstance().insert(tranp, true);
+                        DatabaseManager.getInstance(mActivity).insert(tranp, true);
                     }
 
-                    _activity.Refresh();
+                    mActivity.Refresh();
 
                     break;
 
                 case R.id.transaction_delete_all: // Delete(all, parent)
-                    Helper.Log(App.GetContext(), "AdaDetTran", "Delete(all) of " + tranp.GetSource());
+                    //Helper.Log(App.GetContext(), "AdaDetTran", "Delete(all) of " + tranp.GetSource());
 
                     _budget.RemoveTransaction(tranp);
-                    DatabaseManager.getInstance().remove(tranp);
+                    DatabaseManager.getInstance(mActivity).remove(tranp);
 
-                    _activity.Refresh();
+                    mActivity.Refresh();
 
                     break;
 
@@ -317,18 +318,18 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                         for (Map.Entry<Integer, Double> entry : valueSplit.entrySet()) {
                             //Ignore the user if they paid
                             if (transaction.GetPaidBy() != entry.getKey() ) {
-                                TextView tv = new TextView(_activity);
+                                TextView tv = new TextView(mActivity);
 
                                 Person payer = PersonManager.getInstance().GetPerson(transaction.GetPaidBy());
                                 Person payee = PersonManager.getInstance().GetPerson(entry.getKey());
 
                                 if (payer != null && payee != null) {
-                                    tv.setText(String.format(Helper.getString(R.string.format_paid),
+                                    tv.setText(String.format(mActivity.getString(R.string.format_paid),
                                             payee.GetName(),
                                             (entry.getKey()==Person.Me.GetID() ? "" : "s"), //Plurality (You OWE A / A OWES You)
                                             payer.GetName(),
                                             Helper.currencyFormat.format(entry.getValue()),
-                                            transaction.GetSplitPercentage(entry.getKey())
+                                            String.valueOf(transaction.GetSplitPercentage(entry.getKey()))
                                     ));
                                 }
 
@@ -346,7 +347,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                             }
 
                             paidBack.setVisibility(View.VISIBLE);
-                            paidBack.setText(String.format(Helper.getString(R.string.info_paidback_format), transaction.GetPaidBack().toString(Helper.getString(R.string.date_format))));
+                            paidBack.setText(String.format(mActivity.getString(R.string.info_paidback_format), transaction.GetPaidBack().toString(mActivity.getString(R.string.date_format))));
                         }
                         else {
                             for(int i=0; i < split.getChildCount(); i++){
@@ -371,10 +372,10 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                         Person p = PersonManager.getInstance().GetPerson(transaction.GetPaidBy());
                         //Helper.Log(App.GetContext(), "AdaDetTran", transaction.GetSource() + " PaidBy Person:" + (p==null?"null":p.GetName()));
                         if (p != null){
-                            paidBy.setText(String.format(Helper.getString(R.string.info_paidby), p.GetName()));
+                            paidBy.setText(String.format(mActivity.getString(R.string.info_paidby), p.GetName()));
                         }
                     } else {
-                        paidBy.setText(String.format(Helper.getString(R.string.info_paidby), Helper.getString(R.string.format_me)));
+                        paidBy.setText(String.format(mActivity.getString(R.string.info_paidby), mActivity.getString(R.string.format_me)));
                     }
 
                 }
@@ -403,10 +404,10 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
 
                 if (tp != null) {
                     //Date
-                    date.setText(tp.GetDateFormatted());
+                    date.setText(tp.GetDateFormatted(mActivity));
 
                     //Repeating
-                    repeat.setText(tp.GetRepeatString());
+                    repeat.setText(tp.GetRepeatString(mActivity));
 
                     //Children indenting
                     if (parent != null) {
@@ -414,7 +415,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                         if (parent_tp != null) {
                             indent.setVisibility(View.VISIBLE);
                             //Repeating
-                            repeat.setText(parent_tp.GetRepeatString());
+                            repeat.setText(parent_tp.GetRepeatString(mActivity));
                             moreInfoOff();
                         }
                     } else {
@@ -461,7 +462,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
             Transaction tran = GetTransactionParent(_transactions.get(getAdapterPosition()));
             if (tran != null) {
                 //Menu object
-                PopupMenu popup = new PopupMenu(_activity, overflow);
+                PopupMenu popup = new PopupMenu(mActivity, overflow);
                 MenuInflater inflater = popup.getMenuInflater();
 
                 overflowMenu = R.menu.transaction_overflow_single;
@@ -476,7 +477,7 @@ public class AdapterDetailsTransaction extends RecyclerView.Adapter<AdapterDetai
                 inflater.inflate(overflowMenu, popup.getMenu());
                 popup.setOnMenuItemClickListener(TransactionViewHolder.this);
                 popup.show();
-            } else { Helper.PrintUser(_activity, Helper.getString(R.string.error_transaction_not_found)); }
+            } else { Helper.PrintUser(mActivity, mActivity.getString(R.string.error_transaction_not_found)); }
         }
 
 

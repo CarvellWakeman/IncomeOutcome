@@ -296,7 +296,7 @@ public class DialogFragmentRepeat extends DialogFragment
             @Override public void afterTextChanged(Editable s) { }
         });
 
-        button_repeatUntil.setText(dateUntil.toString(Helper.getString(R.string.date_format)));
+        button_repeatUntil.setText(dateUntil.toString(_parent.getString(R.string.date_format)));
         button_repeatUntil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -445,7 +445,7 @@ public class DialogFragmentRepeat extends DialogFragment
                 button_repeatUntil.setText(R.string.time_setdate);
             }
             else {
-                button_repeatUntil.setText(dateUntil.toString(Helper.getString(R.string.date_format)));
+                button_repeatUntil.setText(dateUntil.toString(_parent.getString(R.string.date_format)));
             }
         }
     }

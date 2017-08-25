@@ -85,7 +85,7 @@ public class ProfileManager
         CATEGORY_UP,
         SOURCE_UP,
 
-        DATE_DOWN,
+        DATE_ASC,
         COST_DOWN,
         PAIDBY_DOWN,
         CATEGORY_DOWN,
@@ -114,7 +114,7 @@ public class ProfileManager
     {
         //Sort and Filter methods string titles
         sortSubtitles.put(SORT_METHODS.DATE_UP, getString(R.string.sort) + ":" + getString(R.string.date));
-        sortSubtitles.put(SORT_METHODS.DATE_DOWN, getString(R.string.sort) + ":" + getString(R.string.date));
+        sortSubtitles.put(SORT_METHODS.DATE_ASC, getString(R.string.sort) + ":" + getString(R.string.date));
         sortSubtitles.put(SORT_METHODS.COST_UP, getString(R.string.sort) + ":" + getString(R.string.cost));
         sortSubtitles.put(SORT_METHODS.COST_DOWN, getString(R.string.sort) + ":" + getString(R.string.cost));
         sortSubtitles.put(SORT_METHODS.PAIDBY_UP, getString(R.string.sort) + ":" + getString(R.string.paidby));
@@ -1127,7 +1127,7 @@ public class ProfileManager
                     }
                 });
                 break;
-            case DATE_DOWN:
+            case DATE_ASC:
                 Collections.sort(_tabs, new Comparator<Profile>() {
                     @Override
                     public int compare(Profile  tab1, Profile  tab2)

@@ -36,6 +36,7 @@
                 android:layout_alignBottom="@+id/linearLayout"
                 android:layout_alignTop="@+id/linearLayout" />
 
+            <!-- Filter -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,14 +60,13 @@
                     android:src="@drawable/ic_filter_white_24dp"
                     android:tint="@color/turquoise" />
 
-                <!-- Filter -->
-
             </LinearLayout>
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/pieChart_cardTransaction"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="wrap_content"
+                android:minHeight="400dp"
                 android:layout_below="@id/spinner_cardTransaction"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="8dp"

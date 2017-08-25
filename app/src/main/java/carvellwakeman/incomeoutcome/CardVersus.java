@@ -185,7 +185,7 @@ public class CardVersus extends Card
                                 TimePeriod tp = tr.GetTimePeriod();
                                 if (tp != null) {
                                     if (tp.GetDate() != null) {
-                                        SimpleDateFormat formatter = new SimpleDateFormat(Helper.getString(R.string.date_format_shortnoday), App.GetLocale());
+                                        SimpleDateFormat formatter = new SimpleDateFormat(_context.getString(R.string.date_format_shortnoday), App.GetLocale());
                                         return formatter.format(tp.GetDate().toDate());
                                     }
                                 }

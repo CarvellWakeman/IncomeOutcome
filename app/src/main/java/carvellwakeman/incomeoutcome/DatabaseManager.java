@@ -1,6 +1,7 @@
 package carvellwakeman.incomeoutcome;
 
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.content.ContentValues;
 import android.database.*;
@@ -24,7 +25,9 @@ import java.util.regex.Pattern;
 
 public class DatabaseManager extends SQLiteOpenHelper
 {
-    static DatabaseManager instance = new DatabaseManager();
+    private static DatabaseManager instance;
+
+    private Context mContext;
 
     SQLiteDatabase database;
 
@@ -36,10 +39,10 @@ public class DatabaseManager extends SQLiteOpenHelper
     //File information
     private static final String FILE_NAME = "data.db";
 
-    private File EXPORT_DIRECTORY = new File(Environment.getExternalStorageDirectory() + "/" + Helper.getString(R.string.app_name_nospace) + "/");
-    private File EXPORT_DIRECTORY_BACKUP = new File(EXPORT_DIRECTORY.getAbsolutePath() + "/backup/");
-    private String BACKUP_FILENAME = "data_backup.db"; //TODO Read from strings file
-    public File EXPORT_BACKUP = new File(EXPORT_DIRECTORY_BACKUP, BACKUP_FILENAME);
+    private File EXPORT_DIRECTORY;
+    private File EXPORT_DIRECTORY_BACKUP;
+    private String BACKUP_FILENAME;
+    public File EXPORT_BACKUP;
     //Other
     //private static final String ITEM_DELIMITER = "\\|";
     private static final String STATEMENT_DELIMITER = "\n";
@@ -370,9 +373,9 @@ public class DatabaseManager extends SQLiteOpenHelper
                     COLUMN_description  + "," +
                     COLUMN_value  + "," +
                     //COLUMN_IPaid becomes COLUMN_paidBy
-                        "CASE WHEN " + COLUMN_IPaid + " = 0 THEN " + COLUMN_splitWith + " ELSE (SELECT '"+Helper.getString(R.string.format_me)+"') END" + "," +
+                        "CASE WHEN " + COLUMN_IPaid + " = 0 THEN " + COLUMN_splitWith + " ELSE (SELECT 'You') END" + "," +
                     //COLUMN_split is made from COLUMN_value, COLUMN_splitValue and COLUMN_splitWith
-                        "(SELECT '"+Helper.getString(R.string.format_me)+"') || ':' || (" + COLUMN_value + "-" + COLUMN_splitValue + ") || (CASE WHEN " + COLUMN_splitWith + " = '' THEN '' ELSE '|' || " + COLUMN_splitWith + " || ':' || " + COLUMN_splitValue + " END)" + "," +
+                        "(SELECT 'You') || ':' || (" + COLUMN_value + "-" + COLUMN_splitValue + ") || (CASE WHEN " + COLUMN_splitWith + " = '' THEN '' ELSE '|' || " + COLUMN_splitWith + " || ':' || " + COLUMN_splitValue + " END)" + "," +
                     COLUMN_paidBack + "," +
                     COLUMN_children + "," +
                     COLUMN_when +
@@ -457,10 +460,20 @@ public class DatabaseManager extends SQLiteOpenHelper
                 //Drop the temp table
                 "DROP TABLE temp_tp";
 
-    private DatabaseManager(){
-        super(App.GetContext(), FILE_NAME, null, DATABASE_VERSION);
+    private DatabaseManager(Context context){
+        super(context, FILE_NAME, null, DATABASE_VERSION);
+
+        this.mContext = context;
+        
+        EXPORT_DIRECTORY = new File(Environment.getExternalStorageDirectory() + "/" + context.getString(R.string.app_name_nospace) + "/");
+        EXPORT_DIRECTORY_BACKUP = new File(EXPORT_DIRECTORY.getAbsolutePath() + "/backup/");
+        BACKUP_FILENAME = "data_backup.db"; //TODO Read from strings file
+        EXPORT_BACKUP = new File(EXPORT_DIRECTORY_BACKUP, BACKUP_FILENAME);
     }
-    static DatabaseManager getInstance(){ return instance; }
+    static DatabaseManager getInstance(Context context){
+        if (instance == null){ instance = new DatabaseManager(context); }
+        return instance;
+    }
     //public void initialize() {
         //Helper.Log(App.GetContext(), "DBM", "initialize called");
 
@@ -550,7 +563,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                             //Helper.Print(App.GetContext(), "paidBy:" + paidBy + "\nSplit:" + split + "\nPerson:" + name + "(" + String.valueOf(UID) + ")");
 
                             //Update split with UID
-                            contentValues_tr.put(COLUMN_split, split.replaceAll(name, String.valueOf(UID)).replaceAll(Helper.getString(R.string.format_me), String.valueOf(-1)));
+                            contentValues_tr.put(COLUMN_split, split.replaceAll(name, String.valueOf(UID)).replaceAll(mContext.getString(R.string.format_me), String.valueOf(-1)));
 
                             //Insert/update row and return result
                             //long result2 = 0;
@@ -659,8 +672,8 @@ public class DatabaseManager extends SQLiteOpenHelper
         try {
             ArrayList<File> DatabaseFiles = new ArrayList<>();
 
-            if (Helper.isStoragePermissionGranted()){
-                File data = new File(Environment.getExternalStorageDirectory() + "/" + Helper.getString(R.string.app_name_nospace) + "/");
+            if (Helper.isStoragePermissionGranted(mContext)){
+                File data = new File(Environment.getExternalStorageDirectory() + "/" + mContext.getString(R.string.app_name_nospace) + "/");
 
                 if (data.canRead()) {
                     for (File file : data.listFiles()) {
@@ -687,10 +700,10 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
     public ArrayList<String> getImportableDatabasesString(){
         try {
-            File data = new File(Environment.getExternalStorageDirectory() + "/" + Helper.getString(R.string.app_name_nospace) + "/");
+            File data = new File(Environment.getExternalStorageDirectory() + "/" + mContext.getString(R.string.app_name_nospace) + "/");
             ArrayList<String> DatabaseFiles = new ArrayList<>();
 
-            if (Helper.isStoragePermissionGranted()){
+            if (Helper.isStoragePermissionGranted(mContext)){
                 if (data.canRead()) {
                     for (File file : data.listFiles()) {
                         if(file.getName().endsWith(".db")){
@@ -715,8 +728,8 @@ public class DatabaseManager extends SQLiteOpenHelper
         return null;
     }
     public File getDatabaseByPath(String path){
-        if (Helper.isStoragePermissionGranted()){
-            File data = new File(Environment.getExternalStorageDirectory() + "/" + Helper.getString(R.string.app_name_nospace) + "/");
+        if (Helper.isStoragePermissionGranted(mContext)){
+            File data = new File(Environment.getExternalStorageDirectory() + "/" + mContext.getString(R.string.app_name_nospace) + "/");
 
             if (data.canRead()) {
                 for (File file : data.listFiles()) {
@@ -931,7 +944,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             String[] sp1 = FILE_NAME.split("\\.");
             String filename = sp1[0];
 
-            if (Helper.isStoragePermissionGranted()){
+            if (Helper.isStoragePermissionGranted(mContext)){
                 //Create backup directory if it does not exist
                 destination.mkdirs();
 
@@ -977,7 +990,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             String currentDBPath = "/data/" + App.GetPackageName() + "/databases/";
             File currentDB = new File(Environment.getDataDirectory(), currentDBPath + FILE_NAME);
 
-            if (Helper.isStoragePermissionGranted()){
+            if (Helper.isStoragePermissionGranted(mContext)){
                 if (currentDB.canWrite() || importFile.canRead()) {
                     if (currentDB.exists()) {
 
@@ -1099,10 +1112,10 @@ public class DatabaseManager extends SQLiteOpenHelper
                     contentValues_tr.put(COLUMN_selected, (budget.GetSelected() ? 1 : 0));
 
                     if (budget.GetStartDate() != null) {
-                        contentValues_tr.put(COLUMN_startdate, budget.GetStartDate().toString(Helper.getString(R.string.date_format_saving)));
+                        contentValues_tr.put(COLUMN_startdate, budget.GetStartDate().toString(mContext.getString(R.string.date_format_saving)));
                     }
                     if (budget.GetEndDate() != null) {
-                        contentValues_tr.put(COLUMN_enddate, budget.GetEndDate().toString(Helper.getString(R.string.date_format_saving)));
+                        contentValues_tr.put(COLUMN_enddate, budget.GetEndDate().toString(mContext.getString(R.string.date_format_saving)));
                     }
                     if (budget.GetPeriod() != null) {
                         contentValues_tr.put(COLUMN_period, budget.GetPeriod().toString());
@@ -1155,7 +1168,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             //Helper.Log(App.GetContext(), "DB", "SplitStringSave:'" + transaction.GetSplitArrayString() + "'");
 
             contentValues_tr.put(COLUMN_split, transaction.GetSplitArrayString());
-            contentValues_tr.put(COLUMN_paidBack, (transaction.GetPaidBack() != null ? transaction.GetPaidBack().toString(Helper.getString(R.string.date_format_saving)) : "") );
+            contentValues_tr.put(COLUMN_paidBack, (transaction.GetPaidBack() != null ? transaction.GetPaidBack().toString(mContext.getString(R.string.date_format_saving)) : "") );
             //contentValues_tr.put(COLUMN_children, transaction.GetChildrenFormatted());
 
             //Insert/update row and return result
@@ -1184,17 +1197,17 @@ public class DatabaseManager extends SQLiteOpenHelper
             if (tp != null) {
                 contentValues_tp.put(COLUMN_uniqueID, tp.GetID());
                 contentValues_tp.put(COLUMN_tp_parent, transactionUID);
-                contentValues_tp.put(COLUMN_tp_date, (tp.GetDate() != null ? tp.GetDate().toString(Helper.getString(R.string.date_format_saving)) : ""));
+                contentValues_tp.put(COLUMN_tp_date, (tp.GetDate() != null ? tp.GetDate().toString(mContext.getString(R.string.date_format_saving)) : ""));
                 //contentValues_tp.put(COLUMN_tp_firstOcc, (tp.GetFirstOccurrence() != null ? tp.GetFirstOccurrence().toString(ProfileManager.simpleDateFormatSaving) : ""));
                 contentValues_tp.put(COLUMN_tp_repeatFreq, (tp.GetRepeatFrequency() != null ? tp.GetRepeatFrequency().ordinal() : 0));
                 contentValues_tp.put(COLUMN_tp_repeatUntil, (tp.GetRepeatUntil() != null ? tp.GetRepeatUntil().ordinal() : 0));
                 contentValues_tp.put(COLUMN_tp_repeatNTimes, tp.GetRepeatANumberOfTimes());
-                contentValues_tp.put(COLUMN_tp_repeatUntilDate, (tp.GetRepeatUntilDate() != null ? tp.GetRepeatUntilDate().toString(Helper.getString(R.string.date_format_saving)) : ""));
+                contentValues_tp.put(COLUMN_tp_repeatUntilDate, (tp.GetRepeatUntilDate() != null ? tp.GetRepeatUntilDate().toString(mContext.getString(R.string.date_format_saving)) : ""));
                 contentValues_tp.put(COLUMN_tp_repeatEveryN, tp.GetRepeatEveryN());
                 contentValues_tp.put(COLUMN_tp_repeatDayOfWeek, tp.GetRepeatDayOfWeekBinary());
                 contentValues_tp.put(COLUMN_tp_repeatDayOfMonth, tp.GetRepeatDayOfMonth());
-                contentValues_tp.put(COLUMN_tp_dateOfYear, (tp.GetDateOfYear() != null ? tp.GetDateOfYear().toString(Helper.getString(R.string.date_format_saving)) : ""));
-                contentValues_tp.put(COLUMN_tp_blacklistDates, tp.GetBlacklistDatesString());
+                contentValues_tp.put(COLUMN_tp_dateOfYear, (tp.GetDateOfYear() != null ? tp.GetDateOfYear().toString(mContext.getString(R.string.date_format_saving)) : ""));
+                contentValues_tp.put(COLUMN_tp_blacklistDates, tp.GetBlacklistDatesString(mContext));
             }
 
             //Insert/update row and return result
@@ -1218,7 +1231,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             //COLUMN_uniqueID INT_TYPE
             tp.SetID(c.getInt(c.getColumnIndex(COLUMN_uniqueID)));
             //COLUMN_tp_date DATE_TYPE
-            tp.SetDate(Helper.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_tp_date))));
+            tp.SetDate(Helper.ConvertDateFromString(mContext, c.getString(c.getColumnIndex(COLUMN_tp_date))));
             //COLUMN_tp_repeatFreq INT_TYPE
             tp.SetRepeatFrequency(tp.GetRepeatFrequencyFromIndex(c.getInt(c.getColumnIndex(COLUMN_tp_repeatFreq))));
             //COLUMN_tp_repeatUntil INT_TYPE
@@ -1226,7 +1239,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             //COLUMN_tp_repeatNTimes INT_TYPE
             tp.SetRepeatANumberOfTimes(c.getInt(c.getColumnIndex(COLUMN_tp_repeatNTimes)));
             //COLUMN_tp_repeatUntilDate DATE_TYPE
-            tp.SetRepeatUntilDate(Helper.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_tp_repeatUntilDate))));
+            tp.SetRepeatUntilDate(Helper.ConvertDateFromString(mContext, c.getString(c.getColumnIndex(COLUMN_tp_repeatUntilDate))));
             //COLUMN_tp_repeatEveryN INT_TYPE
             tp.SetRepeatEveryN(c.getInt(c.getColumnIndex(COLUMN_tp_repeatEveryN)));
             //COLUMN_tp_repeatDayOfWeek TEXT_TYPE
@@ -1234,9 +1247,9 @@ public class DatabaseManager extends SQLiteOpenHelper
             //COLUMN_tp_repeatDayOfMonth INT_TYPE
             tp.SetRepeatDayOfMonth(c.getInt(c.getColumnIndex(COLUMN_tp_repeatDayOfMonth)));
             //COLUMN_tp_dateOfYear DATE_TYPE
-            tp.SetDateOfYear(Helper.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_tp_dateOfYear))));
+            tp.SetDateOfYear(Helper.ConvertDateFromString(mContext, c.getString(c.getColumnIndex(COLUMN_tp_dateOfYear))));
             //COLUMN_tp_blacklistDates TEXT_TYPE
-            tp.SetBlacklistDatesFromString(c.getString(c.getColumnIndex(COLUMN_tp_blacklistDates)));
+            tp.SetBlacklistDatesFromString(mContext, c.getString(c.getColumnIndex(COLUMN_tp_blacklistDates)));
 
             return tp;
         }
@@ -1304,8 +1317,8 @@ public class DatabaseManager extends SQLiteOpenHelper
                 if (title != null && !title.equals("")){
                     Budget br = new Budget(title);
                     br.SetID(uniqueID);
-                    if (start_date != null) { br.SetStartDate(Helper.ConvertDateFromString(start_date)); }
-                    if (end_date != null) { br.SetEndDate(Helper.ConvertDateFromString(end_date)); }
+                    if (start_date != null) { br.SetStartDate(Helper.ConvertDateFromString(mContext, start_date)); }
+                    if (end_date != null) { br.SetEndDate(Helper.ConvertDateFromString(mContext, end_date)); }
 
                     if (period != null) { br.SetPeriod(Period.parse(period)); }
                     bm.AddBudget(br);
@@ -1365,7 +1378,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                     //COLUMN_value + DOUBLE_TYPE
                     tr.SetValue(c.getDouble(c.getColumnIndex(COLUMN_value)));
                     //COLUMN_paidBack + DATE_TYPE
-                    tr.SetPaidBack(Helper.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_paidBack))));
+                    tr.SetPaidBack(Helper.ConvertDateFromString(mContext, c.getString(c.getColumnIndex(COLUMN_paidBack))));
 
                     //COLUMN_IPaid + BOOLEAN_TYPE
                     Integer paidBy = c.getInt(c.getColumnIndex(COLUMN_paidBy));
@@ -1376,7 +1389,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                     //Helper.Log(App.GetContext(), "DB", "Transaction: " + tr.GetSource() + " SplitString:'" + splitString + "'");
                     if (!splitString.equals("")) { tr.SetSplitFromArrayString(splitString); }
                     //COLUMN_paidBack + TEXT_TYPE + "," +
-                    tr.SetPaidBack(Helper.ConvertDateFromString(c.getString(c.getColumnIndex(COLUMN_paidBack))));
+                    tr.SetPaidBack(Helper.ConvertDateFromString(mContext, c.getString(c.getColumnIndex(COLUMN_paidBack))));
                     //COLUMN_when + INT_TYPE //+ "," +
                     TimePeriod tp = _queryTimeperiod(database, c.getInt(c.getColumnIndex(COLUMN_when)));
                     //if (tp == null) { Helper.Log(App.GetContext(), "DB", "NULL TP for tran " + tr.GetID()); } else { Helper.Log(App.GetContext(), "DB", tp.GetDateFormatted()); }

@@ -87,7 +87,7 @@ public class ActivityManagePeople extends ActivityManageEntity<Person> {
                     public void onClick(DialogInterface dialog, int which) {
                     // Update transactions using this category
                     BudgetManager bm = BudgetManager.getInstance();
-                    DatabaseManager dm = DatabaseManager.getInstance();
+                    DatabaseManager dm = DatabaseManager.getInstance(ActivityManagePeople.this);
 
                     for (Budget b : bm.GetBudgets()){
                         for (Transaction t : b.GetAllTransactions()){
@@ -105,7 +105,7 @@ public class ActivityManagePeople extends ActivityManageEntity<Person> {
 
                     Person person = PersonManager.getInstance().GetPerson(id);
                     PersonManager.getInstance().RemovePerson(person);
-                    DatabaseManager.getInstance().removePersonSetting(person);
+                    DatabaseManager.getInstance(ActivityManagePeople.this).removePersonSetting(person);
 
                     adapter.notifyDataSetChanged();
                     dialogFragment.dismiss();
@@ -141,7 +141,7 @@ public class ActivityManagePeople extends ActivityManageEntity<Person> {
 
             //Add or update old person
             PersonManager.getInstance().AddPerson(editingEntity);
-            DatabaseManager.getInstance().insertSetting(editingEntity, true);
+            DatabaseManager.getInstance(ActivityManagePeople.this).insertSetting(editingEntity, true);
         }
     }
 

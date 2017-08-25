@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class CategoryManager
 {
-    static CategoryManager instance = new CategoryManager();
+    private static CategoryManager instance = new CategoryManager();
 
     //Categories
     private ArrayList<Category> _categories;

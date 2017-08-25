@@ -1,6 +1,7 @@
 package carvellwakeman.incomeoutcome;
 
 
+import android.content.Context;
 import org.joda.time.*;
 import org.joda.time.format.PeriodFormat;
 import java.util.*;
@@ -106,7 +107,6 @@ public class Budget implements java.io.Serializable, BaseEntity
                 TimePeriod tp = _transactions.get(i).GetTimePeriod();
                 if (tp != null){
                     for (BlacklistDate bd : tp.GetBlacklistDates()){
-                        Helper.Log(App.GetContext(), "Bud", "Remove Blacklist Tran:" + bd.transactionID);
                         RemoveTransaction(bd.transactionID);
                     }
                 }
@@ -134,16 +134,16 @@ public class Budget implements java.io.Serializable, BaseEntity
     public ArrayList<Transaction> GetTransactions(Transaction.TRANSACTION_TYPE type) {
         ArrayList<Transaction> temp = new ArrayList<>();
         for (Transaction t : _transactions){
-            if (t.GetType() == type || type== Transaction.TRANSACTION_TYPE.All){ temp.add(t); }
+            if (t.GetType() == type){ temp.add(t); }
         }
         return temp;
     }
-    public ArrayList<Transaction> GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE type){ return GetTransactions(GetStartDate(), GetEndDate(), type, Helper.SORT_METHODS.DATE_DOWN, null); }
-    public ArrayList<Transaction> GetTransactionsInTimeframe(Transaction.TRANSACTION_TYPE type, Helper.SORT_METHODS sort, HashMap<Helper.FILTER_METHODS, String>  filters){
-        return GetTransactions(GetStartDate(), GetEndDate(), type, sort, filters);
+    public ArrayList<Transaction> GetTransactionsInTimeframe(Context context, Transaction.TRANSACTION_TYPE type){ return GetTransactions(context, GetStartDate(), GetEndDate(), type, Helper.SORT_METHODS.DATE_ASC, null); }
+    public ArrayList<Transaction> GetTransactionsInTimeframe(Context context, Transaction.TRANSACTION_TYPE type, Helper.SORT_METHODS sort, HashMap<Helper.FILTER_METHODS, String>  filters){
+        return GetTransactions(context, GetStartDate(), GetEndDate(), type, sort, filters);
     }
-    public ArrayList<Transaction> GetTransactions(LocalDate startDate, LocalDate endDate, Transaction.TRANSACTION_TYPE type, final Helper.SORT_METHODS sort, HashMap<Helper.FILTER_METHODS, String>  filters){
-        Helper.Log(App.GetContext(), "Budget", "GetTransactions");
+    public ArrayList<Transaction> GetTransactions(Context context, LocalDate startDate, LocalDate endDate, Transaction.TRANSACTION_TYPE type, final Helper.SORT_METHODS sort, HashMap<Helper.FILTER_METHODS, String>  filters){
+        Helper.Log(context, "Budget", "GetTransactions");
 
         ArrayList<Transaction> ret = new ArrayList<>();
         ArrayList<Transaction> occurrences;
@@ -170,7 +170,7 @@ public class Budget implements java.io.Serializable, BaseEntity
                                 break;
                             case SPLITWITH:
                                 // Not split short circuit
-                                if (filters.get(Helper.FILTER_METHODS.SPLITWITH).equals(Helper.getString(R.string.tt_not_split)) && !occ.IsSplit()) {
+                                if (filters.get(Helper.FILTER_METHODS.SPLITWITH).equals(context.getString(R.string.tt_not_split)) && !occ.IsSplit()) {
                                     filtersMet++;
                                     break;
                                 } else {
@@ -183,8 +183,8 @@ public class Budget implements java.io.Serializable, BaseEntity
                                 }
                                 break;
                             case PAIDBACK:
-                                if (occ.GetPaidBack() != null && filters.get(Helper.FILTER_METHODS.PAIDBACK).equals(Helper.getString(R.string.confirm_yes)) ) { filtersMet++; }
-                                else if (occ.GetPaidBack() == null && filters.get(Helper.FILTER_METHODS.PAIDBACK).equals(Helper.getString(R.string.confirm_no)) ) { filtersMet++; }
+                                if (occ.GetPaidBack() != null && filters.get(Helper.FILTER_METHODS.PAIDBACK).equals(context.getString(R.string.confirm_yes)) ) { filtersMet++; }
+                                else if (occ.GetPaidBack() == null && filters.get(Helper.FILTER_METHODS.PAIDBACK).equals(context.getString(R.string.confirm_no)) ) { filtersMet++; }
                                 break;
                         }
                     }
@@ -202,7 +202,7 @@ public class Budget implements java.io.Serializable, BaseEntity
         // Sorting
         if (sort != null) {
             Collections.sort(ret, new Comparator<Transaction>() {
-                @Override public int compare(Transaction t1, Transaction t2) { return t1.sortCompare(t2, sort); }
+                @Override public int compare(Transaction t1, Transaction t2) { return t1.SortCompare(t2, sort); }
             });
         }
 
@@ -215,61 +215,61 @@ public class Budget implements java.io.Serializable, BaseEntity
 
 
     //Formatting
-    public String GetDateFormatted()
+    public String GetDateFormatted(Context context)
     {
         if (_endTime != null && _startTime != null) { //||showAll  OR && !showAll   ???
             //Yearly
             if (_endTime.getDayOfYear() == _endTime.dayOfYear().getMaximumValue() && _startTime.getDayOfYear() == _startTime.dayOfYear().getMinimumValue()){
-                return _startTime.toString(Helper.getString(R.string.date_format_justyear));
+                return _startTime.toString(context.getString(R.string.date_format_justyear));
             }
             //Monthly
             else if (_startTime.getMonthOfYear()==_endTime.getMonthOfYear() &&  _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue() && _startTime.getDayOfMonth() == _startTime.dayOfMonth().getMinimumValue()) {
-                return _startTime.toString(Helper.getString(R.string.date_format_noday));
+                return _startTime.toString(context.getString(R.string.date_format_noday));
             }
 
             //Seasonally (Winter)
             else if (_startTime.getMonthOfYear()==DateTimeConstants.DECEMBER && _startTime.getDayOfMonth() == 1 &&
                     _endTime.getMonthOfYear()==DateTimeConstants.FEBRUARY && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){
-                return Helper.getString(R.string.time_winter) + _startTime.getYear() + "-" + _endTime.getYear();
+                return context.getString(R.string.time_winter) + _startTime.getYear() + "-" + _endTime.getYear();
             }
             //Seasonally (Spring)
             else if (_startTime.getMonthOfYear()==DateTimeConstants.MARCH && _startTime.getDayOfMonth() == 1 &&
                     _endTime.getMonthOfYear()==DateTimeConstants.MAY && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){
-                return Helper.getString(R.string.time_spring) + _startTime.getYear();
+                return context.getString(R.string.time_spring) + _startTime.getYear();
             }
             //Seasonally (Summer)
             else if (_startTime.getMonthOfYear()==DateTimeConstants.JUNE && _startTime.getDayOfMonth() == 1 &&
                     _endTime.getMonthOfYear()==DateTimeConstants.AUGUST && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){
-                return Helper.getString(R.string.time_summer) + _startTime.getYear();
+                return context.getString(R.string.time_summer) + _startTime.getYear();
             }
             //Seasonally (Fall)
             else if (_startTime.getMonthOfYear()==DateTimeConstants.SEPTEMBER && _startTime.getDayOfMonth() == 1 &&
                     _endTime.getMonthOfYear()==DateTimeConstants.NOVEMBER && _endTime.getDayOfMonth() == _endTime.dayOfMonth().getMaximumValue()){
-                return Helper.getString(R.string.time_fall) + _startTime.getYear();
+                return context.getString(R.string.time_fall) + _startTime.getYear();
             }
 
             //Same Day
             else if (_startTime.equals(_endTime)) {
-                return _startTime.toString(Helper.getString(R.string.date_format));
+                return _startTime.toString(context.getString(R.string.date_format));
             }
 
             else { //Default
-                return _startTime.toString(Helper.getString(R.string.date_format_short)) + " - " + _endTime.toString(Helper.getString(R.string.date_format_short));
+                return _startTime.toString(context.getString(R.string.date_format_short)) + " - " + _endTime.toString(context.getString(R.string.date_format_short));
             }
         }
         else {
             if (_endTime == null && _startTime != null){ //&&!showAll
-                return Helper.getString(R.string.time_started) + " " + _startTime.toString(Helper.getString(R.string.date_format));
+                return context.getString(R.string.time_started) + " " + _startTime.toString(context.getString(R.string.date_format));
             }
             else {
-                return Helper.getString(R.string.misc_all);
+                return context.getString(R.string.misc_all);
             }
         }
     }
 
-    public String GetPeriodFormatted(){
+    public String GetPeriodFormatted(Context context){
         if (_period != null){
-            return Helper.getString(R.string.repeat_occurevery) + " "+ _period.toString(PeriodFormat.wordBased(App.GetLocale()));
+            return context.getString(R.string.repeat_occurevery) + " "+ _period.toString(PeriodFormat.wordBased(App.GetLocale()));
         }
         return "No Period";
     }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class PersonManager
 {
-    static PersonManager instance = new PersonManager();
+    private static PersonManager instance = new PersonManager();
 
     //Categories
     private ArrayList<Person> _people;

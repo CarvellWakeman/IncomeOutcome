@@ -1,5 +1,6 @@
 package carvellwakeman.incomeoutcome;
 
+import android.content.Context;
 import org.joda.time.*;
 
 import java.util.*;
@@ -172,13 +173,13 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         return null;
     }
 
-    public String GetBlacklistDatesString(){
+    public String GetBlacklistDatesString(Context context){
         String str = "";
 
         if (_blacklistDates != null) {
             for (int i = 0; i < _blacklistDates.size(); i++) {
                 BlacklistDate bd = _blacklistDates.get(i);
-                str += bd.transactionID + "|" +  bd.date.toString(Helper.getString(R.string.date_format_saving)) + "|" + (bd.edited?1:0) + ",";
+                str += bd.transactionID + "|" +  bd.date.toString(context.getString(R.string.date_format_saving)) + "|" + (bd.edited?1:0) + ",";
             }
             //Remove last comma
             if (str.length() > 0) { str = str.substring(0, str.length() - 1); }
@@ -186,7 +187,7 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
         return str;
     }
-    public void SetBlacklistDatesFromString(String raw){
+    public void SetBlacklistDatesFromString(Context context, String raw){
         String[] s1 = raw.split(Pattern.quote(","));
 
         if (s1.length > 0) {
@@ -196,9 +197,9 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
                 // Old versions of DB did not have transaction ID in blacklist date
                 if (s2.length > 1) {
                     if (s2.length == 2) {
-                        AddBlacklistDate(-1, Helper.ConvertDateFromString(s2[0]), Integer.valueOf(s2[1]) == 1);
+                        AddBlacklistDate(-1, Helper.ConvertDateFromString(context, s2[0]), Integer.valueOf(s2[1]) == 1);
                     } else if (s2.length == 3){
-                        AddBlacklistDate(Integer.valueOf(s2[0]), Helper.ConvertDateFromString(s2[1]), Integer.valueOf(s2[2]) == 1);
+                        AddBlacklistDate(Integer.valueOf(s2[0]), Helper.ConvertDateFromString(context, s2[1]), Integer.valueOf(s2[2]) == 1);
                     }
                 }
             }
@@ -511,17 +512,17 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
 
     //Formatting
-    public String GetDateFormatted() {
-        if (date != null) { return date.toString(Helper.getString(R.string.date_format)); }
-        else { return Helper.getString(R.string.time_nodate); }
+    public String GetDateFormatted(Context context) {
+        if (date != null) { return date.toString(context.getString(R.string.date_format)); }
+        else { return context.getString(R.string.time_nodate); }
     }
-    public String GetRepeatUntilDateFormatted() {
-        if (repeatUntilDate != null) { return repeatUntilDate.toString(Helper.getString(R.string.date_format)); }
+    public String GetRepeatUntilDateFormatted(Context context) {
+        if (repeatUntilDate != null) { return repeatUntilDate.toString(context.getString(R.string.date_format)); }
         else { return ""; }
     }
 
     public String GetRepeatFrequencyFormatted(Repeat type){ return type.toString(); }
-    public String GetEveryNFormatted(Repeat type){
+    public String GetEveryNFormatted(Context context, Repeat type){
         if (repeatEveryN == 1){
             return " " + GetRepeatFrequencyFormatted(type);
         }
@@ -530,53 +531,53 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
                 case NEVER:
                     return "";
                 case DAILY:
-                    return " " + Helper.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + Helper.getString(R.string.repeat_days);
+                    return " " + context.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + context.getString(R.string.repeat_days);
                 case WEEKLY:
-                    return " " + Helper.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + Helper.getString(R.string.repeat_weeks);
+                    return " " + context.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + context.getString(R.string.repeat_weeks);
                 case MONTHLY:
-                    return " " + Helper.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + Helper.getString(R.string.repeat_months);
+                    return " " + context.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + context.getString(R.string.repeat_months);
                 case YEARLY:
-                    return " " + Helper.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + Helper.getString(R.string.repeat_years);
+                    return " " + context.getString(R.string.repeat_everylower) + " " + String.valueOf(repeatEveryN) + " " + context.getString(R.string.repeat_years);
                 default:
                     return "";
             }
         }
     }
-    public String GetRepeatDaysOfWeek() {
-        String str = Helper.getString(R.string.misc_on)
+    public String GetRepeatDaysOfWeek(Context context) {
+        String str = context.getString(R.string.misc_on)
 
-                + (repeatDayOfWeek[0] ? " " + Helper.getString(R.string.repeat_mon) + "," : "")
-                + (repeatDayOfWeek[1] ? " " + Helper.getString(R.string.repeat_tue) + "," : "")
-                + (repeatDayOfWeek[2] ? " " + Helper.getString(R.string.repeat_wed) + "," : "")
-                + (repeatDayOfWeek[3] ? " " + Helper.getString(R.string.repeat_thur) + "," : "")
-                + (repeatDayOfWeek[4] ? " " + Helper.getString(R.string.repeat_fri) + "," : "")
-                + (repeatDayOfWeek[5] ? " " + Helper.getString(R.string.repeat_sat) + "," : "")
-                + (repeatDayOfWeek[6] ? " " + Helper.getString(R.string.repeat_sun) + "" : "");
+                + (repeatDayOfWeek[0] ? " " + context.getString(R.string.repeat_mon) + "," : "")
+                + (repeatDayOfWeek[1] ? " " + context.getString(R.string.repeat_tue) + "," : "")
+                + (repeatDayOfWeek[2] ? " " + context.getString(R.string.repeat_wed) + "," : "")
+                + (repeatDayOfWeek[3] ? " " + context.getString(R.string.repeat_thur) + "," : "")
+                + (repeatDayOfWeek[4] ? " " + context.getString(R.string.repeat_fri) + "," : "")
+                + (repeatDayOfWeek[5] ? " " + context.getString(R.string.repeat_sat) + "," : "")
+                + (repeatDayOfWeek[6] ? " " + context.getString(R.string.repeat_sun) + "" : "");
         //Remove last comma
         if (str.charAt(str.length()-1) == ','){ str = str.substring(0, str.length()-1); }
         return str;
     }
 
-    public String GetDayOfMonthFormatted(){ return Helper.getString(R.string.misc_onday) + " " + String.valueOf(repeatDayOfMonth); }
-    public String GetRepeatYear(){ return Helper.getString(R.string.misc_on) + " " + dateOfYear.toString(Helper.getString(R.string.date_format_noyear)); }
+    public String GetDayOfMonthFormatted(Context context){ return context.getString(R.string.misc_onday) + " " + String.valueOf(repeatDayOfMonth); }
+    public String GetRepeatYear(Context context){ return context.getString(R.string.misc_on) + " " + dateOfYear.toString(context.getString(R.string.date_format_noyear)); }
 
-    public String GetRepeatString(){
+    public String GetRepeatString(Context context){
         //Short-Circuit if repeat type is NEVER
         if (repeatFrequency == Repeat.NEVER) { return ""; }
 
-        String tense = Helper.getString(date.compareTo(LocalDate.now()) <= 0 ? R.string.time_started : R.string.time_starts);
-        String repeatTypeString = tense + " " + GetDateFormatted() + "\n" + Helper.getString(R.string.repeats) + " " + GetEveryNFormatted(GetRepeatFrequency());
+        String tense = context.getString(date.compareTo(LocalDate.now()) <= 0 ? R.string.time_started : R.string.time_starts);
+        String repeatTypeString = tense + " " + GetDateFormatted(context) + "\n" + context.getString(R.string.repeats) + " " + GetEveryNFormatted(context, GetRepeatFrequency());
 
         //Repeat Frequency
         switch (repeatFrequency){
             case WEEKLY:
-                repeatTypeString += " " + GetRepeatDaysOfWeek();
+                repeatTypeString += " " + GetRepeatDaysOfWeek(context);
                 break;
             case MONTHLY:
-                repeatTypeString += " " +GetDayOfMonthFormatted();
+                repeatTypeString += " " +GetDayOfMonthFormatted(context);
                 break;
             case YEARLY:
-                repeatTypeString += " " +GetRepeatYear();
+                repeatTypeString += " " +GetRepeatYear(context);
                 break;
         }
 
@@ -584,13 +585,13 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         switch (repeatUntil)
         {
             case FOREVER:
-                repeatTypeString += ", " + Helper.getString(R.string.repeat_forever);
+                repeatTypeString += ", " + context.getString(R.string.repeat_forever);
                 break;
             case DATE:
-                repeatTypeString += ", " + Helper.getString(R.string.until) + " " + GetRepeatUntilDateFormatted();
+                repeatTypeString += ", " + context.getString(R.string.until) + " " + GetRepeatUntilDateFormatted(context);
                 break;
             case TIMES:
-                repeatTypeString += ", " + GetRepeatANumberOfTimes() + " " + Helper.getString(R.string.repeat_events);
+                repeatTypeString += ", " + GetRepeatANumberOfTimes() + " " + context.getString(R.string.repeat_events);
                 break;
         }
 
@@ -598,22 +599,22 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         return repeatTypeString;
     }
 
-    public String GetRepeatStringShort(){
+    public String GetRepeatStringShort(Context context){
         //Short-Circuit if repeat type is NEVER
-        if (repeatFrequency == Repeat.NEVER) { return Helper.getString(R.string.repeat_never); }
+        if (repeatFrequency == Repeat.NEVER) { return context.getString(R.string.repeat_never); }
 
-        String repeatTypeString = Helper.getString(R.string.repeats) + GetEveryNFormatted(GetRepeatFrequency());
+        String repeatTypeString = context.getString(R.string.repeats) + GetEveryNFormatted(context, GetRepeatFrequency());
 
         //Repeat Frequency
         switch (repeatFrequency){
             case WEEKLY:
-                repeatTypeString += " " + GetRepeatDaysOfWeek();
+                repeatTypeString += " " + GetRepeatDaysOfWeek(context);
                 break;
             case MONTHLY:
-                repeatTypeString += " " + GetDayOfMonthFormatted();
+                repeatTypeString += " " + GetDayOfMonthFormatted(context);
                 break;
             case YEARLY:
-                repeatTypeString += " " + GetRepeatYear();
+                repeatTypeString += " " + GetRepeatYear(context);
                 break;
         }
 
@@ -621,13 +622,13 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         switch (repeatUntil)
         {
             case FOREVER:
-                repeatTypeString += ", " + Helper.getString(R.string.repeat_forever);
+                repeatTypeString += ", " + context.getString(R.string.repeat_forever);
                 break;
             case DATE:
-                repeatTypeString += ", " + Helper.getString(R.string.until) + " " + GetRepeatUntilDateFormatted();
+                repeatTypeString += ", " + context.getString(R.string.until) + " " + GetRepeatUntilDateFormatted(context);
                 break;
             case TIMES:
-                repeatTypeString += "; " + GetRepeatANumberOfTimes() + " " + Helper.getString(R.string.repeat_events);
+                repeatTypeString += "; " + GetRepeatANumberOfTimes() + " " + context.getString(R.string.repeat_events);
                 break;
         }
 
@@ -637,6 +638,7 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
 
     //Equals
+    /*
     @Override
     public boolean equals(Object o){
         if (o.getClass() == TimePeriod.class) {
@@ -665,7 +667,7 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
         return false;
     }
-
+    */
 }
 
 
