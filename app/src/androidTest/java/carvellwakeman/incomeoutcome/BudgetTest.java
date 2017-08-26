@@ -1,14 +1,18 @@
 package carvellwakeman.incomeoutcome;
 
 import android.content.Context;
+import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
+
+@RunWith(AndroidJUnit4.class)
 public class BudgetTest {
     Context mContext;
 
@@ -198,7 +202,7 @@ public class BudgetTest {
         tran1.SetTimePeriod(new TimePeriod(new LocalDate(2017, 8, 1)));
         tran2.SetTimePeriod(new TimePeriod(new LocalDate(2017, 8, 10)));
 
-        // Add one transaction
+        // Add transactions
         bud.AddTransaction(tran1);
         bud.AddTransaction(tran2);
 
@@ -210,6 +214,24 @@ public class BudgetTest {
 
         assertFalse( bud.GetTransactionsInTimeframe(mContext, Transaction.TRANSACTION_TYPE.Expense).contains(tran1) );
         assertTrue( bud.GetTransactionsInTimeframe(mContext, Transaction.TRANSACTION_TYPE.Expense).contains(tran2) );
+
+        // Test repeating transactions instances (weekly)
+        TimePeriod tprp = new TimePeriod(new LocalDate(2017, 8, 3));
+        tprp.SetRepeatFrequency(TimePeriod.Repeat.WEEKLY);
+        tprp.SetRepeatDayOfWeekFromBinary("1000000");
+        tran2.SetTimePeriod(tprp);
+
+        // Two instance transactions on 8-7 and 8-14
+        int hasT = 0;
+        for (Transaction t : bud.GetTransactionsInTimeframe(mContext, Transaction.TRANSACTION_TYPE.Expense)){
+            if (t.GetTimePeriod().GetDate().equals(new LocalDate(2017, 8, 7)) || t.GetTimePeriod().GetDate().equals(new LocalDate(2017, 8, 14))){
+                hasT+=1;
+            }
+        }
+        assertTrue( hasT == 2 );
+        assertFalse( bud.GetTransactionsInTimeframe(mContext, Transaction.TRANSACTION_TYPE.Expense).contains(tran2) );
+
+
     }
 
 }
