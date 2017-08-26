@@ -16,6 +16,9 @@ Ver 1.0.5 ALPHA 2017-01-17
 
 Ver 1.0.4 ALPHA 2016-10-17
 -Still working on how the changelog should be worded. It still uses dev lingo more than it should. WIP!
+
+#[ADD] Row layout transaction repeat icon added below calendar icon
+
 *[BUGFIX] ALL transactions are now removed when deleting a profile
 *[BUGFIX] When editing a transaction, the persion the transaction was split with is saved properly
 *[BUGFIX] Filter by Category no longer ignores some transactions

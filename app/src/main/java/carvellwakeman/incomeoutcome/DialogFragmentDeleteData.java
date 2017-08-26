@@ -17,7 +17,7 @@ import android.widget.RadioButton;
 public class DialogFragmentDeleteData extends DialogFragment {
 
     Activity mActivity;
-    CallBack _callBack;
+    Runnable _callBack;
 
     RadioButton radioButton_deleteall;
     RadioButton radioButton_deletetransactions;
@@ -28,7 +28,7 @@ public class DialogFragmentDeleteData extends DialogFragment {
     Button button_negative;
 
 
-    static DialogFragmentDeleteData newInstance(Activity caller, CallBack callBack) {
+    static DialogFragmentDeleteData newInstance(Activity caller, Runnable callBack) {
         DialogFragmentDeleteData fg = new DialogFragmentDeleteData();
         fg._callBack = callBack;
         fg.mActivity = caller;
@@ -64,7 +64,7 @@ public class DialogFragmentDeleteData extends DialogFragment {
 
                                     DatabaseManager.getInstance(mActivity).deleteAllTableContent();
 
-                                    if (_callBack != null) { _callBack.call(); }
+                                    if (_callBack != null) { _callBack.run(); }
                                     DialogFragmentDeleteData.this.dismiss();
                                     dismiss();
                                 }})
@@ -80,7 +80,7 @@ public class DialogFragmentDeleteData extends DialogFragment {
                                     DatabaseManager.getInstance(mActivity).deleteTableContent(DatabaseManager.TABLE_TRANSACTIONS);
                                     DatabaseManager.getInstance(mActivity).deleteTableContent(DatabaseManager.TABLE_TIMEPERIODS);
 
-                                    if (_callBack != null) { _callBack.call(); }
+                                    if (_callBack != null) { _callBack.run(); }
                                     DialogFragmentDeleteData.this.dismiss();
                                     dismiss();
                                 }})
@@ -94,7 +94,7 @@ public class DialogFragmentDeleteData extends DialogFragment {
                                     PersonManager.getInstance().RemoveAllPeople();
                                     DatabaseManager.getInstance(mActivity).deleteTableContent(DatabaseManager.TABLE_SETTINGS_OTHERPEOPLE);
 
-                                    if (_callBack != null) { _callBack.call(); }
+                                    if (_callBack != null) { _callBack.run(); }
                                     DialogFragmentDeleteData.this.dismiss();
                                     dismiss();
                                 }})
@@ -108,7 +108,7 @@ public class DialogFragmentDeleteData extends DialogFragment {
                                     CategoryManager.getInstance().RemoveAllCategories();
                                     DatabaseManager.getInstance(mActivity).deleteTableContent(DatabaseManager.TABLE_SETTINGS_CATEGORIES);
 
-                                    if (_callBack != null) { _callBack.call(); }
+                                    if (_callBack != null) { _callBack.run(); }
                                     DialogFragmentDeleteData.this.dismiss();
                                     dismiss();
                                 }})

@@ -20,6 +20,10 @@ public class DialogFragmentManageBPC extends DialogFragment
     String _title;
     String _subtitle;
 
+    String _editBtnTxt;
+    String _selectBtnTxt;
+    String _deleteBtnTxt;
+
     String _objInput;
     ParentCallBack _editFunc;
     ParentCallBack _selectFunc;
@@ -32,13 +36,23 @@ public class DialogFragmentManageBPC extends DialogFragment
     Button button_select;
     Button button_delete;
 
-
-    static DialogFragmentManageBPC newInstance(AppCompatActivity parent, String title, String subtitle, String objInput, ParentCallBack editFunc, ParentCallBack selectFunc, ParentCallBack deleteFunc) {
+    static DialogFragmentManageBPC newInstance(AppCompatActivity parent,
+                                               String title, String subtitle, String objInput,
+                                               ParentCallBack editFunc, ParentCallBack selectFunc, ParentCallBack deleteFunc)
+    { return newInstance(parent, title, subtitle, objInput, null, null, null, editFunc, selectFunc, deleteFunc); }
+    static DialogFragmentManageBPC newInstance(AppCompatActivity parent,
+                                               String title, String subtitle, String objInput,
+                                               String editTxt, String selectTxt, String deleteTxt,
+                                               ParentCallBack editFunc, ParentCallBack selectFunc, ParentCallBack deleteFunc) {
         DialogFragmentManageBPC fg = new DialogFragmentManageBPC();
 
         fg._parent = parent;
         fg._title = title;
         fg._subtitle = subtitle;
+
+        fg._editBtnTxt = editTxt;
+        fg._selectBtnTxt = selectTxt;
+        fg._deleteBtnTxt = deleteTxt;
 
         fg._objInput = objInput;
 
@@ -66,6 +80,11 @@ public class DialogFragmentManageBPC extends DialogFragment
         button_edit = (Button) view.findViewById(R.id.button_dialogppc_edit);
         button_select = (Button) view.findViewById(R.id.button_dialogppc_select);
         button_delete = (Button) view.findViewById(R.id.button_dialogppc_delete);
+
+        // Button texts
+        if (_editBtnTxt != null){ button_edit.setText(_editBtnTxt); }
+        if (_selectBtnTxt != null){ button_select.setText(_selectBtnTxt); }
+        if (_deleteBtnTxt != null){ button_delete.setText(_deleteBtnTxt); }
 
         //Visibility based on callback function null-ality
         if (_editFunc == null) { button_edit.setVisibility(View.GONE); }

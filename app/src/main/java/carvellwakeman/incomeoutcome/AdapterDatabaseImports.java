@@ -93,7 +93,9 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
                 if (file != null && file.exists()) {
                     int version = SQLiteDatabase.openDatabase(file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
 
-                    Helper.OpenDialogFragment(parent, DialogFragmentManageBPC.newInstance(parent, file.getName(), parent.getString(R.string.format_dbversion, String.valueOf(version)), file.getAbsolutePath(), null, new ParentCallBack() {
+                    Helper.OpenDialogFragment(parent, DialogFragmentManageBPC.newInstance(parent, file.getName(), parent.getString(R.string.format_dbversion, String.valueOf(version)), file.getAbsolutePath(),
+                            null, parent.getString(R.string.action_import), null,
+                            null, new ParentCallBack() {
                         @Override public void call(String data, DialogFragmentManageBPC dialogFragment) { parent.DBImport(data, dialogFragment); }
                     }, new ParentCallBack() {
                         @Override public void call(String data, DialogFragmentManageBPC dialogFragment) { parent.DBDelete(data, dialogFragment); }

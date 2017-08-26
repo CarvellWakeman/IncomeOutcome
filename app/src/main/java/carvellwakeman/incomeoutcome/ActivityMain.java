@@ -3,16 +3,13 @@ package carvellwakeman.incomeoutcome;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
 import android.widget.*;
-import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class ActivityMain extends AppCompatActivity
@@ -69,8 +66,8 @@ public class ActivityMain extends AppCompatActivity
 
         //Load data from database
         databaseManager.loadSettings( //Load settings
-            new CallBack() {
-                @Override public void call() {
+            new Runnable() {
+                @Override public void run() {
                     databaseManager._loadTransactions();
                     //if (versusCard!=null){ versusCard.getBase().setVisibility(View.VISIBLE); }
                     if (incomeCard!=null){ incomeCard.getBase().setVisibility(View.VISIBLE); }
@@ -175,7 +172,7 @@ public class ActivityMain extends AppCompatActivity
                 Intent intent = new Intent(ActivityMain.this, ActivityNewTransaction.class);
                 intent.putExtra("activitytype", Transaction.TRANSACTION_TYPE.Expense.ordinal());
                 intent.putExtra("budget", _selectedBudget.GetID());
-                startActivityForResult(intent, 1);
+                startActivity(intent);
             }
         });
         FAB_newIncome.setOnClickListener(new View.OnClickListener() {
@@ -184,7 +181,7 @@ public class ActivityMain extends AppCompatActivity
                 Intent intent = new Intent(ActivityMain.this, ActivityNewTransaction.class);
                 intent.putExtra("activitytype", Transaction.TRANSACTION_TYPE.Income.ordinal());
                 intent.putExtra("budget", _selectedBudget.GetID());
-                startActivityForResult(intent, 1);
+                startActivity(intent);
             }
         });
 
@@ -228,12 +225,12 @@ public class ActivityMain extends AppCompatActivity
                 return true;
             case R.id.toolbar_action_settings: //Start settings activity
                 intent = new Intent(ActivityMain.this, ActivitySettings.class);
-                startActivityForResult(intent, 0);
+                startActivity(intent);
                 return true;
             case R.id.toolbar_paidback: // Paid Back (expenses only)
                 Helper.OpenDialogFragment(ActivityMain.this, DialogFragmentPaidBack.newInstance(ActivityMain.this,
-                        new CallBackDate() { @Override public void call(LocalDate date) {
-                            SetTransactionsPaidBack(date);
+                        new RunnableParam() { @Override public void run(Object date) {
+                            SetTransactionsPaidBack((LocalDate)date);
                         }
                         }, _selectedBudget), true);
                 return true;
@@ -254,14 +251,6 @@ public class ActivityMain extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    //Get return results from activities
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data != null) {}
-
-        //Refresh graphs if we return to this page. Not the most efficient, but simple
-        RefreshActivity();
     }
 
 

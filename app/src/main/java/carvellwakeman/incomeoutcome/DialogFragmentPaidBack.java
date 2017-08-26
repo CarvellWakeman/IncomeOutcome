@@ -17,7 +17,7 @@ package carvellwakeman.incomeoutcome;
 public class DialogFragmentPaidBack extends DialogFragment
 {
     Context _parent;
-    CallBackDate _callBack;
+    RunnableParam _callBack;
 
     Budget _budget;
     LocalDate _date;
@@ -31,7 +31,7 @@ public class DialogFragmentPaidBack extends DialogFragment
     Button button_negative;
 
 
-    static DialogFragmentPaidBack newInstance(Context parent, CallBackDate callBack, Budget budget) {
+    static DialogFragmentPaidBack newInstance(Context parent, RunnableParam callBack, Budget budget) {
         DialogFragmentPaidBack fg = new DialogFragmentPaidBack();
         fg._callBack = callBack;
         fg._parent = parent;
@@ -93,7 +93,7 @@ public class DialogFragmentPaidBack extends DialogFragment
                 _date = null;
             }
 
-            _callBack.call(_date);
+            _callBack.run(_date);
 
             dismiss();
             }

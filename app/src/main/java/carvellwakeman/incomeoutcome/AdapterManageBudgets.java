@@ -31,9 +31,7 @@ public class AdapterManageBudgets extends AdapterManageEntity
 
             if (holder.subTitle.getText() != null) { holder.subTitle.setVisibility(View.VISIBLE); }
 
-            if (br.GetSelected()){
-                holder.secondaryIcon.setVisibility(View.VISIBLE);
-            }
+            holder.secondaryIcon.setVisibility( (br.GetSelected() ? View.VISIBLE : View.GONE) );
         }
     }
 

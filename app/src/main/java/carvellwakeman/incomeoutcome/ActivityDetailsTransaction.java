@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
@@ -14,8 +13,6 @@ import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 
 public class ActivityDetailsTransaction extends AppCompatActivity implements SortFilterActivity
@@ -211,8 +208,8 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
                 return true;
             case R.id.toolbar_paidback: // Paid Back (expenses only)
                 Helper.OpenDialogFragment(ActivityDetailsTransaction.this, DialogFragmentPaidBack.newInstance(ActivityDetailsTransaction.this,
-                    new CallBackDate() { @Override public void call(LocalDate date) {
-                       SetTransactionsPaidBack(date);
+                    new RunnableParam() { @Override public void run(Object date) {
+                       SetTransactionsPaidBack((LocalDate)date);
                     }
                 }, _budget), true);
                 return true;

@@ -627,22 +627,18 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
     //Task Execution
-    public void runDBTask(final CallBack BackgroundAction) { runDBTask(BackgroundAction, new CallBack[]{}, new CallBack[]{}); }
-    public void runDBTask(final CallBack BackgroundAction, final CallBack PreAction, final CallBack PostAction) { runDBTask(BackgroundAction, new CallBack[]{PreAction}, new CallBack[]{PostAction}); }
-    public void runDBTask(CallBack BackgroundAction, final CallBack[] PreActions, final CallBack[] PostActions){
+    public void runDBTask(final Runnable BackgroundAction) { runDBTask(BackgroundAction, null, null); }
+    public void runDBTask(final Runnable BackgroundAction, final Runnable PreAction, final Runnable PostAction){
         AsyncTask<Object, String, String> task = new AsyncTask<Object, String, String>() {
             @Override protected void onPreExecute() {
                 try {
-                    for (CallBack action : PreActions) {
-                        action.call();
-                    }
+                    if (PreAction != null) { PreAction.run(); }
                 } catch (Exception ex){}//Not much we can do at this point
             }
 
             @Override protected String doInBackground(Object... params) {
                 try {
-                    CallBack action = (CallBack)params[0];
-                    action.call();
+                    BackgroundAction.run();
                     return null;
                 } catch (Exception ex){ return ex.toString(); }
 
@@ -655,15 +651,13 @@ public class DatabaseManager extends SQLiteOpenHelper
                 if (result != null) { Helper.PrintUserLong(App.GetContext(), "Database Operation Failure: " + result); }
 
                 try {
-                    for (CallBack action : PostActions) {
-                        action.call();
-                    }
+                    if (PostAction != null) { PostAction.run(); }
                 } catch (Exception ex){}//Not much we can do at this point
             }
         };
 
         //Start process
-        task.execute(BackgroundAction);
+        task.execute();
     }
 
     //Database directories & Versioning
@@ -885,7 +879,7 @@ public class DatabaseManager extends SQLiteOpenHelper
         }
     }
 
-    private void dropAndRecreateAllTables(final SQLiteDatabase database) { runDBTask(new CallBack() { @Override public void call() { _dropAndRecreateAllTables(database); } } ); }
+    private void dropAndRecreateAllTables(final SQLiteDatabase database) { runDBTask(new Runnable() { @Override public void run() { _dropAndRecreateAllTables(database); } } ); }
     private void _dropAndRecreateAllTables(SQLiteDatabase database){
         _dropTable(TABLE_SETTINGS_CATEGORIES);
         _dropTable(TABLE_SETTINGS_OTHERPEOPLE);
@@ -903,13 +897,13 @@ public class DatabaseManager extends SQLiteOpenHelper
         tryCreateDatabase(database);
     }
 
-    private void dropTable(final String tableName) { runDBTask( new CallBack() { @Override public void call() { _dropTable(tableName); } } ); }
+    private void dropTable(final String tableName) { runDBTask( new Runnable() { @Override public void run() { _dropTable(tableName); } } ); }
     private void _dropTable(String tableName){
         database.execSQL("DROP TABLE IF EXISTS " + tableName);
     }
 
 
-    public void deleteAllTableContent() { runDBTask( new CallBack() { @Override public void call() { _deleteAllTableContent(); } } ); }
+    public void deleteAllTableContent() { runDBTask( new Runnable() { @Override public void run() { _deleteAllTableContent(); } } ); }
     private void _deleteAllTableContent(){
         _deleteTableContent(TABLE_SETTINGS_CATEGORIES);
         _deleteTableContent(TABLE_SETTINGS_OTHERPEOPLE);
@@ -924,7 +918,7 @@ public class DatabaseManager extends SQLiteOpenHelper
         _deleteTableContent(TABLE_INCOME);
     }
 
-    public void deleteTableContent(final String tableName) { runDBTask( new CallBack() { @Override public void call() { _deleteTableContent(tableName); } } ); }
+    public void deleteTableContent(final String tableName) { runDBTask( new Runnable() { @Override public void run() { _deleteTableContent(tableName); } } ); }
     private void _deleteTableContent(String tableName){
         if (isTableExists(tableName, true)) {
             database.delete(tableName, null, null);
@@ -933,7 +927,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 
 
     //Import and Export
-    public void exportDatabase(final String name) { runDBTask( new CallBack() { @Override public void call() { _exportDatabase(name); } } ); }
+    public void exportDatabase(final String name) { runDBTask( new Runnable() { @Override public void run() { _exportDatabase(name); } } ); }
     private void _exportDatabase(String name) { _exportDatabase(name, EXPORT_DIRECTORY); }
     private void _exportDatabase(String name, File destination) {
 
@@ -981,7 +975,7 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
 
-    //public void importDatabase(final File importFile, final boolean backup) { runDBTask( new CallBack() { @Override public void call() { _importDatabase(importFile, backup); } }); }
+    //public void importDatabase(final File importFile, final boolean backup) { runDBTask( new Runnable() { @Override public void run() { _importDatabase(importFile, backup); } }); }
     //private void _importDatabase(File importFile){ _importDatabase(importFile, false); }
     public void importDatabase(File importFile, boolean backup){
 
@@ -1045,9 +1039,9 @@ public class DatabaseManager extends SQLiteOpenHelper
 
     //Object Specific Operations
     //Insertion
-    public void insertSetting(final Category category, final boolean tryUpdate) { runDBTask( new CallBack() { @Override public void call() { _insertSetting(category, tryUpdate); } } ); }
-    public void insertSetting(final Category category, final CallBack postCallback, final boolean tryUpdate) {
-        runDBTask( new CallBack() { @Override public void call() { _insertSetting(category, tryUpdate); } }, null, postCallback );
+    public void insertSetting(final Category category, final boolean tryUpdate) { runDBTask( new Runnable() { @Override public void run() { _insertSetting(category, tryUpdate); } } ); }
+    public void insertSetting(final Category category, final Runnable postCallback, final boolean tryUpdate) {
+        runDBTask( new Runnable() { @Override public void run() { _insertSetting(category, tryUpdate); } }, null, postCallback );
     }
     public long _insertSetting(Category category, boolean tryUpdate) {
         database = getWritableDatabase();
@@ -1069,9 +1063,9 @@ public class DatabaseManager extends SQLiteOpenHelper
         } else{ return -1; }
     }
 
-    public void insertSetting(final Person person, final boolean tryUpdate) { runDBTask(new CallBack() { @Override public void call() { _insertSetting(person, tryUpdate); } } ); }
-    public void insertSetting(final Person person, final CallBack postCallback, final boolean tryUpdate) {
-        runDBTask( new CallBack() { @Override public void call() { _insertSetting(person, tryUpdate); } }, null, postCallback );
+    public void insertSetting(final Person person, final boolean tryUpdate) { runDBTask(new Runnable() { @Override public void run() { _insertSetting(person, tryUpdate); } } ); }
+    public void insertSetting(final Person person, final Runnable postCallback, final boolean tryUpdate) {
+        runDBTask( new Runnable() { @Override public void run() { _insertSetting(person, tryUpdate); } }, null, postCallback );
     }
     public long _insertSetting(Person person, boolean tryUpdate) {
         database = getWritableDatabase();
@@ -1092,9 +1086,9 @@ public class DatabaseManager extends SQLiteOpenHelper
         } else{ return -1; }
     }
 
-    public void insertSetting(final Budget budget, final boolean tryUpdate) { runDBTask( new CallBack() { @Override public void call() { _insertSetting(budget, tryUpdate); } } ); }
-    public void insertSetting(final Budget budget, final CallBack postCallback, final boolean tryUpdate) {
-        runDBTask( new CallBack() { @Override public void call() { _insertSetting(budget, tryUpdate); } }, null, postCallback );
+    public void insertSetting(final Budget budget, final boolean tryUpdate) { runDBTask( new Runnable() { @Override public void run() { _insertSetting(budget, tryUpdate); } } ); }
+    public void insertSetting(final Budget budget, final Runnable postCallback, final boolean tryUpdate) {
+        runDBTask( new Runnable() { @Override public void run() { _insertSetting(budget, tryUpdate); } }, null, postCallback );
     }
     public long _insertSetting(Budget budget, boolean tryUpdate) {
         database = getWritableDatabase();
@@ -1138,9 +1132,9 @@ public class DatabaseManager extends SQLiteOpenHelper
         } else { return -1; }//ProfileManager.Print(activityContext, "Budget is null"); return -1; }
     }
 
-    public void insert(final Transaction transaction, final boolean tryupdate) { runDBTask(new CallBack() { @Override public void call() { _insert(transaction, tryupdate); } } ); }
-    public void insert(final Transaction transaction, CallBack postCallback, final boolean tryUpdate) {
-        runDBTask( new CallBack() { @Override public void call() { _insert(transaction, tryUpdate); } }, null, postCallback );
+    public void insert(final Transaction transaction, final boolean tryupdate) { runDBTask(new Runnable() { @Override public void run() { _insert(transaction, tryupdate); } } ); }
+    public void insert(final Transaction transaction, Runnable postCallback, final boolean tryUpdate) {
+        runDBTask( new Runnable() { @Override public void run() { _insert(transaction, tryUpdate); } }, null, postCallback );
     }
     public long _insert(Transaction transaction, boolean tryupdate) {
         database = getWritableDatabase();
@@ -1184,9 +1178,9 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
     // Shouldn't be used, this is done by _insert(Transaction)
-    //public void insert(final int transactionUID, final TimePeriod tp, final boolean tryupdate) { runDBTask( new CallBack() { @Override public void call() { _insert(transactionUID, tp, tryupdate); } } ); }
-    //public void insert(final int transactionUID, final TimePeriod tp, final CallBack postCallback, final boolean tryUpdate) {
-    //    runDBTask( new CallBack() { @Override public void call() { _insert(transactionUID, tp, tryUpdate); } }, null, postCallback );
+    //public void insert(final int transactionUID, final TimePeriod tp, final boolean tryupdate) { runDBTask( new Runnable() { @Override public void run() { _insert(transactionUID, tp, tryupdate); } } ); }
+    //public void insert(final int transactionUID, final TimePeriod tp, final Runnable postCallback, final boolean tryUpdate) {
+    //    runDBTask( new Runnable() { @Override public void run() { _insert(transactionUID, tp, tryUpdate); } }, null, postCallback );
     //}
     private void _insert(int transactionUID, TimePeriod tp, Boolean tryupdate) {
         database = getWritableDatabase();
@@ -1262,14 +1256,14 @@ public class DatabaseManager extends SQLiteOpenHelper
 
 
     //Loading
-    public void loadSettings(CallBack callback) { runDBTask( new CallBack() { @Override public void call() { _loadSettings(); } }, null, callback ); }
+    public void loadSettings(Runnable callback) { runDBTask( new Runnable() { @Override public void run() { _loadSettings(); } }, null, callback ); }
     public void _loadSettings() {
         //Get managers
         CategoryManager cm = CategoryManager.getInstance();
         PersonManager pm = PersonManager.getInstance();
         BudgetManager bm = BudgetManager.getInstance();
 
-        database = getWritableDatabase();
+        database = getReadableDatabase();
 
         Cursor c = null;
         try {
@@ -1343,9 +1337,9 @@ public class DatabaseManager extends SQLiteOpenHelper
 
     }
 
-    public void loadTransactions(CallBack callback) { runDBTask( new CallBack() { @Override public void call() { _loadTransactions(); } }, null, callback); }
+    public void loadTransactions(Runnable callback) { runDBTask( new Runnable() { @Override public void run() { _loadTransactions(); } }, null, callback); }
     public void _loadTransactions() {
-        database = getWritableDatabase();
+        database = getReadableDatabase();
 
         try {
             Cursor c = database.query(TABLE_TRANSACTIONS, null, null, null, null, null, null);
@@ -1353,8 +1347,8 @@ public class DatabaseManager extends SQLiteOpenHelper
 
             while (c.moveToNext()) {
                 //Find budget
-                int ID = c.getInt(c.getColumnIndex(COLUMN_budget));
-                Budget br = BudgetManager.getInstance().GetBudget(ID);
+                int BudgetID = c.getInt(c.getColumnIndex(COLUMN_budget));
+                Budget br = BudgetManager.getInstance().GetBudget(BudgetID);
 
 
                 if (br != null) {
@@ -1369,6 +1363,8 @@ public class DatabaseManager extends SQLiteOpenHelper
                     tr.SetID(c.getInt(c.getColumnIndex(COLUMN_uniqueID)));
                     //COLUMN_parentID + TEXT_TYPE
                     tr.SetParentID(c.getInt(c.getColumnIndex(COLUMN_parentID)));
+                    //COLUMN_budget + INT_TYPE
+                    tr.SetBudgetID(BudgetID);
                     //COLUMN_category + TEXT_TYPE
                     tr.SetCategory(c.getInt(c.getColumnIndex(COLUMN_category)));
                     //COLUMN_source + TEXT_TYPE
@@ -1419,36 +1415,36 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
     //Removal
-    public void removeCategorySetting(final Category category) { runDBTask( new CallBack() { @Override public void call() { _removeCategorySetting(category); } } ); }
-    public void removeCategorySetting(final Category category, final CallBack postCallback) {
-        runDBTask( new CallBack() { @Override public void call() { _removeCategorySetting(category); } }, null, postCallback );
+    public void removeCategorySetting(final Category category) { runDBTask( new Runnable() { @Override public void run() { _removeCategorySetting(category); } } ); }
+    public void removeCategorySetting(final Category category, final Runnable postCallback) {
+        runDBTask( new Runnable() { @Override public void run() { _removeCategorySetting(category); } }, null, postCallback );
     }
     public boolean _removeCategorySetting(Category category){
         database = getWritableDatabase();
         return category != null && database.delete(TABLE_SETTINGS_CATEGORIES, COLUMN_uniqueID + "=?", new String[]{ String.valueOf(category.GetID()) }) > 0;
     }
 
-    public void removePersonSetting(final Person person) { runDBTask(new CallBack() { @Override public void call() { _removePersonSetting(person); } } ); }
-    public void removePersonSetting(final Person person, final CallBack preCallback, final CallBack postCallback) {
-        runDBTask( new CallBack() { @Override public void call() { _removePersonSetting(person); } }, preCallback, postCallback );
+    public void removePersonSetting(final Person person) { runDBTask(new Runnable() { @Override public void run() { _removePersonSetting(person); } } ); }
+    public void removePersonSetting(final Person person, final Runnable preCallback, final Runnable postCallback) {
+        runDBTask( new Runnable() { @Override public void run() { _removePersonSetting(person); } }, preCallback, postCallback );
     }
     public boolean _removePersonSetting(Person person){
         database = getWritableDatabase();
         return person != null && database.delete(TABLE_SETTINGS_OTHERPEOPLE, COLUMN_uniqueID + "=?", new String[]{ String.valueOf(person.GetID()) }) > 0;
     }
 
-    public void removeBudgetSetting(final Budget budget) { runDBTask( new CallBack() { @Override public void call() { _removeBudgetSetting(budget); } } ); }
-    public void removeBudgetSetting(final Budget budget, final CallBack postCallback) {
-        runDBTask( new CallBack() { @Override public void call() { _removeBudgetSetting(budget); } }, null, postCallback );
+    public void removeBudgetSetting(final Budget budget) { runDBTask( new Runnable() { @Override public void run() { _removeBudgetSetting(budget); } } ); }
+    public void removeBudgetSetting(final Budget budget, final Runnable postCallback) {
+        runDBTask( new Runnable() { @Override public void run() { _removeBudgetSetting(budget); } }, null, postCallback );
     }
     public boolean _removeBudgetSetting(Budget budget){
         database = getWritableDatabase();
         return budget != null && database.delete(TABLE_SETTINGS_BUDGETS, COLUMN_uniqueID + "=?", new String[]{String.valueOf(budget.GetID())}) > 0;
     }
 
-    public void remove(final Transaction transaction) { runDBTask(new CallBack() { @Override public void call() { _remove(transaction); } } ); }
-    public void remove(final Transaction transaction, final CallBack postCallback) {
-        runDBTask( new CallBack() { @Override public void call() { _remove(transaction); } }, null, postCallback );
+    public void remove(final Transaction transaction) { runDBTask(new Runnable() { @Override public void run() { _remove(transaction); } } ); }
+    public void remove(final Transaction transaction, final Runnable postCallback) {
+        runDBTask( new Runnable() { @Override public void run() { _remove(transaction); } }, null, postCallback );
     }
     public boolean _remove(Transaction transaction){
         database = getWritableDatabase();
@@ -1468,26 +1464,6 @@ public class DatabaseManager extends SQLiteOpenHelper
 
         return false;
     }
-
-    /*
-    private void _removeTimePeriod(Cursor c){
-        database = getWritableDatabase();
-
-        //Loop through data
-        if ( c != null ){
-            while (c.moveToNext()) {
-                //Find timeperiod ID
-                int tpID = c.getInt(c.getColumnIndex(COLUMN_when));
-                //Remove timeperiod database row
-                database.delete(TABLE_TIMEPERIODS, COLUMN_ID + "=?", new String[] { String.valueOf(tpID) });
-            }
-        }
-        else {
-            //ProfileManager.Print(activityContext, "TimePeriod not found");
-        }
-    }
-    */
-
 
 
     //Debug

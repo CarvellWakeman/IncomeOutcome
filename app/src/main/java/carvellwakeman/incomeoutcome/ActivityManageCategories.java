@@ -222,8 +222,8 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
 
             //Add or update old category
             CategoryManager.getInstance().AddCategory(editingEntity);
-            DatabaseManager.getInstance(ActivityManageCategories.this).insertSetting(editingEntity, new CallBack() {
-                @Override public void call() { adapter.notifyDataSetChanged(); }
+            DatabaseManager.getInstance(ActivityManageCategories.this).insertSetting(editingEntity, new Runnable() {
+                @Override public void run() { adapter.notifyDataSetChanged(); }
             }, true);
         }
 

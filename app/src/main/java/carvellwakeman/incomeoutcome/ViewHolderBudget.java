@@ -24,6 +24,6 @@ public class ViewHolderBudget extends ViewHolderEntity<Budget> {
 
     @Override
     public void itemLongClick(ActivityManageEntity parent, Budget entity){
-        ((ActivityManageBudgets)mParent).SelectBudget(BudgetManager.getInstance().GetBudgets().get(getAdapterPosition()).GetID(), null);
+        ((ActivityManageBudgets)mParent).SelectBudget(entity.GetID(), null);
     }
 }

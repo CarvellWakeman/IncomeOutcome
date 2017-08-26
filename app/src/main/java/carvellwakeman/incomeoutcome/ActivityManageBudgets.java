@@ -184,9 +184,9 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
                 //Create budget
                 editingEntity = new Budget(newBudget);
                 //Date and Period
-                editingEntity.SetStartDate(new LocalDate());
-                editingEntity.SetEndDate(null);
                 editingEntity.SetPeriod(period);
+                editingEntity.SetStartDate(TimePeriod.calcNearestDateInPeriod(new LocalDate(), period));
+                editingEntity.SetEndDate(null);
                 editingEntity.MoveTimePeriod(0);
                 //Active if it's the first
                 if (BudgetManager.getInstance().GetBudgetCount() == 0){
@@ -197,6 +197,7 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
                 editingEntity.SetName(newBudget);
                 //Period
                 editingEntity.SetPeriod(period);
+                editingEntity.SetStartDate(TimePeriod.calcNearestDateInPeriod(new LocalDate(), period));
             }
 
             //Add or update old budget

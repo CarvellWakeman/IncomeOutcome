@@ -21,7 +21,6 @@ public class Budget implements java.io.Serializable, BaseEntity
     private LocalDate _startTime;
     private LocalDate _endTime;
     private Period _period;
-    private Repeat _periodFrequency;
 
     //Transaction sources
     private ArrayList<Transaction> _transactions;
@@ -49,7 +48,14 @@ public class Budget implements java.io.Serializable, BaseEntity
     public LocalDate GetStartDate(){  return _startTime; }
     public LocalDate GetEndDate(){ return _endTime; }
     public Period GetPeriod() { return _period; }
-    public Repeat GetPeriodFreqency() { return _periodFrequency; }
+    public Repeat GetPeriodFreqency() {
+        //Set frequency
+        if (_period.getYears()>0){ return Repeat.YEARLY; }
+        else if (_period.getMonths()>0) { return Repeat.MONTHLY; }
+        else if (_period.getWeeks()>0) { return Repeat.WEEKLY; }
+        else if (_period.getDays()>0) { return Repeat.DAILY; }
+        else { return Repeat.NEVER; }
+    }
 
 
     //Mutators
@@ -57,23 +63,10 @@ public class Budget implements java.io.Serializable, BaseEntity
     public void SetName(String name) { _name = name; }
     public void SetSelected(boolean selected) { _selected = selected; }
 
-    public void SetStartDate(LocalDate start) { _startTime =  start; }
+    public void SetStartDate(LocalDate start) { _startTime = start; }
     public void SetEndDate(LocalDate end) { _endTime = end; }
 
-    public void SetPeriod(Period period){
-        _period = period;
-
-        //Set frequency
-        if (period.getYears()>0){ _periodFrequency = Repeat.YEARLY; }
-        else if (period.getMonths()>0) { _periodFrequency = Repeat.MONTHLY; }
-        else if (period.getWeeks()>0) { _periodFrequency = Repeat.WEEKLY; }
-        else if (period.getDays()>0) { _periodFrequency = Repeat.DAILY; }
-        else { _periodFrequency = Repeat.NEVER; }
-
-        //Set start and end dates to the precision of the period
-        LocalDate T = TimePeriod.calcNearestDateInPeriod(GetStartDate(), period);
-        SetStartDate(T);
-    }
+    public void SetPeriod(Period period){ _period = period; }
 
     public void MoveTimePeriod(int n) {
         if (GetStartDate() == null) { SetStartDate((new LocalDate()).withDayOfMonth(1)); }
@@ -254,7 +247,7 @@ public class Budget implements java.io.Serializable, BaseEntity
             }
 
             else { //Default
-                return _startTime.toString(context.getString(R.string.date_format_short)) + " - " + _endTime.toString(context.getString(R.string.date_format_short));
+                return _startTime.toString(context.getString(R.string.date_format_short)) + " to " + _endTime.toString(context.getString(R.string.date_format_short));
             }
         }
         else {

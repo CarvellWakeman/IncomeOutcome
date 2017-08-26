@@ -1,6 +1,7 @@
 package carvellwakeman.incomeoutcome;
 
 
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -111,8 +112,8 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                             DatabaseManager.getInstance(ActivityDatabaseImport.this).importDatabase(DatabaseManager.getInstance(ActivityDatabaseImport.this).EXPORT_BACKUP, false);
 
                             //Load settings then transactions
-                            DatabaseManager.getInstance(ActivityDatabaseImport.this).loadSettings(new CallBack() {
-                                @Override public void call() {
+                            DatabaseManager.getInstance(ActivityDatabaseImport.this).loadSettings(new Runnable() {
+                                @Override public void run() {
                                     DatabaseManager.getInstance(ActivityDatabaseImport.this).loadTransactions(null);
                                 }
                             });
@@ -214,7 +215,10 @@ public class ActivityDatabaseImport extends AppCompatActivity {
             new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deleteall)
                     .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        public void onClick(final DialogInterface dialog, int which) {
+                            final DialogFragment loadingDialog = DialogFragmentLoading.newInstance(ActivityDatabaseImport.this, null);
+                            Helper.OpenDialogFragment(ActivityDatabaseImport.this, loadingDialog, true);
+
                             //Delete existing app data
                             BudgetManager.getInstance().RemoveAllBudgets();
                             CategoryManager.getInstance().RemoveAllCategories();
@@ -226,18 +230,22 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                             //Import new database
                             DatabaseManager.getInstance(ActivityDatabaseImport.this).importDatabase(file, true);
 
-                            //Load settings then transactions into app data
-                            DatabaseManager.getInstance(ActivityDatabaseImport.this).loadSettings(new CallBack() {
-                                @Override public void call() {
-                                    DatabaseManager.getInstance(ActivityDatabaseImport.this).loadTransactions(null);
+                            //Load settings then transactions
+                            DatabaseManager.getInstance(ActivityDatabaseImport.this).loadSettings(new Runnable() {
+                                @Override public void run() {
+                                DatabaseManager.getInstance(ActivityDatabaseImport.this).loadTransactions(new Runnable() {
+                                        @Override public void run() {
+                                            //Close up dialogs
+                                            loadingDialog.dismiss();
+                                            dialogFragment.dismiss();
+                                            dialog.dismiss();
+                                            finish();
+                                        }
+                                    });
                                 }
                             });
-
-                            //Close up dialogs
-                            dialogFragment.dismiss();
-                            finish();
-                            dialog.dismiss();
-                        }})
+                        }
+                    })
                     .setNegativeButton(R.string.confirm_no, null)
                     .create().show();
         }
