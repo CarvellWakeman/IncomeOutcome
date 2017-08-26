@@ -14,8 +14,8 @@
 
     <string name="title_overview">Overview</string>
 
-    <string name="title_DBExport">Export Database</string>
-    <string name="title_importdatabase">Import Database</string>
+    <string name="title_exportdata">Export Data</string>
+    <string name="title_importdata">Import Data</string>
     <string name="title_managebudget">Manage Budget</string>
     <string name="title_managebudgets">Manage Budgets</string>
     <string name="title_managepeople">Manage People</string>
@@ -145,7 +145,7 @@
     <string name="tt_exportto">*Export to </string>
     <string name="tt_override">Override</string>
     <string name="tt_override_enddate">Override End Date</string>
-    <string name="tt_suggestaddbudget">Add a budget to begin</string>
+    <string name="tt_suggestaddbudget">Click here to add a budget</string>
     <string name="tt_permission_writestorage1">Access files request</string>
     <string name="tt_permission_writestorage2">In order for this app to export or import data from an external directory, you must grant it permission to access and modify external files.</string>
     <string name="tt_permission_writestorage3">Access files request</string>
@@ -172,7 +172,7 @@
     <string name="info_paidback_format">Paid %1$s</string>
     <string name="info_nobackup">No Backup Found</string>
     <string name="info_restorebackup">Restore Backup</string>
-    <string name="info_backupnotice">Restore data from before your last import</string>
+    <string name="info_backupnotice">Undo Last Import</string>
     <string name="info_description">Description</string>
     <string name="info_nodescription"><i>No Description</i></string>
     <string name="info_source">Source</string>
@@ -181,8 +181,8 @@
     <string name="info_nocategory"><i>No Category</i></string>
     <string name="info_noname"><i>No Source Name</i></string>
     <string name="info_domwarning">* Some months are limited to 28/29/30 days. The last day of the month will be chosen in these cases.</string>
-    <string name="info_delete_person_inuse_warning">* Any transactions split with this person will be replaced with [DELETED]</string>
-    <string name="info_delete_category_inuse_warning">* Any transactions using this category will have it replaced with [DELETED]</string>
+    <string name="info_delete_person_inuse_warning">* If deleted, any transactions split with this person will be replaced with [DELETED]</string>
+    <string name="info_delete_category_inuse_warning">* If deleted, any transactions using this category will have it replaced with [DELETED]</string>
     <string name="info_selected">Selected</string>
     <string name="info_totals">Totals</string>
     <string name="info_transactions">Transactions</string>
@@ -202,7 +202,7 @@
     <string name="balance_even">Balance is even between You and </string>
     <string name="balance_uneven">owe</string>
     <string name="balance_uneven_plural">owes</string>
-    <string name="format_dbversion">Version %1$s</string>
+    <string name="format_dbversion">Data Version %1$s</string>
     <string name="format_zerocurrency">0.00</string>
     <string name="format_one">1</string>
     <string name="format_exportfilename">data_export_%1$s</string>
@@ -219,8 +219,6 @@
     <string name="add_new">Add new&#8230;</string>
 
     <!-- User actions -->
-    <string name="action_edit">Edit</string>
-    <string name="action_delete">Delete</string>
     <string name="action_duplicate">Duplicate</string>
     <string name="action_instance">Only this transaction</string>
     <string name="action_all">All Transactions in series</string>
@@ -228,11 +226,11 @@
 
     <string name="action_ok">OK</string>
     <string name="action_add">ADD</string>
-    <string name="action_deleteitem">DELETE</string>
+    <string name="action_delete">DELETE</string>
     <string name="action_deleteall">DELETE ALL</string>
     <string name="action_deletetransactions">DELETE TRANSACTIONS</string>
     <string name="action_back">BACK</string>
-    <string name="action_edititem">EDIT</string>
+    <string name="action_edit">EDIT</string>
     <string name="action_cancel">CANCEL</string>
     <string name="action_select">SELECT</string>
     <string name="action_continue">CONTINUE</string>

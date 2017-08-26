@@ -7,4 +7,6 @@
     android:background="@color/colorPrimary"
     android:minHeight="?android:attr/actionBarSize"
     android:theme="@style/ToolbarDefault"
+    style="@style/ToolbarDefault"
+    app:layout_collapseMode="pin"
     app:title="@string/app_name"/>

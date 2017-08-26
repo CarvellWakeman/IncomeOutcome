@@ -39,10 +39,10 @@ public class DatabaseManager extends SQLiteOpenHelper
     //File information
     private static final String FILE_NAME = "data.db";
 
-    private File EXPORT_DIRECTORY;
-    private File EXPORT_DIRECTORY_BACKUP;
-    private String BACKUP_FILENAME;
-    public File EXPORT_BACKUP;
+    static File EXPORT_DIRECTORY;
+    static File EXPORT_DIRECTORY_BACKUP;
+    static String BACKUP_FILENAME;
+    static File EXPORT_BACKUP;
     //Other
     //private static final String ITEM_DELIMITER = "\\|";
     private static final String STATEMENT_DELIMITER = "\n";
@@ -927,9 +927,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 
 
     //Import and Export
-    public void exportDatabase(final String name) { runDBTask( new Runnable() { @Override public void run() { _exportDatabase(name); } } ); }
-    private void _exportDatabase(String name) { _exportDatabase(name, EXPORT_DIRECTORY); }
-    private void _exportDatabase(String name, File destination) {
+    public void exportDatabase(String name, File destination) {
 
         try {
             File datadir = Environment.getDataDirectory();
@@ -990,7 +988,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 
                         //Backup currentDB (Secret)
                         if (backup) {
-                            _exportDatabase(BACKUP_FILENAME, EXPORT_DIRECTORY_BACKUP);
+                            exportDatabase(BACKUP_FILENAME, EXPORT_DIRECTORY_BACKUP);
                         }
 
                         //Delete current database

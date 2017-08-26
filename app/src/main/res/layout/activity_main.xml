@@ -59,7 +59,7 @@
 
             <Button
                 android:id="@+id/button_suggest_add_budget"
-                style="@style/RaisedButtonTheme"
+                android:theme="@style/RaisedButtonThemeColored"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -70,69 +70,6 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-    <!-- FAB holder
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:orientation="horizontal"
-        app:layout_anchorGravity="bottom|right|end">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:orientation="vertical">
-
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/FAB_transaction_type_new_expense"
-                android:layout_width="@dimen/fab_size_mini"
-                android:layout_height="@dimen/fab_size_mini"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/fab_margin"
-                android:scaleType="center"
-                android:src="@drawable/ic_database_minus_white_24dp"
-                android:tint="@color/gray"
-                app:backgroundTint="@color/white"
-                app:borderWidth="0dp" />
-
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/FAB_transaction_type_new_income"
-                android:layout_width="@dimen/fab_size_mini"
-                android:layout_height="@dimen/fab_size_mini"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/fab_margin"
-                android:scaleType="center"
-                android:src="@drawable/ic_database_plus_white_24dp"
-                android:tint="@color/gray"
-                app:backgroundTint="@color/white"
-                app:borderWidth="0dp" />
-
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/FAB_transaction_type_new"
-                android:layout_width="@dimen/fab_size_default"
-                android:layout_height="@dimen/fab_size_default"
-                android:scaleType="center"
-                android:src="@drawable/ic_plus_white_24dp"
-                app:borderWidth="0dp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-    -->
 
     <RelativeLayout
         android:layout_width="match_parent"

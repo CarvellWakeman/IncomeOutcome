@@ -92,35 +92,34 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                 }
             });
             toolbar.inflateMenu(R.menu.toolbar_menu_export);
-            toolbar.setTitle(R.string.title_importdatabase);
+            toolbar.setTitle(R.string.title_importdata);
             setSupportActionBar(toolbar);
 
 
             //Setup backup restore button if there is a backup
             if (DatabaseManager.getInstance(ActivityDatabaseImport.this).doesBackupExist()) {
-                button_restorebackup.setEnabled(true);
-                button_restorebackup.setText(R.string.info_backupnotice);
+                button_restorebackup.setVisibility(View.VISIBLE);
             }
 
             //Button listeners
             button_restorebackup.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new AlertDialog.Builder(ActivityDatabaseImport.this).setTitle(R.string.confirm_areyousure_deleteall).setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            DatabaseManager.getInstance(ActivityDatabaseImport.this).importDatabase(DatabaseManager.getInstance(ActivityDatabaseImport.this).EXPORT_BACKUP, false);
+                new AlertDialog.Builder(ActivityDatabaseImport.this).setTitle(R.string.confirm_areyousure_deleteall).setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    DatabaseManager.getInstance(ActivityDatabaseImport.this).importDatabase(DatabaseManager.getInstance(ActivityDatabaseImport.this).EXPORT_BACKUP, false);
 
-                            //Load settings then transactions
-                            DatabaseManager.getInstance(ActivityDatabaseImport.this).loadSettings(new Runnable() {
-                                @Override public void run() {
-                                    DatabaseManager.getInstance(ActivityDatabaseImport.this).loadTransactions(null);
-                                }
-                            });
-
-                            finish();
+                    //Load settings then transactions
+                    DatabaseManager.getInstance(ActivityDatabaseImport.this).loadSettings(new Runnable() {
+                        @Override public void run() {
+                            DatabaseManager.getInstance(ActivityDatabaseImport.this).loadTransactions(null);
                         }
-                    }).setNegativeButton(R.string.confirm_no, null).create().show();
+                    });
+
+                    finish();
+                    }
+                }).setNegativeButton(R.string.confirm_no, null).create().show();
                 }
             });
 
@@ -192,7 +191,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
             case R.id.toolbar_export: //EXPORT button
                 String str = editText_filename.getText().toString();
                 if (!str.equals("")) {
-                    DatabaseManager.getInstance(ActivityDatabaseImport.this).exportDatabase(str);
+                    DatabaseManager.getInstance(ActivityDatabaseImport.this).exportDatabase(str, DatabaseManager.EXPORT_DIRECTORY);
                     ToggleMenu(false);
                     Helper.hideSoftKeyboard(this, editText_filename);
                     existingDatabases = DatabaseManager.getInstance(ActivityDatabaseImport.this).getImportableDatabasesString();
@@ -255,7 +254,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
     }
     public void DBDelete(final String path, final DialogFragmentManageBPC dialogFragment){
         new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle)
-                .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (path != null) {
@@ -330,7 +329,7 @@ public class ActivityDatabaseImport extends AppCompatActivity {
         toolbar.setSubtitle( (exportState ? DatabaseManager.getInstance(ActivityDatabaseImport.this).getExportDirectory() : "") );
 
         //Set title
-        toolbar.setTitle( (exportState ? R.string.title_DBExport : R.string.title_importdatabase) );
+        toolbar.setTitle( (exportState ? R.string.title_exportdata : R.string.title_importdata) );
     }
 
     public void AppBarLayoutExpanded(boolean expanded){

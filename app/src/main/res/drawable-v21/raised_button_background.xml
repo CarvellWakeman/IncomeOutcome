@@ -1,4 +1,4 @@
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="?attr/colorControlHighlight">
+    android:color="@color/colorControlHighlight">
     <item android:drawable="@color/white"/>
 </ripple>

@@ -8,11 +8,11 @@
     <item name="colorPrimaryDark" type="color">#303f9f</item> <!--#1976D2-->
     <!-- colorAccent is used as the default value for colorControlActivated
          which is used to tint widgets -->
-    <item name="colorAccent" type="color">#ff1744</item> <!--#FF4081-->
-    <item name="colorAccentDark" type="color">#d50000</item>
+    <item name="colorAccent" type="color">#FF009688</item> <!--#ff1744-->
+    <item name="colorAccentDark" type="color">#007065</item> <!--#d50000-->
     <!-- You can also set colorControlNormal, colorControlActivated
          colorControlHighlight and colorSwitchThumbNormal. -->
-    <item name="colorControlHighlight" type="color">#fffea50b</item>
+    <item name="colorControlHighlight" type="color">#80eeeeee</item>
     <item name="colorControlActivated" type="color">@color/colorAccent</item>
 
     <item name="red" type="color">#FF0000</item>
@@ -28,8 +28,11 @@
 
     <item name="disabled_white" type="color">#82ffffff</item>
 
+    <item name="transparent" type="color">#00ffffff</item>
     <item name="halfTransparent" type="color">#fdffffff</item>
 
-    <color name="unpressed_color">#ffffff</color>
-    <color name="pressed_color">#2195f2</color>
+    <item name="unpressed_color" type="color">#ffffff</item>
+    <item name="pressed_color" type="color">#2195f2</item>
+
+    <item name="raised_button_blue" type="color">#2196F3</item>
 </resources>

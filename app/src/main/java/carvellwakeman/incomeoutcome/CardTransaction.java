@@ -439,9 +439,11 @@ public class CardTransaction extends Card implements OnChartValueSelectedListene
     @Override public void onNothingSelected(){
         String[] oldLabels = chart.getLegend().getLabels();
         List<String> newLabels = new ArrayList<>();
-        for (String s : oldLabels){
-            newLabels.add(s.replace("[", "").replace("]", ""));
+        if (oldLabels != null) {
+            for (String s : oldLabels) {
+                newLabels.add(s.replace("[", "").replace("]", ""));
+            }
+            chart.getLegend().setComputedLabels(newLabels);
         }
-        chart.getLegend().setComputedLabels(newLabels);
     }
 }

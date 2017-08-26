@@ -169,7 +169,7 @@ public class ActivityManageCategories extends ActivityManageEntity<Category> {
     public void DeleteEntity(final Integer id, final DialogFragmentManageBPC dialogFragment) {
         final Category cr = CategoryManager.getInstance().GetCategory(id);
         if (cr != null) {
-            new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle).setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
+            new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle).setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                 // Update transactions using this category

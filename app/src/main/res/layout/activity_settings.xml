@@ -3,8 +3,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/toolbar_settings" layout="@layout/toolbar" />
+    <include layout="@layout/toolbar" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -18,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="@dimen/cardview_default_margin"></LinearLayout>
+            android:paddingTop="@dimen/cardview_default_margin"/>
 
     </ScrollView>
 </LinearLayout>

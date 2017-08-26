@@ -26,6 +26,9 @@
         <item name="discreteSeekBarStyle">@style/Widget.DiscreteSeekBar</item>
         <item name="actionBarTheme">@style/ToolbarDefault</item>
 
+        <!-- Lower API support -->
+        <item name="android:actionMenuTextColor">@drawable/selector_menu_item</item>
+        <item name="actionMenuTextColor">@drawable/selector_menu_item</item>
     </style>
 
 
@@ -33,11 +36,11 @@
     <style name="ToolbarDefault" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:background">@color/colorPrimary</item>
 
-        <item name="android:titleTextColor">@color/white</item>
         <item name="titleTextColor">@color/white</item>
+        <item name="android:titleTextColor">@color/white</item>
 
-        <item name="android:subtitleTextColor">@color/white</item>
         <item name="subtitleTextColor">@color/white</item>
+        <item name="android:subtitleTextColor">@color/white</item>
 
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/white</item>
@@ -75,16 +78,24 @@
 
 
     <!-- Button Themes -->
-    <style name="RaisedButtonTheme" parent="android:style/Widget.Material.Button">
+    <style name="RaisedButtonTheme" parent="Widget.AppCompat.Button">
         <!--<item name="android:background">@drawable/selectable_item_background</item>-->
         <item name="android:background">@drawable/raised_button_background</item>
         <item name="android:textColor">@drawable/selector_button_enabled</item>
     </style>
+
+    <style name="RaisedButtonThemeColored" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/raised_button_background</item>
+        <item name="colorButtonNormal">@color/turquoise</item>
+        <item name="android:textColor">@drawable/selector_button_enabled_white</item>
+    </style>
+
     <!-- ?android:attr/borderlessButtonStyle -->
     <style name="FlatButtonTheme" parent="@style/Widget.AppCompat.Button.Borderless">
         <!--<item name="android:background">@drawable/selectable_item_background</item>-->
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
         <item name="android:textColor">@drawable/selector_button_enabled</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.DeviceDefault.Small</item>
     </style>
     <style name="FlatButtonThemeBlack" parent="@style/Widget.AppCompat.Button.Borderless">
         <!--<item name="android:background">@drawable/selectable_item_background</item>-->

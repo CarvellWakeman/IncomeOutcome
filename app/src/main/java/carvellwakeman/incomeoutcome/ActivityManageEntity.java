@@ -34,7 +34,7 @@ public abstract class ActivityManageEntity<T extends BaseEntity> extends AppComp
     AdapterManageEntity adapter;
 
     AppBarLayout appBarLayout;
-    android.support.v7.widget.Toolbar toolbar;
+    Toolbar toolbar;
     MenuItem button_save;
 
     FloatingActionButton button_new;
@@ -56,7 +56,7 @@ public abstract class ActivityManageEntity<T extends BaseEntity> extends AppComp
         super.onCreate(savedInstanceState);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        appBarLayout = (AppBarLayout) findViewById(R.id.appbarlayout);
+        appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
 
         button_new = (FloatingActionButton) findViewById(R.id.FAB_AME);
 
@@ -68,13 +68,15 @@ public abstract class ActivityManageEntity<T extends BaseEntity> extends AppComp
         editText_name = TIL.getEditText();
 
 
+        // Configure toolbar
+        toolbar.setTitle(R.string.placeholder_title);
+        toolbar.inflateMenu(R.menu.toolbar_menu_save);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        //toolbar.setTitleTextColor(getResources().getColor(R.color.white)); // Themes are not being applied for this activity for whatever reason...
+        setSupportActionBar(toolbar);
+
         // Close menus
         AppBarLayoutExpanded(false);
-
-        // Configure toolbar
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.inflateMenu(R.menu.toolbar_menu_save);
-        setSupportActionBar(toolbar);
 
         // Edit name field
         TIL.setErrorEnabled(true);

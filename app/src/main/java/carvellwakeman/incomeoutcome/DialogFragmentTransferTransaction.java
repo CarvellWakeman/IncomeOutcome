@@ -76,7 +76,7 @@ public class DialogFragmentTransferTransaction extends DialogFragment
             @Override
             public void onClick(View v) {
                 new AlertDialog.Builder(getActivity()).setTitle(R.string.confirm_areyousure_deletetransactions)
-                        .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 for (Transaction t : _budget.GetAllTransactions()){ DatabaseManager.getInstance(mActivity).remove(t); }

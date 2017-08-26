@@ -61,6 +61,7 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
         });
         spinner_period.setSelection(2); // Months default
 
+        setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.title_managebudgets);
 
         //Set profiles adapter
@@ -124,7 +125,7 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
             }
             else {
                 new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletetransactions)
-                        .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 for (Transaction t : br.GetAllTransactions()){ DatabaseManager.getInstance(ActivityManageBudgets.this).remove(t); }

@@ -28,10 +28,12 @@ public class AdapterDatabaseImports extends RecyclerView.Adapter<AdapterDatabase
     public void getFiles(){
         database_import_files = DatabaseManager.getInstance(parent).getImportableDatabases();
 
-        Collections.sort(database_import_files, new Comparator<File>() {
-            @Override
-            public int compare(File f1, File f2) { return (int)Math.signum( (f2.lastModified()) - (f1.lastModified()) ); }
-        });
+        if (database_import_files != null && database_import_files.size() > 0) {
+            Collections.sort(database_import_files, new Comparator<File>() {
+                @Override
+                public int compare(File f1, File f2) { return (int) Math.signum((f2.lastModified()) - (f1.lastModified())); }
+            });
+        }
     }
 
     //When creating a view holder

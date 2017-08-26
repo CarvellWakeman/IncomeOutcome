@@ -82,7 +82,7 @@ public class ActivityManagePeople extends ActivityManageEntity<Person> {
     public void DeleteEntity(final Integer id, final DialogFragmentManageBPC dialogFragment){
         if (id != 0) {
             new AlertDialog.Builder(this).setTitle(R.string.confirm_areyousure_deletesingle)
-                .setPositiveButton(R.string.action_deleteitem, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     // Update transactions using this category

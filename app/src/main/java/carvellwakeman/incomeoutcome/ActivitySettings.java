@@ -37,7 +37,7 @@ public class ActivitySettings extends AppCompatActivity
         setContentView(R.layout.activity_settings);
 
         //Find Views
-        toolbar = (Toolbar) findViewById(R.id.toolbar_settings);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         //Toolbar setup
         setSupportActionBar(toolbar);
@@ -49,6 +49,7 @@ public class ActivitySettings extends AppCompatActivity
                 onBackPressed();
             }
         });
+
     }
 
     @Override
