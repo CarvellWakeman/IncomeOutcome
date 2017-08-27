@@ -8,10 +8,10 @@ public class Person implements BaseEntity
     static Person Me;
     static Person Deleted;
     static {
-        Me = new Person(App.GetContext().getString(R.string.format_me)); // Helper.getString(R.string.format_me) (Should not be loaded from resources, it is not translated across languages and can remain literal
+        Me = new Person("You"); // Helper.getString(R.string.format_me) (Should not be loaded from resources, it is not translated across languages and can remain literal
         Me.SetID(-1); // -1 for you
 
-        Deleted = new Person(App.GetContext().getString(R.string.placeholder_deleted)); //Helper.getString(R.string.placeholder_deleted)
+        Deleted = new Person("[DELETED]"); //Helper.getString(R.string.placeholder_deleted)
         Deleted.SetID(-2); // -2 for deleted person
     }
 

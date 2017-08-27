@@ -573,7 +573,7 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 	                        	    //Log.d("Edit Text Value",""+et.getText().toString());
 
 	                        	    RelativeLayout.LayoutParams rll = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-	                          	  	rll.addRule(RelativeLayout.BELOW,ll.getId()-1 );
+	                          	  	rll.addRule(RelativeLayout.BELOW,ll.getId() );
 	                          	  	rll.setMargins(0, 20, 0, 0);
 	                        	    addnewlayout.addView(ll, rll);
 
@@ -867,7 +867,7 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 	    //Log.d("Edit Text Value",""+et.getText().toString());
 	    
 	    RelativeLayout.LayoutParams rll = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-  	  	rll.addRule(RelativeLayout.BELOW,ll.getId()-1 );
+  	  	rll.addRule(RelativeLayout.BELOW,ll.getId() );
   	  	rll.setMargins(0, 20, 0, 0);
   	  	lastrid=ll.getId();
 	    lp.addView(ll, rll);
