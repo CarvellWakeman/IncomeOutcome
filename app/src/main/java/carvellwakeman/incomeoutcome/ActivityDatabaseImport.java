@@ -215,9 +215,9 @@ public class ActivityDatabaseImport extends AppCompatActivity {
                     .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(final DialogInterface dialog, int which) {
+
                             final DialogFragment loadingDialog = DialogFragmentLoading.newInstance(ActivityDatabaseImport.this, null);
                             Helper.OpenDialogFragment(ActivityDatabaseImport.this, loadingDialog, true);
-
                             //Delete existing app data
                             BudgetManager.getInstance().RemoveAllBudgets();
                             CategoryManager.getInstance().RemoveAllCategories();
@@ -228,7 +228,6 @@ public class ActivityDatabaseImport extends AppCompatActivity {
 
                             //Import new database
                             DatabaseManager.getInstance(ActivityDatabaseImport.this).importDatabase(file, true);
-
                             //Load settings then transactions
                             DatabaseManager.getInstance(ActivityDatabaseImport.this).loadSettings(new Runnable() {
                                 @Override public void run() {

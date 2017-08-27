@@ -38,7 +38,7 @@ public class App extends Application {
     public static Locale GetLocale() { return GetResources().getConfiguration().locale; }
 
     //Package
-    public static String GetPackageName() { return GetContext().getPackageName(); }
+    //public static String GetPackageName() { return GetContext().getPackageName(); }
 
     //Version
     public static String GetVersion(Context context) {

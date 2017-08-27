@@ -66,6 +66,7 @@ public class ActivitySettings extends AppCompatActivity
         int indexCount = 0;
 
         //Setting Categories
+        final CardSettings debug = new CardSettings(this, inflater, insertPoint, indexCount, R.layout.row_layout_setting_card, "Debug");
         CardSettings budgetsPeopleCategories = new CardSettings(this, inflater, insertPoint, indexCount++, R.layout.row_layout_setting_card, getString(R.string.title_settings_budgetspeoplecategories));
         //Manage budgets
         budgetsPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_clipboard_account_white_24dp, getString(R.string.title_managebudgets), null,
@@ -112,228 +113,157 @@ public class ActivitySettings extends AppCompatActivity
         );
         changelog.SetLongClickListener(new View.OnLongClickListener(){
             @Override public boolean onLongClick(View v) {
-                if (!tempDebugMode && !Helper.isDebugMode(ActivitySettings.this)) {
-                    tempDebugMode = true;
-                    recreate();
-                }
+                debug.getBase().setVisibility(View.VISIBLE);
+                Helper.PrintUser(ActivitySettings.this, "Debug settings enabled!");
                 return true;
             }
         });
         about.AddSetting(changelog);
 
 
-
         //Debug card
-        if (Helper.isDebugMode(this) || tempDebugMode) {
-            CardSettings debug = new CardSettings(this, inflater, insertPoint, indexCount, R.layout.row_layout_setting_card, "Debug");
-            //View Database
-            debug.AddSetting(new Setting(inflater, R.drawable.ic_database_white_24dp, getString(R.string.title_settings_viewdatabase), getString(R.string.subtitle_settings_viewdatabase), new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent dbmanager = new Intent(ActivitySettings.this, AndroidDatabaseManager.class);
-                    startActivity(dbmanager);
-                }
-            }));
-            //MyTab Data Import
-            debug.AddSetting(new Setting(inflater, R.drawable.ic_clear_white_24dp, getString(R.string.title_settings_importmytab), getString(R.string.subtitle_settings_importmytab), new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    MyTabImportClick();
-                }
-            }));
-            //Insert 1000 dummy data points
-            debug.AddSetting(new Setting(inflater, R.drawable.ic_plus_white_24dp, getString(R.string.title_settings_fakedata), "", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                //Add new budget
-                Budget br = BudgetManager.getInstance().GetBudget("DummyData");
-                if (br == null) {
-                    br = new Budget("DummyData");
-                    BudgetManager.getInstance().AddBudget(br);
-                    DatabaseManager.getInstance(ActivitySettings.this).insertSetting(br, false);
-                }
+        if (Helper.isDebugMode(this)){ debug.getBase().setVisibility(View.VISIBLE); } else { debug.getBase().setVisibility(View.GONE); }
 
-                for (int i = 0; i < 100; i++){
-                    Random rand = new Random();
+        //View Database
+        debug.AddSetting(new Setting(inflater, R.drawable.ic_database_white_24dp, getString(R.string.title_settings_viewdatabase), getString(R.string.subtitle_settings_viewdatabase), new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent dbmanager = new Intent(ActivitySettings.this, AndroidDatabaseManager.class);
+                startActivity(dbmanager);
+            }
+        }));
+        //MyTab Data Import
+        debug.AddSetting(new Setting(inflater, R.drawable.ic_clear_white_24dp, getString(R.string.title_settings_importmytab), getString(R.string.subtitle_settings_importmytab), new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MyTabImportClick();
+            }
+        }));
+        //Insert 1000 dummy data points
+        debug.AddSetting(new Setting(inflater, R.drawable.ic_plus_white_24dp, getString(R.string.title_settings_fakedata), "", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            //Add new budget
+            Budget br = BudgetManager.getInstance().GetBudget("DummyData");
+            if (br == null) {
+                br = new Budget("DummyData");
+                BudgetManager.getInstance().AddBudget(br);
+                DatabaseManager.getInstance(ActivitySettings.this).insertSetting(br, false);
+            }
 
-                    Transaction.TRANSACTION_TYPE[] types = Transaction. TRANSACTION_TYPE.values();
-                    Transaction.TRANSACTION_TYPE TranType = types[rand.nextInt(2)];
-                    ArrayList<Category> categories = CategoryManager.getInstance().GetCategories();
-                    LocalDate beginning = new LocalDate(2000,1,1);
+            for (int i = 0; i < 100; i++){
+                Random rand = new Random();
 
-                    Transaction tr = new Transaction(TranType);
+                Transaction.TRANSACTION_TYPE[] types = Transaction. TRANSACTION_TYPE.values();
+                Transaction.TRANSACTION_TYPE TranType = types[rand.nextInt(2)];
+                ArrayList<Category> categories = CategoryManager.getInstance().GetCategories();
+                LocalDate beginning = new LocalDate(2000,1,1);
 
-                    tr.SetSource("Source" + String.valueOf(Math.abs(rand.nextInt(2000))));
-                    if (categories!=null && categories.size()>0) { tr.SetCategory(categories.get(rand.nextInt(categories.size()-1)).GetID()); }
-                    tr.SetDescription("Desc" + String.valueOf(Math.abs(rand.nextInt(2000))));
-                    tr.SetValue( 1.0d * Math.abs(rand.nextInt(1000)) );
-                    tr.SetTimePeriod(new TimePeriod(beginning.plusDays(Math.abs(rand.nextInt(12000)))));
+                Transaction tr = new Transaction(TranType);
 
-                    br.AddTransaction(tr);
-                    DatabaseManager.getInstance(ActivitySettings.this).insert(tr, false);
-                }
+                tr.SetSource("Source" + String.valueOf(Math.abs(rand.nextInt(2000))));
+                if (categories!=null && categories.size()>0) { tr.SetCategory(categories.get(rand.nextInt(categories.size()-1)).GetID()); }
+                tr.SetDescription("Desc" + String.valueOf(Math.abs(rand.nextInt(2000))));
+                tr.SetValue( 1.0d * Math.abs(rand.nextInt(1000)) );
+                tr.SetTimePeriod(new TimePeriod(beginning.plusDays(Math.abs(rand.nextInt(12000)))));
 
-                //ProfileManager.getInstance().SelectProfile(ActivitySettings.this, pr);
-                Helper.PrintUser(ActivitySettings.this, "Adding 100 transactions");
-                }
-            }));
+                br.AddTransaction(tr);
+                DatabaseManager.getInstance(ActivitySettings.this).insert(tr, false);
+            }
 
-            debug.AddSetting(new Setting(inflater, R.drawable.ic_exclamation_white_24dp, "Structure rewrite testing", "", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //Initialize managers
-                    BudgetManager bm = BudgetManager.getInstance();
-                    DatabaseManager dm = DatabaseManager.getInstance(ActivitySettings.this);
-                    PersonManager pm = PersonManager.getInstance();
-                    CategoryManager cm = CategoryManager.getInstance();
+            //ProfileManager.getInstance().SelectProfile(ActivitySettings.this, pr);
+            Helper.PrintUser(ActivitySettings.this, "Adding 100 transactions");
+            }
+        }));
 
-                    //Remove old test budget
-                    bm.RemoveBudget(bm.GetBudget("StructureBudget"));
+        debug.AddSetting(new Setting(inflater, R.drawable.ic_exclamation_white_24dp, "Structure rewrite testing", "", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Initialize managers
+                BudgetManager bm = BudgetManager.getInstance();
+                DatabaseManager dm = DatabaseManager.getInstance(ActivitySettings.this);
+                PersonManager pm = PersonManager.getInstance();
+                CategoryManager cm = CategoryManager.getInstance();
 
-                    //Create new budget
-                    Budget b1 = new Budget("StructureBudget");
-                    b1.SetStartDate(new LocalDate(2017,1,1));
-                    b1.SetEndDate(new LocalDate(2017,1,31));
-                    b1.SetSelected(true);
+                //Remove old test budget
+                bm.RemoveBudget(bm.GetBudget("StructureBudget"));
 
-                    bm.AddBudget(b1);
+                //Create new budget
+                Budget b1 = new Budget("StructureBudget");
+                b1.SetStartDate(new LocalDate(2017,1,1));
+                b1.SetEndDate(new LocalDate(2017,1,31));
+                b1.SetSelected(true);
 
-
-                    //Create people
-                    Person pA = pm.AddPerson("A");
-                    Person pB = pm.AddPerson("B");
+                bm.AddBudget(b1);
 
 
-                    //Create category
-                    Category c1 = cm.AddCategory("TestCategory", Color.BLUE);
-                    Category c2 = cm.AddCategory("OtherCategory", Color.RED);
-
-                    //Create timeperiods
-                    TimePeriod tp1 = new TimePeriod();
-                    tp1.SetDate(new LocalDate(2017,1,1));
-                    tp1.SetRepeatFrequency(Repeat.WEEKLY);
-                    tp1.SetRepeatEveryN(1);
-                    tp1.SetRepeatDayOfWeekFromBinary("1000000");
-                    tp1.SetRepeatUntil(RepeatUntil.TIMES);
-                    tp1.SetRepeatANumberOfTimes(4);
-                    tp1.SetDate(tp1.GetFirstOccurrence());
-
-                    TimePeriod tp2 = new TimePeriod();
-                    tp2.SetDate(new LocalDate(2017,1,3));
+                //Create people
+                Person pA = pm.AddPerson("A");
+                Person pB = pm.AddPerson("B");
 
 
-                    //Create new transactions
-                    Transaction t1 = new Transaction();
-                    t1.SetCategory(c1.GetID());
-                    t1.SetSource("The Store");
-                    t1.SetDescription("We bought some things");
+                //Create category
+                Category c1 = cm.AddCategory("TestCategory", Color.BLUE);
+                Category c2 = cm.AddCategory("OtherCategory", Color.RED);
 
-                    t1.SetValue(10.0d);
-                    t1.SetPaidBy(pB.GetID());
-                    t1.SetSplit(-1, 5.0d);
-                    t1.SetSplit(pA.GetID(), 2.5d);
-                    t1.SetSplit(pB.GetID(), 2.5d);
-                    //t1.SetPaidBack(LocalDate.now());
-                    t1.SetTimePeriod(tp1);
+                //Create timeperiods
+                TimePeriod tp1 = new TimePeriod();
+                tp1.SetDate(new LocalDate(2017,1,1));
+                tp1.SetRepeatFrequency(Repeat.WEEKLY);
+                tp1.SetRepeatEveryN(1);
+                tp1.SetRepeatDayOfWeekFromBinary("1000000");
+                tp1.SetRepeatUntil(RepeatUntil.TIMES);
+                tp1.SetRepeatANumberOfTimes(4);
+                tp1.SetDate(tp1.GetFirstOccurrence());
 
-                    Transaction t2 = new Transaction();
-                    t2.SetValue(20.0d);
-                    t2.SetCategory(c2.GetID());
-                    t2.SetSource("The Other Store");
-                    t2.SetDescription("Herp Derp");
-                    t2.SetTimePeriod(tp2);
-
-                    b1.AddTransaction(t1);
-                    b1.AddTransaction(t2);
+                TimePeriod tp2 = new TimePeriod();
+                tp2.SetDate(new LocalDate(2017,1,3));
 
 
+                //Create new transactions
+                Transaction t1 = new Transaction();
+                t1.SetCategory(c1.GetID());
+                t1.SetSource("The Store");
+                t1.SetDescription("We bought some things");
 
-                    //Database entries
-                    dm.insertSetting(pA,true);
-                    dm.insertSetting(pB,true);
-                    dm.insertSetting(c1,true);
-                    dm.insertSetting(c2,true);
-                    dm.insertSetting(b1, true);
-                    dm.insert(t1,true);
-                    dm.insert(t2,true);
-                    //dm.insert(t1.GetID(), tp1, true);
-                    //dm.insert(t2.GetID(), tp2, true);
+                t1.SetValue(10.0d);
+                t1.SetPaidBy(pB.GetID());
+                t1.SetSplit(-1, 5.0d);
+                t1.SetSplit(pA.GetID(), 2.5d);
+                t1.SetSplit(pB.GetID(), 2.5d);
+                //t1.SetPaidBack(LocalDate.now());
+                t1.SetTimePeriod(tp1);
+
+                Transaction t2 = new Transaction();
+                t2.SetValue(20.0d);
+                t2.SetCategory(c2.GetID());
+                t2.SetSource("The Other Store");
+                t2.SetDescription("Herp Derp");
+                t2.SetTimePeriod(tp2);
+
+                b1.AddTransaction(t1);
+                b1.AddTransaction(t2);
 
 
 
-                    Helper.Print(ActivitySettings.this, "Added test data");
+                //Database entries
+                dm.insertSetting(pA,true);
+                dm.insertSetting(pB,true);
+                dm.insertSetting(c1,true);
+                dm.insertSetting(c2,true);
+                dm.insertSetting(b1, true);
+                dm.insert(t1,true);
+                dm.insert(t2,true);
+                //dm.insert(t1.GetID(), tp1, true);
+                //dm.insert(t2.GetID(), tp2, true);
 
+                Helper.Print(ActivitySettings.this, "Added test data");
+            }
+        }));
 
-                    /*
-                    ArrayList<Budget> bs = bm.GetBudgets();
-                    for (int i = 0; i < bs.size(); i++){
-                        Helper.PrintLong(ActivitySettings.this, "Budget:" +
-                                "\nName:" + bs.get(i).GetName() +
-                                "\nStartDate:" + bs.get(i).GetStartDate().toString(Helper.getString(R.string.date_format)) +
-                                "\nEndDate:" + bs.get(i).GetEndDate().toString(Helper.getString(R.string.date_format)) +
-                                "\nPeriod:" + bs.get(i).GetPeriod().toString()
-                        );
+        CardView c = (CardView) debug.getBase().findViewById(R.id.row_layout_settingscard);
+        if (c != null) { c.setBackgroundColor(Color.YELLOW); }
 
-                        ArrayList<Transaction> ts = bs.get(i).GetTransactions(bs.get(i).GetStartDate(), bs.get(i).GetEndDate(), Transaction.TRANSACTION_TYPE.Expense);
-                        for (int ii = 0; ii < ts.size(); ii++){
-                            Helper.PrintLong(ActivitySettings.this, "\nValue:" + String.valueOf(ts.get(ii).GetValue()) +
-                                    "\nSource:" + ts.get(ii).GetSource() +
-                                    "\nDescription:" + ts.get(ii).GetDescription() +
-                                    "\nCategory:" + ts.get(ii).GetCategory() +
-                                    "\nOccured:" + ts.get(ii).GetTimePeriod().GetDate().toString(Helper.getString(R.string.date_format))
-                            );
-                        }
-                    }
-                    */
-                }
-            }));
-
-            /*
-            //Completely unrelated thing
-            debug.AddSetting(new Setting(inflater, R.drawable.ic_calendar_white_24dp, "Replace DateCreated with DateModified", "", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //try {
-                        if (ProfileManager.isStoragePermissionGranted(ActivitySettings.this)){
-                            File pic = new File(Environment.getExternalStorageDirectory() + "/DCIM/Restored/", "IMG_20161011_125619.jpg");
-
-                            String[] splitTitle = pic.getName().split("_");
-                            String IMG = splitTitle[0];
-                            String day = splitTitle[1];
-                            String time = splitTitle[2].replace(".jpg", "").replace(".png","").replace(".mp4","");
-
-                            DateTimeFormatter dayFormatter = DateTimeFormat.forPattern("yyyyMMdd");
-                            DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("HHmmss");
-                            if (IMG.equals("IMG")){
-                                if (!day.equals("")){
-                                    DateTime day2 = dayFormatter.parseDateTime(day);
-                                    if (!time.equals("")){
-                                        DateTime time2 = timeFormatter.parseDateTime(time);
-
-                                        LocalDateTime origTime = new LocalDateTime(day2.getYear(), day2.getMonthOfYear(), day2.getDayOfMonth(), time2.getHourOfDay(), time2.getMinuteOfHour(), time2.getSecondOfMinute());
-
-                                        ProfileManager.Print(ActivitySettings.this, "Setting LastModified to:" + origTime.toString("MMMM dd, yyyy: HH:mm:ss"));
-
-
-                                        //boolean result = pic.setLastModified(origTime.toDateTime().getMillis());
-                                        //ProfileManager.Print(ActivitySettings.this, "Result:" + result);
-                                    }
-                                }
-                            }
-                            else {
-                                ProfileManager.Print(ActivitySettings.this, "File is not of type IMG_");
-                            }
-                        }
-
-                    //} catch (Exception e) {
-                    //    ProfileManager.Print(ActivitySettings.this, e.getMessage());
-                    //}
-                }
-            }));
-            */
-            CardView c = (CardView) debug.getBase().findViewById(R.id.row_layout_settingscard);
-            if (c != null) { c.setBackgroundColor(Color.YELLOW); }
-        }
     }
 
     @Override

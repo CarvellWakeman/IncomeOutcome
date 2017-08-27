@@ -1,5 +1,6 @@
 Ver 1.1.1 ALPHA 2017-08-26
 *[BUGFIX] Fixed android 8.0 crash
+*[BUGFIX] Fixed data import failure
 
 Ver 1.1.0 ALPHA 2017-08-26
 *[BUGFIX] Database manager correctly loads transactions that are not split

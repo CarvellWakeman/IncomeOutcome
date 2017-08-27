@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.os.Environment;
+import android.widget.Toast;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
@@ -18,6 +19,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -475,11 +477,11 @@ public class DatabaseManager extends SQLiteOpenHelper
         return instance;
     }
     //public void initialize() {
-        //Helper.Log(App.GetContext(), "DBM", "initialize called");
+        //Helper.Log(mContext, "DBM", "initialize called");
 
         //Triggers onUpgrade (if necessary)
         //database = getWritableDatabase();
-        //Helper.Log(App.GetContext(), "DBM", "initialize called ver." + String.valueOf(database.getVersion()));
+        //Helper.Log(mContext, "DBM", "initialize called ver." + String.valueOf(database.getVersion()));
 
         //tryCreateDatabase(database);
     //}
@@ -487,24 +489,24 @@ public class DatabaseManager extends SQLiteOpenHelper
     //Database constructor and updating
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //Helper.Log(App.GetContext(), "DBM", "OnCreate called ver." + String.valueOf(db.getVersion()));
+        //Helper.Log(mContext, "DBM", "OnCreate called ver." + String.valueOf(db.getVersion()));
         tryCreateDatabase(db);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //Helper.Log(App.GetContext(), "DBM", "OnUpgrade called (" + oldVersion + "->" + newVersion + ")");
-        //Helper.Log(App.GetContext(), "DBM", "onUpgrade() ver." + String.valueOf(db.getVersion()));
-        //Helper.Log(App.GetContext(), "DBM", "onUpgrade() oldVersion " + String.valueOf(oldVersion));
-        //Helper.Log(App.GetContext(), "DBM", "onUpgrade() newVersion " + String.valueOf(newVersion));
+        //Helper.Log(mContext, "DBM", "OnUpgrade called (" + oldVersion + "->" + newVersion + ")");
+        //Helper.Log(mContext, "DBM", "onUpgrade() ver." + String.valueOf(db.getVersion()));
+        //Helper.Log(mContext, "DBM", "onUpgrade() oldVersion " + String.valueOf(oldVersion));
+        //Helper.Log(mContext, "DBM", "onUpgrade() newVersion " + String.valueOf(newVersion));
 
         Upgrade(db, oldVersion, newVersion);
     }
     public void Upgrade(SQLiteDatabase db, int oldVersion, int newVersion){
-        //elper.Log(App.GetContext(), "DBM", "Upgrading from " + oldVersion + " to " + newVersion);
-        //Helper.Log(App.GetContext(), "DBM", "Upgrade() ver." + String.valueOf(db.getVersion()));
+        //elper.Log(mContext, "DBM", "Upgrading from " + oldVersion + " to " + newVersion);
+        //Helper.Log(mContext, "DBM", "Upgrade() ver." + String.valueOf(db.getVersion()));
 
-        //Helper.PrintLong(App.GetContext(), UPGRADE_6_7);
-        //Helper.PrintLong(App.GetContext(), "(SELECT "  + COLUMN_uniqueID + " FROM " + TABLE_SETTINGS_CATEGORIES + " WHERE " + "temp_transactions." + COLUMN_category + " = " + TABLE_SETTINGS_CATEGORIES + "." + COLUMN_category + "),");
+        //Helper.PrintLong(mContext, UPGRADE_6_7);
+        //Helper.PrintLong(mContext, "(SELECT "  + COLUMN_uniqueID + " FROM " + TABLE_SETTINGS_CATEGORIES + " WHERE " + "temp_transactions." + COLUMN_category + " = " + TABLE_SETTINGS_CATEGORIES + "." + COLUMN_category + "),");
 
         try {
             ContentValues cv = new ContentValues();
@@ -518,13 +520,13 @@ public class DatabaseManager extends SQLiteOpenHelper
                     //ProfileManager.Print("Upgrade from Ver.2 to Ver.3");
                 case 3: //To version 4
                     SQLExecuteMultiple(db, UPGRADE_3_4);
-                    Helper.Print(App.GetContext(), "Upgrade from Ver.3 to Ver.4");
+                    Helper.Print(mContext, "Upgrade from Ver.3 to Ver.4");
                 case 4: //To version 5
                     SQLExecuteMultiple(db, UPGRADE_4_5);
-                    Helper.Print(App.GetContext(), "Upgrade from Ver.4 to Ver.5");
+                    Helper.Print(mContext, "Upgrade from Ver.4 to Ver.5");
                 case 5: //To version 6
                     SQLExecuteMultiple(db, UPGRADE_5_6);
-                    Helper.Print(App.GetContext(), "Upgrade from Ver.5 to Ver.6");
+                    Helper.Print(mContext, "Upgrade from Ver.5 to Ver.6");
                 case 6: //To version 7
                     SQLExecuteMultiple(db, UPGRADE_6_7);
 
@@ -560,7 +562,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                             else {
                                 contentValues_tr.put(COLUMN_paidBy, -1);
                             }
-                            //Helper.Print(App.GetContext(), "paidBy:" + paidBy + "\nSplit:" + split + "\nPerson:" + name + "(" + String.valueOf(UID) + ")");
+                            //Helper.Print(mContext, "paidBy:" + paidBy + "\nSplit:" + split + "\nPerson:" + name + "(" + String.valueOf(UID) + ")");
 
                             //Update split with UID
                             contentValues_tr.put(COLUMN_split, split.replaceAll(name, String.valueOf(UID)).replaceAll(mContext.getString(R.string.format_me), String.valueOf(-1)));
@@ -568,7 +570,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                             //Insert/update row and return result
                             //long result2 = 0;
                             long result2 = db.update(TABLE_TRANSACTIONS, contentValues_tr, COLUMN_uniqueID + "=?", new String[]{String.valueOf(Transaction_ID)});
-                            //Helper.Print(App.GetContext(), "Result2:" + String.valueOf(result2));
+                            //Helper.Print(mContext, "Result2:" + String.valueOf(result2));
                         }
                         c1.close();
 
@@ -576,10 +578,10 @@ public class DatabaseManager extends SQLiteOpenHelper
                     }
                     c.close();
 
-                    Helper.Print(App.GetContext(), "Upgrade from Ver.6 to Ver.7");
+                    Helper.Print(mContext, "Upgrade from Ver.6 to Ver.7");
                 case 7: //To version 8
                     SQLExecuteMultiple(db, UPGRADE_7_8);
-                    Helper.Print(App.GetContext(), "Upgrade from Ver.7 to Ver.8");
+                    Helper.Print(mContext, "Upgrade from Ver.7 to Ver.8");
                 case 8: //To version 9
             }
 
@@ -622,7 +624,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 
         for(String statement : statements){
             try { db.execSQL(statement); }
-            catch (Exception ex) { Helper.PrintLong(App.GetContext(), ex.getMessage()); break; }
+            catch (Exception ex) { Helper.PrintLong(mContext, ex.getMessage()); break; }
         }
     }
 
@@ -648,7 +650,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 
             @Override protected void onPostExecute(String result) {
                 //Failure on doInBackground
-                if (result != null) { Helper.PrintUserLong(App.GetContext(), "Database Operation Failure: " + result); }
+                if (result != null) { Helper.PrintUserLong(mContext, "Database Operation Failure: " + result); }
 
                 try {
                     if (PostAction != null) { PostAction.run(); }
@@ -836,7 +838,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                 //else { Log.e("DATABASE", "Profiles Table Exists"); }
                 //ProfileManager.Print("Settings tables created");
             } catch (SQLException ex){
-                //Helper.Print(App.GetContext(), "DBM", "Error creating Settings tables");
+                //Helper.Print(mContext, "DBM", "Error creating Settings tables");
                 ex.printStackTrace();
             }
             //Try create transactions table
@@ -893,7 +895,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 
 
         //Recreate
-        //Helper.Log(App.GetContext(), "DBM", "Try create database");
+        //Helper.Log(mContext, "DBM", "Try create database");
         tryCreateDatabase(database);
     }
 
@@ -943,7 +945,7 @@ public class DatabaseManager extends SQLiteOpenHelper
                 if (destination.canWrite()) {
 
                     //Database paths
-                    String currentDBPath = "/data/" + App.GetPackageName() + "/databases/" + filename + ".db";
+                    String currentDBPath = "/data/" + mContext.getPackageName() + "/databases/" + filename + ".db";
                     //String backupFilename = filename + "_export_" + (new LocalDate()).toString(ProfileManager.simpleDateFormatSaving) + ".db";
                     String backupFilename = name.replace(".db", "").concat(".db");
                     File currentDB = new File(datadir, currentDBPath);
@@ -964,8 +966,6 @@ public class DatabaseManager extends SQLiteOpenHelper
                 //ProfileManager.Print(activityContext, "Storage permission not granted, cannot export database");
             }
 
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -979,11 +979,13 @@ public class DatabaseManager extends SQLiteOpenHelper
 
         try {
             //Database paths
-            String currentDBPath = "/data/" + App.GetPackageName() + "/databases/";
+            String currentDBPath = "/data/" + mContext.getPackageName() + "/databases/";
             File currentDB = new File(Environment.getDataDirectory(), currentDBPath + FILE_NAME);
 
             if (Helper.isStoragePermissionGranted(mContext)){
+
                 if (currentDB.canWrite() || importFile.canRead()) {
+
                     if (currentDB.exists()) {
 
                         //Backup currentDB (Secret)
@@ -992,22 +994,21 @@ public class DatabaseManager extends SQLiteOpenHelper
                         }
 
                         //Delete current database
-                        //Helper.Log(App.GetContext(), "DBM", "Delete and recreate all tables");
+                        //Helper.Log(mContext, "DBM", "Delete and recreate all tables");
                         //_dropAndRecreateAllTables(getWritableDatabase());
                         _deleteAllTableContent();
                         //Create new empty database
-                        //Helper.Log(App.GetContext(), "DBM", "Try create database");
+                        //Helper.Log(mContext, "DBM", "Try create database");
                         tryCreateDatabase(getWritableDatabase());
 
                         //Transfer database from import to local directory (ASyncTask?)
                         FileUtils.copyFile(importFile, currentDB);
 
-
                         //Force upgrade even though DATABASE_VERSION has not changed because the database we are importing may be older than DATABASE_VERSION (WHY DOES THIS WORK?)
                         //Call getWritableDatabase() to trigger onUpgrade if it is necessary
                         //getWritableDatabase(); // Do it forcefully now.
                         //Force call onUpgrade
-                        //Helper.Log(App.GetContext(), "DBM", "Force upgrade");
+                        //Helper.Log(mContext, "DBM", "Force upgrade");
                         final int oldVersion = SQLiteDatabase.openDatabase(importFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE).getVersion();
                         Upgrade(getWritableDatabase(), oldVersion, getVersion());
                         //getWritableDatabase().close();
@@ -1024,12 +1025,13 @@ public class DatabaseManager extends SQLiteOpenHelper
                 }
             }
             else { //No UI thread work in a background thread!
-                //Helper.PrintUser(App.GetContext(), "Storage permission not granted, cannot import database");
+                //Helper.PrintUser(mContext, "Storage permission not granted, cannot import database");
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
+
             //ProfileManager.Print(activityContext, "Error importing database");
-            //Helper.PrintLong(App.GetContext(), e.getMessage());
+            //Helper.PrintLong(mContext, e.getMessage());
         }
 
     }
@@ -1157,7 +1159,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             contentValues_tr.put(COLUMN_when, transaction.GetTimePeriod().GetID()); //if (!tryupdate) { }
 
             contentValues_tr.put(COLUMN_paidBy, transaction.GetPaidBy());
-            //Helper.Log(App.GetContext(), "DB", "SplitStringSave:'" + transaction.GetSplitArrayString() + "'");
+            //Helper.Log(mContext, "DB", "SplitStringSave:'" + transaction.GetSplitArrayString() + "'");
 
             contentValues_tr.put(COLUMN_split, transaction.GetSplitArrayString());
             contentValues_tr.put(COLUMN_paidBack, (transaction.GetPaidBack() != null ? transaction.GetPaidBack().toString(mContext.getString(R.string.date_format_saving)) : "") );
@@ -1341,7 +1343,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 
         try {
             Cursor c = database.query(TABLE_TRANSACTIONS, null, null, null, null, null, null);
-            //Helper.Log(App.GetContext(), "DB", "TotalCount:" + String.valueOf(c.getCount()));
+            //Helper.Log(mContext, "DB", "TotalCount:" + String.valueOf(c.getCount()));
 
             while (c.moveToNext()) {
                 //Find budget
@@ -1376,38 +1378,38 @@ public class DatabaseManager extends SQLiteOpenHelper
 
                     //COLUMN_IPaid + BOOLEAN_TYPE
                     Integer paidBy = c.getInt(c.getColumnIndex(COLUMN_paidBy));
-                    //Helper.Print(App.GetContext(), "PaidBy:" + String.valueOf(paidBy));
+                    //Helper.Print(mContext, "PaidBy:" + String.valueOf(paidBy));
                     tr.SetPaidBy(paidBy);
                     //COLUMN_splitWith + TEXT_TYPE + "," + //COLUMN_splitValue + DOUBLE_TYPE
                     String splitString = c.getString(c.getColumnIndex(COLUMN_split));
-                    //Helper.Log(App.GetContext(), "DB", "Transaction: " + tr.GetSource() + " SplitString:'" + splitString + "'");
+                    //Helper.Log(mContext, "DB", "Transaction: " + tr.GetSource() + " SplitString:'" + splitString + "'");
                     if (!splitString.equals("")) { tr.SetSplitFromArrayString(splitString); }
                     //COLUMN_paidBack + TEXT_TYPE + "," +
                     tr.SetPaidBack(Helper.ConvertDateFromString(mContext, c.getString(c.getColumnIndex(COLUMN_paidBack))));
                     //COLUMN_when + INT_TYPE //+ "," +
                     TimePeriod tp = _queryTimeperiod(database, c.getInt(c.getColumnIndex(COLUMN_when)));
-                    //if (tp == null) { Helper.Log(App.GetContext(), "DB", "NULL TP for tran " + tr.GetID()); } else { Helper.Log(App.GetContext(), "DB", tp.GetDateFormatted()); }
+                    //if (tp == null) { Helper.Log(mContext, "DB", "NULL TP for tran " + tr.GetID()); } else { Helper.Log(mContext, "DB", tp.GetDateFormatted()); }
                     tr.SetTimePeriod(tp);
                     //COLUMN_children
                     //tr.AddChildrenFromFormattedString(c.getString(c.getColumnIndex(COLUMN_children)));
 
 
-                    //Helper.Print(App.GetContext(), "Transaction: " + tr.GetSource());
+                    //Helper.Print(mContext, "Transaction: " + tr.GetSource());
                     //Add loaded transaction to profile
                     br.AddTransaction(tr);
 
-                    //Helper.Print(App.GetContext(), "Count2:" + String.valueOf(br.GetTransactionCount()));
+                    //Helper.Print(mContext, "Count2:" + String.valueOf(br.GetTransactionCount()));
                 }
                 else { //NO UI WORK on worker thread
-                    //Helper.Log(App.GetContext(), "DB",  "Transaction could not be loaded, budget not found.");
+                    //Helper.Log(mContext, "DB",  "Transaction could not be loaded, budget not found.");
                 }
 
             }
-            //Helper.Print(App.GetContext(), "Count:" + String.valueOf(BudgetManager.getInstance().GetSelectedBudget().GetTransactionCount()));
+            //Helper.Print(mContext, "Count:" + String.valueOf(BudgetManager.getInstance().GetSelectedBudget().GetTransactionCount()));
 
             c.close();
         } catch (Exception ex){
-            //Helper.Print(App.GetContext(), "Error:" + ex.getMessage());
+            //Helper.Print(mContext, "Error:" + ex.getMessage());
         }
 
     }
