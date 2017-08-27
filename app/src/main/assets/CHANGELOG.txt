@@ -1,3 +1,25 @@
+Ver 1.1.0 ALPHA 2017-08-26
+*[BUGFIX] Database manager correctly loads transactions that are not split
+*[BUGFIX] Fixed crash when accessing data before database has completed loading or importing
+#[BUGFIX] PaidBy radio button in new transaction not being checked initially (and not being saved when 'you' paid)
+#[BUGFIX] Database not saving timeperiod UID
+
+*[CHANGE] Major rewrite of data structures and database, UI updates to every page
+*[CHANGE] Active filters are dislayed differently
+*[CHANGE] Refactored budget, category, and people management
+*[CHANGE] Overview page transaction cards updated
+#[CHANGE] Profiles are now refered to as budgets
+#[CHANGE] CardTransaction clicking a slice of the pie chart highlights in the legend
+#[CHANGE] When adding a transaction, the keyboard hides when any element that does not use it is clicked
+#[CHANGE] DatabaseHelper contains method runDBTask which runs DB tasks Asynchronously, don't expose GenericAsyncTask
+#[CHANGE] Show All moved to overflow menu
+
+*[ADD] Transactions can now be split between many people
+*[ADD] Added categories Parking, membership
+*[ADD] Overview activity how has a button to add transactions
+#[ADD] Updated app throughout so that '-1' represents 'you', instead of zero in some places, and -1 in others
+
+
 Ver 1.0.5 ALPHA 2017-01-17
 #[BUGFIX] Filters disappear when transaction details activity is closed
 *[BUGFIX] Transfering transactions to another profile while deleting only transfers half of the transactions

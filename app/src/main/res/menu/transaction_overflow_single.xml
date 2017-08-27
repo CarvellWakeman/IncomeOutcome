@@ -4,11 +4,11 @@
 
     <!-- Edit all is the same as edit instance on a non repeating transaction -->
     <item android:id="@+id/transaction_edit_all"
-        android:title="@string/action_edit"
+        android:title="@string/action_edit_soft"
         android:orderInCategory="1" />
 
     <item android:id="@+id/transaction_delete_all"
-        android:title="@string/action_delete"
+        android:title="@string/action_delete_soft"
         android:orderInCategory="2" />
 
 </menu>

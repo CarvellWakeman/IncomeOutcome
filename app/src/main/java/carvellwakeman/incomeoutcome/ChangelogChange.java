@@ -19,7 +19,7 @@ public class ChangelogChange {
     static String REGEX_SUB2 = "\\*\\[REMOVE\\]";
     static String REGEX_CHANGE = "\\*\\[CHANGE\\]";
     static String REGEX_FIX = "\\*\\[.*[FIX].*\\]";
-    static String REGEX_NOTE = "-";
+    static String REGEX_NOTE = "\\*-";
 
     //Data
     String version = "Unknown";

@@ -45,6 +45,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
     ImageView button_prevPeriod;
 
     RelativeLayout relativeLayout_filter;
+    View filter_divider;
 
     // Sort and Filter
     Helper.SORT_METHODS sortMethod;
@@ -151,12 +152,13 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
                 }
             });
 
+            filter_divider = findViewById(R.id.divider);
             relativeLayout_filter = (RelativeLayout) findViewById(R.id.relativeLayout_filter);
 
             relativeLayout_filter.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
-                    filterMethods.clear();
-                    Refresh();
+                filterMethods.clear();
+                Refresh();
                 }
             });
 
@@ -326,6 +328,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
 
     public void CheckShowFiltersNotice(){
         relativeLayout_filter.setVisibility( (filterMethods.size() > 0 ? View.VISIBLE : View.GONE) );
+        filter_divider.setVisibility( (filterMethods.size() > 0 ? View.VISIBLE : View.GONE) );
         textView_filters.setText(Helper.FilterString(this, filterMethods));
     }
 
@@ -370,12 +373,12 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
         DatabaseManager dm = DatabaseManager.getInstance(this);
 
         // Update transactions
-        for (Transaction t : transactionsAdapter._transactions){
+        for (Transaction t : transactionsAdapter._transactions){ //Transactions not being inserted into the database
+            Transaction parentT = _budget.GetTransaction(t.GetParentID());
+
             // If transaction is an instance transaction
             if (_budget.GetTransaction(t.GetID()) == null){
-
                 // Duplicate transaction and set as paid back, blacklist on parent
-                Transaction parentT = _budget.GetTransaction(t.GetParentID());
                 if (parentT != null) {
                     t.SetPaidBack(date);
                     t.SetParentID(parentT.GetID());
@@ -384,13 +387,23 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
                     parentT.GetTimePeriod().AddBlacklistDate(t.GetID(), t.GetTimePeriod().GetDate(), true);
 
                     dm.insert(parentT, true); // Update parent
+                    dm.insert(t, false); // Insert child
                 }
             } else { // Set paid back date
                 if (t.GetPaidBack() == null || date == null){
                     t.SetPaidBack(date);
                 }
+
+                // Check for copy (and remove if instance is one)
+                if (t.GetParentID() > 0 && t.shallowEquals(parentT)){
+                    _budget.RemoveTransaction(t);
+                    parentT.GetTimePeriod().RemoveBlacklistDate(t.GetTimePeriod().GetDate());
+                    dm.remove(t);
+                    dm.insert(parentT, true); // Update parent
+                } else {
+                    dm.insert(t, true);
+                }
             }
-            dm.insert(t, true);
         }
         Refresh();
     }

@@ -140,8 +140,14 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
 
     //Blacklist
+    public void AddBlacklistDate(BlacklistDate bd){
+        _blacklistDates.add(bd);
+    }
     public void AddBlacklistDate(int transactionID, LocalDate date, Boolean edited){
         _blacklistDates.add(new BlacklistDate(transactionID, date, edited));
+    }
+    public void RemoveBlacklistDate(BlacklistDate bd){
+        _blacklistDates.remove(bd);
     }
     public void RemoveBlacklistDate(LocalDate date){
         Iterator<BlacklistDate> i = _blacklistDates.iterator();
@@ -459,7 +465,7 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
         if (occurrences.size() > 0) {
             return occurrences.get(0);
         }
-        return null;
+        return date;
     }
 
     public Repeat GetRepeatFrequency() { return repeatFrequency; }
@@ -638,36 +644,27 @@ public class TimePeriod implements java.io.Serializable, BaseEntity
 
 
     //Equals
-    /*
-    @Override
-    public boolean equals(Object o){
-        if (o.getClass() == TimePeriod.class) {
-            TimePeriod tp = (TimePeriod) o;
+    public boolean shallowEquals(TimePeriod tp){
+        if (!tp.GetDate().equals(this.GetDate())) { return false; }
+        if (!tp.GetFirstOccurrence().equals(this.GetFirstOccurrence())) { return false; }
 
-            if (!tp.GetDate().equals(this.GetDate())) { return false; }
-            if (!tp.GetFirstOccurrence().equals(this.GetFirstOccurrence())) { return false; }
+        if (!tp.GetRepeatFrequency().equals(this.GetRepeatFrequency())) { return false; }
 
-            if (!tp.GetRepeatFrequency().equals(this.GetRepeatFrequency())) { return false; }
+        if (!tp.GetRepeatUntil().equals(this.GetRepeatUntil())) { return false; }
+        if (tp.GetRepeatANumberOfTimes() != this.GetRepeatANumberOfTimes()) { return false; }
+        if (!tp.GetRepeatUntilDate().equals(this.GetRepeatUntilDate())) { return false; }
+        if (tp.GetRepeatEveryN() != this.GetRepeatEveryN()) { return false; }
 
-            if (!tp.GetRepeatUntil().equals(this.GetRepeatUntil())) { return false; }
-            if (tp.GetRepeatANumberOfTimes() != this.GetRepeatANumberOfTimes()) { return false; }
-            if (!tp.GetRepeatUntilDate().equals(this.GetRepeatUntilDate())) { return false; }
-            if (tp.GetRepeatEveryN() != this.GetRepeatEveryN()) { return false; }
+        if (!tp.GetRepeatDayOfWeekBinary().equals(this.GetRepeatDayOfWeekBinary())) { return false; }
+        if (tp.GetRepeatDayOfMonth() != this.GetRepeatDayOfMonth()) { return false; }
 
-            if (!tp.GetRepeatDayOfWeekBinary().equals(this.GetRepeatDayOfWeekBinary())) { return false; }
-            if (tp.GetRepeatDayOfMonth() != this.GetRepeatDayOfMonth()) { return false; }
+        if (!tp.GetDateOfYear().equals(this.GetDateOfYear())) { return false; }
 
-            if (!tp.GetDateOfYear().equals(this.GetDateOfYear())) { return false; }
+        if (!tp.GetBlacklistDates().equals(this.GetBlacklistDates())) { return false; } // Children won't have their parent's blacklisted dates
 
-            if (!tp.GetBlacklistDatesString().equals(this.GetBlacklistDatesString())) { return false; }
-
-
-            return true;
-        }
-
-        return false;
+        return true;
     }
-    */
+
 }
 
 

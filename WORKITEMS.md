@@ -26,6 +26,7 @@ TODO
 *[BUGFIX] Permissions revoked on runtime leaves import activity empty
 *[BUGFIX] Some MyTab import expenses are not split
 
+*[CHANGE] All objects (models) should have a manager and only be related by foreign keys. Remove split column, blacklist dates column, etc.
 *[CHANGE] SplitAdapter has a data structure (class) that represents the holder's values. That data structure is updated (Don't hold references to viewHolders)
 *[CHANGE] Transaction uses category ID and person ID instead of strings
 *[CHANGE] Database operations use service/intentservice instead of AsyncTask (why?)
@@ -58,25 +59,7 @@ TODO
 
 
 UNRELEASED
-*[ADD] Transactions can now be split between many people
-*[ADD] Added categories Parking, membership
-*[ADD] Overview activity how has a button to add transactions
-#[ADD] Updated app throughout so that '-1' represents 'you', instead of zero in some places, and -1 in others
 
-*[BUGFIX] Database manager correctly loads transactions that are not split
-*[BUGFIX] Fixed crash when accessing data before database has completed loading or importing
-#[BUGFIX] PaidBy radio button in new transaction not being checked initially (and not being saved when 'you' paid)
-#[BUGFIX] Database not saving timeperiod UID
-
-*[CHANGE] Major rewrite of data structures and database, UI updates on every page
-*[CHANGE] Active filters are now displayed in the toolbar as a summary block
-*[CHANGE] Show All moved to overflow menu
-*[CHANGE] When adding a transaction, the keyboard hides when any element that does not use it is clicked
-*[CHANGE] Refactored budget, category, and people management
-*[CHANGE] CardTransaction clicking a slice of the pie chart highlights in the legend
-*[CHANGE] Transaction card has legend view by default, clicking a slice of the chart shows the title of the transaction
-*[CHANGE] Profiles are now refered to as budgets
-#[CHANGE] DatabaseHelper contains method runDBTask which runs DB tasks Asynchronously, don't expose GenericAsyncTask
 
 
 FORMAT

@@ -78,8 +78,8 @@
         <!-- Your FAB implementation -->
         <carvellwakeman.incomeoutcome.FAB
             android:id="@+id/FAB_transaction_type_new"
-            android:layout_width="@dimen/fab_size_default"
-            android:layout_height="@dimen/fab_size_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_marginBottom="@dimen/fab_margin"

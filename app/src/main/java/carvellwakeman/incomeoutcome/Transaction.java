@@ -305,4 +305,24 @@ public class Transaction implements java.io.Serializable
                 return 0;
         }
     }
+
+    // Equality
+    public boolean shallowEquals(Transaction other){
+        if (this._type != other._type) { return false; }
+        //if (this._uniqueID != other._uniqueID) { return false; } // Don't compare IDs, that would be a deep equal, this is a shallow equal
+        //if (this._parentID != other._parentID) { return false; }
+        if (this._budgetID != other._budgetID) { return false; }
+        if (this._category != other._category) { return false; }
+        if (!this._source.equals(other._source)) { return false; }
+        if (!this._description.equals(other._description)) { return false; }
+        if (this._value != other._value) { return false; }
+        //if (!this._when.shallowEquals(other._when)) { return false; } // Instance transactions will not share timeperiod similarity with their parent
+        if (this._paidBy != other._paidBy) { return false; }
+        if (this._split != other._split) { return false; }
+        if (this._paidBack != null && other._paidBack != null) {
+            if (!this._paidBack.equals(other._paidBack)){ return false; }
+        } else if (this._paidBack == null ^ other._paidBack == null) { return false; }
+
+        return true;
+    }
 }

@@ -219,6 +219,8 @@
     <string name="add_new">Add new&#8230;</string>
 
     <!-- User actions -->
+    <string name="action_edit_soft">Edit</string>
+    <string name="action_delete_soft">Delete</string>
     <string name="action_duplicate">Duplicate</string>
     <string name="action_instance">Only this transaction</string>
     <string name="action_all">All Transactions in series</string>

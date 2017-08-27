@@ -26,7 +26,23 @@
             app:layout_collapseParallaxMultiplier="0.7">
 
             <!-- Filter -->
-            <include layout="@layout/filters_status"/>
+            <include
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/divider"
+                layout="@layout/filters_status" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:layout_alignBottom="@+id/button_prevPeriod"
+                android:layout_alignParentEnd="false"
+                android:layout_alignTop="@+id/button_prevPeriod"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="2dp"
+                android:layout_toStartOf="@+id/button_prevPeriod"
+                android:background="@android:color/darker_gray" />
 
             <!-- Period previous -->
             <ImageView

@@ -68,7 +68,7 @@ public class ActivitySettings extends AppCompatActivity
         //Setting Categories
         CardSettings budgetsPeopleCategories = new CardSettings(this, inflater, insertPoint, indexCount++, R.layout.row_layout_setting_card, getString(R.string.title_settings_budgetspeoplecategories));
         //Manage budgets
-        budgetsPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_account_white_24dp, getString(R.string.title_managebudgets), null,
+        budgetsPeopleCategories.AddSetting(new Setting(inflater, R.drawable.ic_clipboard_account_white_24dp, getString(R.string.title_managebudgets), null,
                 new View.OnClickListener() { @Override public void onClick(View v) {
                     //ProfileManager.OpenDialogFragment(ActivitySettings.this, new DialogFragmentManageProfiles(), mIsLargeLayout);
                     startActivity(new Intent(ActivitySettings.this, ActivityManageBudgets.class));

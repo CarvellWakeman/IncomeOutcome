@@ -80,48 +80,48 @@ public class DialogFragmentRepeat extends DialogFragment
         button_positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Repeat Until null date case
-                if (_timePeriod.GetRepeatUntil()==RepeatUntil.DATE && _timePeriod.GetRepeatUntilDate() == null){
-                    _timePeriod.SetRepeatUntilDate(_timePeriod.GetDate());
-                }
-                switch(_timePeriod.GetRepeatFrequency()){
-                    case WEEKLY:
-                        if (!AllDaysOff()) {
-                            _timePeriod.SetDayOfWeek(0, GetValMon());
-                            _timePeriod.SetDayOfWeek(1, GetValTues());
-                            _timePeriod.SetDayOfWeek(2, GetValWed());
-                            _timePeriod.SetDayOfWeek(3, GetValThur());
-                            _timePeriod.SetDayOfWeek(4, GetValFri());
-                            _timePeriod.SetDayOfWeek(5, GetValSat());
-                            _timePeriod.SetDayOfWeek(6, GetValSun());
-                        }
-                        break;
-                    case MONTHLY:
-                        if (_timePeriod.GetDate() != null){
-                            _timePeriod.SetRepeatDayOfMonth(_timePeriod.GetDate().getDayOfMonth());
-                        }
+            //Repeat Until null date case
+            if (_timePeriod.GetRepeatUntil()==RepeatUntil.DATE && _timePeriod.GetRepeatUntilDate() == null){
+                _timePeriod.SetRepeatUntilDate(_timePeriod.GetDate());
+            }
+            switch(_timePeriod.GetRepeatFrequency()){
+                case WEEKLY:
+                    if (!AllDaysOff()) {
+                        _timePeriod.SetDayOfWeek(0, GetValMon());
+                        _timePeriod.SetDayOfWeek(1, GetValTues());
+                        _timePeriod.SetDayOfWeek(2, GetValWed());
+                        _timePeriod.SetDayOfWeek(3, GetValThur());
+                        _timePeriod.SetDayOfWeek(4, GetValFri());
+                        _timePeriod.SetDayOfWeek(5, GetValSat());
+                        _timePeriod.SetDayOfWeek(6, GetValSun());
+                    }
+                    break;
+                case MONTHLY:
+                    if (_timePeriod.GetDate() != null){
+                        _timePeriod.SetRepeatDayOfMonth(_timePeriod.GetDate().getDayOfMonth());
+                    }
 
-                        break;
-                    case YEARLY:
-                        if (_timePeriod.GetDate() != null){
-                            _timePeriod.SetDateOfYear(_timePeriod.GetDate());
-                        }
+                    break;
+                case YEARLY:
+                    if (_timePeriod.GetDate() != null){
+                        _timePeriod.SetDateOfYear(_timePeriod.GetDate());
+                    }
 
-                        break;
-                    default:
-                        break;
-                }
+                    break;
+                default:
+                    break;
+            }
 
-                // Create intent
-                Intent intent = new Intent();
-                intent.putExtra("timeperiod", _timePeriod);
+            // Create intent
+            Intent intent = new Intent();
+            intent.putExtra("timeperiod", _timePeriod);
 
-                // Close soft keyboard
-                Helper.hideSoftKeyboard(_parent, button_positive);
+            // Close soft keyboard
+            Helper.hideSoftKeyboard(_parent, button_positive);
 
-                // Send timeperiod back to parent
-                _parent.onActivityResult(4,1,intent);
-                dismiss();
+            // Send timeperiod back to parent
+            _parent.onActivityResult(4,1,intent);
+            dismiss();
             }
         });
 

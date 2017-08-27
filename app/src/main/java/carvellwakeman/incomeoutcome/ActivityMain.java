@@ -87,7 +87,6 @@ public class ActivityMain extends AppCompatActivity
         //Toolbar menus
         toolbar_menus = new ArrayList<>();
         toolbar_menus.add(R.menu.submenu_settings);
-        toolbar_menus.add(R.menu.submenu_paidback);
 
 
         //Find Views
@@ -169,19 +168,23 @@ public class ActivityMain extends AppCompatActivity
         FAB_newExpense.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 materialSheetFab.hideSheet();
-                Intent intent = new Intent(ActivityMain.this, ActivityNewTransaction.class);
-                intent.putExtra("activitytype", Transaction.TRANSACTION_TYPE.Expense.ordinal());
-                intent.putExtra("budget", _selectedBudget.GetID());
-                startActivity(intent);
+                if (_selectedBudget != null) {
+                    Intent intent = new Intent(ActivityMain.this, ActivityNewTransaction.class);
+                    intent.putExtra("activitytype", Transaction.TRANSACTION_TYPE.Expense.ordinal());
+                    intent.putExtra("budget", _selectedBudget.GetID());
+                    startActivity(intent);
+                }
             }
         });
         FAB_newIncome.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 materialSheetFab.hideSheet();
-                Intent intent = new Intent(ActivityMain.this, ActivityNewTransaction.class);
-                intent.putExtra("activitytype", Transaction.TRANSACTION_TYPE.Income.ordinal());
-                intent.putExtra("budget", _selectedBudget.GetID());
-                startActivity(intent);
+                if (_selectedBudget != null) {
+                    Intent intent = new Intent(ActivityMain.this, ActivityNewTransaction.class);
+                    intent.putExtra("activitytype", Transaction.TRANSACTION_TYPE.Income.ordinal());
+                    intent.putExtra("budget", _selectedBudget.GetID());
+                    startActivity(intent);
+                }
             }
         });
 
@@ -227,13 +230,6 @@ public class ActivityMain extends AppCompatActivity
                 intent = new Intent(ActivityMain.this, ActivitySettings.class);
                 startActivity(intent);
                 return true;
-            case R.id.toolbar_paidback: // Paid Back (expenses only)
-                Helper.OpenDialogFragment(ActivityMain.this, DialogFragmentPaidBack.newInstance(ActivityMain.this,
-                        new RunnableParam() { @Override public void run(Object date) {
-                            SetTransactionsPaidBack((LocalDate)date);
-                        }
-                        }, _selectedBudget), true);
-                return true;
 
             default:
                 break;
@@ -264,6 +260,7 @@ public class ActivityMain extends AppCompatActivity
             button_suggestaddbudget.setVisibility(View.VISIBLE);
             progress_loadingData.setVisibility(View.GONE);
             relativeLayout_period.setVisibility(View.GONE);
+            FAB_addNew.setVisibility(View.GONE);
         }
         else {
             //versusCard.getBase().setVisibility(View.VISIBLE);
@@ -271,6 +268,8 @@ public class ActivityMain extends AppCompatActivity
             incomeCard.getBase().setVisibility(View.VISIBLE);
             button_suggestaddbudget.setVisibility(View.GONE);
             relativeLayout_period.setVisibility(View.VISIBLE);
+            FAB_addNew.setVisibility(View.VISIBLE);
+
 
             expensesCard.SetBudget(_selectedBudget.GetID());
             incomeCard.SetBudget(_selectedBudget.GetID());
@@ -299,35 +298,4 @@ public class ActivityMain extends AppCompatActivity
         }
     }
 
-
-    // Paid back
-    public void SetTransactionsPaidBack(LocalDate date){
-        DatabaseManager dm = DatabaseManager.getInstance(ActivityMain.this);
-
-        // Update transactions
-        for (Transaction t : _selectedBudget.GetTransactions(Transaction.TRANSACTION_TYPE.Expense)){
-            // If transaction is an instance transaction
-            if (_selectedBudget.GetTransaction(t.GetID()) == null){
-
-                // Duplicate transaction and set as paid back, blacklist on parent
-                Transaction parentT = _selectedBudget.GetTransaction(t.GetParentID());
-                if (parentT != null) {
-                    t.SetPaidBack(date);
-                    t.SetParentID(parentT.GetID());
-
-                    _selectedBudget.AddTransaction(t);
-                    parentT.GetTimePeriod().AddBlacklistDate(t.GetID(), t.GetTimePeriod().GetDate(), true);
-
-                    dm.insert(parentT, true); // Update parent
-                }
-            } else { // Set paid back date
-                if (t.GetPaidBack() == null){
-                    t.SetPaidBack(date);
-                }
-            }
-            dm.insert(t, true);
-        }
-
-        RefreshActivity();
-    }
 }

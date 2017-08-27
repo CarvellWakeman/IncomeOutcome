@@ -205,7 +205,6 @@ public class ActivityManageBudgets extends ActivityManageEntity<Budget> {
             BudgetManager.getInstance().AddBudget(editingEntity);
             DatabaseManager.getInstance(ActivityManageBudgets.this).insertSetting(editingEntity, true);
         }
-
     }
 
 

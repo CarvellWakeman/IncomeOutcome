@@ -235,8 +235,9 @@ public class CardTransaction extends Card implements OnChartValueSelectedListene
                             val = t.GetSplit(Person.Me.GetID());
 
                             // Add to existing value
-                            if (source.get(t.GetSource()) != null) { val += source.get(t.GetSource()); }
-                            source.put(t.GetSource(), val);
+                            String emptySafeSource = (t.GetSource().equals("") ? _context.getString(R.string.info_nosource) : t.GetSource());
+                            if (source.get(emptySafeSource) != null) { val += source.get(emptySafeSource); }
+                            source.put(emptySafeSource, val);
                         }
                         else if (keyType == 1) { // Category
                             Category cat = CategoryManager.getInstance().GetCategory(t.GetCategory());

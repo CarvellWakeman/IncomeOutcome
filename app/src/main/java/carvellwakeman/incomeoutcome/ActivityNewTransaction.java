@@ -323,6 +323,7 @@ public class ActivityNewTransaction extends AppCompatActivity
                         toolbar.setTitle(R.string.title_newincome);
                     }
 
+                    _transaction = new Transaction();
                     _timePeriod = new TimePeriod(_start_date);
                 }
                 else if (_editState == EDIT_STATE.Edit) {
@@ -448,13 +449,13 @@ public class ActivityNewTransaction extends AppCompatActivity
                 }
             } else if (requestCode == 4) { // Repeating (time period)
                 LocalDate _original_date = new LocalDate(_timePeriod.GetFirstOccurrence());
-                Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Before Receiving FO:" + _timePeriod.GetFirstOccurrence());
-                Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Before Receiving:" + _timePeriod.GetID());
+                //Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Before Receiving FO:" + _timePeriod.GetFirstOccurrence());
+                //Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Before Receiving:" + _timePeriod.GetID());
 
                 // Format repeat text
                 _timePeriod = (TimePeriod) data.getSerializableExtra("timeperiod");
-                Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Receiving FO:" + _timePeriod.GetFirstOccurrence().toString());
-                Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Receiving:" + _timePeriod.GetID());
+                //Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Receiving FO:" + _timePeriod.GetFirstOccurrence().toString());
+                //Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Receiving:" + _timePeriod.GetID());
 
                 if (_timePeriod != null) {
                     UpdateDateFormat();
@@ -534,19 +535,24 @@ public class ActivityNewTransaction extends AppCompatActivity
     }
 
     public void UpdateBlacklistDates(LocalDate originalDate){
-        Helper.Log(ActivityNewTransaction.this, "ActNewTran", "OriginalFO: " + originalDate.toString());
-        Helper.Log(ActivityNewTransaction.this, "ActNewTran", "CurrentFO: " + _timePeriod.GetFirstOccurrence().toString());
+        //Helper.Log(ActivityNewTransaction.this, "ActNewTran", "OriginalFO: " + originalDate.toString());
+        //Helper.Log(ActivityNewTransaction.this, "ActNewTran", "CurrentFO: " + _timePeriod.GetFirstOccurrence().toString());
 
         // Update blacklist dates by difference
+        ArrayList<BlacklistDate> toRemove = new ArrayList<>();
+        ArrayList<BlacklistDate> toAdd = new ArrayList<>();
         for (BlacklistDate bd : _timePeriod.GetBlacklistDates()){
             int dbt = Days.daysBetween(originalDate, _timePeriod.GetFirstOccurrence()).getDays();
-            Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Days Between:" + dbt);
+            //Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Days Between:" + dbt);
             LocalDate newDate = bd.date.plusDays( dbt );
-            Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Update bd " + bd.date.toString() + " to " + newDate.toString());
+            //Helper.Log(ActivityNewTransaction.this, "ActNewTran", "Update bd " + bd.date.toString() + " to " + newDate.toString());
 
-            _timePeriod.RemoveBlacklistDate(bd.date);
-            _timePeriod.AddBlacklistDate(bd.transactionID, newDate, bd.edited);
+            toRemove.add(bd);
+            toAdd.add(new BlacklistDate(bd.transactionID, newDate, bd.edited));
         }
+
+        for (BlacklistDate bd : toRemove){ _timePeriod.RemoveBlacklistDate(bd); }
+        for (BlacklistDate bd : toAdd){ _timePeriod.AddBlacklistDate(bd); }
     }
 
     public void SetSeriesOverride(boolean override){

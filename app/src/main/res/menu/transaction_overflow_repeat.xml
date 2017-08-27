@@ -3,7 +3,7 @@
     tools:context="carvellwakeman.incomeoutcome">
 
     <item android:id="@+id/transaction_edit"
-        android:title="@string/action_edit"
+        android:title="@string/action_edit_soft"
         android:orderInCategory="1" >
 
         <menu>
@@ -17,7 +17,7 @@
     </item>
 
     <item android:id="@+id/transaction_delete"
-        android:title="@string/action_delete"
+        android:title="@string/action_delete_soft"
         android:orderInCategory="2" >
 
         <menu>
