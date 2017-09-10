@@ -1,19 +1,12 @@
 STAGING:
-	Making Transaction totals working
-	Paidback working (not saving in database )
-	Sorting working
-	Filtering working
-	Totals bugfix
-	Added show all
-	Edge case for deleted people and categories
-	Overview page
-	Transactions split values not updated when total value is updated for non split transaction
+	Testing, lower API pass
 	
-	NEXT:Test, lint pass, lower api test
+	NEXT:More testing, bug fixes, new features
 	
 
 TODO
 -High
+*[BUGFIX] Time Period objects should have their own manager and be passed by ID
 *[BUGFIX] Cannot delete categories or people that are in use by transactions (Provide user with choice - change all to _ or delete all?)
 *[BUGFIX] Handle when people are deleted but are used by a transaction
 *[BUGFIX] Transaction Split rows (in details activity) not updating when some changes are made

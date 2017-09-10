@@ -1,3 +1,7 @@
+Ver 1.1.2 ALPHA 2017-09-10
+*[BUGFIX] Fix for crashing on Android 8.0 when entering text with autofill enabled in system settings
+*[BUGFIX] The timeframe being examined is now saved between app starts
+
 Ver 1.1.1 ALPHA 2017-08-26
 *[BUGFIX] Fixed android 8.0 crash
 *[BUGFIX] Fixed data import failure

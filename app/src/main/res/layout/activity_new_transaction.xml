@@ -80,8 +80,9 @@
                             android:layout_alignParentTop="true"
                             android:hint="@string/header_cost"
                             android:imeOptions="actionNext"
-                            android:inputType="number"
+                            android:inputType="number|numberDecimal"
                             android:maxLines="1"
+                            android:singleLine="true"
                             android:textColorHint="@android:color/transparent" />
 
                     </android.support.design.widget.TextInputLayout>

@@ -804,27 +804,26 @@ public class ActivityNewTransaction extends AppCompatActivity
                 // Set Category
                 if (_category != null){ _transaction.SetCategory(_category.GetID()); }
 
-                // Set Split value
-                if (checkBox_split.isChecked()) {
-                    _transaction.ClearSplit();
-                    for (Map.Entry<Person, ViewHolderSplit> entry : active_people.entrySet()) {
-                        Helper.Log(this, "ActNewTran", "SplitWith:" + entry.getKey().GetName() + " for " + String.valueOf(entry.getValue().GetCost()));
-                        _transaction.SetSplit(entry.getKey().GetID(), entry.getValue().GetCost());
-                        if (entry.getValue().GetPaid()) { _transaction.SetPaidBy(entry.getKey().GetID()); }
-                    }
-                } else {
-                    _transaction.ClearSplit();
-                    _transaction.SetSplit(Person.Me.GetID(), _transaction.GetValue());
-                    _transaction.SetPaidBy(Person.Me.GetID());
-                }
-
                 // Set paidback
                 if (checkBox_paidBack.isChecked()) {
                     _transaction.SetPaidBack( _paidBack );
                 } else {
                     _transaction.SetPaidBack(null);
                 }
+            }
 
+            // Set Split value (Expense only, but YOUR split is still set in income transactions)
+            if (checkBox_split.isChecked()) {
+                _transaction.ClearSplit();
+                for (Map.Entry<Person, ViewHolderSplit> entry : active_people.entrySet()) {
+                    Helper.Log(this, "ActNewTran", "SplitWith:" + entry.getKey().GetName() + " for " + String.valueOf(entry.getValue().GetCost()));
+                    _transaction.SetSplit(entry.getKey().GetID(), entry.getValue().GetCost());
+                    if (entry.getValue().GetPaid()) { _transaction.SetPaidBy(entry.getKey().GetID()); }
+                }
+            } else {
+                _transaction.ClearSplit();
+                _transaction.SetSplit(Person.Me.GetID(), _transaction.GetValue());
+                _transaction.SetPaidBy(Person.Me.GetID());
             }
 
 
