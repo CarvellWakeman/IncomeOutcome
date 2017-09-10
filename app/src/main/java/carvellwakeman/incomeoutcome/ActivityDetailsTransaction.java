@@ -105,6 +105,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
                     if (_budget != null){
                         prev_startDate = prev_endDate = null;
                         _budget.MoveTimePeriod(1);
+                        DatabaseManager.getInstance(ActivityDetailsTransaction.this)._insertSetting(_budget, true);
                         Refresh();
                     }
                 }
@@ -114,6 +115,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
                     if (_budget != null){
                         prev_startDate = prev_endDate = null;
                         _budget.MoveTimePeriod(-1);
+                        DatabaseManager.getInstance(ActivityDetailsTransaction.this)._insertSetting(_budget, true);
                         Refresh();
                     }
                 }

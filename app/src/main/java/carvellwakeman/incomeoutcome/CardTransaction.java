@@ -212,6 +212,8 @@ public class CardTransaction extends Card implements OnChartValueSelectedListene
 
         Budget _budget = BudgetManager.getInstance().GetBudget(_budgetID);
         if (_budget != null){
+            if (chart != null) { chart.clear(); }
+            if (dataSet != null) { dataSet.clear(); }
 
             //Get expense data
             ArrayList<Transaction> transactions = _budget.GetTransactionsInTimeframe(_context,  _activityType, Helper.SORT_METHODS.DATE_DSC, filterMethods );

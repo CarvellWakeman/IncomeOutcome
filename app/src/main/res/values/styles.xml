@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- My Main Theme -->
     <style name="MaterialTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -29,6 +29,15 @@
         <!-- Lower API support -->
         <item name="android:actionMenuTextColor">@drawable/selector_menu_item</item>
         <item name="actionMenuTextColor">@drawable/selector_menu_item</item>
+
+        <!-- WOrkaround -->
+        <item name="editTextStyle">@style/EditTextStyle</item>
+    </style>
+
+    <!-- Edit text crash workaround for android 8.0 autofill -->
+
+    <style name="EditTextStyle" parent="@style/Widget.AppCompat.EditText">
+        <item name="android:importantForAutofill" tools:targetAPI="26">noExcludeDescendants</item>
     </style>
 
 
