@@ -1,3 +1,6 @@
+Ver 1.1.3 ALPHA 2018-01-01
+*[BUGFIX] Fix for paid back repeating transactions setting all past and future transactions as paid back
+
 Ver 1.1.2 ALPHA 2017-09-10
 *[BUGFIX] Fix for crashing on Android 8.0 when entering text with autofill enabled in system settings
 *[BUGFIX] The timeframe being examined is now saved between app starts

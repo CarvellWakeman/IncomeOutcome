@@ -191,7 +191,8 @@ public class Transaction implements java.io.Serializable
                 for (int ii = 0; ii < tp_dates.size(); ii++) {
                     //Helper.Print(App.GetContext(), "Occurrence:" + tp_dates.get(ii).toString(Helper.getString(R.string.date_format)));
                     //If we find THIS transaction in the list, add it (IE: The REAL slim shady)
-                    if (tp.GetDate().equals(tp_dates.get(ii))) {
+                    boolean rep = tp.DoesRepeat();
+                    if (tp.GetDate().equals(tp_dates.get(ii)) && !rep) {
                         occurrences.add(this);
                         //Helper.Print(App.GetContext(), "Add OG: " + this.GetParentID());
                     }

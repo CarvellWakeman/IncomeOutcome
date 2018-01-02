@@ -378,8 +378,11 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
         for (Transaction t : transactionsAdapter._transactions){ //Transactions not being inserted into the database
             Transaction parentT = _budget.GetTransaction(t.GetParentID());
 
+            TimePeriod tp = t.GetTimePeriod();
+
             // If transaction is an instance transaction
             if (_budget.GetTransaction(t.GetID()) == null){
+            //if (tp != null && tp.DoesRepeat()) {
                 // Duplicate transaction and set as paid back, blacklist on parent
                 if (parentT != null) {
                     t.SetPaidBack(date);
@@ -392,7 +395,7 @@ public class ActivityDetailsTransaction extends AppCompatActivity implements Sor
                     dm.insert(t, false); // Insert child
                 }
             } else { // Set paid back date
-                if (t.GetPaidBack() == null || date == null){
+                if (t.GetPaidBack() == null || date == null) {
                     t.SetPaidBack(date);
                 }
 

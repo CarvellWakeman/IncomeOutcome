@@ -773,6 +773,8 @@ public class ActivityNewTransaction extends AppCompatActivity
 
     // Gather data from views, build a transaction object, and save it to the database
     public void FinishTransaction() {
+        DatabaseManager dm = DatabaseManager.getInstance(this);
+
         Helper.Log(this, "ActNewTran", "FinishTran TimePeriod:" + (_timePeriod==null ? "null" : String.valueOf(_timePeriod.GetID())));
         Helper.Log(this, "ActNewTran", "FinishTran TimePeriod Date:" + (_timePeriod==null ? "null" : _timePeriod.GetDate().toString()));
 
@@ -827,11 +829,10 @@ public class ActivityNewTransaction extends AppCompatActivity
             }
 
 
-            DatabaseManager dm = DatabaseManager.getInstance(this);
+            Transaction tranp = _budget.GetTransaction(_transaction.GetParentID());
 
             // Blacklist date for instance transaction
             if (_editState == EDIT_STATE.EditInstance) {
-                Transaction tranp = _budget.GetTransaction(_transaction.GetParentID());
                 if (tranp != null) {
                     Helper.Log(this, "ActNewTran", "Parent:" + tranp.GetID());
                     Helper.Log(this, "ActNewTran", "EditingTPDate:" + _transaction.GetTimePeriod().GetDate().toString());
@@ -859,8 +860,16 @@ public class ActivityNewTransaction extends AppCompatActivity
             }
 
             //Add to/update database
-            dm.insert(_transaction, true);
-            //dm.insertSetting(_budget, true); //Unneccesary?
+
+            // Check for copy (and remove if instance is one)
+            if (_transaction.GetParentID() > 0 && _transaction.shallowEquals(tranp)){
+                _budget.RemoveTransaction(_transaction);
+                tranp.GetTimePeriod().RemoveBlacklistDate(_transaction.GetTimePeriod().GetDate());
+                dm.remove(_transaction);
+                dm.insert(tranp, true); // Update parent
+            } else {
+                dm.insert(_transaction, true);
+            }
 
         } else { // Failure (no category)
             Helper.Log(this, "ActNewTran", "Error: Pick a category");

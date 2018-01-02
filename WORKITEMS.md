@@ -1,8 +1,5 @@
-STAGING:
-	Testing, lower API pass
-	
-	NEXT:More testing, bug fixes, new features
-	
+MOVE THIS TO GITHUB, AS YOU SHOULD HAVE DONE A VERY LONG TIME AGO...
+
 
 TODO
 -High
