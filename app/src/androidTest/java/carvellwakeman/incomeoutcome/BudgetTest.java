@@ -2,7 +2,9 @@ package carvellwakeman.incomeoutcome;
 
 import android.content.Context;
 import android.support.test.runner.AndroidJUnit4;
-import android.util.Log;
+import carvellwakeman.incomeoutcome.models.Budget;
+import carvellwakeman.incomeoutcome.models.TimePeriod;
+import carvellwakeman.incomeoutcome.models.Transaction;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.junit.Before;
@@ -14,7 +16,7 @@ import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class BudgetTest {
-    Context mContext;
+    private Context mContext;
 
     @Before
     public void Setup(){

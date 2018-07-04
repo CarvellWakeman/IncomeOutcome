@@ -2,10 +2,11 @@ package carvellwakeman.incomeoutcome;
 
 
 import android.content.Context;
-import android.os.LocaleList;
 import android.support.test.runner.AndroidJUnit4;
-import android.util.Log;
-import org.joda.time.DurationFieldType;
+import carvellwakeman.incomeoutcome.data.CategoryManager;
+import carvellwakeman.incomeoutcome.data.PersonManager;
+import carvellwakeman.incomeoutcome.helpers.Helper;
+import carvellwakeman.incomeoutcome.models.*;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +20,7 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class TransactionTest {
 
-    Context mContext;
+    private Context mContext;
 
 
     @Before

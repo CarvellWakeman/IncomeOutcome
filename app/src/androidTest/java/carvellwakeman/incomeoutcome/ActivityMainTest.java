@@ -6,8 +6,10 @@ import android.support.test.annotation.UiThreadTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
+import carvellwakeman.incomeoutcome.activities.ActivityMain;
+import carvellwakeman.incomeoutcome.data.BudgetManager;
+import carvellwakeman.incomeoutcome.models.Budget;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,8 +17,6 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -25,12 +25,11 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class ActivityMainTest {
 
-    Context mContext;
+    private Context mContext;
 
 
     @Before
@@ -53,7 +52,7 @@ public class ActivityMainTest {
 
         // Set selected budget
         bud.SetSelected(true);
-        mActivityRule.getActivity()._selectedBudget = bud;
+        BudgetManager.getInstance().SetSelectedBudget(bud);
 
         // Refresh activity, toolbar title is budget name
         mActivityRule.getActivity().RefreshActivity();

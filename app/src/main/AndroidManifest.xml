@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:theme="@style/MaterialTheme">
 
-        <activity android:name=".ActivityMain" android:label="Income Outcome" android:launchMode="singleTop" android:configChanges="keyboardHidden|orientation|screenSize">
+        <activity android:name="carvellwakeman.incomeoutcome.activities.ActivityMain" android:label="Income Outcome" android:launchMode="singleTop" android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
@@ -24,28 +24,28 @@
         </activity>
 
 
-        <activity android:name=".ActivityDetailsTransaction" android:label="@string/app_name"
+        <activity android:name="carvellwakeman.incomeoutcome.activities.ActivityDetailsTransaction" android:label="@string/app_name"
             android:launchMode="singleTop"/>
 
-        <activity android:name=".ActivityNewTransaction" android:label="@string/title_newtransaction"
+        <activity android:name="carvellwakeman.incomeoutcome.activities.ActivityNewTransaction" android:label="@string/title_newtransaction"
             android:launchMode="singleTop"/>
         
 
 
-        <activity android:name=".ActivitySettings" android:label="@string/title_settings"
+        <activity android:name="carvellwakeman.incomeoutcome.activities.ActivitySettings" android:label="@string/title_settings"
             android:launchMode="singleTop"/>
-        <activity android:name=".ActivityManageCategories" android:label="@string/title_managecategories"
+        <activity android:name="carvellwakeman.incomeoutcome.activities.ActivityManageCategories" android:label="@string/title_managecategories"
             android:launchMode="singleTop"/>
-        <activity android:name=".ActivityManagePeople" android:label="@string/title_managepeople"
+        <activity android:name="carvellwakeman.incomeoutcome.activities.ActivityManagePeople" android:label="@string/title_managepeople"
             android:launchMode="singleTop"/>
-        <activity android:name=".ActivityManageBudgets" android:label="@string/title_managebudgets"
-            android:launchMode="singleTop"/>
-
-        <activity android:name=".ActivityDatabaseImport" android:label="@string/title_importdata"
+        <activity android:name="carvellwakeman.incomeoutcome.activities.ActivityManageBudgets" android:label="@string/title_managebudgets"
             android:launchMode="singleTop"/>
 
+        <activity android:name="carvellwakeman.incomeoutcome.activities.ActivityDatabaseImport" android:label="@string/title_importdata"
+            android:launchMode="singleTop"/>
 
-        <activity android:name=".AndroidDatabaseManager" android:theme="@style/Theme.AppCompat.Light"/>
+
+        <activity android:name=".data.AndroidDatabaseManager" android:theme="@style/Theme.AppCompat.Light"/>
 
     </application>
 
