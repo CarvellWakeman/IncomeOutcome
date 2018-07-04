@@ -179,7 +179,7 @@ public class ActivitySettings extends AppCompatActivity
                 DatabaseManager.getInstance(ActivitySettings.this).insert(tr, false);
             }
 
-            //ProfileManager.getInstance().SelectProfile(ActivitySettings.this, pr);
+            BudgetManager.getInstance().SetSelectedBudget(br);
             Helper.PrintUser(ActivitySettings.this, "Adding 100 transactions");
             }
         }));
