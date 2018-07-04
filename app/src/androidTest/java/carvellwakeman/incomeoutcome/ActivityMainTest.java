@@ -7,9 +7,9 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import android.widget.TextView;
-import carvellwakeman.incomeoutcome.activities.ActivityMain;
 import carvellwakeman.incomeoutcome.data.BudgetManager;
 import carvellwakeman.incomeoutcome.models.Budget;
+import carvellwakeman.incomeoutcome.activities.ActivityMain;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
